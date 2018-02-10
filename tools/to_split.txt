@@ -1,0 +1,25 @@
+# Backgrounds which are in layer format rather than Enigma compressed
+6F992 6F9CC level/background/unk_6F992.bin
+6F9CC 6F9F8 level/background/unk_6F9CC.bin
+6F9F8 6FA48 level/background/unk_6F9F8.bin
+6FA48 6FA82 level/background/unk_6FA48.bin
+6FA82 6FADE level/background/unk_6FA82.bin
+6FADE 6FB10 level/background/unk_6FADE.bin
+6FB10 6FB56 level/background/unk_6FB10.bin
+6FB56 6FB7A level/background/unk_6FB56.bin
+6FB7A 6FBB4 level/background/unk_6FB7A.bin
+6FBB4 6FBE0 level/background/unk_6FBB4.bin
+6FBE0 6FC20 level/background/unk_6FBE0.bin
+6FC20 6FC60 level/background/unk_6FC20.bin
+6FC60 6FC7E level/background/unk_6FC60.bin
+6FC7E 6FCB0 level/background/unk_6FC7E.bin
+6FCB0 6FCD4 level/background/unk_6FCB0.bin
+6FCD4 6FCF2 level/background/unk_6FCD4.bin
+6FCF2 6FD2C level/background/unk_6FCF2.bin
+6FD2C 6FD5E level/background/unk_6FD2C.bin
+6FD5E 6FD7C level/background/unk_6FD5E.bin
+6FD7C 6FDA2 level/background/unk_6FD7C.bin
+6FDA2 6FDC8 level/background/unk_6FDA2.bin
+6FDC8 6FDEE level/background/unk_6FDC8.bin
+6FDEE 6FE2A level/background/unk_6FDEE.bin
+6FE2A 6FE6B level/background/unk_6FE2A.bin

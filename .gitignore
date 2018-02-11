@@ -5,3 +5,6 @@ kid_built.bin
 kid.bin
 level/*.bin
 level/*/*.bin
+theme/*.bin
+theme/*/*.bin
+theme/*/*/*.bin

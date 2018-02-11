@@ -187,6 +187,8 @@ unk_1A7F8:
     dc.b    "elsewhere"
     dc.b    $FF
 
+    align   2
+
 unk_1A802:
 	dc.w $20
 	dc.w $28

@@ -204,12 +204,20 @@ Platform_Index = 0x43A6
 Platform_Offset = 0x2BB6
 Number_Levels = 126
 
-os.makedirs("level", exist_ok=True)
 os.makedirs("level/block", exist_ok=True)
 os.makedirs("level/enemy", exist_ok=True)
 os.makedirs("level/platform", exist_ok=True)
 os.makedirs("level/foreground", exist_ok=True)
 os.makedirs("level/background", exist_ok=True)
+os.makedirs("theme/mappings", exist_ok=True)
+os.makedirs("theme/collision", exist_ok=True)
+os.makedirs("theme/artcomp_fg", exist_ok=True)
+os.makedirs("theme/artcomp_bg", exist_ok=True)
+os.makedirs("theme/palette_fg", exist_ok=True)
+os.makedirs("theme/palette_bg", exist_ok=True)
+os.makedirs("theme/titlecard/artcomp", exist_ok=True)
+os.makedirs("theme/titlecard/palette", exist_ok=True)
+os.makedirs("theme/titlecard/mapeni", exist_ok=True)
 
 
 mapheaders = set()

@@ -8,3 +8,6 @@ level/*/*.bin
 theme/*.bin
 theme/*/*.bin
 theme/*/*/*.bin
+scenes/*/*.bin
+ingame/*/*.bin
+misc/*/*.bin

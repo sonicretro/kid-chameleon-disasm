@@ -1,0 +1,897 @@
+=============
+KID CHAMELEON
+HACKING INFO
+12/20/2007
+=============
+RESEARCHED & DOCUMENTED BY DAMIAN GROVE / SAXMAN (ymtx81z AT yahoo DOT com)
+
+UPDATED: 09/25/2008
+
+
+Portions of this documentation were used to create K-E. I am more than happy
+to be sharing this information with the online ROM hacking scene. And perhaps
+other tools could emerge as a result of these notes being made public! All I
+ask is that you give credit where it's due.
+
+
+
+
+::::ROM::::
+
+011962 - Addresses to game's main functions
+
+012DD0 - Sega logo
+01AE48 - Intro
+019AA8 - Level title card
+011A0E - Level
+011996 - Demo
+01CA06 - Options
+01AF98 - Intro screen #2
+01AE6E - Intro screen #3
+01B052 - Intro screen #4
+01B0A8 - Intro screen #5
+01B160 - Intro transition into title
+01B242 - Title
+01D128 - Ending
+
+
+
+Machine code:
+4EB9 000E1324 -- stop music xx
+4EB9 000E1328 -- play music xx
+303C 00xx -- set xx for music
+
+4EB9 00011938 -- load graphics xx
+4EB9 00011940 -- load graphics xx
+4EB9 00011944 -- load mappings xx
+303C xx80 -- set xx for graphics (9B for text)
+
+
+
+0E1304 - Apparently some pointers to main game code (e.g. layout decompression, etc)
+
+0E160E - Something to do with FM voices
+
+0E0E4E - Mappings for blocks and block objects
+
+
+(COMPRESSED) ART:
+!004692, 004712, 004792 - life icon (Unc)
+!004812, 004892, 004912 - clock icon (Unc)
+!004992, 004A12, 004A92, 004B12, 004B92, 004C12 - Coin (continue icon) (Unc)
+!004C92, 004F12, 005192, 005412, 005692, 005912 - End of level Flag (Unc)
+005B92 - Horizontal platform
+005C83 - Vertical platform
+00CAB2 - Holograms
+0155D4 - Level title card image Sky
+015E5E - Level title card image Ice
+0164B6 - Level title card image Hill
+016D20 - Level title card image Isle
+017536 - Level title card image Desert
+017BD0 - Level title card image Swamp
+01834E - Level title card image Mountain
+018BAB - Level title card image Under
+019134 - Level title card image Forest
+019756 - Level title card image Urban
+019C68 - Level title card letters
+01DA86 - Intro text letters
+01DC8F - Drop-down screen from options/ending
+!01DD5C - Face in option menu background (?)
+01E6E3 - Dark alley from intro
+!01FC20 - Boss (cutscene) after defeat
+020D36 - P block from intro
+0213D9 - Red Stealth helmet from intro
+0216B7 - Juggernaut helmet from intro
+0219C1 - Maniaxe helmet from intro
+!021B79 - Broken Glass plane
+022080 - Title "CHAMELEON"
+024985 - Title "KID"
+024CD0 - Computer behind grid walls
+026036 - Title menu
+0261D7 - Kids hanging around Wild Side
+026E3D - Red Stealth transformation and still from intro/title
+0282C1 - Juggernaut transformation and still from intro/title
+02927C - Maniaxe transformation and still from intro/title
+!02A4D6 - Uncompressed, background (grey mixed pixels) during transformation
+02A479 - Title sparkles
+02A756 - The kid transformation from intro
+02A961 - Background on title
+02A992 - The kid from intro
+!02D51B - Kids that get freed
+02D71A - Background for intro (Wild Side)
+02D73B - Wild Side arcade
+02DEBF - Wild Side door and inside
+09729F - Outline of some sort?? (can't make anything from it)
+099090 - Rain?
+0991ED - Sparkles (no clue what these are for)
+0992E4 - Blocks
+099F34 - HUD numbers
+09A7D2 - Spinning rock (loaded into VRAM, but unused)
+0C8800 - Enemy 0C/0D: Dragon
+0CA1ED - Enemy 08: Whale
+0CAD8E - Enemy 04: Armadillo
+0CBC1C - Enemy 00: Fire monster
+0CC7E0 - Enemy 18: Tornado
+0CCD87 - Enemy 05: Tar monster
+0CDAB8 - Enemy 0E: Cloud
+0CE944 - Enemy 19: Fireball
+0CF02F - Enemy 17: Hand
+0CF71D - Enemy 16: Wall climbing critter
+0D03E2 - Enemy 09: Crab
+0D0B79 - Enemy 10: Ram
+0D1ED8 - Enemy 14: Spinning twins
+0D3151 - Enemy 11: Ninja
+0D3D94 - Enemy 13: Scorpion
+0D4ED3 - Enemy 12: Lion
+0D744D - Enemy 07: Archer
+0D8176 - Enemy 0A/0B: Rock tank
+0D88E7 - Enemy 1B: Falling skull
+0D985D - Enemy 1D: Stone face
+0DA75D - Enemy 1C: Mini hopping critter
+0DACAB - Enemy 1A: Driller
+0DB03A - Enemy 06: Bouncing ball
+0DB2BC - Enemy 01: Diamond
+0DBA4D - Enemy 03: Walking robot
+0DC579 - Enemy 0F: Alien
+0DD8BB - Enemy 20: Heady Metal
+0DE3E3 - Enemy 21: Boss eyes / attacks
+0DEA20 - Enemy 22/23/24: Boss head, stick, boomerangs, arrows
+0E06B5 - End level stats text
+
+
+
+ENEMY MAPPINGS:
+
+0A2058 - Hand palette 1
+0A2066 - Hand palette 2
+0A2074 - Hand palette 3
+0C79AE-0C7A16 - Hand mappings
+
+0A21D8 - Rock tank palette 1 (black)
+0A21E6 - Rock tank palette 2 (gold)
+0A21F4 - Rock tank palette 3 (blue)
+0C7EB8-0C7F38 - Rock tank mappings
+
+
+
+PLAYER SPRITES/MAPPINGS:
+
+0079B2 - Standing frames for each character (1 frame)
+0080F2 - Palette for each character
+008162 - Palette for each character's transformation
+008176 - Not sure... helmet shown on transformation sometimes changes
+00A190 - *Pointers* to uphill/downhill animations for each character (6+6 frames)
+00B3A8 - Jump animations for each character (4 frames)
+
+0A1C72 - Kid palette
+0A23CC - Kid mappings/art
+0A3E72 - standing	(11)
+
+0A1C8A - Maniaxe character palette
+0A1CA2 - Maniaxe helmet palette
+0A1CA8 - Maniaxe transformation palette
+0A1CC6 - Maniaxe character (alternate) palette???
+0A589E - Maniaxe mappings/art
+
+0A1CE4 - Skycutter character palette
+0A1D02 - Skycutter helmet palette
+0A1D08 - Skycutter transformation palette
+0A92A6 - Skycutter mappings/art
+0A96C4 - helmet		(04)
+0A978A - standing	(05)
+
+0A1D26 - Micromax character palette
+0A1D44 - Micromax helmet palette
+0A1D4A - Micromax transformation palette
+0AB5C4 - Micromax mappings/art
+
+0A1D68 - Berzerker character palette
+0A1D80 - Berzerker helmet palette
+0A1D86 - Berzerker transformation palette
+0AD32A - Berzerker mappings/art
+
+0A1DA4 - Red Stealth character palette
+0A1DBC - Red Stealth helmet palette
+0A1DC2 - Red Stealth transformation palette
+0B3520 - Red Stealth mappings/art
+
+0A1DE0 - Eyeclops character palette
+0A1DF8 - Eyeclops helmet palette
+0A1DFE - Eyeclops transformation palette
+0B73D6 - Eyeclops mappings/art
+
+0A1E1C - Cyclone character palette
+0A1E34 - Cyclone helmet palette
+0A1E3A - Cyclone transformation palette
+0BA55A - Cyclone mappings/art
+0BACEC - helmet		(03)
+0BB304 - standing	(07)
+
+0A1E58 - Juggernaut character palette
+0A1E70 - Juggernaut helmet palette
+0A1E76 - Juggernaut transformation palette
+0BDF14 - Juggernaut mappings/art
+
+0A1E94 - Iron Knight character palette
+0A1EAC - Iron Knight helmet palette
+0A1EB2 - Iron Knight transformation palette
+0C1B92 - Iron Knight mappings/art
+
+
+
+MAPPINGS FORMAT FOR PLAYER:
+XXYY WWWW HHHH
+XXYY - Center of sprite (X and Y)
+WWWW - Width of sprite (rounds up to whole sprites... so 1 becomes 8)
+HHHH - Height of sprite
+Immediately following are the uncompresed sprites for that frame
+
+
+
+MAPPINGS FORMAT FOR ENEMIES:
+SSSS XXYY WWWW HHHH
+SSSS - Sprite index value
+XXYY - Center of sprite (X and Y)
+WWWW - Width of sprite (rounds up to whole sprites... so 1 becomes 8)
+HHHH - Height of sprite
+
+Sprite order (standard by Genesis hardware):
+
+0 1 2 3		0 1 2		0 1		0
+
+0 2 4 6		0 2 4		0 2		0
+1 3 5 7		1 3 5		1 3		1
+
+0 3 6 9		0 3 6		0 3		0
+1 4 7 A		1 4 7		1 4		1
+2 5 8 B		2 5 8		2 5		2
+
+0 4 8 C		0 4 8		0 4		0
+1 5 9 D		1 5 9		1 5		1
+2 6 A E		2 6 A		2 6		2
+3 7 B F		3 7 B		3 7		3
+
+
+
+01B590 - 32-bit address to title "KID CHAMELEON" art
+01B5A0 - 32-bit address to title menu art
+01B5B0 - 32-bit address to title sparkles art
+
+0A1A1F - 32-bit address to enemy art: Rock tank
+
+
+01AE51 - Music for intro
+01201E - Music playlist for level styles
+00 - MUS Mountain
+01 - MUS Egypt
+02 - MUS Castle
+03 - MUS Ice / THEME
+04 - MUS Ruins
+05 - MUS ENDING
+06 - MUS Woods
+07 - MUS Cave
+08 - MUS Beach
+09 - MUS CHASE
+0A - MUS Swamp
+0B - SND?
+0C - SND counter
+0D - SND smash?
+0E - SND clock
+0F - NOTHING
+10 - SND mechanical chop with high pitch screech
+11 - SND smash
+12 - SND metal
+13 - SND?
+14 - SND block deleted
+15 - SND hit skyscraper
+16 - SND?
+17 - SND jump
+18 - SND unused jingle
+19 - SND alien hovering
+1A - SND iron knight jingle
+1B - SND maniaxe jingle
+1C - SND?
+1D - SND?
+1E - SND?
+1F - SND?
+20 - SND?
+21 - SND unused jingle (alternate version of 18)
+22 - SND?
+23 - SND?
+24 - SND?
+25 - SND?
+26 - SND?
+27 - SND?
+28 - SND 20 diamonds
+29 - SND extra life
+2A - SND replenish health
+2B - SND?
+2C - SND extra continue
+2D - SND diamond
+2E - SND red stealth jingle
+2F - SND berzerker jingle
+30 - SND skycutter jingle
+31 - SND eyeclops jingle
+32 - SND cyclone jingle
+33 - SND micromax jingle
+34 - SND juggernaut jingle
+35 - SND eyeclops gun
+36 - SND?
+3C - SND mechanical chop
+47 - NOTHING
+4F - MUS Swamp (alternate version... unused?)
+56 - SND bounce
+5C - VOC grunt
+60 - VOC "Die" chorus
+61 - VOC "Ouch"
+62 - VOC "Diamond"
+64 - VOC grunt (Kid Chameleon)
+65 - MUS City / OPTIONS
+68 - VOC "Bummer"
+6B - VOC "Ouch" (original recording)
+6C - VOC "Ouch" (slowed down)
+6D - VOC "Ouch" (slowed down even more)
+6E - NOTHING
+6F - NOTHING
+70 - NOTHING
+71 - NOTHING
+72 - NOTHING
+73 - NOTHING
+74 - MUS END LEVEL
+75 - NOTHING
+76 - SND warp
+77 - SND storm
+78 - buggy
+79 - NOTHING
+7A - buggy
+7B - buggy
+7C - buggy
+7D - buggy / disables sound
+7E - buggy
+7F - buggy
+
+
+
+0076B2 - Character with sword attack (while standing still)
+00767A - Character with climbing abbility (buggy -- causes Kid to die)
+0076E6 - Character with axe attack (while standing still... no axe comes out)
+00771C - Character with bomb throwing attack (buggy -- kills Kid if close to sides)
+
+00BB80 - Pointers for how player interacts with each block type
+
+00B408 - Width (radius) of each character (AABB format)
+	AA is width
+	BB is the same value... not sure what it does
+
+00B8F0 - Character that each helmet makes you (first word is unused / copy of Skycutter)
+007EC2 - Hit points at character init for each character
+00BDB6 - Hit points cap for each character
+006B52 - Hit points given to player when "restart round" is selected
+00B842 - Hit points given to player when the player dies
+00D3E4 - Hit points given to player after a continue is used
+00A49E - Jump height for each character (words)
+00A4B2 - Acceleration rate during a jump (words)
+00A4C6 - Max speed during a jump (longs)
+
+009C0A - Max walking speed (long)
+009C0E - Acceleration walking rate (long)
+009C12 - Deceleration walking/running rate (long)
+009C26 - Brake walking-left rate (long)
+009C2A - Max running speed (long)
+009C2E - Acceleration running rate (long)
+009C32 - Brake walking-right/running rate (long)
+
+
+
+01BB26 - Y position of "TM" on title
+
+
+
+00234A - Position in VRAM that moving platform (horizontal) art loads
+002358 - Position in VRAM that moving platform (vertical) art loads
+
+
+
+014FAE - Title card picture palettes 32-bit address list (themes 0-A)
+0155A8 - Title card picture mappings 32-bit address list (themes 0-A)
+019A7C - Title card picture art 32-bit address list (themes 0-A)
+01A45C - Title card text
+01A802 - Title card text placement positions
+01A842 - Title cards to use for each level (text; placement; number)
+01AB4D - Starting level number from which all levels there-on are called "Elsewhere"
+
+
+00D8E8 - Path bonus for each level (value multiplied by 1000)
+00D934 - Speed bonus times for each level (by level number)
+
+
+00B473 - Warp cheat level (sets to The Final Marathon)
+00C01D - Level's flag not present until boss killed (Shiskaboss)
+00C025 - Level's flag not present until boss killed (Boomerang Bosses)
+00C02D - Level's flag not present until boss killed (Bagel Brothers)
+00C035 - Level's flag not present until boss killed (Plethora)
+00D809 - Last level (Plethora)
+00DA69 - Secret 100,000 pt level warp destination (Under Skull Mountain I)
+010ACF - Secret 100,000 pt level warp source (Woods of Despair I)
+04033B - Starting level (Blue Lake Woods I)
+04033E - 32-bit address to level order list
+040342 - Pointers to level headers for each map number (from 04033A)
+04043E - Level order list (assigns maps to each level number)
+
+03F57A - Code related to enemy layout
+
+Clarification:
+- MAP number is a number assigned to the actual map
+- LEVEL number is a number assigned by the level order list
+
+
+PALETTES ARE NOT COMPRESSED
+ART IS COMPRESSED
+MAPPINGS ARE NOT COMPRESSED
+COLLISIONS ARE NOT COMPRESSED
+
+00C2C2 - Which digital tiles used for which tiles/blocks
+00CAB2 - Art for end-level digital tiles
+0992E4 - Art for blocks
+
+07B054 - Address list for palettes for each level style 00-0A (~FRONT) -- pal 1, 15 colors
+07B080 - Address list for palettes for each level style 00-0A (~BACKGROUND) -- pal 2, 16 colors
+07B104 - Address list for art for each level style 00-0A (FRONT) [pointed from 07B018]
+07B130 - Address list for art for each level style 00-0A (BACKGROUND) [pointed from 07B01C]
+07B168 - Address list for mappings for each level style 00-0A (FRONT) [pointed from 07B020]
+07B1C0 - Address list for collisions for each level style 00-0A [pointed from 07B030]
+
+0902C2 - Start of WOODS art (front)
+096514 - Start of WOODS art (background)
+07FE94 - Start of WOODS mappings (front)
+
+03061A - Ripple effect data for WOODS levels
+
+
+
+Level header info (starts at 0404AA)
+
+(start level header)
+040816 - Level X size (320 pixels per unit)
+040817 - Level Y size (224 pixels per unit)
+040818 - Level style (AX)
+040819 - Level background style (BX)
+04081A - Player object (XXXX YYYY)
+04081E - Flag object (XXXX YYYY)
+040822 - 32-bit address for tile layout (play area)
+040826 - 32-bit address for block layout
+04082A - 32-bit address for tile layout (background)
+04082E - 32-bit address for enemy layout
+(end level header, start next level header...)
+
+Maximum level size is 30 screens
+
+A Flags:
+8 = chase level
+
+B Flags:
+1 = lava shoots up
+2 = stormy level
+3 = stormy level with hail
+
+
+BLWI address1 = 00 05 61 D2
+BLWI address2 = 00 07 3A F6
+BLWI address3 = 00 06 FB 56
+BLWI address4 = 00 07 92 E8
+
+Level styles:
+00 - FREEZE
+01 - Castle
+02 - Ice
+03 - Ruins
+04 - Island
+05 - Egypt
+06 - Swamp
+07 - Mountain
+08 - Cave
+09 - Woods
+0A - City
+
+
+
+PALETTE FORMAT
+
+1 color = (bytes) xB GR
+1 color = (bits) xxxxBBBx GGGxRRRx
+
+palette 1 colors = 1 2 3 4 5 6 7 8 9 A B C D E F
+palette 2 colors = 0 8 9 B C D E F
+
+01445A - Color conversion map (used when storing art in VRAM) -- BLW
+
+
+
+MAPPINGS FORMAT
+
+1 sprite = (bits) lppfmsss ssssssss
+
+s - sprite (0x0 - 0x7FF)
+m - mirror (0=no, 1=yes)
+f - flip (0=no, 1=yes)
+p - palette (0-3)
+l - layer (0=low, 1=high)
+
+sprites for each block are listed in this order:
+
+\\\\\\//////
+\1111\/2222/
+\1111\/2222/
+\\\\\\//////
+//////\\\\\\
+/3333/\4444\
+/3333/\4444\
+//////\\\\\\
+
+
+
+TILE LAYOUT
+
+16-bits - relative position pointer to input data
+(following this pointer is process data)
+
+Process data tells the game what to do with the input data
+
+(process data format in bits)
+1 - direct copy
+00:A - short reference
+01:BBB:AA - long reference
+
+--1 FORMAT--
+TILE = INPUT_BYTE
+
+--00 FORMAT--
+TILES = COPY A+2 TILES from POSITION - INPUT_BYTE
+
+--01 FORMAT--
+If AA is less than 11
+TILES = COPY AA+3 TILES from POSITION - INPUT_BYTE - (BBB * 256)
+If AA is equal to 11
+TILES = COPY INPUT_BYTE2 TILES from POSITION - INPUT_BYTE1 - (BBB * 256)
+
+
+
+Moving platforms:
+
+XXXX YYYY LL RR TT BB ts HV PPPP
+
+
+002BB6 - Beginning of platform layouts
+002384 - 32-bit address to platform layout data
+
+002BF6 - Platform layout for USM3
+002C6E - First platform encountered in USM3
+
+0043A6 - 16-bit pointers to platform layout data for each map (from 002BB6)
+ (named MapPtfmLayout_Index in the disasm)
+
+INTERESTING NOTE -- Map 1A (a non-existant map) uses 0394 for it's pointer.
+What makes this interesting is this platform layout is not used by any other
+map, but is perfectly valid data. This is an apparent leftover from what
+used to be map 1A. Try assigning this pointer to Whispering Woods (map 4C)
+to view the unused platform layout.
+
+XXXX - X pos in blocks
+YYYY - Y pos in blocks
+LL - Buffer absolute left edge (LL*2)
+RR - Buffer absolute right edge (RR*2)
+TT - Buffer absolute top edge (TT*2)
+BB - Buffer absolute bottom edge (BB*2)
+ts - s=2 for h-only plat, s=4 for v-only plat, s=6 for h+v steel
+     t=0 for scripted platform, t=8 for special platform
+HV - Horizontal and vertical size in blocks
+PPPP - When t=0:
+           Platform movement preset data (relative pointer from 003602)
+       When t=8:
+           PPPP=000C will create chain of moving platforms
+           PPPP=0008 will move platform up when stepped on
+           PPPP=0004 will move platform down when stepped on
+           PPPP=0000 will not move platform at all (soft platform)
+
+To terminate a platform layout list, make XXXX equal to FFFF.
+
+
+
+Moving platform presets:
+
+003602 -- Beginning of platform presets
+002840 -- 32-bit address to platform presets
+
+PLATFORM 06E8 - starts at 003CE6
+
+FORMAT:
+CCCC XXXX xxxx YYYY yyyy
+
+CCCC - count in frames
+XXXX - x movement intervals (pixels)
+xxxx - x movement intervals (fine increments)
+YYYY - y movement intervals (pixels)
+yyyy - y movement intervals (fine increments)
+
+When count is FFFF, a 32-bit address follows.
+This address typically points back to the beginning of the list.
+
+
+
+BLOCK LAYOUT
+
+(Layout header)
+AA - ?? this is 40 in every single map in the game
+xy - x is number of bits for X pos, y is number of bits for Y pos
+
+(List header)
+1-bit - is block hidden? (0=no, 1=yes)
+5-bits - block type
+
+(Data)
+Format for block data depends on block type
+
+BLOCK TYPE:
+0 - rock block (X)
+1 - prize block (P)
+2 - ice block (X)
+3 - ghost block (G)
+4 - telepad (T)
+5 - iron block (X)
+6 - rubber block (X)		-- data has 01233C for format
+7 - shifting block (X)
+8 - WEIRD...			-- data has 0125A6 for format (same as X, but 32x32)
+9 - mushroom block (X)
+A - cannon/vanishing block (D)	-- data has 0126BA for format
+B - lift (R)			-- data has 0125A6 for format
+C - drill block (D)		-- data has 000000 for format
+D - -- data has 000000 for format	FREEZES
+E - -- data has 000000 for format	FREEZES
+F - -- data has 0126F2 for format	FREEZES
+10 - Collision Mod (M)
+
+--- make X position bits all 1 to end list and start a new list ---
+--- make block layout header bits all 1 to end block layout ---
+
+
+(P format - 5+xy+5b)
+x-bits - X position
+y-bits - Y position
+4-bits - number of prize blocks (uses extra bits for each block)
+1-bit - direction (0=row, 1=column)
+(for each prize block)
+1-bit - disguise as rock block? (0=no, 1=yes)
+4-bits - prize
+(repeat)
+
+
+(T format - 25+xy bits)
+x-bits - X position
+y-bits - Y position
+8-bits - map to warp to
+8-bits - Y position to warp to (per 16 pixels)
+9-bits - X position to warp to (per 16 pixels)
+(repeat)
+
+
+(G format - 31+xy bits)
+x-bits - X position
+y-bits - Y position
+3-bits - num of blocks
+1-bit - direction (0=row, 1=column)
+8-bits - delay time to start animation (00 will freeze it)
+11-bits - hold time before disappearing
+8-bits - hold time before reappearing
+(repeat)
+
+
+(D format - 5+xy+4b)
+x-bits - X position
+y-bits - Y position
+4-bits - num of blocks
+1-bit - direction (0=row, 1=column)
+(for each digital block)
+1-bit - up spike/drill
+1-bit - right spike/drill
+1-bit - down spike/drill
+1-bit - left spike/drill
+(repeat)
+
+
+(R format - xy bits)
+x-bits - X position
+y-bits - Y position
+(repeat)
+
+
+(X format - 4+xy bits)
+x-bits - X position (per block unit)
+y-bits - Y position (per block unit)
+4-bits - num of blocks (1-16)
+1-bit - direction (0=row, 1=column)
+(repeat)
+
+
+(M format)
+x-bits
+y-bits
+4-bits
+1-bit
+(for each)
+3-bits - 0=passthru, 1=downhill, 2=uphill, 3=barrier, 4=uphill&tile, 5=downhill, 6=passthru, 7=passthru
+(repeat)
+
+
+012274 - 32-bit address list for block formats
+
+
+
+PRIZES:
+0 - Diamond
+1 - 10000 points
+2 - Helmet (skycutter)
+3 - Helmet (cyclone)
+4 - Helmet (red stealth)
+5 - Helmet (eyeclops)
+6 - Helmet (juggernaut)
+7 - Helmet (iron knight)
+8 - Helmet (berzerker)
+9 - Helmet (maniaxe)
+A - Helmet (micromax)
+B - 1-up
+C - Time
+D - Continue
+E - 10 diamonds
+F - Same as 0
+
+
+
+
+
+
+
+
+
+ENEMY LAYOUT:
+
+(header)
+HA - 32-bit address pointing to 'H1'
+00000000?
+FFFF?
+000C?
+FFFF?
+7D00?
+H1 - ? (byte)
+H2 - Number of objects in level (byte)
+
+(data)
+AA - Object
+BB - Flags (00 to respawn DRAGON after death, FF to make DRAGON kill permanent)
+CCDD - Hit points + 1 (0000 - 7FFE)
+EEFF - X position
+GGHH - Y position
+
+00 - Walking fire guy
+01 - Enemy diamond
+02 - FREEZES
+03 - Alien robot
+04 - ? He charges at you
+05 - Oil monster
+06 - NOTHING
+07 - Cupid
+08 - ? He charges at you jumping in air
+09 - ? He walks towards you when you're looking the other way
+0A - Robot skull
+0B - Robot skull (shoots)
+0C - Flying dragon
+0D - Walking dragon
+0E - Stormy cloud
+0F - Alien
+10 - Bull-type guy thing
+11 - ? Slow walking, can jump in the air
+12 - Lion
+13 - ? Fast moving
+14
+15
+16
+17
+18
+19 - Bouncing flame
+1A
+1B
+1C
+1D
+1E - FREEZES
+1F - FREEZES
+20 - Heady Metal (final boss)
+21 - NOTHING
+22 - Shiskaboss (all three heads)
+23 - Boomerang bosses (all three heads)
+24 - Bagel Brothers (one head)
+25 and up will simply FREEZE the game
+
+
+
+
+
+
+
+::::SAVESTATE::::
+0048C0 - Object layout
+
+(each object takes 4C bytes)
+XXXX 0000 YYYY 0000 AABB
+
+XXXX - X position
+YYYY - Y position
+AA - Object
+BB - Type
+
+00 (50) - Kid Chameleon
+05 (74) - Dragon
+11 (2C) - Flag exit pole (active)
+11 (40) - Waving flag
+12 - End stage
+
+
+
+
+011C94 - X camera position
+011C98 - Y camera position
+
+0120B6 - Number of lives
+0120B8 - Number of hit-points filled
+0120BA - Number of diamonds
+0120BC - Current level
+0120BE - Current character
+0120C0 - Number of continues
+
+0074B2 - Mappings for blocks
+003218 - intersting block behavior
+
+
+
+00773A - Level tile layout
+
+
+
+
+00CACA - Level layout buffer
+
+FORMAT:
+XXYY
+XX - Block
+YY - Skin
+
+BLUE LAKE WOODS has 200 blocks X
+
+40	Down-hill platform
+50	Up-hill platform
+60	Flat platform
+70	Painful platform
+CC	Drill block (acts differently depending on skin used)
+CF	Up-hill platform
+D0	Down-hill platform
+D1	Down-hill platform
+D2	Down-hill platform
+D3	Down-hill platform
+D4	Down-hill platform
+D5	Down-hill platform
+D6	Down-hill platform
+D7	Down-hill platform
+D8	Down-hill platform
+D9	Down-hill platform
+DA	Spike shooter block (acts differently depending on skin used)
+DB	Down-hill platform
+DC	Drill block (acts differently depending on skin used)
+DD	Down-hill platform
+DE	Down-hill platform
+DF	Down-hill platform
+E0	Smash block
+E1	Prize block
+E2	Ice block
+E3	Solid block
+E4	Teleporter block
+E5	Metal block
+E6	Bounce block
+E7	Skyscraper block

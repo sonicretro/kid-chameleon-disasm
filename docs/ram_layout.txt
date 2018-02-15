@@ -1,0 +1,136 @@
+# This list is highly incomplete, and just included to
+# put known RAM addresses into one place.
+
+FFF81C	X camera position (long)
+FFF820	Y camera position (long)
+FFF824	X camera background position? (long)
+FFF828	Y camera background position? (long)
+FFFAD1	game paused menu option (byte)
+FFFBC4	Pointer to current Keypress in Demo
+FFFBC9	Demo Mode flag (for input)
+FFFBCA	Game Mode:
+	00 - SegaScreen
+	04 - IntroSequence1
+	08 - TitleCard
+	0C - InGame        ; also Results screen
+	10 - DemoPlay
+	14 - OptionMenu
+	18 - IntroSequence2
+	1C - IntroSequence3
+	20 - IntroSequence4
+	24 - IntroSequence5
+	28 - IntroSequence6 ; is also TitleScreen if intro played completely
+	2C - TitleScreen
+	30 - EndSequence
+FFFBD4	address of map header
+FFFC38	two player flag ?
+FFFC3E 	number of lives
+FFFC40	Number of hit-points filled
+FFFC42 	Number of Diamonds
+FFFC44	Current LevelID
+FFFC46 	Costume/helmet
+	00 - None
+	01 - Skycutter
+	02 - Cyclone
+	03 - Red Stealth
+	04 - Eyeclops
+	05 - Juggernaut
+	06 - Iron Knight
+	07 - Berzerker
+	08 - Maniaxe
+	09 - Micromax
+FFFC48	Number of continues
+!FFFDC7	HACK: used as level select indicator (byte)
+FFFDC8	selected sub-option 1 in options menu (byte)
+FFFDC9	selected sub-option 2 in options menu (byte)
+FFFDCA	selected sub-option 3 in options menu
+FFFDCC	selected option in options menu
+
+FF0DB8	Menu timer (word)
+FF0DBD	main menu option
+FF0DC1	main menu option * 2
+FF2596	main menu option selector Y position
+
+# Bitmask for controller keys: SACBRLDU
+FFF80C	Ctrl_1
+FFF80D	Ctrl_1_Held (currently held down)
+FFF80E	Ctrl_1_Pressed (newly pressed this frame)
+FFF80F	Ctrl_2
+FFF810	Ctrl_2_Held
+FFF811	Ctrl_2_Pressed
+# depending on input mode (i.e. currently active player?):
+FFF812	Ctrl_Held
+FFF813	Ctrl_Pressed
+
+FF0DA0	interesting block behavior (?)
+FF2448	Object layout
+FF4E58	Some Palette Buffer	(0x80 bytes)
+FF503A	Mappings for blocks
+FF52C2	Level tile layout
+FF73C8-FF77AF	deformation array
+FF7D8E	Some Palette Buffer	(0x40 bytes)
+FFA652	Level layout buffer
+
+# from http://kidchameleon.wikia.com/wiki/RAM_Addresses:
+FF24FA	2 Byte		Kid X position
+FF24FC	2 Byte		Kid X subposition
+FF24FE	2 Byte		Kid Y position
+FF2500	2 Byte		Kid Y subposition
+FF2506	2 Byte		Kid X speed
+FF2508	2 Byte		Kid X subspeed
+FF250A	2 Byte		Kid Y speed
+FF250C	2 Byte		Kid Y subspeed
+FFF5BE	2 Byte		Diamond power timer
+FFF812	1 Byte		Controller held buttons
+FFF813	1 Byte		Controller newly pressed buttons
+FFF81C	2 Byte		Camera X position
+FFF820	2 Byte		Camera Y position
+FFF8AA	2 Byte		Theme music
+FFF8AC	2 Byte		Theme background
+FFFA70	2 Byte		Telepad timer
+FFFAC1	1 Byte		-1 = Murder wall, 0 = None
+FFFAC8	2 Byte		Murder wall speed
+FFFACA	2 Byte		Murder wall subspeed
+FFFACC	2 Byte		Murder wall terminal speed
+FFFACE	2 Byte		Murder wall terminal subspeed
+FFFAD1	1 Byte		Pause menu selection
+FFFB40	2 Byte		1 = Geyser, 2 = Rain, 3 = Hail, 0 = None
+FFFBCA	2 Byte		Screen number x 4
+FFFC18	2 Byte		Lives displayed on counter
+FFFC1A	2 Byte		Diamonds displayed on counter
+FFFC1C	2 Byte		Time: Frames
+FFFC1E	2 Byte		Time: Seconds (1st digit)
+FFFC20	2 Byte		Time: Seconds (2nd digit)
+FFFC22	2 Byte		Time: Minutes
+FFFC3B	1 Byte		No Hit Bonus: 0 = retained, -1 = lost
+FFFC3C	1 Byte		No Prize Bonus: 0 = retained, -1 = lost
+FFFC3D	1 Byte		Level completion time (seconds)
+FFFC3E	2 Byte		Lives
+FFFC40	2 Byte		Hit points
+FFFC42	2 Byte		Diamonds
+FFFC44	2 Byte		Level number
+FFFC46	2 Byte		Transformation number
+FFFC48	2 Byte		Continues
+FFFC4A	2 Byte		Extra hit point slots
+FFFC4C	4 Byte		Score
+FFFC54	2 Byte		Player 1 - Lives
+FFFC56	2 Byte		Player 1 - Hit points
+FFFC58	2 Byte		Player 1 - Diamonds
+FFFC5A	2 Byte		Player 1 - Level number
+FFFC5C	2 Byte		Player 1 - Transformation number
+FFFC5E	2 Byte		Player 1 - Continues
+FFFC60	2 Byte		Player 1 - Extra hit point slots
+FFFC62	4 Byte		Player 1 - Score
+FFFC6A	2 Byte		Player 2 - Lives
+FFFC6C	2 Byte		Player 2 - Hit points
+FFFC6E	2 Byte		Player 2 - Diamonds
+FFFC70	2 Byte		Player 2 - Level number
+FFFC72	2 Byte		Player 2 - Transformation number
+FFFC74	2 Byte		Player 2 - Continues
+FFFC76	2 Byte		Player 2 - Extra hit point slots
+FFFC78	4 Byte		Player 2 - Score
+FFFDC8	1 Byte		2 Players: One controller = 0, Two = -1
+FFFDC9	1 Byte		Speed: Normal = 0, Fast = -1
+FFFDCA	2 Byte		Controls mode
+FFFDCC	2 Byte		Options menu selection
+FFFDCE	2 Byte		Clocks collected in level

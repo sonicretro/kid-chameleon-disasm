@@ -1,0 +1,36 @@
+00000-00200 - Header
+00200-4033E - Code (interleaved with some art/mappings mostly from scenes)
+4033E-404AA - level pointers
+404AA-40FF6 - level headers
+40FF6-6D384 - level fg tile layout
+67d9b-681FC - ???
+681FC-6a95c - FILLER $4A
+6a95c-6D384 - level fg tile layout
+6D384-6fe6b - background data
+6fe6b-7ae02 - enemy layout data (with 6 tiny gaps)
+7ae02-7B018 - FILLER $FF
+7B018-7B684 - pointers
+7B684-7B8BC - theme palettes
+7B8BC-7BB64 - weird tables
+7BB64-7C4EC - Theme collision
+7C4EC-80E84 - Theme block/tile mappings
+80E86-93C93 - Theme art front (see off_7b104)
+93C94-9784A - Theme Art back (see off_7b130)
+9784A-983D2 - Uncompressed art (clouds, water?), 2 bytes header, (see off_7b044)
+983D2-99fc9 - Compressed art (lava, rain, hail, blocks, HUD numbers)
+99FCA-9A7D2 - Uncompressed art stuff (shields?), (see off_7b0ac)
+9A7D2-9AA4F - Compressed art (spinning rock), loaded into VRAM but unused
+9AA50-9B65C - Uncompressed art (water, shore, checker pattern?), from off_7b0EC
+9B65C-9B83C - ??? 
+9B83C-9F9F2 - ??? stuff from off_7b410 table -- background layer mappings, some of them Enigma compressed?
+9F9F2-A09FE - ??? stuff from off_7B1EC table
+A09FE-A1C72 - Data_Index
+A1C72-A23CC - Palettes
+A23CC-C755E - Uncompressed Kid sprite frames (2 enemy sprite frames c1b82-c1b92, padding bff6c-c0000)
+C755E-C87F8 - mappings
+C8800-E0E4D - compressed art (enemies)
+E0E4E-E11DE - mappings for blocks (4 tiles)
+E11DE-E1304 - FILLER $FF
+E1304-E160E - M68k sound code
+E160E-FE976 - sound/music related data
+FE976-FFFFA - GEMS sound driver (z80)

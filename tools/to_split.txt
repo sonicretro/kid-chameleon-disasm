@@ -701,3 +701,9 @@ A2364 A2382 ingame/palette_enemy/UFO_3.bin
 A2382 A23A0 ingame/palette_enemy/Plethora.bin
 A23A0 A23AE ingame/palette_enemy/Boss_Eyes.bin
 A23AE A23CC ingame/palette_enemy/Boss.bin
+# sound related stuff
+E160E E25EA sound/instruments.bin
+E25EA E2766 sound/envelopes.bin
+E2766 E8716 sound/sequences.bin
+E8716 FE976 sound/samples.bin
+FE976 FFFFA sound/GEMS_Sounddriver.bin

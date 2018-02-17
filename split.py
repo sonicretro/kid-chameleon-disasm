@@ -229,6 +229,7 @@ os.makedirs("ingame/palette_kid", exist_ok=True)
 os.makedirs("ingame/palette_enemy", exist_ok=True)
 os.makedirs("misc/mapeni", exist_ok=True)
 os.makedirs("misc/palettes", exist_ok=True)
+os.makedirs("sound", exist_ok=True)
 
 
 mapheaders = set()

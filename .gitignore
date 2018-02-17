@@ -11,3 +11,4 @@ theme/*/*/*.bin
 scenes/*/*.bin
 ingame/*/*.bin
 misc/*/*.bin
+sound/*.bin

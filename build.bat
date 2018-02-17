@@ -29,15 +29,15 @@ set USEANSI=n
 
 "build/win/asw" -xx -c -A kid.asm
 
-REM // if there were errors, a log file is produced
-IF EXIST kid.log goto LABLERROR4
+IF NOT EXIST kid.p goto LABLCHKERROR
 
 REM // combine the assembler output into a rom
-IF EXIST build/win/s2p2bin kid.p kid_built.bin kid.h
+"build/win/s2p2bin" kid.p kid_built.bin kid.h
 
 REM // done -- pause if we seem to have failed, then exit
-IF NOT EXIST s2.p goto LABLPAUSE
-IF NOT EXIST s2built.bin goto LABLPAUSE
+IF NOT EXIST kid_built.bin goto LABLNOBIN
+
+IF EXIST kid.log goto LABLWARNING
 
 REM // comment this in if you want to immediately run the ROM
 REM "../Fusion 3.63.exe" kid_built.bin
@@ -47,25 +47,48 @@ exit /b
 
 pause
 
+exit /b
+
+
+:LABLNOBIN
+echo Build didn't produce a kid_built.bin file.
+pause
 
 exit /b
 
+
+:LABLCHKERROR
+REM // if there were errors, a log file is produced
+IF EXIST kid.log goto LABLERROR4
+echo Build didn't produce a kid.p file.
+pause
+
+exit /b
+
+
+:LABLWARNING
+echo There were build warnings. See kid.log for more details.
+pause
+
+exit /b
+
+
 :LABLERROR1
-echo Failed to build because write access to s2.h was denied.
+echo Failed to build because write access to kid.h was denied.
 pause
 
 
 exit /b
 
 :LABLERROR2
-echo Failed to build because write access to s2.p was denied.
+echo Failed to build because write access to kid.p was denied.
 pause
 
 
 exit /b
 
 :LABLERROR3
-echo Failed to build because write access to s2built.bin was denied.
+echo Failed to build because write access to kid_built.bin was denied.
 pause
 
 exit /b
@@ -75,7 +98,7 @@ REM // display a noticeable message
 echo.
 echo **********************************************************************
 echo *                                                                    *
-echo *   There were build errors/warnings. See s2.log for more details.   *
+echo *   There were build errors/warnings. See kid.log for more details.  *
 echo *                                                                    *
 echo **********************************************************************
 echo.

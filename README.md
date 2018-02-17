@@ -11,6 +11,7 @@ You assume any and all responsibility for using this content responsibly. Sonic 
 
 1. Place a ROM of Kid Chameleon in the main folder, called kid.bin.
 2. Run the python3 script split.py to split off game data into separate files.
+ - Remark: needs Python >= 3.2. Remove the ``exist_ok`` parameters in the code for older version of python.
 3. Run build.bat (Windows) or build.sh (Linux) to build the ROM.
 
 *Credits*

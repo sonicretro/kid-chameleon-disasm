@@ -1,0 +1,132 @@
+COMPRESSION FORMATS
+-------------------
+
+There are two compression formats used. 
+
+
+The first one is Enigma compression.
+Specification: https://segaretro.org/Enigma_compression
+(De-)Compression tool: https://segaretro.org/The_Sega_Data_Compressor
+
+It is used for plane mappings (such as cutscene screens, title cards),
+and also for some themes for the level background layouts.
+
+
+The second compression format is documented in Saxman's hacking notes,
+quoted below. The compressed data consists of a 16-bit (relative)
+pointer, process data and input data. The pointer points to the input
+data, the process data follows right after the pointer.
+The process data is a bitstream determining what to do with the input
+data to get the decompressed data.
+
+    16-bits - relative position pointer to input data
+    (following this pointer is process data)
+
+    (process data format in bits)
+    1 - direct copy
+    00:A - short reference
+    01:BBB:AA - long reference
+
+    --1 FORMAT--
+    TILE = INPUT_BYTE
+
+    --00 FORMAT--
+    TILES = COPY A+2 TILES from POSITION - INPUT_BYTE
+
+    --01 FORMAT--
+    If AA is less than 11
+    TILES = COPY AA+3 TILES from POSITION - INPUT_BYTE - (BBB * 256)
+    If AA is equal to 11
+    TILES = COPY INPUT_BYTE2 TILES from POSITION - INPUT_BYTE1 - (BBB * 256)
+
+If the process data bits are 0100011 and the input is 2 bytes of 0,
+the compression ends.
+
+This compression format is used for ingame art and foreground tile layouts
+in levels.
+
+
+LEVEL FORMATS
+-------------
+
+MapHeader_Index (address 0x40442) is an index with pointers relative to
+0x4033A, one for each level. It points to map header data, which has the
+following format (from Saxman's notes):
+
+byte - Level X size (320 pixels per unit)
+byte - Level Y size (224 pixels per unit) (top 2 bits unknown)
+byte - Level theme (top 2 bits murder wall flags)
+byte - Level background theme (top 4 bits lava/storm/hail)
+word - Player object X position
+word - Player object Y position
+word - Flag object X position
+word - Flag object Y position
+long - 32-bit address for foreground tile layout
+long - 32-bit address for block layout
+long - 32-bit address for background tile layout
+long - 32-bit address for enemy layout
+
+There are two more tables indexed by the map ID:
+MapPtfmLayout_Index (0x43A2)
+off_7B1EC (0x7B1EC)
+The first one defines the layout of platforms in the level,
+the second defines background scrolling.
+
+For foreground tile layout, block layout, enemy layout and platform
+layout refer to Saxman's notes.
+
+
+Background scrolling
+--------------------
+
+Each level has a 32-bit pointer in the table at off_7B1EC that
+points to the scrolling data. The scrolling data is a list of
+horizontal scroll speed values, where each value refers to a layer 
+that is 8 pixels tall. The data is terminated by a $FF byte.
+
+
+Background layout
+-----------------
+
+There are two different formats. The first one is used by
+Sky, Ice, Island, Swamp, Cave and City levels (Type 1), the
+second by Hill, Desert, Mountain and Forest levels (Type 2).
+
+Before explaining the background format, we need to describe the
+theme-specific background chunk definitions first.
+The table off_7B3E4 has a 32-bit pointer for each theme,
+pointing at another table for each theme.
+This table consists of 32-bit pointers to background chunk definitions.
+
+For type 1 themes, a background chunk definition consists of 2 words
+(x_size and y_size), followed by x_size*y_size bytes.
+Each such byte is the ID for a 8x8 art tile, which together make a chunk
+of dimensions x_size X y_size.
+
+For type 2 themes, a background chunk definition consists of a Enigma
+compressed plane map.
+
+
+The type 1 level background format defines how a background is composed of 
+background chunks. It consists of a list of 6-byte entries, terminated
+by 0xFFFF. For each entry, the first word is a background chunk ID, 
+followed by 2 words denoting x and y position. Each corresponding chunk
+is then copied onto the background map at the given position.
+
+The type 2 level background format defines how a background is composed of
+layers (each 8 pixels tall). It is a list of bytes, each determining a
+layer from the Enigma compressed plane map. These layers in order then
+compose the background.
+
+
+SPRITE MAPPING FORMATS
+----------------------
+
+There is a format for uncompressed art that is dynamically loaded (primarily
+used for player sprites) and a format for art that is already in VRAM
+(primarily used for enemies).
+In the disassembly, the macros sprite_frame_unc and sprite_frame_vram
+are used for these respectively.
+
+For more details, see Saxman's notes, 
+section MAPPINGS FORMAT FOR PLAYER/ENEMIES.

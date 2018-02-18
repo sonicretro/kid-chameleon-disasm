@@ -1,11 +1,27 @@
-# This list is highly incomplete, and just included to
-# put known RAM addresses into one place.
-
+# This list is highly incomplete, and primarily included to
+# have all known RAM addresses in one place.
 FFF81C	X camera position (long)
 FFF820	Y camera position (long)
 FFF824	X camera background position? (long)
 FFF828	Y camera background position? (long)
+FFF89E  width in 16x16 blocks
+FFF89C  width in 8x8 tiles
+FFF89A  width in pixels
+FFF8BA  maximal camera X position (width in pixels - $140)
+FFF8A4  height in 16x16 blocks
+FFF8A2  height in 8x8 tiles
+FFF8A0  height in pixels
+FFF8BC  maximal camera Y position (height in pixels - $E0)
+FFFAC1  Murder wall flag
+FFFAC2  Murder wall flag if both bits of the 3rd entry of maphdr are set?
+FFF8AA  Foreground theme
+FFF8AC  Background theme
+FFFB40  top 4 bits from 4th entry of maphdr. 1 = lava shoots up, 2 = stormy level, 3 = stormy level with hail
+FFFB48  background format (flag) - 0 = pieces, 1 = enigma. only depends on bg theme
+FFF8A6  background width
+FFF8A8  background height
 FFFAD1	game paused menu option (byte)
+FFFAD2  flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
 FFFBC4	Pointer to current Keypress in Demo
 FFFBC9	Demo Mode flag (for input)
 FFFBCA	Game Mode:
@@ -23,6 +39,10 @@ FFFBCA	Game Mode:
 	2C - TitleScreen
 	30 - EndSequence
 FFFBD4	address of map header
+FFFC2A  player x start position
+FFFC2C  player y start position
+FFFC2E  flag x position
+FFFC30  flag y position
 FFFC38	two player flag ?
 FFFC3E 	number of lives
 FFFC40	Number of hit-points filled
@@ -70,6 +90,10 @@ FF52C2	Level tile layout
 FF73C8-FF77AF	deformation array
 FF7D8E	Some Palette Buffer	(0x40 bytes)
 FFA652	Level layout buffer
+FF87B2  BG tile layout buffer (bytes or plane map depending on $FFFFFB48)
+FF8EB2  BG tile layout buffer (plane map) 
+FF95B2  BG tile layout buffer (plane map)
+FF98F2  BG tile layout buffer (plane map) for hail
 
 # from http://kidchameleon.wikia.com/wiki/RAM_Addresses:
 FF24FA	2 Byte		Kid X position

@@ -198,10 +198,31 @@ def length_platform(x):
     return pos+2 - x
 
 
+def length_bgscroll(x):
+    pos = x
+    layer = btoi(pos, 1)
+    # The data at 0xA0903 is not terminated with $FF and thus
+    # we have to hardcode its end as the next entry is at 0xA0934
+    while layer != 0xFF and pos != 0xA0933:
+        pos += 1
+        layer = btoi(pos, 1)
+    return pos+1 - x
+
+
+def length_bglayout(x):
+    pos = x
+    tile_id = btoi(pos, 2)
+    while tile_id != 0xFFFF:
+        pos += 6
+        tile_id = btoi(pos, 2)
+    return pos+2 - x
+
+
 MapHeader_Index = 0x40342
 MapHeader_Offset = 0x4033A
 Platform_Index = 0x43A6
 Platform_Offset = 0x2BB6
+Bgscroll_Index = 0x7B1EC
 Number_Levels = 126
 
 os.makedirs("level/block", exist_ok=True)
@@ -209,12 +230,14 @@ os.makedirs("level/enemy", exist_ok=True)
 os.makedirs("level/platform", exist_ok=True)
 os.makedirs("level/foreground", exist_ok=True)
 os.makedirs("level/background", exist_ok=True)
+os.makedirs("level/bgscroll", exist_ok=True)
 os.makedirs("theme/mappings", exist_ok=True)
 os.makedirs("theme/collision", exist_ok=True)
 os.makedirs("theme/artcomp_fg", exist_ok=True)
 os.makedirs("theme/artcomp_bg", exist_ok=True)
 os.makedirs("theme/palette_fg", exist_ok=True)
 os.makedirs("theme/palette_bg", exist_ok=True)
+os.makedirs("theme/bg_chunks", exist_ok=True)
 os.makedirs("theme/titlecard/artcomp", exist_ok=True)
 os.makedirs("theme/titlecard/palette", exist_ok=True)
 os.makedirs("theme/titlecard/mapeni", exist_ok=True)
@@ -239,17 +262,25 @@ enemy_addrs = dict()
 foreground_addrs = dict()
 background_addrs = dict()
 block_addrs = dict()
+bgscroll_addrs = dict()
 
 
 for lev in range(Number_Levels):
     addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
     platform = btoi(Platform_Index+2*lev, 2) + Platform_Offset
+    bgscroll = btoi(Bgscroll_Index+4*lev, 4)
     # need this because of load of duplicates
     if platform not in platform_addrs:
         l = length_platform(platform)
         platform_addrs[platform] = lev
         with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[platform:platform+l])
+
+    if bgscroll not in bgscroll_addrs:
+        l = length_bgscroll(bgscroll)
+        bgscroll_addrs[bgscroll] = lev
+        with open("level/bgscroll/{:02X}.bin".format(lev), "wb") as out:
+            out.write(b[bgscroll:bgscroll+l])
 
 
     if addr == 0x40FF6:
@@ -300,11 +331,10 @@ for lev in range(Number_Levels):
             ref_addr = btoi(background+6, 4)
             background_addrs[background] = (w1, l2, ref_addr)
         else:
-            l = length_mapeni(background)
-            l = l + (l%2) # round up if length is odd.
+            l = length_bglayout(background)
             background_addrs[background] = (lev,)
             with open("level/background/{:02X}.bin".format(lev), "wb") as out:
-                out.write(b[background:background+l])            
+                out.write(b[background:background+l])
 
 to_split = open("tools/to_split.txt")
 for line in to_split:

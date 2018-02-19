@@ -45,8 +45,20 @@ sprite_frame_vram	macro	spriteindex, xcenter, ycenter, width, height
 		dc.b	xcenter, ycenter
 		dc.w	width, height
 		endm
-; ---------------------------------------------------------------------------
 
+; ---------------------------------------------------------------------------
+ptfm_move	macro	duration, xvel, yvel
+		dc.w	duration
+		dc.l	xvel, yvel
+		endm
+
+; ---------------------------------------------------------------------------
+ptfm		macro	xpos, ypos, bufL, bufR, bufT, bufB, t, s, h, v, pp
+		dc.w	xpos, ypos
+		dc.b	bufL, bufR, bufT, bufB
+		dc.b	(t<<7)|(s<<1), (h<<4)|v
+		dc.w	pp
+		endm
 
 ; simplifying macros and functions, taken from Sonic 2 disassembly
 ; ---------------------------------------------------------------------------

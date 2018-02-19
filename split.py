@@ -198,6 +198,38 @@ def length_platform(x):
     return pos+2 - x
 
 
+def write_platform_asm(addr, fname):
+    with open(fname, "w") as out:
+        x = btoi(addr, 2)
+        while x != 0xFFFF:
+            x = btoi(addr, 2)
+            y = btoi(addr+2, 2)
+            BL = btoi(addr+4, 1)
+            BR = btoi(addr+5, 1)
+            BT = btoi(addr+6, 1)
+            BB = btoi(addr+7, 1)
+            TS = btoi(addr+8, 1)
+            HV = btoi(addr+9, 1)
+            PPP = btoi(addr+10, 2)
+
+            H = HV >> 4
+            V = HV & 0x0F
+            t = TS >> 7
+            s = (TS & 6) >> 1
+            if TS & 0x79:
+                print("bad platform!")
+            if t == 0:
+                if PPP+0x3602 == 0x10000:
+                    out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},${:X}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))
+                else:
+                    out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},unk_{:X}-unk_3602\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP+0x3602))
+            else:
+                out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},{}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))    
+            addr += 12
+            x = btoi(addr, 2)
+        out.write("\tdc.w\t$FFFF\n")
+
+
 def length_bgscroll(x):
     pos = x
     layer = btoi(pos, 1)
@@ -275,6 +307,7 @@ for lev in range(Number_Levels):
         platform_addrs[platform] = lev
         with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[platform:platform+l])
+        write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
 
     if bgscroll not in bgscroll_addrs:
         l = length_bgscroll(bgscroll)
@@ -347,3 +380,5 @@ for line in to_split:
     fname = entries[2]
     with open(fname, "wb") as out:
         out.write(b[start:end])
+
+print("DONE: All files split off!")

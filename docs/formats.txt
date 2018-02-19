@@ -113,6 +113,12 @@ by 0xFFFF. For each entry, the first word is a background chunk ID,
 followed by 2 words denoting x and y position. Each corresponding chunk
 is then copied onto the background map at the given position.
 
+Some levels don't use this format directly, but instead point at another
+level's type 1 background data. In this case, their entry starts with
+0x8000, followed by 2 words, and a 32-bit pointer. The pointer points to
+the type 1 background layout that the level is using, while the 2 words
+are an x_shift and a y_shift respectively by which the background is shifted.
+
 The type 2 level background format defines how a background is composed of
 layers (each 8 pixels tall). It is a list of bytes, each determining a
 layer from the Enigma compressed plane map. These layers in order then

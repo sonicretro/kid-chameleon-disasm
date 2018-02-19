@@ -5,6 +5,7 @@ kid_built.bin
 kid.bin
 level/*.bin
 level/*/*.bin
+level/platform/*.asm
 theme/*.bin
 theme/*/*.bin
 theme/*/*/*.bin

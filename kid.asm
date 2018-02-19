@@ -63907,110 +63907,110 @@ MapHeader_Index:
 		dc.w stru_404FE-word_4033A	;7D
 MapOrder_Index:	
 	include	"level/maporder.asm"
-stru_404AA:	maphdr	$C, 2, 3, 3, $28, $28, $ED8, $1D, unk_40FF6, unk_6FE6B, unk_6FCB0, stru_77A6C
-stru_404C6:	maphdr	3, $A, 1, 1, $70, $800,	$FFB0, $FFB0, unk_43238, unk_701BE, unk_6D5CC, stru_77B58
-stru_404E2:	maphdr	2, 2, 5, 5, $60, $70, $FFB0, $FFB0, unk_43E0C, unk_70738, unk_6FDA2, stru_77DC8
-stru_404FE:	maphdr	4, 1, 5, 5, $20, $50, $FFB0, $FFB0, unk_43F96, unk_7078C, unk_6FDC8, stru_77E22
-stru_4051A:	maphdr	1, 4, 9, 9, $60, $330, $FFB0, $FFB0, unk_439E2,	unk_7064A, unk_6FB7A, stru_77D14
-stru_40536:	maphdr	2, 2, 9, 9, $70, $180, $FFB0, $FFB0, unk_43C2E,	unk_706E2, unk_6FB56, stru_77D6E
-stru_40552:	maphdr	$14, 1,	3, 3, $270, $90, $18AE,	$50, unk_4190A, unk_6FFD8, unk_6FC60, stru_77A9E
-stru_4056E:	maphdr	4, 6, 5, 5, $8D, $50F, $20, $18F, unk_425AA, unk_7048C,	unk_6FE2A, stru_77C9A
-stru_4058A:	maphdr	7, 4, 5, 5, $22, $35F, $890, $350, unk_44A34, unk_70A0C, unk_6FDEE, stru_783E0
-stru_405A6:	maphdr	6, 4, 1, 1, $20, $2DE, $640, $350, unk_4500A, unk_712AE, unk_6D75A, stru_7835E
-stru_405C2:	maphdr	$E, 2, 4, 4, $17, $FF, $FFB0, $FFB0, unk_440C8,	unk_707D0, unk_6E00C, stru_78038
-stru_405DE:	maphdr	$E, 2, 4, 4, $35, $14F,	$FFB0, $FFB0, unk_45814, unk_710E2, unk_6E002, stru_78482
-stru_405FA:	maphdr	6, 5, 3, 3, $18, $26F, $FFB0, $FFB0, unk_472B2,	unk_70ED4, unk_6FCF2, stru_78264
-stru_40616:	maphdr	8, 3, 4, 4, $28, $28, $FFB0, $FFB0, unk_463DA, unk_71358, unk_6DE22, stru_7854C
-stru_40632:	maphdr	6, 4, 1, 1, $20, $80, $759, $31F, unk_46DC6, unk_70B10,	unk_6D9D4, stru_77F36
-stru_4064E:	maphdr	8, 3, 3, 3, $18, $14F, $9E7, $7F, unk_48226, unk_70C8C,	unk_6FD2C, stru_78142
+stru_404AA:	maphdr	"level/header/5C.bin", unk_40FF6, unk_6FE6B, unk_6FCB0, stru_77A6C
+stru_404C6:	maphdr	"level/header/22.bin", unk_43238, unk_701BE, unk_6D5CC, stru_77B58
+stru_404E2:	maphdr	"level/header/7C.bin", unk_43E0C, unk_70738, unk_6FDA2, stru_77DC8
+stru_404FE:	maphdr	"level/header/7D.bin", unk_43F96, unk_7078C, unk_6FDC8, stru_77E22
+stru_4051A:	maphdr	"level/header/7A.bin", unk_439E2, unk_7064A, unk_6FB7A, stru_77D14
+stru_40536:	maphdr	"level/header/7B.bin", unk_43C2E, unk_706E2, unk_6FB56, stru_77D6E
+stru_40552:	maphdr	"level/header/59.bin", unk_4190A, unk_6FFD8, unk_6FC60, stru_77A9E
+stru_4056E:	maphdr	"level/header/09.bin", unk_425AA, unk_7048C, unk_6FE2A, stru_77C9A
+stru_4058A:	maphdr	"level/header/47.bin", unk_44A34, unk_70A0C, unk_6FDEE, stru_783E0
+stru_405A6:	maphdr	"level/header/27.bin", unk_4500A, unk_712AE, unk_6D75A, stru_7835E
+stru_405C2:	maphdr	"level/header/12.bin", unk_440C8, unk_707D0, unk_6E00C, stru_78038
+stru_405DE:	maphdr	"level/header/11.bin", unk_45814, unk_710E2, unk_6E002, stru_78482
+stru_405FA:	maphdr	"level/header/5A.bin", unk_472B2, unk_70ED4, unk_6FCF2, stru_78264
+stru_40616:	maphdr	"level/header/10.bin", unk_463DA, unk_71358, unk_6DE22, stru_7854C
+stru_40632:	maphdr	"level/header/26.bin", unk_46DC6, unk_70B10, unk_6D9D4, stru_77F36
+stru_4064E:	maphdr	"level/header/58.bin", unk_48226, unk_70C8C, unk_6FD2C, stru_78142
 		dc.b   0, $12, 0, $36, $3C, $26, 0, $28		; some junk data
-stru_40672:	maphdr	4, 5, 1, 1, $280, $260,	$FFB0, $FFB0, unk_48D3A, unk_71870, unk_6D5C2, stru_77E74
-stru_4068E:	maphdr	$A, 3, 2, $32, $20, $1F0, $C50,	$110, unk_49056, unk_71770, unk_6D40C, stru_785B6
-stru_406AA:	maphdr	2, $F, 2, 2, $40, $80, $120, $1E0, unk_49E60, unk_7151E, unk_6D9DE, stru_78608
-stru_406C6:	maphdr	6, 4, 8, $18, $750, $E0, $750, $300, unk_4AC7A,	unk_719F8, unk_6D384, stru_7868A
-stru_406E2:	maphdr	2, $C, 8, 8, $20, $60, $220, $970, unk_4B7A0, unk_71B98, unk_6D3DA, stru_7874C
-stru_406FE:	maphdr	$C, 2, 8, 8, $10, $B0, $EC0, $170, unk_50CE6, unk_726B6, unk_6E452, stru_78B18
-stru_4071A:	maphdr	5, 5, 8, 8, $70, $80, $FFB0, $FFB0, unk_5682E, unk_73E56, unk_6E57E, stru_793EC
-stru_40736:	maphdr	$F, 2, 8, $18, $80, $D0, $FFB0,	$FFB0, unk_4C324, unk_71D52, unk_6D9FC, stru_787B6
-stru_40752:	maphdr	2, 2, 8, 8, $20, $80, $30, $180, unk_4CAC6, unk_71EDA, unk_6D9E8, stru_78830
-stru_4076E:	maphdr	2, 2, 8, 8, $260, $60, $FFB0, $FFB0, unk_4CD0E,	unk_71F0C, unk_6D9F2, stru_7884A
-stru_4078A:	maphdr	$D, 2, $86, 6, $80, $90, $FFB0,	$FFB0, unk_54644, unk_731A2, unk_6E45C, stru_79066
-stru_407A6:	maphdr	2, $B, 6, 6, $30, $40, $260, $950, unk_606F4, unk_7574C, unk_6EB26, stru_79F74
-stru_407C2:	maphdr	$C, 2, 5, 5, $60, $A0, $ED0, $160, unk_58958, unk_74358, unk_6FD7C, stru_7952A
-stru_407DE:	maphdr	7, 3, 7, 7, $30, $260, $890, $70, unk_51386, unk_72860,	unk_6F9CC, stru_78B8A
-stru_407FA:	maphdr	3, 8, 7, 7, $30, $660, $390, $90, unk_573A4, unk_74058,	unk_6F9F8, stru_79446
-stru_40816:	maphdr	$A, 2, 9, 9, $20, $100,	$C50, $B0, unk_561D2, unk_73AF6, unk_6FB56, stru_792E8
-stru_40832:	maphdr	5, 6, 9, 9, $20, $490, $608, $90, unk_4DA0A, unk_73B52,	unk_6FC20, stru_7931A
-stru_4084E:	maphdr	6, 4, $A, $A, $20, $280, $30, $320, unk_5496E, unk_732A8, unk_6F5B4, stru_790A8
-stru_4086A:	maphdr	$D, 2, $8A, $A,	$A0, $C0, $DB0,	$170, unk_54F48, unk_73468, unk_6F622, stru_79112
-stru_40886:	maphdr	7, 4, $A, $A, $20, $320, $7E0, $350, unk_5571A,	unk_73684, unk_6F6C8, stru_7919C
-stru_408A2:	maphdr	7, 4, $A, $A, $20, $170, $870, $2F0, unk_559BA,	unk_73820, unk_6F730, stru_79256
-stru_408BE:	maphdr	4, 6, 9, 9, $30, $90, $50, $480, unk_5E7DC, unk_75182, unk_6FBE0, stru_79B84
-stru_408DA:	maphdr	6, 5, 9, 9, $30, $12F, $6FB, $2E0, unk_5F0A4, unk_752DA, unk_6FB7A, stru_79D58
-stru_408F6:	maphdr	9, 3, 9, 9, $5F0, $210,	$620, $200, unk_4CF14, unk_71F56, unk_6FBB4, stru_7888C
-stru_40912:	maphdr	8, 3, 9, 9, $20, $A0, $9D0, $D0, unk_5AB3A, unk_74ADA, unk_6FBB4, stru_7984A
-stru_4092E:	maphdr	6, 5, 9, 9, $10, $90, $180, $390, unk_5B42E, unk_73898,	unk_6FB7A, stru_79BFE
-stru_4094A:	maphdr	$C, 2, 3, 3, $10, $190,	$ED0, $190, unk_4E4FC, unk_7206A, unk_6FCB0, stru_78906
-stru_40966:	maphdr	5, 5, 7, $37, $10, $50,	$620, $3A0, unk_4EBE2, unk_721FE, unk_6F992, stru_789C0
-stru_40982:	maphdr	8, 3, 4, 4, $10, $100, $970, $40, unk_4F5EE, unk_723C6,	unk_6DA1C, stru_78A42
-stru_4099E:	maphdr	2, 2, 4, 4, $20, $20, $120, $130, unk_50066, unk_724C2,	unk_6E016, stru_78A9C
-stru_409BA:	maphdr	$A, 3, 2, 2, $30, $120,	$C50, $70, unk_5035C, unk_72506, unk_6F374, stru_78AB6
-stru_409D6:	maphdr	3, $A, 7, 7, $60, $870,	$390, $7E0, unk_518D8, unk_72968, unk_6FA82, stru_78BF4
-stru_409F2:	maphdr	5, 5, 3, 3, $20, $130, $5D0, $40, unk_526AC, unk_72C48,	unk_6FCF2, stru_78C9E
-stru_40A0E:	maphdr	2, $A, 1, 1, $60, $880,	$140, $160, unk_5333E, unk_72EEA, unk_6D416, stru_78E82
-stru_40A2A:	maphdr	6, 5, 1, 1, $3C0, $400,	$460, $70, unk_538BE, unk_72D5A, unk_6D870, stru_78D30
-stru_40A46:	maphdr	8, $43,	$A, $A,	$30, $150, $FFB0, $FFB0, unk_53E64, unk_72FC2,unk_6F570, stru_78FF4
-stru_40A62:	maphdr	6, $44,	7, $27,	$2A0, $1A0, $10, $60, unk_57DE0, unk_741C2, unk_6F992, stru_79490
-stru_40A7E:	maphdr	6, 4, 6, 6, $60, $30, $760, $310, unk_590CA, unk_7453C,	unk_6E5A4, stru_795BC
-stru_40A9A:	maphdr	$19, 1,	2, 2, $48, $AF,	$1F08, $A0, unk_59B50, unk_74736, unk_6E882, stru_7966E
-stru_40AB6:	maphdr	6, 4, 2, $32, $30, $350, $6D0, $70, unk_5A0FE, unk_74A00, unk_6EA22, stru_797E0
-stru_40AD2:	maphdr	6, 4, 4, 4, $760, $2B0,	$750, $160, unk_5BFC4, unk_74B82, unk_6E126, stru_798D4
-stru_40AEE:	maphdr	5, 5, 7, 7, $20, $80, $610, $410, unk_5CCB4, unk_74C08,	unk_6FA48, stru_7994E
-stru_40B0A:	maphdr	4, 6, 7, 7, $30, $520, $360, $30, unk_5D306, unk_74D62,	unk_6FB10, stru_799D8
-stru_40B26:	maphdr	4, 6, 4, 4, $4E0, $90, $47E, $4F0, unk_5DDE8, unk_74FEA, unk_6E034, stru_79AEA
-stru_40B42:	maphdr	3, 8, 7, 7, $20, $6D0, $3B0, $30, unk_5FA6A, unk_7556E,	unk_6F9F8, stru_79F02
-stru_40B5E:	maphdr	6, 4, 2, 2, $480, $C0, $FFB0, $FFB0, unk_60E92,	unk_75878, unk_6EF60, stru_79FD6
-stru_40B7A:	maphdr	$E, 2, 4, 4, $20, $100,	$FFB0, $FFB0, unk_61A6A, unk_75A6A, unk_6DE2C, stru_7A0E8
-stru_40B96:	maphdr	$F, 2, 4, 4, $18, $170,	$D0, $B0, unk_623EE, unk_75B92,	unk_6E254, stru_7A142
-stru_40BB2:	maphdr	2, $F, 2, 2, $40, $CF0,	$FFB0, $FFB0, unk_62740, unk_75D38, unk_6F064, stru_7A23C
-stru_40BCE:	maphdr	7, 4, 2, $32, $890, $70, $FFB0,	$FFB0, unk_62ED2, unk_7604A, unk_6F21C, stru_7A37E
-stru_40BEA:	maphdr	6, 4, 3, 3, $10, $20, $740, $510, unk_63ABC, unk_761C6,	unk_6FC7E, stru_7A460
-stru_40C06:	maphdr	$A, 3, 2, 2, $640, $50,	$640, $B0, unk_644A8, unk_763A4, unk_6F472, stru_7A51A
-stru_40C22:	maphdr	6, 5, 9, 9, $20, $150, $6E0, $3FF, unk_647B8, unk_76622, unk_6FB7A, stru_7A594
-stru_40C3E:	maphdr	6, 4, 3, 3, $30, $25C, $760, $80, unk_64E5C, unk_76764,	unk_6FC7E, stru_7A5E6
-stru_40C5A:	maphdr	$18, 1,	$83, 3,	$D0, $60, $1DD0, $30, unk_6575A, unk_768BE, unk_6FCD4, stru_7A660
-stru_40C76:	maphdr	4, 4, 4, 4, $1C0, $2BF,	$80, $1A0, unk_6602E, unk_76A60, unk_6E448, stru_7A6C2
-stru_40C92:	maphdr	8, 3, 4, 4, $18, $140, $810, $260, unk_66532, unk_76ADC, unk_6DC34, stru_7A6E4
-stru_40CAE:	maphdr	7, 4, 7, 7, $30, $360, $8A0, $1B0, unk_670DE, unk_76C10, unk_6FADE, stru_7A73E
-stru_40CCA:	maphdr	2, 2, 6, 6, $110, $190,	$FFB0, $FFB0, unk_6A95C, unk_76E4A, unk_6F798, stru_7A7C8
-stru_40CE6:	maphdr	2, 2, 1, 1, $10, $190, $FFB0, $FFB0, unk_6AAF2,	unk_76EA6, unk_6F7F4, stru_7A812
-stru_40D02:	maphdr	2, 2, $A, $A, $20, $40,	$FFB0, $FFB0, unk_6AB08, unk_76EEE, unk_6F86C, stru_7A83C
-stru_40D1E:	maphdr	2, 2, 4, 4, $10, $1A0, $FFB0, $FFB0, unk_6AC48,	unk_76F3E, unk_6E020, stru_7A88E
-stru_40D3A:	maphdr	2, 2, 4, 4, $30, $160, $FFB0, $FFB0, unk_6AF0A,	unk_76FE8, unk_6E02A, stru_7A8D0
-stru_40D56:	maphdr	1, 4, 7, $27, $10, $320, $FFB0,	$FFB0, unk_6B16A, unk_77044, unk_6F992, stru_7A8E2
-stru_40D72:	maphdr	1, 4, 8, 8, $10, $2F0, $FFB0, $FFB0, unk_6B372,	unk_7706A, unk_6F81C, stru_7A8FC
-stru_40D8E:	maphdr	4, 1, 5, 5, $40, $A0, $FFB0, $FFB0, unk_6B442, unk_77144, unk_6FD5E, stru_7A91E
-stru_40DAA:	maphdr	2, 2, 1, 1, $20, $160, $FFB0, $FFB0, unk_6B4A6,	unk_77164, unk_6F7FE, stru_7A930
-stru_40DC6:	maphdr	2, 2, 1, 1, $20, $90, $FFB0, $FFB0, unk_6B5DC, unk_771C4, unk_6F808, stru_7A95A
-stru_40DE2:	maphdr	1, 4, 1, 1, $30, $320, $FFB0, $FFB0, unk_6B5F2,	unk_7724C, unk_6F812, stru_7A994
-stru_40DFE:	maphdr	1, 4, 6, 6, $10, $330, $FFB0, $FFB0, unk_6B7B6,	unk_7729E, unk_6F826, stru_7A9CE
-stru_40E1A:	maphdr	4, 1, 6, 6, $10, $70, $FFB0, $FFB0, unk_6B938, unk_77314, unk_6F830, stru_7AA08
-stru_40E36:	maphdr	4, 1, 8, 8, $10, $D0, $FFB0, $FFB0, unk_6BA64, unk_7735E, unk_6F83A, stru_7AA62
-stru_40E52:	maphdr	2, 2, 8, 8, $20, $170, $FFB0, $FFB0, unk_6BC78,	unk_773BE, unk_6F844, stru_7AAA4
-stru_40E6E:	maphdr	2, 2, 9, 9, $10, $B0, $150, $100, unk_6BD80, unk_7744E,	unk_6FB56, stru_7AAD6
-stru_40E8A:	maphdr	2, 2, 9, 9, $10, $A0, $FFB0, $FFB0, unk_6BFAC, unk_7747A, unk_6FB56, stru_7AAF0
-stru_40EA6:	maphdr	1, 4, 9, 9, $40, $320, $FFB0, $FFB0, unk_6C1FA,	unk_77502, unk_6FB7A, stru_7AB42
-stru_40EC2:	maphdr	4, 1, 2, $22, $30, $A0,	$FFB0, $FFB0, unk_6C2E8, unk_77594, unk_6F84E, stru_7ABB4
-stru_40EDE:	maphdr	2, 2, 2, 2, $30, $40, $FFB0, $FFB0, unk_6C41C, unk_775FC, unk_6F858, stru_7ABE6
-stru_40EFA:	maphdr	2, 2, 2, $32, $10, $B0,	$FFB0, $FFB0, unk_6C688, unk_77694, unk_6F862, stru_7AC08
-stru_40F16:	maphdr	2, 2, $A, $A, $270, $160, $FFB0, $FFB0,	unk_6C8C0, unk_776CE, unk_6F8C2, stru_7AC62
-stru_40F32:	maphdr	1, 4, $A, $A, $10, $80,	$FFB0, $FFB0, unk_6CA22, unk_77744, unk_6F918, stru_7ACB4
-stru_40F4E:	maphdr	2, 2, $A, $A, $10, $30,	$140, $120, unk_6CB5A, unk_77782, unk_6F922, stru_7ACEE
-stru_40F6A:	maphdr	2, 2, 6, 6, $10, $150, $FFB0, $FFB0, unk_6CCA4,	unk_777B6, unk_6F92C, stru_7AD08
-stru_40F86:	maphdr	2, 2, 5, 5, $10, $150, $FFB0, $FFB0, unk_6CD38,	unk_77878, unk_6FD7C, stru_7AD1A
-stru_40FA2:	maphdr	1, 4, 5, 5, $10, $340, $FFB0, $FFB0, unk_6CE42,	unk_778E6, unk_6FDEE, stru_7AD64
-stru_40FBE:	maphdr	4, 1, 5, 5, $10, $60, $FFB0, $FFB0, unk_6CFBC, unk_77964, unk_6FD5E, stru_7AD7E
-stru_40FDA:	maphdr	1, 4, 8, $18, $50, $320, $FFB0,	$FFB0, unk_6D15A, unk_779DE, unk_6F988, stru_7ADB8
+stru_40672:	maphdr	"level/header/3C.bin", unk_48D3A, unk_71870, unk_6D5C2, stru_77E74
+stru_4068E:	maphdr	"level/header/3D.bin", unk_49056, unk_71770, unk_6D40C, stru_785B6
+stru_406AA:	maphdr	"level/header/3E.bin", unk_49E60, unk_7151E, unk_6D9DE, stru_78608
+stru_406C6:	maphdr	"level/header/00.bin", unk_4AC7A, unk_719F8, unk_6D384, stru_7868A
+stru_406E2:	maphdr	"level/header/01.bin", unk_4B7A0, unk_71B98, unk_6D3DA, stru_7874C
+stru_406FE:	maphdr	"level/header/02.bin", unk_50CE6, unk_726B6, unk_6E452, stru_78B18
+stru_4071A:	maphdr	"level/header/03.bin", unk_5682E, unk_73E56, unk_6E57E, stru_793EC
+stru_40736:	maphdr	"level/header/04.bin", unk_4C324, unk_71D52, unk_6D9FC, stru_787B6
+stru_40752:	maphdr	"level/header/05.bin", unk_4CAC6, unk_71EDA, unk_6D9E8, stru_78830
+stru_4076E:	maphdr	"level/header/08.bin", unk_4CD0E, unk_71F0C, unk_6D9F2, stru_7884A
+stru_4078A:	maphdr	"level/header/15.bin", unk_54644, unk_731A2, unk_6E45C, stru_79066
+stru_407A6:	maphdr	"level/header/16.bin", unk_606F4, unk_7574C, unk_6EB26, stru_79F74
+stru_407C2:	maphdr	"level/header/40.bin", unk_58958, unk_74358, unk_6FD7C, stru_7952A
+stru_407DE:	maphdr	"level/header/2C.bin", unk_51386, unk_72860, unk_6F9CC, stru_78B8A
+stru_407FA:	maphdr	"level/header/2D.bin", unk_573A4, unk_74058, unk_6F9F8, stru_79446
+stru_40816:	maphdr	"level/header/4A.bin", unk_561D2, unk_73AF6, unk_6FB56, stru_792E8
+stru_40832:	maphdr	"level/header/4F.bin", unk_4DA0A, unk_73B52, unk_6FC20, stru_7931A
+stru_4084E:	maphdr	"level/header/18.bin", unk_5496E, unk_732A8, unk_6F5B4, stru_790A8
+stru_4086A:	maphdr	"level/header/19.bin", unk_54F48, unk_73468, unk_6F622, stru_79112
+stru_40886:	maphdr	"level/header/1C.bin", unk_5571A, unk_73684, unk_6F6C8, stru_7919C
+stru_408A2:	maphdr	"level/header/1D.bin", unk_559BA, unk_73820, unk_6F730, stru_79256
+stru_408BE:	maphdr	"level/header/4C.bin", unk_5E7DC, unk_75182, unk_6FBE0, stru_79B84
+stru_408DA:	maphdr	"level/header/4D.bin", unk_5F0A4, unk_752DA, unk_6FB7A, stru_79D58
+stru_408F6:	maphdr	"level/header/49.bin", unk_4CF14, unk_71F56, unk_6FBB4, stru_7888C
+stru_40912:	maphdr	"level/header/4B.bin", unk_5AB3A, unk_74ADA, unk_6FBB4, stru_7984A
+stru_4092E:	maphdr	"level/header/4E.bin", unk_5B42E, unk_73898, unk_6FB7A, stru_79BFE
+stru_4094A:	maphdr	"level/header/56.bin", unk_4E4FC, unk_7206A, unk_6FCB0, stru_78906
+stru_40966:	maphdr	"level/header/2B.bin", unk_4EBE2, unk_721FE, unk_6F992, stru_789C0
+stru_40982:	maphdr	"level/header/0B.bin", unk_4F5EE, unk_723C6, unk_6DA1C, stru_78A42
+stru_4099E:	maphdr	"level/header/13.bin", unk_50066, unk_724C2, unk_6E016, stru_78A9C
+stru_409BA:	maphdr	"level/header/37.bin", unk_5035C, unk_72506, unk_6F374, stru_78AB6
+stru_409D6:	maphdr	"level/header/30.bin", unk_518D8, unk_72968, unk_6FA82, stru_78BF4
+stru_409F2:	maphdr	"level/header/57.bin", unk_526AC, unk_72C48, unk_6FCF2, stru_78C9E
+stru_40A0E:	maphdr	"level/header/21.bin", unk_5333E, unk_72EEA, unk_6D416, stru_78E82
+stru_40A2A:	maphdr	"level/header/25.bin", unk_538BE, unk_72D5A, unk_6D870, stru_78D30
+stru_40A46:	maphdr	"level/header/17.bin", unk_53E64, unk_72FC2, unk_6F570, stru_78FF4
+stru_40A62:	maphdr	"level/header/31.bin", unk_57DE0, unk_741C2, unk_6F992, stru_79490
+stru_40A7E:	maphdr	"level/header/14.bin", unk_590CA, unk_7453C, unk_6E5A4, stru_795BC
+stru_40A9A:	maphdr	"level/header/38.bin", unk_59B50, unk_74736, unk_6E882, stru_7966E
+stru_40AB6:	maphdr	"level/header/35.bin", unk_5A0FE, unk_74A00, unk_6EA22, stru_797E0
+stru_40AD2:	maphdr	"level/header/0C.bin", unk_5BFC4, unk_74B82, unk_6E126, stru_798D4
+stru_40AEE:	maphdr	"level/header/2E.bin", unk_5CCB4, unk_74C08, unk_6FA48, stru_7994E
+stru_40B0A:	maphdr	"level/header/34.bin", unk_5D306, unk_74D62, unk_6FB10, stru_799D8
+stru_40B26:	maphdr	"level/header/0A.bin", unk_5DDE8, unk_74FEA, unk_6E034, stru_79AEA
+stru_40B42:	maphdr	"level/header/2F.bin", unk_5FA6A, unk_7556E, unk_6F9F8, stru_79F02
+stru_40B5E:	maphdr	"level/header/39.bin", unk_60E92, unk_75878, unk_6EF60, stru_79FD6
+stru_40B7A:	maphdr	"level/header/0F.bin", unk_61A6A, unk_75A6A, unk_6DE2C, stru_7A0E8
+stru_40B96:	maphdr	"level/header/3F.bin", unk_623EE, unk_75B92, unk_6E254, stru_7A142
+stru_40BB2:	maphdr	"level/header/3A.bin", unk_62740, unk_75D38, unk_6F064, stru_7A23C
+stru_40BCE:	maphdr	"level/header/3B.bin", unk_62ED2, unk_7604A, unk_6F21C, stru_7A37E
+stru_40BEA:	maphdr	"level/header/55.bin", unk_63ABC, unk_761C6, unk_6FC7E, stru_7A460
+stru_40C06:	maphdr	"level/header/36.bin", unk_644A8, unk_763A4, unk_6F472, stru_7A51A
+stru_40C22:	maphdr	"level/header/32.bin", unk_647B8, unk_76622, unk_6FB7A, stru_7A594
+stru_40C3E:	maphdr	"level/header/53.bin", unk_64E5C, unk_76764, unk_6FC7E, stru_7A5E6
+stru_40C5A:	maphdr	"level/header/54.bin", unk_6575A, unk_768BE, unk_6FCD4, stru_7A660
+stru_40C76:	maphdr	"level/header/0E.bin", unk_6602E, unk_76A60, unk_6E448, stru_7A6C2
+stru_40C92:	maphdr	"level/header/0D.bin", unk_66532, unk_76ADC, unk_6DC34, stru_7A6E4
+stru_40CAE:	maphdr	"level/header/33.bin", unk_670DE, unk_76C10, unk_6FADE, stru_7A73E
+stru_40CCA:	maphdr	"level/header/5D.bin", unk_6A95C, unk_76E4A, unk_6F798, stru_7A7C8
+stru_40CE6:	maphdr	"level/header/5E.bin", unk_6AAF2, unk_76EA6, unk_6F7F4, stru_7A812
+stru_40D02:	maphdr	"level/header/5F.bin", unk_6AB08, unk_76EEE, unk_6F86C, stru_7A83C
+stru_40D1E:	maphdr	"level/header/60.bin", unk_6AC48, unk_76F3E, unk_6E020, stru_7A88E
+stru_40D3A:	maphdr	"level/header/61.bin", unk_6AF0A, unk_76FE8, unk_6E02A, stru_7A8D0
+stru_40D56:	maphdr	"level/header/62.bin", unk_6B16A, unk_77044, unk_6F992, stru_7A8E2
+stru_40D72:	maphdr	"level/header/63.bin", unk_6B372, unk_7706A, unk_6F81C, stru_7A8FC
+stru_40D8E:	maphdr	"level/header/64.bin", unk_6B442, unk_77144, unk_6FD5E, stru_7A91E
+stru_40DAA:	maphdr	"level/header/65.bin", unk_6B4A6, unk_77164, unk_6F7FE, stru_7A930
+stru_40DC6:	maphdr	"level/header/66.bin", unk_6B5DC, unk_771C4, unk_6F808, stru_7A95A
+stru_40DE2:	maphdr	"level/header/67.bin", unk_6B5F2, unk_7724C, unk_6F812, stru_7A994
+stru_40DFE:	maphdr	"level/header/68.bin", unk_6B7B6, unk_7729E, unk_6F826, stru_7A9CE
+stru_40E1A:	maphdr	"level/header/69.bin", unk_6B938, unk_77314, unk_6F830, stru_7AA08
+stru_40E36:	maphdr	"level/header/6A.bin", unk_6BA64, unk_7735E, unk_6F83A, stru_7AA62
+stru_40E52:	maphdr	"level/header/6B.bin", unk_6BC78, unk_773BE, unk_6F844, stru_7AAA4
+stru_40E6E:	maphdr	"level/header/6C.bin", unk_6BD80, unk_7744E, unk_6FB56, stru_7AAD6
+stru_40E8A:	maphdr	"level/header/6D.bin", unk_6BFAC, unk_7747A, unk_6FB56, stru_7AAF0
+stru_40EA6:	maphdr	"level/header/6E.bin", unk_6C1FA, unk_77502, unk_6FB7A, stru_7AB42
+stru_40EC2:	maphdr	"level/header/6F.bin", unk_6C2E8, unk_77594, unk_6F84E, stru_7ABB4
+stru_40EDE:	maphdr	"level/header/70.bin", unk_6C41C, unk_775FC, unk_6F858, stru_7ABE6
+stru_40EFA:	maphdr	"level/header/71.bin", unk_6C688, unk_77694, unk_6F862, stru_7AC08
+stru_40F16:	maphdr	"level/header/72.bin", unk_6C8C0, unk_776CE, unk_6F8C2, stru_7AC62
+stru_40F32:	maphdr	"level/header/73.bin", unk_6CA22, unk_77744, unk_6F918, stru_7ACB4
+stru_40F4E:	maphdr	"level/header/74.bin", unk_6CB5A, unk_77782, unk_6F922, stru_7ACEE
+stru_40F6A:	maphdr	"level/header/75.bin", unk_6CCA4, unk_777B6, unk_6F92C, stru_7AD08
+stru_40F86:	maphdr	"level/header/76.bin", unk_6CD38, unk_77878, unk_6FD7C, stru_7AD1A
+stru_40FA2:	maphdr	"level/header/77.bin", unk_6CE42, unk_778E6, unk_6FDEE, stru_7AD64
+stru_40FBE:	maphdr	"level/header/78.bin", unk_6CFBC, unk_77964, unk_6FD5E, stru_7AD7E
+stru_40FDA:	maphdr	"level/header/79.bin", unk_6D15A, unk_779DE, unk_6F988, stru_7ADB8
 unk_40FF6:  binclude    "level/foreground/5C.bin"
     align 2
 unk_4190A:  binclude    "level/foreground/59.bin"

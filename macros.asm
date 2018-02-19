@@ -8,10 +8,11 @@ levnamhdr	macro	name, unknown, act
 		endm
 
 ; ---------------------------------------------------------------------------
-
-maphdr		macro	xsize, ysize, fgstyle, bgstyle, playerx, playery, flagx, flagy, fgtile, block, bgtile, enemy
-		dc.b	xsize, ysize, fgstyle, bgstyle
-		dc.w	playerx, playery, flagx, flagy
+; the header file contains the following entries (12 bytes):
+;		dc.b	xsize, ysize, fgstyle, bgstyle
+;		dc.w	playerx, playery, flagx, flagy
+maphdr		macro	fnamehdr, fgtile, block, bgtile, enemy
+		binclude fnamehdr
 		dc.l	fgtile, block, bgtile, enemy
 		endm
 ; ---------------------------------------------------------------------------
@@ -62,7 +63,7 @@ ptfm		macro	xpos, ypos, bufL, bufR, bufT, bufB, t, s, h, v, pp
 
 ; simplifying macros and functions, taken from Sonic 2 disassembly
 ; ---------------------------------------------------------------------------
-; VDP addressses
+; VDP addresses
 VDP_data_port =			$C00000 ; (8=r/w, 16=r/w)
 VDP_control_port =		$C00004 ; (8=r/w, 16=r/w)
 PSG_input =			$C00011

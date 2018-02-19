@@ -43,30 +43,30 @@
 	dc.b   0	;2A
 	dc.b   0	;2B
 	dc.b   0	;2C
-	dc.b $19	;2D
+	dc.b  25	;2D
 	dc.b   0	;2E
-	dc.b $19	;2F
+	dc.b  25	;2F
 	dc.b   0	;30
-	dc.b $19	;31
-	dc.b $19	;32
-	dc.b $19	;33
-	dc.b  $A	;34
+	dc.b  25	;31
+	dc.b  25	;32
+	dc.b  25	;33
+	dc.b  10	;34
 	dc.b   0	;35
-	dc.b  $A	;36
+	dc.b  10	;36
 	dc.b   0	;37
 	dc.b   0	;38
 	dc.b   0	;39
 	dc.b   0	;3A
-	dc.b $14	;3B
+	dc.b  20	;3B
 	dc.b   0	;3C
-	dc.b $32	;3D
+	dc.b  50	;3D
 	dc.b   0	;3E
 	dc.b   0	;3F
 	dc.b   0	;40
-	dc.b $19	;41
+	dc.b  25	;41
 	dc.b   0	;42
-	dc.b $19	;43
-	dc.b $19	;44
+	dc.b  25	;43
+	dc.b  25	;44
 	dc.b   0	;45
 	dc.b   0	;46
 	dc.b   0	;47

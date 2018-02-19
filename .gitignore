@@ -6,6 +6,7 @@ kid.bin
 level/*.bin
 level/*/*.bin
 level/platform/*.asm
+level/level_files.txt
 theme/*.bin
 theme/*/*.bin
 theme/*/*/*.bin

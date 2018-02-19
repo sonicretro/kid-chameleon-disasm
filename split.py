@@ -263,6 +263,7 @@ os.makedirs("level/platform", exist_ok=True)
 os.makedirs("level/foreground", exist_ok=True)
 os.makedirs("level/background", exist_ok=True)
 os.makedirs("level/bgscroll", exist_ok=True)
+os.makedirs("level/header", exist_ok=True)
 os.makedirs("theme/mappings", exist_ok=True)
 os.makedirs("theme/collision", exist_ok=True)
 os.makedirs("theme/artcomp_fg", exist_ok=True)
@@ -288,7 +289,7 @@ os.makedirs("misc/artunc", exist_ok=True)
 os.makedirs("sound", exist_ok=True)
 
 
-mapheaders = set()
+mapheader_addrs = dict()
 platform_addrs = dict()
 enemy_addrs = dict()
 foreground_addrs = dict()
@@ -296,8 +297,11 @@ background_addrs = dict()
 block_addrs = dict()
 bgscroll_addrs = dict()
 
+linfo = open("level/level_files.txt", "w")
+
 
 for lev in range(Number_Levels):
+    linfo.write("\n")
     addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
     platform = btoi(Platform_Index+2*lev, 2) + Platform_Offset
     bgscroll = btoi(Bgscroll_Index+4*lev, 4)
@@ -315,17 +319,23 @@ for lev in range(Number_Levels):
         with open("level/bgscroll/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[bgscroll:bgscroll+l])
 
+    linfo.write("{:02X}\t".format(lev))
+    linfo.write("platform/{:02X}.bin ".format(platform_addrs[platform]))
+    linfo.write("bgscroll/{:02X}.bin ".format(bgscroll_addrs[bgscroll]))
 
     if addr == 0x40FF6:
         # for some entries, the pointer points to invalid data
         # specifically, to the address after the last valid map header
         continue
 
+
     # don't process duplicate entries. They give us false overlap alarms.
-    if addr in mapheaders:
+    if addr in mapheader_addrs:
+        linfo.write("header/{:02X}.bin ".format(mapheader_addrs[addr]))
         continue
 
-    mapheaders.add(addr)
+    mapheader_addrs[addr] = lev
+    linfo.write("header/{:02X}.bin ".format(mapheader_addrs[addr]))
 
     '''
     map header format:
@@ -333,6 +343,9 @@ for lev in range(Number_Levels):
         dc.w    playerx, playery, flagx, flagy
         dc.l    foreground, block, background, enemy
     '''
+    with open("level/header/{:02X}.bin".format(lev), "wb") as out:
+        out.write(b[addr:addr+12])
+
     foreground = btoi(addr+12, 4)
     block = btoi(addr+16, 4)
     background = btoi(addr+20, 4)
@@ -355,8 +368,12 @@ for lev in range(Number_Levels):
         l = length_block(block)
         with open("level/block/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[block:block+l])
+    linfo.write("enemy/{:02X}.bin ".format(enemy_addrs[enemy]))
+    linfo.write("foreground/{:02X}.bin ".format(foreground_addrs[foreground]))
+    linfo.write("block/{:02X}.bin ".format(block_addrs[block]))
 
     if background not in background_addrs and background < 0x6F992:
+        linfo.write("background/{:02X}.bin ".format(lev))
         btype = btoi(background, 1)
         if btype == 0x80:
             w1 = btoi(background, 2)
@@ -368,6 +385,14 @@ for lev in range(Number_Levels):
             background_addrs[background] = (lev,)
             with open("level/background/{:02X}.bin".format(lev), "wb") as out:
                 out.write(b[background:background+l])
+    else:
+        if background not in background_addrs:
+            background_addrs[background] = lev
+        linfo.write("background/{:02X}_layered.bin ".format(background_addrs[background]))
+
+
+linfo.close()
+
 
 to_split = open("tools/to_split.txt")
 for line in to_split:

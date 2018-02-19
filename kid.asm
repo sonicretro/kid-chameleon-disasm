@@ -14,10 +14,12 @@
 ; Set to 1 to compile all instances of 0(ax) as (ax)
 ; (Takes less space but is not bit-perfect.)
 zeroOffsetOptimization = 0
-; whether to include the platform definitions for levels as asm (1) or bin (0)
+; Whether to include the platform definitions for levels as asm (1) or bin (0)
 ; asm has the advantage that platform presets can be extended/changed without
 ; invalidating pointers in other platform layouts
 platforms_asm = 0
+; Set to 1 to add a level/helmet select to the game.
+insertLevelSelect = 0
 ; ===========================================================================
 	include "macros.asm"
 ; ===========================================================================
@@ -7894,10 +7896,26 @@ sub_6E24:
 ; End of function sub_6E24
 
 ; ---------------------------------------------------------------------------
+
+
+	if insertLevelSelect = 0
 ; filler
     rept 814
 	dc.b	$FF
     endm
+
+	else
+LevelSelect_Start:
+; LevelSelect_Loop_Pre:
+	include	"scenes/levelselect.asm"
+LevelSelect_End:
+	; pad with $FF. Not really necessary but this ensures
+	; consistency with the existing binary patch
+    rept 814-(LevelSelect_End-LevelSelect_Start)
+    	dc.b	$FF
+    endm
+	endif
+
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -31695,7 +31713,11 @@ Title_InputLoop:
 
 loc_1BBD6:
 		st	($FFFFFBCE).w
+	if insertLevelSelect = 0
 		jmp	(loc_204).w
+	else
+		jmp	(LevelSelect_ChkKey).w
+	endif
 ; ---------------------------------------------------------------------------
 
 loc_1BBDE:
@@ -32944,7 +32966,11 @@ OptionScreen_IntroLoop:
 		bsr.w	sub_1DA24
 		jsr	(sub_24C).w
 		tst.w	d3
+	if insertLevelSelect = 0
 		beq.w	OptionScreen_Loop
+	else
+		beq.w	Chk_LevelSelect
+	endif
 		subq.w	#2,($FFFFF820).w
 		subq.w	#2,d3
 		subq.w	#2,d2
@@ -35019,6 +35045,8 @@ loc_1D8FA:
 ; End of function sub_1D8B4
 
 ; ---------------------------------------------------------------------------
+	if insertLevelSelect = 0
+		; unused data
 		dc.b $E0
 		dc.b $E0 ; à
 		dc.b $F0 ; ð
@@ -35031,6 +35059,13 @@ loc_1D8FA:
 		dc.b $2D ; -
 		dc.b $E0 ; à
 		dc.b $E0 ; à
+	else
+Chk_LevelSelect:
+	tst.b	($FFFFFDC7).w
+	beq.w	OptionScreen_Loop
+	jmp	LevelSelect_Loop
+	endif
+
 unk_1D91C:	dc.b $3C ; <
 		dc.b   0
 		dc.b   6

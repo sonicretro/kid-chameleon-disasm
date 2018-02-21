@@ -61,9 +61,9 @@ FFFC46 	Costume/helmet
 	09 - Micromax
 FFFC48	Number of continues
 !FFFDC7	HACK: used as level select indicator (byte)
-FFFDC8	selected sub-option 1 in options menu (byte)
-FFFDC9	selected sub-option 2 in options menu (byte)
-FFFDCA	selected sub-option 3 in options menu
+FFFDC8	selected sub-option 1 in options menu (flag)
+FFFDC9	selected sub-option 3 in options menu (flag)
+FFFDCA	selected sub-option 2 in options menu (word)
 FFFDCC	selected option in options menu
 
 FF0DB8	Menu timer (word)

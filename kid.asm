@@ -21,6 +21,31 @@ platforms_asm = 0
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
 ; ===========================================================================
+Start_LevelID = 0 ; Level ID for first level: Blue Lake Woods 1
+Final_LevelID = $33 ; Level ID for final level: Plethora
+WarpCheatStart_LevelID = 1 ; Level in which to activate warp cheat
+WarpCheatDest_LevelID = $32 ; Level whose ending screen we get to after warp cheat
+HundredKTripStart_LevelID = 4 ; 100K trip start level
+HundredKTripDest_LevelID = $1F ; 100K trip destination level
+
+; don't load flag for these levels until boss is killed:
+Boss1_LevelID = $10
+Boss2_LevelID = $1E
+Boss3_LevelID = $2A
+Boss4_LevelID = $33
+
+; Default Options that are selected 
+; $00xxxxxx / $FFxxxxxx: 1st/2nd controller for second player
+; $xx00xxxx / $xxFFxxxx: slow/fast action, press speed button for fast/slow
+; $xxxx000Y: Y between 0 and 5 determines which keys do what. A/B/C:
+	; 0: Speed/Jump/Special
+	; 1: Speed/Special/Jump
+	; 2: Jump/Speed/Special
+	; 3: Jump/Special/Speed
+	; 4: Special/Speed/Jump
+	; 5: Special/Jump/Speed
+Default_Options = $00000000
+; ===========================================================================
 	include "macros.asm"
 ; ===========================================================================
 StartOfROM:
@@ -1014,22 +1039,27 @@ loc_5E6:
 		lea	($FFFF0000).l,a0
 
 loc_5FE:
+		; clear entire RAM, except selected option ($FFFFFDC8, 4 bytes)
 		move.w	#$3FFF,d0
 		moveq	#0,d1
-
 loc_604:
 		move.l	d1,(a0)+
 		dbf	d0,loc_604
 		move.l	d7,($FFFFFDC8).w
 		cmpi.w	#5,d7
-		bls.s	loc_61C		; clear	entire VRAM
+	if Default_Options = 0
+		bls.s	loc_61C
 		move.l	#0,($FFFFFDC8).w
+	else
+		nop	; not strictly necessary, but avoids shifting stuff
+		move.l	#Default_Options,($FFFFFDC8).w
+	endif
 
 loc_61C:
-		move.l	#$40000000,4(a6) ; clear entire	VRAM
+		; clear entire	VRAM
+		move.l	#$40000000,4(a6)
 		move.w	#$3FFF,d0
 		moveq	#0,d1
-
 loc_62A:
 		move.l	d1,(a6)
 		dbf	d0,loc_62A
@@ -1076,20 +1106,19 @@ loc_65C:
 ; START	OF FUNCTION CHUNK FOR ReadJoypad
 
 loc_6E2:
-					; ReadJoypad+B2t ...
 		lea	($FFFFF7FE).w,sp
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
 		tst.b	($FFFFFBCE).w
-		beq.s	loc_700		; clear	entire VRAM
+		beq.s	loc_700
 		bsr.w	Pal_FadeOut
 		clr.w	($FFFFFBCC).w
 
 loc_700:
-		move.l	#$40000000,4(a6) ; clear entire	VRAM
+		; clear entire	VRAM
+		move.l	#$40000000,4(a6) 
 		move.w	#$3FFF,d0
 		moveq	#0,d1
-
 loc_70E:
 		move.l	d1,(a6)
 		dbf	d0,loc_70E
@@ -10072,67 +10101,21 @@ loc_85C0:
 ; End of function sub_8506
 
 ; ---------------------------------------------------------------------------
-unk_85C4:	dc.b   0
-		dc.b   1
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $18
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-unk_85D8:	dc.b   0
-		dc.b   0
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $30 ; 0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $80 ; €
-		dc.b   0
-unk_85EC:	dc.b   0
-		dc.b   1
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   8
-		dc.b   0
-
+unk_85C4:	dc.l   $10000
+		dc.l    $1000
+		dc.l    $1000
+		dc.l    $1800
+		dc.l    $4000
+unk_85D8:	dc.l    $8000
+		dc.l    $2000
+		dc.l    $1000
+		dc.l    $3000
+		dc.l    $8000
+unk_85EC:	dc.l   $18000
+		dc.l     $200
+		dc.l     $200
+		dc.l     $100
+		dc.l     $800
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -12363,12 +12346,12 @@ loc_9AF2:
 		lea	unk_9CCE(pc),a0
 
 loc_9AFC:
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,($FFFFFC46).w	; micromax
 		bne.s	loc_9B08
 		lea	$1C(a0),a0
 
 loc_9B08:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,($FFFFFC46).w	; juggernaut
 		bne.s	loc_9B14
 		lea	$38(a0),a0
 
@@ -12524,286 +12507,76 @@ loc_9C06:
 		rts
 ; END OF FUNCTION CHUNK	FOR sub_9A0A
 ; ---------------------------------------------------------------------------
-unk_9C0A:	dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $28 ; (
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $30 ; 0
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   8
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $14
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $18
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $50 ; P
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $38 ; 8
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $60 ; `
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $28 ; (
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $38 ; 8
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $60 ; `
-		dc.b   0
-unk_9C7A:	dc.b   0
-		dc.b   1
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $50 ; P
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $38 ; 8
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $60 ; `
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $C0 ; À
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $10
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $28 ; (
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $30 ; 0
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $70 ; p
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $C0 ; À
-		dc.b   0
-unk_9CCE:	dc.b   0
-		dc.b   4
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   4
-		dc.b   0
-		dc.b   0
-		dc.b   7
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   6
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   1
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   4
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   3
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   4
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   8
-		dc.b   0
-		dc.b   0
-		dc.b   5
-		dc.b $80 ; €
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b   7
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b  $D
-		dc.b   0
+unk_9C0A:	dc.l	$20000	; Max walking speed
+		dc.l	 $1000	; Acceleration walking rate
+		dc.l	 $2800	; Deceleration walking/running rate
+		dc.l	 $2000	; Brake walking-left rate
+		dc.l	$38000	; Max running speed
+		dc.l	 $1C00	; Acceleration running rate
+		dc.l	 $3000	; Brake walking-right/running rate
+		dc.l	$10000	; Micromax: Max walking speed
+		dc.l	  $800	; Micromax: Acceleration walking rate
+		dc.l	 $1400	; Micromax: Deceleration walking/running rate
+		dc.l	 $1000	; Micromax: Brake walking-left rate
+		dc.l	$20000	; Micromax: Max running speed
+		dc.l	 $1000	; Micromax: Acceleration running rate
+		dc.l	 $1800	; Micromax: Brake walking-right/running rate
+		dc.l	$18000	; Juggernaut: Max walking speed
+		dc.l	 $2000	; Juggernaut: Acceleration walking rate
+		dc.l	 $5000	; Juggernaut: Deceleration walking/running rate
+		dc.l	 $4000	; Juggernaut: Brake walking-left rate
+		dc.l	$30000	; Juggernaut: Max running speed
+		dc.l	 $3800	; Juggernaut: Acceleration running rate
+		dc.l	 $6000	; Juggernaut: Brake walking-right/running rate
+		dc.l	$20000
+		dc.l	 $4000
+		dc.l	 $2800
+		dc.l	 $4000
+		dc.l	$30000
+		dc.l	 $3800
+		dc.l	 $6000
+unk_9C7A:	dc.l	$18000
+		dc.l	 $2000
+		dc.l	 $5000
+		dc.l	 $4000
+		dc.l	$28000
+		dc.l	 $3800
+		dc.l	 $6000
+		dc.l	 $C000
+		dc.l	 $1000
+		dc.l	 $2800
+		dc.l	 $2000
+		dc.l	$18000
+		dc.l	 $2000
+		dc.l	 $3000
+		dc.l	$14000
+		dc.l	 $4000
+		dc.l	 $A000
+		dc.l	 $8000
+		dc.l	$20000
+		dc.l	 $7000
+		dc.l	 $C000
+unk_9CCE:	dc.l	$40000
+		dc.l	  $200
+		dc.l	  $100
+		dc.l	  $400
+		dc.l	$70000
+		dc.l	  $380
+		dc.l	  $680
+		dc.l	$20000
+		dc.l	  $100
+		dc.l	   $80
+		dc.l	  $200
+		dc.l	$40000
+		dc.l	  $200
+		dc.l	  $380
+		dc.l	$30000
+		dc.l	  $400
+		dc.l	  $200
+		dc.l	  $800
+		dc.l	$58000
+		dc.l	  $700
+		dc.l	  $D00
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
@@ -13693,109 +13466,46 @@ loc_A480:
 ; End of function sub_A432
 
 ; ---------------------------------------------------------------------------
-unk_A49E:	dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $4A ; J
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-		dc.b   0
-		dc.b $42 ; B
-unk_A4B2:	dc.b $2B ; +
-		dc.b   0
-		dc.b $34 ; 4
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-		dc.b $2B ; +
-		dc.b   0
-unk_A4C6:	dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   3
-		dc.b $20
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-		dc.b   0
-		dc.b   2
-		dc.b $A0 ;  
-		dc.b   0
-
+; jump height
+unk_A49E:
+	dc.w $42		
+	dc.w $42		
+	dc.w $42		
+	dc.w $4A		
+	dc.w $42		
+	dc.w $42		
+	dc.w $42		
+	dc.w $42		
+	dc.w $42		
+	dc.w $42
+; jump acceleration
+unk_A4B2:
+	dc.w $2B00
+	dc.w $3400
+	dc.w $2B00
+	dc.w $4000
+	dc.w $2B00
+	dc.w $2B00
+	dc.w $2B00
+	dc.w $2B00
+	dc.w $2B00
+	dc.w $2B00
+; max jump speed
+unk_A4C6:
+	dc.l $2A000
+	dc.l $32000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
+	dc.l $2A000
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_A4EE:
-
-; FUNCTION CHUNK AT 000075D4 SIZE 00000314 BYTES
-; FUNCTION CHUNK AT 0000818A SIZE 0000002A BYTES
-; FUNCTION CHUNK AT 00008218 SIZE 00000146 BYTES
-; FUNCTION CHUNK AT 00008370 SIZE 00000076 BYTES
-; FUNCTION CHUNK AT 00008BF0 SIZE 000002E0 BYTES
-; FUNCTION CHUNK AT 00009D22 SIZE 0000018E BYTES
-; FUNCTION CHUNK AT 00009F18 SIZE 00000278 BYTES
-; FUNCTION CHUNK AT 0000A276 SIZE 000000D6 BYTES
-; FUNCTION CHUNK AT 0000A426 SIZE 0000000C BYTES
-; FUNCTION CHUNK AT 0000B580 SIZE 00000008 BYTES
-; FUNCTION CHUNK AT 0000B5F6 SIZE 0000001A BYTES
-; FUNCTION CHUNK AT 0000B978 SIZE 000000DE BYTES
-; FUNCTION CHUNK AT 0000BA5A SIZE 000000C0 BYTES
-; FUNCTION CHUNK AT 0000BB30 SIZE 00000012 BYTES
-; FUNCTION CHUNK AT 0000BC80 SIZE 00000030 BYTES
-; FUNCTION CHUNK AT 0000BCB2 SIZE 00000058 BYTES
-
 		st	$3C(a3)
 		move.l	$1A(a3),d5
 		move.l	$1E(a3),d6
@@ -15278,13 +14988,13 @@ sub_B43A:
 		cmpi.w	#1,($FFFFFA56).w
 		bne.w	loc_B4A0
 		move.w	($FFFFFC44).w,d5
-		subq.w	#1,d5
+		subq.w	#WarpCheatStart_LevelID,d5
 		bne.w	loc_B482
 		cmpi.l	#$9D3005F,d4
 		bne.w	loc_B482
 		btst	#4,($FFFFF812).w
 		beq.w	loc_B482
-		move.w	#$32,($FFFFFC44).w
+		move.w	#WarpCheatDest_LevelID,($FFFFFC44).w
 		move.w	#$28,$38(a3)
 		move.w	#$A0,$3A(a3)
 
@@ -16531,13 +16241,13 @@ sub_BFA6:
 		st	$13(a3)
 		move.b	#1,$10(a3)
 		move.w	#(LnkTo_unk_E0FFE-Data_Index),$22(a3)
-		cmpi.w	#$10,($FFFFFC44).w
+		cmpi.w	#Boss1_LevelID,($FFFFFC44).w
 		beq.s	loc_C03A
-		cmpi.w	#$1E,($FFFFFC44).w
+		cmpi.w	#Boss2_LevelID,($FFFFFC44).w
 		beq.s	loc_C03A
-		cmpi.w	#$2A,($FFFFFC44).w
+		cmpi.w	#Boss3_LevelID,($FFFFFC44).w
 		beq.s	loc_C03A
-		cmpi.w	#$33,($FFFFFC44).w
+		cmpi.w	#Boss4_LevelID,($FFFFFC44).w
 		bne.s	return_C046
 
 loc_C03A:
@@ -17842,7 +17552,7 @@ loc_D7F4:
 		move.l	(sp)+,d0
 		move.w	d0,-(sp)
 		jsr	(sub_248).w
-		cmpi.w	#$33,($FFFFFC44).w
+		cmpi.w	#Final_LevelID,($FFFFFC44).w
 		beq.w	loc_D820
 		addq.w	#1,($FFFFFC44).w
 		clr.w	($FFFFFBCC).w
@@ -18015,7 +17725,7 @@ loc_DA4A:
 		st	($FFFFFC36).w
 		move.w	#$20,($FFFFFC2A).w
 		move.w	#$48F,($FFFFFC2C).w
-		move.w	#$1F,($FFFFFC44).w
+		move.w	#HundredKTripDest_LevelID,($FFFFFC44).w
 		clr.w	($FFFFFC46).w
 		st	($FFFFFC29).w
 		bra.w	loc_B84E
@@ -23321,7 +23031,7 @@ loc_10AAE:
 loc_10AC2:
 		cmpi.l	#$186A0,($FFFFFC4C).w
 		blt.s	loc_10AE0
-		cmpi.w	#4,($FFFFFC44).w
+		cmpi.w	#HundredKTripStart_LevelID,($FFFFFC44).w
 		bne.s	loc_10AE0
 		tst.w	($FFFFFB4C).w
 		bne.s	loc_10AE0
@@ -63808,7 +63518,8 @@ word_402B0:	dc.w	 0
 		dc.w $FFFF
 		dc.w $FFFF
 
-word_4033A:	dc.l 0
+word_4033A:	dc.w Start_LevelID
+		dc.w 0
 
 ; 4043E
 LnkTo_MapOrder_Index:dc.l MapOrder_Index 

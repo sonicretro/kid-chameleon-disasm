@@ -6,6 +6,11 @@ kid.bin
 level/*.bin
 level/*/*.bin
 level/platform/*.asm
+level/platform_presets_inuse.asm
+level/levelnames.asm
+level/maporder.asm
+level/pathbonus.asm
+level/speedbonus.asm
 level/level_files.txt
 theme/*.bin
 theme/*/*.bin

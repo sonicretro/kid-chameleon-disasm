@@ -29703,7 +29703,7 @@ ArtSom_19C68_TtlCardLetters:
 	binclude	"scenes/artcomp/Title_card_letters.bin"
 	align	2
 ; 1A45C
-;AddrTbl_LevelNames is defined in here:
+;AddrTbl_LevelNames is defined in here at 1A842:
 	include	"level/levelnames.asm"
 ; ---------------------------------------------------------------------------
 
@@ -63521,7 +63521,7 @@ word_402B0:	dc.w	 0
 word_4033A:	dc.w Start_LevelID
 		dc.w 0
 
-; 4043E
+; 4033E
 LnkTo_MapOrder_Index:dc.l MapOrder_Index 
 
 MapHeader_Index:

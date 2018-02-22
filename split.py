@@ -198,9 +198,33 @@ def length_platform(x):
     return pos+2 - x
 
 
+def length_bgscroll(x):
+    pos = x
+    layer = btoi(pos, 1)
+    # The data at 0xA0903 is not terminated with $FF and thus
+    # we have to hardcode its end as the next entry is at 0xA0934
+    while layer != 0xFF and pos != 0xA0933:
+        pos += 1
+        layer = btoi(pos, 1)
+    return pos+1 - x
+
+
+def length_bglayout(x):
+    pos = x
+    tile_id = btoi(pos, 2)
+    while tile_id != 0xFFFF:
+        pos += 6
+        tile_id = btoi(pos, 2)
+    return pos+2 - x
+
+
+# write platform data starting at given address addr
+# to file specified by fname and return a set of all
+# used platform preset addresses
 def write_platform_asm(addr, fname):
     with open(fname, "w") as out:
         x = btoi(addr, 2)
+        presets_addrs = set()
         while x != 0xFFFF:
             x = btoi(addr, 2)
             y = btoi(addr+2, 2)
@@ -223,31 +247,13 @@ def write_platform_asm(addr, fname):
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},${:X}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))
                 else:
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},unk_{:X}-unk_3602\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP+0x3602))
+                    presets_addrs.add(PPP+0x3602)
             else:
                 out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},{}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))    
             addr += 12
             x = btoi(addr, 2)
         out.write("\tdc.w\t$FFFF\n")
-
-
-def length_bgscroll(x):
-    pos = x
-    layer = btoi(pos, 1)
-    # The data at 0xA0903 is not terminated with $FF and thus
-    # we have to hardcode its end as the next entry is at 0xA0934
-    while layer != 0xFF and pos != 0xA0933:
-        pos += 1
-        layer = btoi(pos, 1)
-    return pos+1 - x
-
-
-def length_bglayout(x):
-    pos = x
-    tile_id = btoi(pos, 2)
-    while tile_id != 0xFFFF:
-        pos += 6
-        tile_id = btoi(pos, 2)
-    return pos+2 - x
+        return presets_addrs
 
 
 MapHeader_Index = 0x40342
@@ -296,10 +302,11 @@ foreground_addrs = dict()
 background_addrs = dict()
 block_addrs = dict()
 bgscroll_addrs = dict()
+presets_addrs = set()
 
 linfo = open("level/level_files.txt", "w")
-
-
+# dump platform, bgscroll, header, enemy, foreground and block
+# layout for each level to files.
 for lev in range(Number_Levels):
     linfo.write("\n")
     addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
@@ -311,7 +318,8 @@ for lev in range(Number_Levels):
         platform_addrs[platform] = lev
         with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[platform:platform+l])
-        write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
+        pa = write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
+        presets_addrs |= pa
 
     if bgscroll not in bgscroll_addrs:
         l = length_bgscroll(bgscroll)
@@ -390,10 +398,104 @@ for lev in range(Number_Levels):
             background_addrs[background] = lev
         linfo.write("background/{:02X}_layered.bin ".format(background_addrs[background]))
 
-
 linfo.close()
 
+# create an .asm file with the speed and path bonuses
+PathBonus = 0xD8E8
+SpeedBonus = 0xD934
+fpath = open("level/pathbonus.asm", "w")
+fspeed = open("level/speedbonus.asm", "w")
+for lev in range(76):
+    fpath.write("\tdc.b\t{:2d}\t; {:2X}\n".format(btoi(PathBonus+lev, 1), lev))
+    fspeed.write("\tdc.b\t{:3d}\t; {:2X}\n".format(btoi(SpeedBonus+lev, 1), lev))
+fpath.close()
+fspeed.close()
 
+# create an asm file with the mapping of LevelIDs to MapIDs
+LnkTo_MapOrder_Index = 0x4033E
+MapOrder_Index = btoi(LnkTo_MapOrder_Index, 4)
+forder = open("level/maporder.asm", "w")
+for lev in range(108):
+    forder.write("\tdc.b\t${:02X}\t; {:2X}\n".format(btoi(MapOrder_Index+lev, 1), lev))
+forder.close()
+
+# make an asm file with all the level names, and level name index
+AddrTbl_LevelNames = 0x1A842
+name_addrs = set()
+name_addrs2 = set()
+name_addrs2.add(0x1A842)
+fnames = open("level/levelnames.asm", "w")
+for lev in range(74):
+    addr = btoi(AddrTbl_LevelNames+10*lev, 4)
+    addr2 = btoi(AddrTbl_LevelNames+10*lev+4, 4)
+    name_addrs.add(addr)
+    name_addrs2.add(addr2)
+fnames.write(
+'''; \\0   = linebreak
+; \\x7C = "The"
+; \\x7D = "the"
+; \\x7E = "of"
+; \\x7F = "to"
+; \\x83 = "'"
+; \\x84 = " "
+''')
+for addr in sorted(name_addrs):
+    fnames.write("unk_{:X}:\n".format(addr))
+    addr_end = addr
+    while btoi(addr_end, 1) != 0xFF:
+        addr_end += 1
+    name = str("{}".format(b[addr:addr_end]))
+    name = name[2:-1]
+    name = str("\tdc.b\t\"{}\"\n".format(name))
+    name = name.replace("\\x00", "\\0")
+    name = name.replace("\\x7f", "\\x7F")
+    name = name.replace("~", "\\x7E")
+    name = name.replace("}", "\\x7D")
+    name = name.replace("|", "\\x7C")
+    fnames.write(name)
+    fnames.write("\tdc.b\t$FF\n")
+fnames.write("\n\talign\t2\n\n")
+name_addrs2 = sorted(name_addrs2)
+for i in range(len(name_addrs2)-1):
+    addr = name_addrs2[i]
+    fnames.write("unk_{:X}:\n".format(addr))
+    while addr < name_addrs2[i+1]:
+        fnames.write("\tdc.w\t${:02X}\n".format(btoi(addr, 2)))
+        addr += 2
+fnames.write("\nAddrTbl_LevelNames:   ;1A842\n")
+for lev in range(74):
+    addr = btoi(AddrTbl_LevelNames+10*lev, 4)
+    addr2 = btoi(AddrTbl_LevelNames+10*lev+4, 4)
+    number = btoi(AddrTbl_LevelNames+10*lev+8, 2)
+    fnames.write("\tlevnamhdr\tunk_{:X}, unk_{:X}, {:d}\t; {:2X}\n".format(addr, addr2, number, lev))
+
+# make an additional file of the platform presets that are
+# actually in use in the game. This is mainly useful for hacks,
+# and not used in the bit-perfect disassembly.
+fpresets = linfo = open("level/platform_presets_inuse.asm", "w")
+for addr0 in sorted(presets_addrs):
+    addr = addr0
+    fpresets.write("unk_{:X}:\t; relative offset: {:04X}\n".format(addr0, addr0-0x3602))
+    while True:
+        count = btoi(addr+0, 2)
+        xvel = btoi(addr+2, 4)
+        if xvel > 0x80000000:
+            xvel -= 0x100000000
+        yvel = btoi(addr+6, 4)
+        if yvel > 0x80000000:
+            yvel -= 0x100000000
+        if count != 0xFFFF:
+            cmd = "\tptfm_move\t${:X}, ${:X}, ${:X}\n".format(count, xvel, yvel)
+            cmd = cmd.replace("$-", "-$") # minus sign needs to be before $ sign
+            fpresets.write(cmd)
+        else:
+            fpresets.write("\tdc.w\t$FFFF\n")
+            fpresets.write("\tdc.l\tunk_{:X}\n".format(xvel))
+            break
+        addr += 10
+fpresets.close()
+
+# split off a lot of binary files with fixed start and end addresses
 to_split = open("tools/to_split.txt")
 for line in to_split:
     if line[0] == "#":

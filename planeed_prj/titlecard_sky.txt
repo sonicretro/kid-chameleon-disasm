@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/sky.bin
+Mapping File:	../theme/titlecard/mapeni/sky.bin
+Art File:	../theme/titlecard/artcomp/sky.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	14
+y-Size:	18
+Tile Offset: 0

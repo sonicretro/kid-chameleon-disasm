@@ -24,9 +24,12 @@ insertLevelSelect = 0
 Start_LevelID = 0 ; Level ID for first level: Blue Lake Woods 1
 Final_LevelID = $33 ; Level ID for final level: Plethora
 WarpCheatStart_LevelID = 1 ; Level in which to activate warp cheat
-WarpCheatDest_LevelID = $32 ; Level whose ending screen we get to after warp cheat
+WarpCheatDest_LevelID = $32 ; Level whose ending screen we get after warp cheat
 HundredKTripStart_LevelID = 4 ; 100K trip start level
 HundredKTripDest_LevelID = $1F ; 100K trip destination level
+FirstElsewhere_LevelID = $49 ; from this level on name everything 'Elsewhere'.
+	; More specifically, all levels with a higher LevelID 
+	; use the title from the level with this LevelID.
 
 ; don't load flag for these levels until boss is killed:
 Boss1_LevelID = $10
@@ -29719,9 +29722,9 @@ loc_1AB40:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_1AB40
 		move.w	($FFFFFC44).w,d7
-		cmpi.w	#$49,d7
+		cmpi.w	#FirstElsewhere_LevelID,d7
 		blt.s	loc_1AB52
-		moveq	#$49,d7
+		moveq	#FirstElsewhere_LevelID,d7
 
 loc_1AB52:
 		mulu.w	#$A,d7
@@ -34963,7 +34966,7 @@ ArtSom_1DD5C:
 	binclude    "scenes/artcomp/Face_in_option_menu_background.bin"
 	align	2
 MapEni_1E264:
-	binclude    "misc/mapeni/1E264.bin"
+	binclude    "misc/mapeni/1E264.bin"	; options frame
 	align	2
 Demo_InputData2:dc.b   0,  0,  0,  0,  0,  0,  0,$40,$40,$40,$48,$48,$48,$48,$48,$58
 		dc.b $58,$58,$58,$58,$58,$58,$58,$58,$48,$48,$48,$58,$58,$58,$48,$48

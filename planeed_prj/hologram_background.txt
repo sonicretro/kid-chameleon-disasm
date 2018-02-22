@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/Score_screen.bin
+Mapping File:	../misc/mapeni/0CC0E.bin
+Art File:	../scenes/artcomp/Hologram_background.bin
+Palette Length:	32
+Palette Offset: 16
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	40
+y-Size:	28
+Tile Offset: 0

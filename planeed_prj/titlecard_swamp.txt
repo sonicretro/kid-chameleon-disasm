@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/swamp.bin
+Mapping File:	../theme/titlecard/mapeni/swamp.bin
+Art File:	../theme/titlecard/artcomp/swamp.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	16
+y-Size:	13
+Tile Offset: 0

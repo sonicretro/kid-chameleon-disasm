@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/hill.bin
+Mapping File:	../theme/titlecard/mapeni/hill.bin
+Art File:	../theme/titlecard/artcomp/hill.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	18
+y-Size:	17
+Tile Offset: 0

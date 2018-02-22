@@ -1,0 +1,10 @@
+Palette File:	../theme/palette_bg/forest.bin
+Mapping File:	../theme/bg_chunks/forest_eni_02.bin
+Art File:	../theme/artcomp_bg/forest.bin
+Palette Length:	16
+Palette Destination Offset: 16
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	32
+y-Size:	28
+Tile Offset: 0

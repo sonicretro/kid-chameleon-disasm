@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/ice.bin
+Mapping File:	../theme/titlecard/mapeni/ice.bin
+Art File:	../theme/titlecard/artcomp/ice.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	17
+y-Size:	18
+Tile Offset: 0

@@ -1,0 +1,10 @@
+Palette File:	../theme/palette_bg/mountain_lightning.bin
+Mapping File:	../theme/bg_chunks/mountain_eni_04.bin
+Art File:	../theme/artcomp_bg/mountain_lightning.bin
+Palette Length:	16
+Palette Destination Offset: 0
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	32
+y-Size:	15
+Tile Offset: 0

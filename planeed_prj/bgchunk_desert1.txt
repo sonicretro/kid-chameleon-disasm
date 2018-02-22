@@ -1,0 +1,10 @@
+Palette File:	../theme/palette_bg/desert.bin
+Mapping File:	../theme/bg_chunks/desert_eni_01.bin
+Art File:	../theme/artcomp_bg/desert.bin
+Palette Length:	16
+Palette Destination Offset: 16
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	32
+y-Size:	28
+Tile Offset: 0

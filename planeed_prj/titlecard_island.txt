@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/island.bin
+Mapping File:	../theme/titlecard/mapeni/island.bin
+Art File:	../theme/titlecard/artcomp/island.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	16
+y-Size:	18
+Tile Offset: 0

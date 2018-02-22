@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/desert.bin
+Mapping File:	../theme/titlecard/mapeni/desert.bin
+Art File:	../theme/titlecard/artcomp/desert.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	19
+y-Size:	15
+Tile Offset: 0

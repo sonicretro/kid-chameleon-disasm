@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/forest.bin
+Mapping File:	../theme/titlecard/mapeni/forest.bin
+Art File:	../theme/titlecard/artcomp/forest.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	15
+y-Size:	23
+Tile Offset: 0

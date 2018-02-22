@@ -63,11 +63,11 @@ LevelSelect_DrawText_loop:
 	bgt.s	LevelSelect_DrawText_Do
 
 	move.w	d6,d7
-	cmpi.w	#$49,d7
+	cmpi.w	#FirstElsewhere_LevelID,d7
 	blt.s	+
 	move.b	d6,($FFFFFDC6).w
-	subi.b	#$48,($FFFFFDC6).w
-	move.w	#$49,d7
+	subi.b	#FirstElsewhere_LevelID-1,($FFFFFDC6).w
+	move.w	#FirstElsewhere_LevelID,d7
 +
 	mulu.w	#$A,d7
 	move.l	(a3,d7.w),a4	; address of level name

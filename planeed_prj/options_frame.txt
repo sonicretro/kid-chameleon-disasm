@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/options.bin
+Mapping File:	../misc/mapeni/1E264.bin
+Art File:	../scenes/artcomp/Drop-down_screen_from_options_and_ending.bin
+Palette Length:	128
+Palette Offset: 32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	40
+y-Size:	28
+Tile Offset: 0

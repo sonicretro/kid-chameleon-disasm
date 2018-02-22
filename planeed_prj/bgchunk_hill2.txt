@@ -1,0 +1,10 @@
+Palette File:	../theme/palette_fg/hill.bin
+Mapping File:	../theme/bg_chunks/hill_eni_02.bin
+Art File:	../theme/artcomp_bg/hill_alt.bin
+Palette Length:	32
+Palette Destination Offset: 0
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	32
+y-Size:	28
+Tile Offset: 0

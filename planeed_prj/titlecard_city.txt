@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/city.bin
+Mapping File:	../theme/titlecard/mapeni/city.bin
+Art File:	../theme/titlecard/artcomp/city.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	19
+y-Size:	17
+Tile Offset: 0

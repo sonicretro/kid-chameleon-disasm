@@ -1,0 +1,9 @@
+Palette File:	../theme/titlecard/palette/mountain.bin
+Mapping File:	../theme/titlecard/mapeni/mountain.bin
+Art File:	../theme/titlecard/artcomp/mountain.bin
+Palette Length:	32
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	17
+y-Size:	17
+Tile Offset: 0

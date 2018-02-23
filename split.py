@@ -1,6 +1,13 @@
 import math
 import os
 
+MapHeader_Index = 0x40342
+MapHeader_Offset = 0x4033A
+Platform_Index = 0x43A6
+Platform_Offset = 0x2BB6
+Bgscroll_Index = 0x7B1EC
+Number_Levels = 126
+
 f = open("kid.bin", "rb")
 b = f.read()
 
@@ -219,12 +226,10 @@ def length_bglayout(x):
 
 
 # write platform data starting at given address addr
-# to file specified by fname and return a set of all
-# used platform preset addresses
+# to file specified by fname
 def write_platform_asm(addr, fname):
     with open(fname, "w") as out:
         x = btoi(addr, 2)
-        presets_addrs = set()
         while x != 0xFFFF:
             x = btoi(addr, 2)
             y = btoi(addr+2, 2)
@@ -243,25 +248,16 @@ def write_platform_asm(addr, fname):
             if TS & 0x79:
                 print("bad platform!")
             if t == 0:
-                if PPP+0x3602 == 0x10000:
+                if PPP+0x3602 == 0x10000 or PPP==0xFFFF:
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},${:X}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))
                 else:
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},unk_{:X}-unk_3602\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP+0x3602))
-                    presets_addrs.add(PPP+0x3602)
             else:
                 out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},{}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))    
             addr += 12
             x = btoi(addr, 2)
         out.write("\tdc.w\t$FFFF\n")
-        return presets_addrs
 
-
-MapHeader_Index = 0x40342
-MapHeader_Offset = 0x4033A
-Platform_Index = 0x43A6
-Platform_Offset = 0x2BB6
-Bgscroll_Index = 0x7B1EC
-Number_Levels = 126
 
 os.makedirs("level/block", exist_ok=True)
 os.makedirs("level/enemy", exist_ok=True)
@@ -300,9 +296,9 @@ platform_addrs = dict()
 enemy_addrs = dict()
 foreground_addrs = dict()
 background_addrs = dict()
+backgroundlayered_addrs = dict()
 block_addrs = dict()
 bgscroll_addrs = dict()
-presets_addrs = set()
 
 linfo = open("level/level_files.txt", "w")
 # dump platform, bgscroll, header, enemy, foreground and block
@@ -318,8 +314,7 @@ for lev in range(Number_Levels):
         platform_addrs[platform] = lev
         with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
             out.write(b[platform:platform+l])
-        pa = write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
-        presets_addrs |= pa
+        write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
 
     if bgscroll not in bgscroll_addrs:
         l = length_bgscroll(bgscroll)
@@ -354,6 +349,7 @@ for lev in range(Number_Levels):
     with open("level/header/{:02X}.bin".format(lev), "wb") as out:
         out.write(b[addr:addr+12])
 
+    bgtheme = btoi(addr+3, 1) & 0x0F
     foreground = btoi(addr+12, 4)
     block = btoi(addr+16, 4)
     background = btoi(addr+20, 4)
@@ -380,25 +376,42 @@ for lev in range(Number_Levels):
     linfo.write("foreground/{:02X}.bin ".format(foreground_addrs[foreground]))
     linfo.write("block/{:02X}.bin ".format(block_addrs[block]))
 
-    if background not in background_addrs and background < 0x6F992:
-        linfo.write("background/{:02X}.bin ".format(lev))
-        btype = btoi(background, 1)
-        if btype == 0x80:
-            w1 = btoi(background, 2)
-            l2 = btoi(background+2, 4)
-            ref_addr = btoi(background+6, 4)
-            background_addrs[background] = (w1, l2, ref_addr)
-        else:
-            l = length_bglayout(background)
-            background_addrs[background] = (lev,)
-            with open("level/background/{:02X}.bin".format(lev), "wb") as out:
-                out.write(b[background:background+l])
+    if bgtheme in [3,5,7,9]: # layered
+        if background not in backgroundlayered_addrs:
+            backgroundlayered_addrs[background] = lev
+        linfo.write("background/{:02X}_layered.bin ".format(backgroundlayered_addrs[background]))
     else:
         if background not in background_addrs:
-            background_addrs[background] = lev
-        linfo.write("background/{:02X}_layered.bin ".format(background_addrs[background]))
+            linfo.write("background/{:02X}.bin ".format(lev))
+            btype = btoi(background, 1)
+            if btype == 0x80:
+                w1 = btoi(background, 2)
+                l2 = btoi(background+2, 4)
+                ref_addr = btoi(background+6, 4)
+                background_addrs[background] = (w1, l2, ref_addr)
+            else:
+                l = length_bglayout(background)
+                background_addrs[background] = (lev,)
+                with open("level/background/{:02X}.bin".format(lev), "wb") as out:
+                    out.write(b[background:background+l])
 
 linfo.close()
+
+# for layered background we can't determine the size, so we just split
+# until the next address.
+# Note: we assume that layered and non-layered are not interleaved, i.e.
+# all layered backgrounds are consecutive in the ROM
+max_bglay_addr = max(backgroundlayered_addrs.keys())
+backgroundlayered_addrs = sorted(backgroundlayered_addrs.items())
+all_addrs = block_addrs.keys() | enemy_addrs.keys() | foreground_addrs.keys() | background_addrs.keys()
+min_next_addr = min(addr for addr in all_addrs if addr > max_bglay_addr)
+backgroundlayered_addrs.append((min_next_addr, None))
+for i in range(len(backgroundlayered_addrs)-1):
+    addr = backgroundlayered_addrs[i][0]
+    lev = backgroundlayered_addrs[i][1]
+    next_addr = backgroundlayered_addrs[i+1][0]
+    with open("level/background/{:02X}_layered.bin".format(lev), "wb") as out:
+        out.write(b[addr:next_addr])
 
 # create an .asm file with the speed and path bonuses
 PathBonus = 0xD8E8
@@ -469,31 +482,6 @@ for lev in range(74):
     number = btoi(AddrTbl_LevelNames+10*lev+8, 2)
     fnames.write("\tlevnamhdr\tunk_{:X}, unk_{:X}, {:d}\t; {:2X}\n".format(addr, addr2, number, lev))
 
-# make an additional file of the platform presets that are
-# actually in use in the game. This is mainly useful for hacks,
-# and not used in the bit-perfect disassembly.
-fpresets = linfo = open("level/platform_presets_inuse.asm", "w")
-for addr0 in sorted(presets_addrs):
-    addr = addr0
-    fpresets.write("unk_{:X}:\t; relative offset: {:04X}\n".format(addr0, addr0-0x3602))
-    while True:
-        count = btoi(addr+0, 2)
-        xvel = btoi(addr+2, 4)
-        if xvel > 0x80000000:
-            xvel -= 0x100000000
-        yvel = btoi(addr+6, 4)
-        if yvel > 0x80000000:
-            yvel -= 0x100000000
-        if count != 0xFFFF:
-            cmd = "\tptfm_move\t${:X}, ${:X}, ${:X}\n".format(count, xvel, yvel)
-            cmd = cmd.replace("$-", "-$") # minus sign needs to be before $ sign
-            fpresets.write(cmd)
-        else:
-            fpresets.write("\tdc.w\t$FFFF\n")
-            fpresets.write("\tdc.l\tunk_{:X}\n".format(xvel))
-            break
-        addr += 10
-fpresets.close()
 
 # split off a lot of binary files with fixed start and end addresses
 to_split = open("tools/to_split.txt")

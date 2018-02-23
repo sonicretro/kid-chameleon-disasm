@@ -63760,6 +63760,7 @@ stru_40F86:	maphdr	"level/header/76.bin", unk_6CD38, unk_77878, unk_6FD7C, stru_
 stru_40FA2:	maphdr	"level/header/77.bin", unk_6CE42, unk_778E6, unk_6FDEE, stru_7AD64
 stru_40FBE:	maphdr	"level/header/78.bin", unk_6CFBC, unk_77964, unk_6FD5E, stru_7AD7E
 stru_40FDA:	maphdr	"level/header/79.bin", unk_6D15A, unk_779DE, unk_6F988, stru_7ADB8
+
 unk_40FF6:  binclude    "level/foreground/5C.bin"
     align 2
 unk_4190A:  binclude    "level/foreground/59.bin"

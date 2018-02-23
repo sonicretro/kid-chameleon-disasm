@@ -193,12 +193,12 @@ DEA20 E06B5 ingame/artcomp/Enemy22_Boss_head_stick_boomerangs_arrows.bin
 12BA4 12C24 ingame/artunc/Flag_bottom.bin
 12C3C 12CBC ingame/artunc/Hitpoint_display.bin
 2A4D6 2A756 scenes/artunc/Grey_mixed_pixels_during_title_transformation.bin
-0CC0E 0D00C scenes/mapeni/0CC0E.bin
+0CC0E 0D00C scenes/mapeni/hologram_background.bin
 0D00C 0D02A scenes/palette/Score_screen.bin
 0D02A 0D048 scenes/palette/0D02A.bin
 0D048 0D052 scenes/palette/0D048.bin
-1E264 1E2FE scenes/mapeni/1E264.bin
-2E154 2E39A scenes/mapeni/2E154.bin
+1E264 1E2FE scenes/mapeni/options_frame.bin
+2E154 2E39A scenes/mapeni/intro3_alley.bin
 2E39A 2E435 scenes/mapeni/2E39A.bin
 2E436 2E4D5 scenes/mapeni/2E436.bin
 2E4D6 2E581 scenes/mapeni/2E4D6.bin
@@ -209,7 +209,7 @@ DEA20 E06B5 ingame/artcomp/Enemy22_Boss_head_stick_boomerangs_arrows.bin
 2E706 2E727 scenes/mapeni/2E706.bin
 2E728 2E77A scenes/mapeni/2E728.bin
 2E77A 2E7C6 scenes/mapeni/2E77A.bin
-2E7C6 2EA25 scenes/mapeni/2E7C6.bin
+2E7C6 2EA25 scenes/mapeni/intro2_sky.bin
 2EA26 2EA5D scenes/mapeni/2EA26.bin
 2EA5E 2EAAD scenes/mapeni/2EA5E.bin
 2EAAE 2EACD scenes/mapeni/2EAAE.bin
@@ -245,7 +245,7 @@ DEA20 E06B5 ingame/artcomp/Enemy22_Boss_head_stick_boomerangs_arrows.bin
 2FC3A 2FCE4 scenes/mapeni/2FC3A.bin
 2FCE4 2FDA5 scenes/mapeni/2FCE4.bin
 2FDA6 2FDCE scenes/mapeni/2FDA6.bin
-2FDE0 2FF55 scenes/mapeni/2FDE0.bin
+2FDE0 2FF55 scenes/mapeni/intro1_wildside.bin
 2FDCE 2FDE0 scenes/mapeni/2FDCE.bin
 2F7D0 2F83F scenes/mapeni/2F7D0.bin
 12EEE 12F30 scenes/palette/SegaLogo.bin

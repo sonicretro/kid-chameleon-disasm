@@ -16959,7 +16959,7 @@ ArtSom_CAB2_HoloBlocks:
 	binclude    "scenes/artcomp/Hologram_blocks.bin"
 	align	2
 MapEni_CC0E:
-	binclude    "scenes/mapeni/0CC0E.bin"
+	binclude    "scenes/mapeni/hologram_background.bin"
 	align	2
 
 Pal_D00C:	binclude	"scenes/palette/Score_screen.bin"
@@ -34966,7 +34966,7 @@ ArtSom_1DD5C:
 	binclude    "scenes/artcomp/Face_in_option_menu_background.bin"
 	align	2
 MapEni_1E264:
-	binclude    "scenes/mapeni/1E264.bin"	; options frame
+	binclude    "scenes/mapeni/options_frame.bin"
 	align	2
 Demo_InputData2:dc.b   0,  0,  0,  0,  0,  0,  0,$40,$40,$40,$48,$48,$48,$48,$48,$58
 		dc.b $58,$58,$58,$58,$58,$58,$58,$58,$48,$48,$48,$58,$58,$58,$48,$48
@@ -35059,7 +35059,7 @@ byte_2D71A:  binclude    "scenes/artcomp/Background_for_intro_(Wild_Side).bin"
 byte_2D73B:  binclude    "scenes/artcomp/Wild_Side_arcade.bin"
 byte_2DEBF:  binclude    "scenes/artcomp/Wild_Side_door_and_inside.bin"
 	align	2
-MapEni_2E154:  binclude    "scenes/mapeni/2E154.bin"
+MapEni_2E154:  binclude    "scenes/mapeni/intro3_alley.bin"
 	align	2
 unk_2E39A:  binclude    "scenes/mapeni/2E39A.bin"
 	align	2
@@ -35081,7 +35081,7 @@ unk_2E728:  binclude    "scenes/mapeni/2E728.bin"
 	align	2
 unk_2E77A:  binclude    "scenes/mapeni/2E77A.bin"
 	align	2
-unk_2E7C6:  binclude    "scenes/mapeni/2E7C6.bin"
+unk_2E7C6:  binclude    "scenes/mapeni/intro2_sky.bin"
 	align	2
 unk_2EA26:  binclude    "scenes/mapeni/2EA26.bin"
 	align	2
@@ -35157,7 +35157,7 @@ unk_2FDA6:  binclude    "scenes/mapeni/2FDA6.bin"
 	align	2
 unk_2FDCE:  binclude    "scenes/mapeni/2FDCE.bin"
 	align	2
-unk_2FDE0:  binclude    "scenes/mapeni/2FDE0.bin"
+unk_2FDE0:  binclude    "scenes/mapeni/intro1_wildside.bin"
 	align	2
 
 		dc.b   0

@@ -1,5 +1,5 @@
 Palette File:	../scenes/palette/Score_screen.bin
-Mapping File:	../scenes/mapeni/0CC0E.bin
+Mapping File:	../scenes/mapeni/hologram_background.bin
 Art File:	../scenes/artcomp/Hologram_background.bin
 Palette Length:	32
 Palette Offset: 16

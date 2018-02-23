@@ -1,5 +1,5 @@
 Palette File:	../scenes/palette/options.bin
-Mapping File:	../scenes/mapeni/1E264.bin
+Mapping File:	../scenes/mapeni/options_frame.bin
 Art File:	../scenes/artcomp/Drop-down_screen_from_options_and_ending.bin
 Palette Length:	128
 Palette Offset: 32

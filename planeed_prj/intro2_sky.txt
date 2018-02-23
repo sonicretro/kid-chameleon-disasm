@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/intro2_sky.bin
+Mapping File:	../scenes/mapeni/intro2_sky.bin
+Art File:	../scenes/artcomp/Sky_castle_and_night_sky_from_intro_scene.bin
+Palette Length:	102
+Palette Offset: 0
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	40
+y-Size:	28
+Tile Offset: 0

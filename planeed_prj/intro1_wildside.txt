@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/intro1_wildside.bin
+Mapping File:	../scenes/mapeni/intro1_wildside.bin
+Art File:	../scenes/artcomp/Wild_Side_arcade.bin
+Palette Length:	102
+Palette Offset: 0
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	40
+y-Size:	28
+Tile Offset: 0

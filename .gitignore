@@ -17,7 +17,6 @@ theme/*/*.bin
 theme/*/*/*.bin
 scenes/*/*.bin
 ingame/*/*.bin
-misc/*/*.bin
 sound/*.bin
 planeed_prj/*.dll
 planeed_prj/*.exe

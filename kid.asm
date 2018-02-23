@@ -16959,7 +16959,7 @@ ArtSom_CAB2_HoloBlocks:
 	binclude    "scenes/artcomp/Hologram_blocks.bin"
 	align	2
 MapEni_CC0E:
-	binclude    "misc/mapeni/0CC0E.bin"
+	binclude    "scenes/mapeni/0CC0E.bin"
 	align	2
 
 Pal_D00C:	binclude	"scenes/palette/Score_screen.bin"
@@ -34966,7 +34966,7 @@ ArtSom_1DD5C:
 	binclude    "scenes/artcomp/Face_in_option_menu_background.bin"
 	align	2
 MapEni_1E264:
-	binclude    "misc/mapeni/1E264.bin"	; options frame
+	binclude    "scenes/mapeni/1E264.bin"	; options frame
 	align	2
 Demo_InputData2:dc.b   0,  0,  0,  0,  0,  0,  0,$40,$40,$40,$48,$48,$48,$48,$48,$58
 		dc.b $58,$58,$58,$58,$58,$58,$58,$58,$48,$48,$48,$58,$58,$58,$48,$48
@@ -35059,105 +35059,105 @@ byte_2D71A:  binclude    "scenes/artcomp/Background_for_intro_(Wild_Side).bin"
 byte_2D73B:  binclude    "scenes/artcomp/Wild_Side_arcade.bin"
 byte_2DEBF:  binclude    "scenes/artcomp/Wild_Side_door_and_inside.bin"
 	align	2
-MapEni_2E154:  binclude    "misc/mapeni/2E154.bin"
+MapEni_2E154:  binclude    "scenes/mapeni/2E154.bin"
 	align	2
-unk_2E39A:  binclude    "misc/mapeni/2E39A.bin"
+unk_2E39A:  binclude    "scenes/mapeni/2E39A.bin"
 	align	2
-unk_2E436:  binclude    "misc/mapeni/2E436.bin"
+unk_2E436:  binclude    "scenes/mapeni/2E436.bin"
 	align	2
-unk_2E4D6:  binclude    "misc/mapeni/2E4D6.bin"
+unk_2E4D6:  binclude    "scenes/mapeni/2E4D6.bin"
 	align	2
-unk_2E582:  binclude    "misc/mapeni/2E582.bin"
+unk_2E582:  binclude    "scenes/mapeni/2E582.bin"
 	align	2
-unk_2E64A:  binclude    "misc/mapeni/2E64A.bin"
+unk_2E64A:  binclude    "scenes/mapeni/2E64A.bin"
 
-	binclude    "misc/mapeni/unused_2E6CB.bin"
+	binclude    "scenes/mapeni/unused_2E6CB.bin"
 	align	2
-	binclude    "misc/mapeni/unused_2E6EA.bin"
+	binclude    "scenes/mapeni/unused_2E6EA.bin"
 	align	2
-unk_2E706:  binclude    "misc/mapeni/2E706.bin"
+unk_2E706:  binclude    "scenes/mapeni/2E706.bin"
 	align	2
-unk_2E728:  binclude    "misc/mapeni/2E728.bin"
+unk_2E728:  binclude    "scenes/mapeni/2E728.bin"
 	align	2
-unk_2E77A:  binclude    "misc/mapeni/2E77A.bin"
+unk_2E77A:  binclude    "scenes/mapeni/2E77A.bin"
 	align	2
-unk_2E7C6:  binclude    "misc/mapeni/2E7C6.bin"
+unk_2E7C6:  binclude    "scenes/mapeni/2E7C6.bin"
 	align	2
-unk_2EA26:  binclude    "misc/mapeni/2EA26.bin"
+unk_2EA26:  binclude    "scenes/mapeni/2EA26.bin"
 	align	2
-unk_2EA5E:  binclude    "misc/mapeni/2EA5E.bin"
+unk_2EA5E:  binclude    "scenes/mapeni/2EA5E.bin"
 	align	2
-unk_2EAAE:  binclude    "misc/mapeni/2EAAE.bin"
+unk_2EAAE:  binclude    "scenes/mapeni/2EAAE.bin"
 	align	2
-unk_2EACE:  binclude    "misc/mapeni/2EACE.bin"
+unk_2EACE:  binclude    "scenes/mapeni/2EACE.bin"
 	align	2
-unk_2EB32:  binclude    "misc/mapeni/2EB32.bin"
+unk_2EB32:  binclude    "scenes/mapeni/2EB32.bin"
 	align	2
-unk_2EBD4:  binclude    "misc/mapeni/2EBD4.bin"
+unk_2EBD4:  binclude    "scenes/mapeni/2EBD4.bin"
 	align	2
-unk_2EC86:  binclude    "misc/mapeni/2EC86.bin"
+unk_2EC86:  binclude    "scenes/mapeni/2EC86.bin"
 	align	2
-unk_2ED62:  binclude    "misc/mapeni/2ED62.bin"
+unk_2ED62:  binclude    "scenes/mapeni/2ED62.bin"
 	align	2
-unk_2EE54:  binclude    "misc/mapeni/2EE54.bin"
+unk_2EE54:  binclude    "scenes/mapeni/2EE54.bin"
 	align	2
-unk_2EF2C:  binclude    "misc/mapeni/2EF2C.bin"
+unk_2EF2C:  binclude    "scenes/mapeni/2EF2C.bin"
 	align	2
-unk_2EF92:  binclude    "misc/mapeni/2EF92.bin"
+unk_2EF92:  binclude    "scenes/mapeni/2EF92.bin"
 	align	2
-unk_2EFFE:  binclude    "misc/mapeni/2EFFE.bin"
+unk_2EFFE:  binclude    "scenes/mapeni/2EFFE.bin"
 	align	2
-unk_2F09C:  binclude    "misc/mapeni/2F09C.bin"
+unk_2F09C:  binclude    "scenes/mapeni/2F09C.bin"
 	align	2
-unk_2F124:  binclude    "misc/mapeni/2F124.bin"
+unk_2F124:  binclude    "scenes/mapeni/2F124.bin"
 	align	2
-unk_2F1B0:  binclude    "misc/mapeni/2F1B0.bin"
+unk_2F1B0:  binclude    "scenes/mapeni/2F1B0.bin"
 	align	2
-unk_2F242:  binclude    "misc/mapeni/2F242.bin"
+unk_2F242:  binclude    "scenes/mapeni/2F242.bin"
 	align	2
-unk_2F2D0:  binclude    "misc/mapeni/2F2D0.bin"
+unk_2F2D0:  binclude    "scenes/mapeni/2F2D0.bin"
 	align	2
-unk_2F306:  binclude    "misc/mapeni/2F306.bin"
+unk_2F306:  binclude    "scenes/mapeni/2F306.bin"
 	align	2
-unk_2F374:  binclude    "misc/mapeni/2F374.bin"
+unk_2F374:  binclude    "scenes/mapeni/2F374.bin"
 	align	2
-unk_2F41E:  binclude    "misc/mapeni/2F41E.bin"
+unk_2F41E:  binclude    "scenes/mapeni/2F41E.bin"
 	align	2
-unk_2F4D0:  binclude    "misc/mapeni/2F4D0.bin"
+unk_2F4D0:  binclude    "scenes/mapeni/2F4D0.bin"
 	align	2
-unk_2F592:  binclude    "misc/mapeni/2F592.bin"
+unk_2F592:  binclude    "scenes/mapeni/2F592.bin"
 	align	2
-unk_2F674:  binclude    "misc/mapeni/2F674.bin"
+unk_2F674:  binclude    "scenes/mapeni/2F674.bin"
 	align	2
-unk_2F76A:  binclude    "misc/mapeni/2F76A.bin"
+unk_2F76A:  binclude    "scenes/mapeni/2F76A.bin"
 	align	2
-unk_2F7D0:  binclude    "misc/mapeni/2F7D0.bin"
+unk_2F7D0:  binclude    "scenes/mapeni/2F7D0.bin"
 	align	2
-unk_2F840:  binclude    "misc/mapeni/2F840.bin"
+unk_2F840:  binclude    "scenes/mapeni/2F840.bin"
 	align	2
-unk_2F856:  binclude    "misc/mapeni/2F856.bin"
+unk_2F856:  binclude    "scenes/mapeni/2F856.bin"
 	align	2
-unk_2F882:  binclude    "misc/mapeni/2F882.bin"
+unk_2F882:  binclude    "scenes/mapeni/2F882.bin"
 	align	2
-unk_2F8D2:  binclude    "misc/mapeni/2F8D2.bin"
+unk_2F8D2:  binclude    "scenes/mapeni/2F8D2.bin"
 	align	2
-unk_2F94E:  binclude    "misc/mapeni/2F94E.bin"
+unk_2F94E:  binclude    "scenes/mapeni/2F94E.bin"
 	align	2
-unk_2F9DE:  binclude    "misc/mapeni/2F9DE.bin"
+unk_2F9DE:  binclude    "scenes/mapeni/2F9DE.bin"
 	align	2
-unk_2FAA8:  binclude    "misc/mapeni/2FAA8.bin"
+unk_2FAA8:  binclude    "scenes/mapeni/2FAA8.bin"
 	align	2
-unk_2FB76:  binclude    "misc/mapeni/2FB76.bin"
+unk_2FB76:  binclude    "scenes/mapeni/2FB76.bin"
 	align	2
-unk_2FC3A:  binclude    "misc/mapeni/2FC3A.bin"
+unk_2FC3A:  binclude    "scenes/mapeni/2FC3A.bin"
 	align	2
-unk_2FCE4:  binclude    "misc/mapeni/2FCE4.bin"
+unk_2FCE4:  binclude    "scenes/mapeni/2FCE4.bin"
 	align	2
-unk_2FDA6:  binclude    "misc/mapeni/2FDA6.bin"
+unk_2FDA6:  binclude    "scenes/mapeni/2FDA6.bin"
 	align	2
-unk_2FDCE:  binclude    "misc/mapeni/2FDCE.bin"
+unk_2FDCE:  binclude    "scenes/mapeni/2FDCE.bin"
 	align	2
-unk_2FDE0:  binclude    "misc/mapeni/2FDE0.bin"
+unk_2FDE0:  binclude    "scenes/mapeni/2FDE0.bin"
 	align	2
 
 		dc.b   0
@@ -66486,17 +66486,17 @@ ArtSom_9A7D2:
 	align	2
 
 unk_9AA50:	dc.w	$10
-	binclude	"misc/artunc/unknown_1.bin"
+	binclude	"scenes/artunc/unknown_1.bin"
 unk_9AC52:	dc.w	$10
-	binclude	"misc/artunc/unknown_2.bin"
+	binclude	"scenes/artunc/unknown_2.bin"
 unk_9AE54:	dc.w	$10
-	binclude	"misc/artunc/unknown_3.bin"
+	binclude	"scenes/artunc/unknown_3.bin"
 unk_9B056:	dc.w	$10
-	binclude	"misc/artunc/unknown_4.bin"
+	binclude	"scenes/artunc/unknown_4.bin"
 unk_9B258:	dc.w	$10
-	binclude	"misc/artunc/unknown_grid_1.bin"
+	binclude	"scenes/artunc/unknown_grid_1.bin"
 unk_9B45A:	dc.w	$10
-	binclude	"misc/artunc/unknown_grid_2.bin"
+	binclude	"scenes/artunc/unknown_grid_2.bin"
 
 unk_9B65C:	dc.b   0
 		dc.b   8

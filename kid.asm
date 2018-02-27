@@ -1060,17 +1060,17 @@ loc_604:
 
 loc_61C:
 		; clear entire	VRAM
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		move.w	#$3FFF,d0
 		moveq	#0,d1
 loc_62A:
 		move.l	d1,(a6)
 		dbf	d0,loc_62A
-		move.l	#$54000000,4(a6)
+		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		moveq	#0,d0
 		move.w	d0,(a6)
 		move.w	d0,(a6)
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d0,(a6)
 		move.w	#$FFFF,($FFFFFC32).w
@@ -1119,7 +1119,7 @@ loc_6E2:
 
 loc_700:
 		; clear entire	VRAM
-		move.l	#$40000000,4(a6) 
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6) 
 		move.w	#$3FFF,d0
 		moveq	#0,d1
 loc_70E:
@@ -1330,7 +1330,7 @@ loc_8FE:
 sub_914:
 		addq.b	#1,($FFFFF805).w
 		move	#$2700,sr
-		jsr	(sub_E1304).l
+		jsr	(j_Stop_z80).l
 		rts
 ; End of function sub_914
 
@@ -1343,7 +1343,7 @@ sub_924:
 		bgt.s	return_938
 		clr.b	($FFFFF805).w
 		move	#$2500,sr
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 
 return_938:
 		rts
@@ -1399,14 +1399,9 @@ loc_964:
 sub_970:
 		tst.b	($FFFFF890).w
 		bne.s	return_9AC
-		jsr	(sub_E1304).l
-		move.l	#$93409400,4(a6)
-		move.l	#$952C96A7,4(a6)
-		move.w	#$977F,4(a6)
-		move.l	#$C0000080,($FFFFF800).w
-		move.w	($FFFFF800).w,4(a6)
-		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Stop_z80).l
+		dma68kToVDP	$FFFF4E58,$0000,$80,CRAM
+		jsr	(j_Start_z80).l
 
 return_9AC:
 		rts
@@ -1555,15 +1550,10 @@ sub_A5C:
 		sf	-5(a4)
 
 loc_A70:
-		jsr	(sub_E1304).l
-		move.l	#$93409401,4(a6)
-		move.l	#$95009680,4(a6)
-		move.w	#$977F,4(a6)
-		move.l	#$50000080,($FFFFF800).w
-		move.w	($FFFFF800).w,4(a6)
-		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
-		jsr	(sub_E1304).l
+		jsr	(j_Stop_z80).l
+		dma68kToVDP	$FFFF0000,$1000,$280,VRAM
+		jsr	(j_Start_z80).l
+		jsr	(j_Stop_z80).l
 		tst.b	($FFFFFB49).w
 		bne.w	loc_B36
 		move.l	($FFFFF838).w,a0
@@ -1575,19 +1565,19 @@ loc_AC2:
 		move.w	#0,(a0)
 		lea	4(a6),a5
 		lea	($FFFF0500).l,a0
-		move.w	#$C4A0,d2
+		move.w	#$C4A0,d2	; d2 = DMA destination address
 
 loc_AD4:
-		move.w	(a0)+,d0
+		move.w	(a0)+,d0	; d0 = DMA length in tiles
 		beq.s	loc_B36
-		move.l	(a0)+,d1
-		lsl.w	#4,d0
+		move.l	(a0)+,d1	; d1 = DMA source address
+		lsl.w	#4,d0		; DMA length in words
 		move.w	#$9300,d3
 		move.b	d0,d3
 		move.w	d3,(a5)
 		move.w	d0,d3
 		lsr.w	#8,d3
-		addi.w	#-$6C00,d3
+		addi.w	#$9400,d3
 		move.w	d3,(a5)
 		lsr.l	#1,d1
 		move.w	#$9500,d3
@@ -1595,7 +1585,7 @@ loc_AD4:
 		move.w	d3,(a5)
 		move.w	d1,d3
 		lsr.w	#8,d3
-		addi.w	#-$6A00,d3
+		addi.w	#$9600,d3
 		move.w	d3,(a5)
 		move.w	#$9700,d3
 		swap	d1
@@ -1620,7 +1610,7 @@ loc_B24:
 ; ---------------------------------------------------------------------------
 
 loc_B36:
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		jsr	(sub_22C).w
 		rts
 ; ---------------------------------------------------------------------------
@@ -6145,7 +6135,7 @@ loc_4534:
 		move.b	(a4),d6
 		ext.w	d6
 		move.l	off_451C(pc,d6.w),a4
-		move.l	#$47200001,4(a6)
+		move.l	#vdpComm($4720,VRAM,WRITE),4(a6)
 		bsr.s	sub_44D0
 
 loc_4546:
@@ -6186,7 +6176,7 @@ loc_4586:
 		move.b	(a4),d6
 		ext.w	d6
 		move.l	off_457A(pc,d6.w),a4
-		move.l	#$46200001,4(a6)
+		move.l	#vdpComm($4620,VRAM,WRITE),4(a6)
 		bsr.w	sub_44D0
 
 loc_459A:
@@ -6227,7 +6217,7 @@ loc_45DA:
 		move.b	(a4),d6
 		ext.w	d6
 		move.l	off_45CE(pc,d6.w),a4
-		move.l	#$46A00001,4(a6)
+		move.l	#vdpComm($46A0,VRAM,WRITE),4(a6)
 		bsr.w	sub_44D0
 
 loc_45EE:
@@ -6333,28 +6323,28 @@ ArtSom_5C83:   binclude    "ingame/artcomp/Vertical_platform.bin"
 sub_5D4A:
 		addi.l	#off_7B0AC,a0
 		move.l	(a0),d1
-		addq.l	#2,d1
-		jsr	(sub_E1304).l
-		move.l	#$93009401,4(a6)
+		addq.l	#2,d1		; d1 = DMA source address
+		jsr	(j_Stop_z80).l
+		move.l	#$93009401,4(a6)	; DMA length: $200
 		move.l	d1,d0
 		lsr.l	#1,d0
 		move.w	d0,d1
 		andi.w	#$FF,d1
 
 loc_5D6C:
-		addi.w	#-$6B00,d1
+		addi.w	#$9500,d1
 		move.w	d1,4(a6)
 		move.w	d0,d1
 		lsr.w	#8,d1
-		addi.w	#-$6A00,d1
+		addi.w	#$9600,d1
 		move.w	d1,4(a6)
 		swap	d0
-		addi.w	#-$6900,d0
+		addi.w	#$9700,d0
 		move.w	d0,4(a6)
-		move.l	#$5D400083,($FFFFF800).w
+		move.l	#vdpComm($DD40,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		rts
 ; End of function sub_5D4A
 
@@ -6363,26 +6353,26 @@ loc_5D6C:
 
 
 sub_5DA6:
-		move.l	a1,d1
-		jsr	(sub_E1304).l
-		move.l	#$93409401,4(a6)
+		move.l	a1,d1		; d1 = DMA source address
+		jsr	(j_Stop_z80).l
+		move.l	#$93409401,4(a6)	; DMA length: $280
 		move.l	d1,d0
 		lsr.l	#1,d0
 		move.w	d0,d1
 		andi.w	#$FF,d1
-		addi.w	#-$6B00,d1
+		addi.w	#$9500,d1
 		move.w	d1,4(a6)
 		move.w	d0,d1
 		lsr.w	#8,d1
-		addi.w	#-$6A00,d1
+		addi.w	#$9600,d1
 		move.w	d1,4(a6)
 		swap	d0
-		addi.w	#-$6900,d0
+		addi.w	#$9700,d0
 		move.w	d0,4(a6)
-		move.l	#$53400083,($FFFFF800).w
+		move.l	#vdpComm($D340,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		rts
 ; End of function sub_5DA6
 
@@ -7164,18 +7154,13 @@ loc_68AC:
 loc_68C0:
 		addq.w	#8,a0
 		dbf	d3,loc_68AC
-		jsr	(sub_E1304).l
-		move.l	#$93409401,4(a6)
-		move.l	#$95009680,4(a6)
-		move.w	#$977F,4(a6)
-		move.l	#$50000080,($FFFFF800).w
-		move.w	($FFFFF800).w,4(a6)
-		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Stop_z80).l
+		dma68kToVDP	$FFFF0000,$1000,$280,VRAM
+		jsr	(j_Start_z80).l
 		lea	word_6552(pc),a0
 		move.w	(a0)+,d0
 		subq.w	#1,d0
-		move.l	#$4EC00003,4(a6)
+		move.l	#vdpComm($CEC0,VRAM,WRITE),4(a6)
 
 loc_690C:
 		move.l	(a0)+,(a6)
@@ -7378,13 +7363,16 @@ loc_6A84:
 		swap	d1
 		move.w	#0,d1
 
-loc_6AE0:
+;6AE0
+Game_Paused_Loop:
 		jsr	(j_WaitForVint).w
 		jsr	(j_ReadJoypad).w
 		bclr	#0,($FFFFF813).w
 		beq.s	loc_6B0E
+		; up pressed
 		tst.b	($FFFFFAD1).w
 		beq.s	loc_6B32
+		; move cursor up
 		move.l	d0,4(a6)
 		move.w	#$867C,(a6)
 		move.l	d1,4(a6)
@@ -7396,8 +7384,10 @@ loc_6AE0:
 loc_6B0E:
 		bclr	#1,($FFFFF813).w
 		beq.s	loc_6B32
+		; down pressed
 		tst.b	($FFFFFAD1).w
 		bne.s	loc_6B32
+		; move cursor down
 		move.l	d0,4(a6)
 		move.w	#$8678,(a6)
 		move.l	d1,4(a6)
@@ -7406,11 +7396,14 @@ loc_6B0E:
 
 loc_6B32:
 		bclr	#7,($FFFFF813).w
-		beq.s	loc_6AE0
+		beq.s	Game_Paused_Loop
+		; start pressed
 		tst.b	($FFFFFAD1).w
 		beq.s	loc_6B68
+		; restart level/give up
 		subi.w	#1,($FFFFFC3E).w
 		beq.s	loc_6B62
+		; lives left --> restart level
 		clr.w	($FFFFFC4A).w
 		clr.w	($FFFFFC46).w
 		move.w	#2,($FFFFFC40).w
@@ -7419,10 +7412,10 @@ loc_6B32:
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
 
-loc_6B62:
+loc_6B62:	; this was the last life
 		move.b	#3,($FFFFFAD0).w
 
-loc_6B68:
+loc_6B68:	; continue game
 		move.w	($FFFFF81C).w,d0
 		addi.w	#$60,d0
 		lsr.w	#3,d0
@@ -15909,7 +15902,7 @@ loc_BCEA:
 loc_BCF6:
 		move.w	d6,($FFFFFC44).w
 		st	($FFFFFC29).w
-		move.w	#$EE,($FFFFFBCC).w
+		move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp?
 		moveq	#-5,d6
 		bra.w	loc_B84E
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -16358,7 +16351,7 @@ loc_C10A:
 		lea	MapEni_CC0E(pc),a0
 		lea	($FFFF77B2).l,a1
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		moveq	#$1B,d1
 		lea	($FFFF77B2).l,a0
 
@@ -16618,7 +16611,7 @@ loc_C34E:
 
 
 sub_C378:
-		move.l	#$30000003,4(a6)
+		move.l	#vdpComm($F000,VRAM,READ),4(a6)
 		lea	($FFFF77B2).l,a0
 		move.w	#$3FF,d0
 
@@ -16633,7 +16626,7 @@ loc_C392:
 		move.w	#$80,d2
 		lea	($FFFF77B2).l,a0
 		bsr.w	sub_C3DA
-		move.l	#$70000003,4(a6)
+		move.l	#vdpComm($F000,VRAM,WRITE),4(a6)
 		lea	($FFFF77B2).l,a0
 		move.w	#$7F,d3
 
@@ -24511,7 +24504,7 @@ loc_11C36:
 		move.w	#$FFFF,($FFFF0280).l
 		move.l	(a0)+,a1	; block	layout
 		lea	($FFFF3B24).l,a5
-		bsr.w	LoadBlockLayout
+		bsr.w	LoadBlockLayout	; into temp buffer at $FFFF77B2?
 		cmpi.w	#$21,($FFFFFC44).w
 		bne.s	loc_11C7E
 		move.w	#$E50B,($FFBCEA).l
@@ -24793,7 +24786,7 @@ loc_11EFA:
 		jsr	(sub_DEE2).l
 		bsr.w	sub_14244
 		jsr	(sub_3F57A).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		move.w	#$7FF,d0
 
 loc_11F48:
@@ -24886,10 +24879,10 @@ unk_1201E:	dc.b   0
 loc_1202A:
 		move.l	#LnkTo_unk_9784A,a0
 		move.l	(a0),d2
-		addq.l	#2,d2
-		jsr	(sub_E1304).l
+		addq.l	#2,d2		; d2 = DMA source address
+		jsr	(j_Stop_z80).l
 		lsr.l	#1,d2
-		move.l	#$93709401,4(a6)
+		move.l	#$93709401,4(a6)	; DMA length: $2E0
 		move.w	#$9500,d4
 		move.b	d2,d4
 		move.w	d4,4(a6)
@@ -24901,10 +24894,10 @@ loc_1202A:
 		lsr.l	#8,d2
 		move.b	d2,d4
 		move.w	d4,4(a6)
-		move.l	#$76000083,($FFFFF800).w
+		move.l	#vdpComm($F600,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		moveq	#1,d3
 		moveq	#1,d2
 		moveq	#1,d1
@@ -24924,10 +24917,10 @@ loc_12098:
 		add.w	d4,d4
 		move.l	(a4,d4.w),a4
 		move.l	(a4),d5
-		addq.l	#2,d5
-		jsr	(sub_E1304).l
+		addq.l	#2,d5		; d5 = DMA source address
+		jsr	(j_Stop_z80).l
 		lsr.l	#1,d5
-		move.l	#$93609400,4(a6)
+		move.l	#$93609400,4(a6)	; DMA length: $C0
 		move.w	#$9500,d4
 		move.b	d5,d4
 		move.w	d4,4(a6)
@@ -24939,10 +24932,10 @@ loc_12098:
 		lsr.l	#8,d5
 		move.b	d5,d4
 		move.w	d4,4(a6)
-		move.l	#$76000083,($FFFFF800).w
+		move.l	#vdpComm($F600,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		move.w	#9,$44(a5)
 
 loc_12110:
@@ -24956,10 +24949,10 @@ loc_12110:
 		add.w	d4,d4
 		move.l	(a4,d4.w),a4
 		move.l	(a4),d5
-		addi.l	#$C2,d5
-		jsr	(sub_E1304).l
+		addi.l	#$C2,d5		; d5 = DMA source address
+		jsr	(j_Stop_z80).l
 		lsr.l	#1,d5
-		move.l	#$93509400,4(a6)
+		move.l	#$93509400,4(a6)	; DMA length: $A0
 		move.w	#$9500,d4
 		move.b	d5,d4
 		move.w	d4,4(a6)
@@ -24971,10 +24964,10 @@ loc_12110:
 		lsr.l	#8,d5
 		move.b	d5,d4
 		move.w	d4,4(a6)
-		move.l	#$76C00083,($FFFFF800).w
+		move.l	#vdpComm($F6C0,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		move.w	#9,$46(a5)
 
 loc_12188:
@@ -24995,10 +24988,10 @@ loc_121A6:
 		add.w	d4,d4
 		move.l	(a4,d4.w),a4
 		move.l	(a4),d5
-		addi.l	#$162,d5
-		jsr	(sub_E1304).l
+		addi.l	#$162,d5		; d5 = DMA source address
+		jsr	(j_Stop_z80).l
 		lsr.l	#1,d5
-		move.l	#$93C09400,4(a6)
+		move.l	#$93C09400,4(a6)	; DMA length: $180
 		move.w	#$9500,d4
 		move.b	d5,d4
 		move.w	d4,4(a6)
@@ -25010,10 +25003,10 @@ loc_121A6:
 		lsr.l	#8,d5
 		move.b	d5,d4
 		move.w	d4,4(a6)
-		move.l	#$77600083,($FFFFF800).w
+		move.l	#vdpComm($F760,VRAM,DMA),($FFFFF800).w
 		move.w	($FFFFF800).w,4(a6)
 		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Start_z80).l
 		bra.w	loc_12098
 ; ---------------------------------------------------------------------------
 off_1220E:	dc.l LnkTo_unk_9784A
@@ -26020,7 +26013,7 @@ return_129CC:
 
 
 sub_129CE:
-		move.l	#$4DC00003,4(a6)
+		move.l	#vdpComm($CDC0,VRAM,WRITE),4(a6)
 		lea	ArtUnc_12A08(pc),a1
 		moveq	#$1F,d0
 
@@ -26033,7 +26026,7 @@ loc_129DC:
 loc_129E8:
 		move.l	(a1)+,(a6)
 		dbf	d0,loc_129E8
-		move.l	#$5F400003,4(a6)
+		move.l	#vdpComm($DF40,VRAM,WRITE),4(a6)
 		lea	ArtUnc_12B0C(pc),a1
 		moveq	#$1F,d0
 
@@ -26059,7 +26052,7 @@ ArtUnc_12B0C:  binclude    "ingame/artunc/Some_kind_of_star.bin"
 
 
 sub_12B8C:
-		move.l	#$52C00003,4(a6)
+		move.l	#vdpComm($D2C0,VRAM,WRITE),4(a6)
 		lea	ArtUnc_12BA4(pc),a1
 		move.w	#$1F,d0
 
@@ -26075,7 +26068,7 @@ ArtUnc_12BA4:  binclude    "ingame/artunc/Flag_bottom.bin"
 
 
 sub_12C24:
-		move.l	#$45A00001,4(a6)
+		move.l	#vdpComm($45A0,VRAM,WRITE),4(a6)
 		lea	ArtUnc_12C3C(pc),a1
 		move.w	#$1F,d0
 
@@ -26129,13 +26122,13 @@ loc_12DFE:
 		move.w	(a2)+,(a3)+
 		dbf	d7,loc_12DFE
 		move.w	#$80BC,d1
-		move.l	#$461C0000,4(a6)
+		move.l	#vdpComm($061C,VRAM,WRITE),4(a6)
 		bsr.w	sub_12E3C
-		move.l	#$469C0000,4(a6)
+		move.l	#vdpComm($069C,VRAM,WRITE),4(a6)
 		bsr.w	sub_12E3C
-		move.l	#$471C0000,4(a6)
+		move.l	#vdpComm($071C,VRAM,WRITE),4(a6)
 		bsr.w	sub_12E3C
-		move.l	#$479C0000,4(a6)
+		move.l	#vdpComm($079C,VRAM,WRITE),4(a6)
 		bsr.w	sub_12E3C
 		bra.w	loc_12E48
 
@@ -28277,7 +28270,7 @@ loc_14552:
 		dbf	d1,loc_1453E
 		move.l	d5,(a1)+
 		dbf	d0,loc_14538
-		move.l	#$5E600001,4(a6)
+		move.l	#vdpComm($5E60,VRAM,WRITE),4(a6)
 		lea	($FFFF78B2).l,a0
 		moveq	#$3F,d0
 
@@ -28322,11 +28315,11 @@ loc_1459A:
 ; End of function sub_14582
 
 ; ---------------------------------------------------------------------------
-off_145A2:	dc.l loc_14C36
-		dc.l loc_14CBA
-		dc.l loc_14CBA
-		dc.l loc_14DE4
-		dc.l return_14E6C
+off_145A2:	dc.l loc_14C36	; 1: lava
+		dc.l loc_14CBA	; 2: storm
+		dc.l loc_14CBA	; 3: storm+hail
+		dc.l loc_14DE4	; 4: ?
+		dc.l return_14E6C	; 5: nothing
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -29099,6 +29092,9 @@ loc_14B2A:
 ; End of function sub_14B28
 
 ; ---------------------------------------------------------------------------
+; lava fountain positions.
+; first word: number of entries (3 words each)
+; each entry: x-pos, y-pos, height
 unk_14B60:	dc.b   0
 		dc.b   3
 		dc.b   1
@@ -29250,10 +29246,11 @@ loc_14BE8:
 ; End of function sub_14BD8
 
 ; ---------------------------------------------------------------------------
-off_14C26:	dc.l unk_14B60
-		dc.l unk_14B74
-		dc.l unk_14B74
-		dc.l unk_14BC4
+; address table for lava fountain positions
+off_14C26:	dc.l unk_14B60	; Under Skull Mountain 2
+		dc.l unk_14B74	; Under Skull Mountain 3
+		dc.l unk_14B74	; The Black Pit
+		dc.l unk_14BC4	; everything else
 ; ---------------------------------------------------------------------------
 
 loc_14C36:
@@ -29261,13 +29258,13 @@ loc_14C36:
 		move.l	(LnkTo_MapOrder_Index).l,a0
 		move.b	(a0,d0.w),d0
 		clr.w	d1
-		cmpi.b	#0,d0
+		cmpi.b	#0,d0	; Under Skull Mountain 2
 		beq.s	loc_14C5E
 		addq.w	#1,d1
-		cmpi.w	#2,d0
+		cmpi.w	#2,d0	; Under Skull Mountain 3
 		beq.s	loc_14C5E
 		addq.w	#1,d1
-		cmpi.w	#4,d0
+		cmpi.w	#4,d0	; The Black Pit
 		beq.s	loc_14C5E
 		addq.w	#1,d1
 
@@ -29353,7 +29350,7 @@ loc_14D1E:
 		move.l	a0,a3
 
 loc_14D32:
-		move.l	#$60000001,4(a6)
+		move.l	#vdpComm($6000,VRAM,WRITE),4(a6)
 		moveq	#3,d2
 
 loc_14D3C:
@@ -29380,7 +29377,7 @@ loc_14D40:
 		dbf	d1,loc_14D3E
 		move.l	a3,a0
 		dbf	d2,loc_14D3C
-		cmpi.w	#2,($FFFFFB40).w
+		cmpi.w	#2,($FFFFFB40).w	; rain?
 		beq.s	loc_14D82
 		move.l	(LnkTo_Pal_7B85C).l,($FFFFFADE).w
 		bra.s	loc_14D8A
@@ -29419,7 +29416,7 @@ loc_14DAC:
 
 loc_14DE4:
 		move.l	(LnkTo_unk_9AA50).l,a0
-		move.l	#$70000001,4(a6)
+		move.l	#vdpComm($7000,VRAM,WRITE),4(a6)
 		move.w	(a0)+,d0
 		subq.w	#1,d0
 
@@ -29445,7 +29442,8 @@ loc_14DF6:
 		move.l	d6,d4
 		move.l	d7,d3
 		move.l	#$40004,d5
-		move.l	#$60000001,4(a6)
+		move.l	#vdpComm($6000,VRAM,WRITE),4(a6)
+		; fill a piece of the foreground plane with stuff.
 		moveq	#7,d2
 
 loc_14E42:
@@ -29464,8 +29462,8 @@ loc_14E46:
 		move.l	d3,d7
 		move.l	d4,d6
 		dbf	d2,loc_14E42
-		move.w	#$8218,4(a6)
-		move.w	#$8400,4(a6)
+		move.w	#$8218,4(a6)	; foreground plane to address $6000
+		move.w	#$8400,4(a6)	; background plane to address 0
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -29550,7 +29548,7 @@ TitleCardArt_Index:
 
 Load_TitleCard:
 		jsr	(sub_208).w
-		move.l	#$54000000,4(a6)
+		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
 		move.w	#0,d0
 		neg.w	d0
@@ -29560,7 +29558,7 @@ loc_19ABE:
 		move.w	d0,(a6)
 		dbf	d1,loc_19ABE
 		move.w	#0,d0
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d0,(a6)
 		jsr	(sub_20C).w
@@ -29592,14 +29590,14 @@ loc_19ABE:
 		movem.l	d0-d7,-(sp)
 		jsr	(j_EniDec).l
 		movem.l	(sp)+,d0-d7
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		move.w	#$7FF,d0
 		move.w	#$94,d1
 
 loc_19B58:
 		move.w	d1,(a6)
 		dbf	d0,loc_19B58
-		move.l	#$52800000,4(a6)
+		move.l	#vdpComm($1280,VRAM,WRITE),4(a6)
 		moveq	#$F,d0
 		moveq	#0,d1
 
@@ -29614,7 +29612,7 @@ loc_19B6A:
 loc_19B80:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_19B80
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		lea	($FFFF77B2).l,a0
 		lea	(TitleCardSize_Index).l,a4
 		add.w	d6,d6
@@ -30229,7 +30227,7 @@ Load_IntroSequence2:
 		lea	($FFFF77B2).l,a1
 		jsr	(j_EniDec).l
 		bsr.w	sub_1B7B6
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1CD88
 		move.w	#$FA60,d0
 		lea	ArtSom_1DA86_LettersNumbers(pc),a0
@@ -30272,7 +30270,7 @@ Load_IntroSequence4:
 		add.w	(off_718A).w,a0
 		lea	($FFFF77B2).l,a1
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1CD88
 		move.w	#$FA60,d0
 		lea	ArtSom_1DA86_LettersNumbers(pc),a0
@@ -30310,7 +30308,7 @@ loc_1B100:
 		move.l	#MapEni_2E154,a0
 		lea	($FFFF77B2).l,a1
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1CD88
 		move.w	#$FA60,d0
 		lea	ArtSom_1DA86_LettersNumbers(pc),a0
@@ -30327,20 +30325,20 @@ loc_1B100:
 ; ---------------------------------------------------------------------------
 
 Load_IntroSequence6:
-		move.l	#$57800000,4(a6)
+		move.l	#vdpComm($1780,VRAM,WRITE),4(a6)
 		moveq	#7,d0
 		move.l	#$11111111,d1
 
 loc_1B170:
 		move.l	d1,(a6)
 		dbf	d0,loc_1B170
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		move.w	#$7FF,d0
 
 loc_1B182:
 		move.w	#$20BC,(a6)
 		dbf	d0,loc_1B182
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		moveq	#$D,d0
 
 loc_1B194:
@@ -30407,7 +30405,7 @@ loc_1B23A:
 Load_TitleScreen:
 		move.w	#3,d0
 		jsr	(j_PlaySound).l
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		move.w	#$7FF,d0
 
 loc_1B258:
@@ -30461,7 +30459,7 @@ loc_1B2D8:
 		lea	($FFFF77B2).l,a1
 		move.l	a1,a4
 		jsr	(j_EniDec).l
-		move.l	#$70000003,4(a6)
+		move.l	#vdpComm($F000,VRAM,WRITE),4(a6)
 		lea	unk_1B32C(pc),a0
 		moveq	#$1F,d0
 
@@ -30612,7 +30610,7 @@ sub_1B41C:
 		lsl.w	#7,d4
 		move.l	#ArtUnc_2A4D6,a4
 		add.w	d4,a4
-		move.l	#$57A00000,4(a6)
+		move.l	#vdpComm($17A0,VRAM,WRITE),4(a6)
 		moveq	#$1F,d4
 
 loc_1B432:
@@ -30746,7 +30744,7 @@ loc_1B51A:
 
 
 sub_1B532:
-		move.l	#$57800000,4(a6)
+		move.l	#vdpComm($1780,VRAM,WRITE),4(a6)
 		moveq	#7,d0
 		moveq	#0,d1
 
@@ -30758,7 +30756,7 @@ loc_1B53E:
 		lea	($FFFF77B2).l,a1
 		move.l	a1,a4
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		moveq	#$1B,d0
 
 loc_1B566:
@@ -31164,7 +31162,7 @@ sub_1B850:
 		lea	($FFFF77B2).l,a1
 		move.l	a1,a4
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		moveq	#$1B,d0
 
 loc_1B8E4:
@@ -31952,7 +31950,7 @@ off_1C126:	dc.l unk_2F856
 
 
 sub_1C180:
-		move.l	#$57800000,4(a6)
+		move.l	#vdpComm($1780,VRAM,WRITE),4(a6)
 		move.w	#$2BF,d3
 		lea	($FFFFB152).w,a1
 		lea	($FFFFA652).w,a0
@@ -32590,7 +32588,7 @@ Load_OptionMenu:
 		add.w	(off_718A).w,a0
 		lea	($FFFF77B2).l,a1
 		jsr	(j_EniDec).l
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1CD88
 		move.w	#$9B80,d0
 		lea	ArtSom_1DA86_LettersNumbers(pc),a0
@@ -32842,7 +32840,7 @@ loc_1CCAA:
 
 sub_1CCAE:
 		move.w	4(a6),d0
-		move.l	#$15800001,4(a6)
+		move.l	#vdpComm($5580,VRAM,READ),4(a6)
 		lea	($FFFFA652).w,a0
 		move.w	#$45F,d0
 
@@ -32850,7 +32848,7 @@ loc_1CCC2:
 		bsr.w	sub_1CD20
 		bsr.w	sub_1CD32
 		dbf	d0,loc_1CCC2
-		move.l	#$78800001,4(a6)
+		move.l	#vdpComm($7880,VRAM,WRITE),4(a6)
 		lea	($FFFFA652).w,a0
 		move.w	#$117F,d0
 
@@ -32861,7 +32859,7 @@ loc_1CCDE:
 
 loc_1CCE8:
 		dbf	d0,loc_1CCE8
-		move.l	#$15800001,4(a6)
+		move.l	#vdpComm($5580,VRAM,READ),4(a6)
 		lea	($FFFFA652).w,a0
 		move.w	#$45F,d0
 
@@ -32869,7 +32867,7 @@ loc_1CCFC:
 		bsr.w	sub_1CD32
 		bsr.w	sub_1CD20
 		dbf	d0,loc_1CCFC
-		move.l	#$55800001,4(a6)
+		move.l	#vdpComm($5580,VRAM,WRITE),4(a6)
 		lea	($FFFFA652).w,a0
 		move.w	#$117F,d0
 
@@ -32922,7 +32920,7 @@ loc_1CD5A:
 		bclr	#$F,d6
 		move.w	d6,(a4)+
 		dbf	d7,loc_1CD5A
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		lea	($FFFF77B2).l,a4
 		move.w	#$7FF,d7
 
@@ -33542,12 +33540,12 @@ Load_EndSequence:
 		clr.w	($FFFFF820).w
 		bsr.w	sub_1DA24
 		bsr.w	sub_1DA72
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1DA62
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1DA62
 		bsr.s	sub_1D0EC
-		move.l	#$40000000,4(a6)
+		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1CD88
 		move.w	#$27C0,d0
 		lea	byte_1FC20(pc),a0
@@ -33652,7 +33650,7 @@ loc_1D270:
 		move.w	#6,-(sp)
 		jsr	(sub_248).w
 		dbf	d0,loc_1D270
-		move.l	#$60000003,4(a6)
+		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1DA62
 		jsr	(sub_24C).w
 		move.w	#$8238,4(a6)
@@ -34909,11 +34907,11 @@ sub_1DA24:
 		movem.l	d6-d7,-(sp)
 		jsr	(sub_208).w
 		move.w	($FFFFF820).w,d7
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d7,(a6)
 		moveq	#0,d7
 		move.w	d7,(a6)
-		move.l	#$54000000,4(a6)
+		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	($FFFFF81C).w,d7
 		neg.w	d7
 		move.w	#$DF,d6
@@ -34946,7 +34944,7 @@ loc_1DA6A:
 
 
 sub_1DA72:
-		move.l	#$52800000,4(a6)
+		move.l	#vdpComm($1280,VRAM,WRITE),4(a6)
 		moveq	#$F,d0
 		moveq	#0,d1
 
@@ -35282,7 +35280,7 @@ loc_3009A:
 
 loc_300BA:
 		move.w	($FFFFF820).w,d0
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		lsr.w	#2,d0
 		tst.b	($FFFFFB4A).w
@@ -35291,14 +35289,9 @@ loc_300BA:
 
 loc_300D2:
 		move.w	d0,(a6)
-		jsr	(sub_E1304).l
-		move.l	#$93C09401,4(a6)
-		move.l	#$951996BA,4(a6)
-		move.w	#$977F,4(a6)
-		move.l	#$54000080,($FFFFF800).w
-		move.w	($FFFFF800).w,4(a6)
-		move.w	($FFFFF802).w,4(a6)
-		jsr	(loc_E1308).l
+		jsr	(j_Stop_z80).l
+		dma68kToVDP	$FFFF7432,$1400,$380,VRAM
+		jsr	(j_Start_z80).l
 		jsr	(sub_20C).w
 		rts
 ; ---------------------------------------------------------------------------
@@ -35306,7 +35299,7 @@ loc_300D2:
 loc_30110:
 		jsr	(sub_208).w
 		move.w	#$8403,4(a6)
-		move.l	#$54000000,4(a6)
+		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
 		move.w	($FFFFF81C).w,d0
 		move.w	($FFFFFAD8).w,d2
@@ -35317,7 +35310,7 @@ loc_30130:
 		move.w	d2,(a6)
 		dbf	d1,loc_30130
 		move.w	($FFFFF820).w,d0
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d2,(a6)
 		move.b	#4,($FFFFFAD6).w
@@ -35328,7 +35321,7 @@ loc_30130:
 
 loc_30158:
 		jsr	(sub_208).w
-		move.l	#$54000000,4(a6)
+		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
 		move.w	($FFFFF81C).w,d0
 		move.w	($FFFFFAD8).w,d2
@@ -35341,7 +35334,7 @@ loc_30172:
 		move.w	($FFFFF820).w,d0
 
 loc_3017E:
-		move.l	#$40000010,4(a6)
+		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d0,(a6)
 		subq.w	#8,($FFFFFAD8).w
@@ -68977,7 +68970,7 @@ unk_BF714:  sprite_frame_unc    $17, $01, $2F, $0D, "ingame/artunc_kid/juggernau
 unk_BF89A:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_unknown_BF89A.bin"
 unk_BFAE0:  sprite_frame_unc    $17, $06, $30, $14, "ingame/artunc_kid/juggernaut_bottom_jumping_1.bin"
 unk_BFD26:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_bottom_jumping_2.bin"
-        align   $100
+        align   $100	; DMA fails if crossing $20000 boundary
 unk_C0000:  sprite_frame_unc    $17, $04, $2F, $12, "ingame/artunc_kid/juggernaut_bottom_jumping_3.bin"
 unk_C0246:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_1.bin"
 unk_C03CC:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_2.bin"
@@ -69779,20 +69772,19 @@ unk_E11D6:  sprite_frame_vram   $018, $08, $00, $10, $1E
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_E1304:
-		jmp	sub_E1360(pc)
-; End of function sub_E1304
+;E1304
+j_Stop_z80:
+		jmp	BranchTo_Stop_z80(pc)
 
 ; ---------------------------------------------------------------------------
 
-loc_E1308:
-		jmp	sub_E1398(pc)
+;E1308
+j_Start_z80:
+		jmp	BranchTo_Start_z80(pc)
 ; ---------------------------------------------------------------------------
-		jmp	sub_E13BC(pc)
+		jmp	Stop_z80(pc)
 ; ---------------------------------------------------------------------------
-		jmp	sub_E13D0(pc)
+		jmp	Start_z80(pc)
 ; ---------------------------------------------------------------------------
 		jmp	sub_E13DA(pc)
 ; ---------------------------------------------------------------------------
@@ -69885,9 +69877,9 @@ sub_E133C:
 
 ; Attributes: thunk
 
-sub_E1360:
-		bra.w	sub_E13BC
-; End of function sub_E1360
+BranchTo_Stop_z80:
+		bra.w	Stop_z80
+; End of function BranchTo_Stop_z80
 
 ; ---------------------------------------------------------------------------
 		move.w	#$100,($A11100).l
@@ -69912,14 +69904,14 @@ return_E1396:
 
 ; Attributes: thunk
 
-sub_E1398:
-		bra.w	sub_E13D0
-; End of function sub_E1398
+BranchTo_Start_z80:
+		bra.w	Start_z80
+; End of function BranchTo_Start_z80
 
 ; ---------------------------------------------------------------------------
-		jsr	(sub_E13BC).l
+		jsr	(Stop_z80).l
 		move.b	#0,($A01A20).l
-		jsr	(sub_E13D0).l
+		jsr	(Start_z80).l
 
 loc_E13B0:
 		move.w	4(a6),d0
@@ -69929,26 +69921,22 @@ loc_E13B0:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_E13BC:
-
+Stop_z80:
 		move.w	#$100,($A11100).l
-
-loc_E13C4:
+-
 		btst	#0,($A11100).l
-		bne.s	loc_E13C4
+		bne.s	-
 		rts
-; End of function sub_E13BC
+; End of function Stop_z80
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_E13D0:
+Start_z80:
 
 		move.w	#0,($A11100).l
 		rts
-; End of function sub_E13D0
+; End of function Start_z80
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -69958,7 +69946,7 @@ sub_E13D0:
 sub_E13DA:
 		move.l	a1,-(sp)
 		move.w	#$100,($A11200).l
-		jsr	sub_E13BC(pc)	; stop Z80
+		jsr	Stop_z80(pc)	; stop Z80
 		lea	(GEMS_Sounddriver).l,a0
 		lea	(GEMS_Sounddriver_End).l,a1
 		move.l	a1,d0

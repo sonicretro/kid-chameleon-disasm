@@ -1855,15 +1855,16 @@ sub_F66:
 sub_F6E:
 	movem.l	d4-d6/a4,-(sp)
 	move.l	a3,d5
-	move.l	($FFFFF854).w,a3
-	_move.l	0(a3),($FFFFF854).w
+	move.l	($FFFFF854).w,a3	; get next available object slot
+	_move.l	0(a3),($FFFFF854).w	; next object in the list is available
 	move.l	a3,a4
+
+	; clear the data from the object slot
 	moveq	#0,d6
 	move.w	#$12,d4
+-	move.l	d6,(a4)+
+	dbf	d4,-
 
-loc_F86:
-	move.l	d6,(a4)+
-	dbf	d4,loc_F86
 	move.w	d5,8(a3)
 	beq.s	loc_FBE
 	subq.w	#1,d5
@@ -48396,44 +48397,44 @@ loc_36EA6:
 ; End of function sub_36E84
 
 ; ---------------------------------------------------------------------------
-EnemyLoad_Index:enemyloaddata	LnkTo_Pal_A1F4E-Data_Index, LnkTo_unk_CBC1C-Data_Index, loc_3A392
-
-	enemyloaddata	LnkTo_Pal_A22D4-Data_Index, LnkTo_unk_DB2BC-Data_Index, loc_3ACDA
+EnemyLoad_Index:
+	enemyloaddata	LnkTo_Pal_A1F4E-Data_Index, LnkTo_unk_CBC1C-Data_Index, loc_3A392	;00 - Walking fire guy
+	enemyloaddata	LnkTo_Pal_A22D4-Data_Index, LnkTo_unk_DB2BC-Data_Index, loc_3ACDA	;01 - Enemy diamond
 	enemyloaddata	0, 0, 0
-	enemyloaddata	LnkTo1_Pal_A2328-Data_Index, LnkTo_unk_DBA4D-Data_Index, loc_3A770
-	enemyloaddata	LnkTo_Pal_A1F08-Data_Index, LnkTo_unk_CAD8E-Data_Index, loc_3C6DC
-	enemyloaddata	LnkTo_Pal_A1FB0-Data_Index, LnkTo_unk_CCD87-Data_Index, loc_321C0
-	enemyloaddata	LnkTo_Pal_A22AA-Data_Index, LnkTo_unk_DB03A-Data_Index, loc_35EF2
-	enemyloaddata	LnkTo_Pal_A22FE-Data_Index, LnkTo_unk_D744D-Data_Index, loc_33FDA
-	enemyloaddata	LnkTo_Pal_A1EFA-Data_Index, LnkTo_unk_CA1ED-Data_Index, loc_3D158
-	enemyloaddata	LnkTo_Pal_A20AC-Data_Index, LnkTo_unk_D03E2-Data_Index, loc_3AF96
-	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B2A8
-	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B530
-	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_34664
-	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_3CD46
-	enemyloaddata	LnkTo_Pal_A2004-Data_Index, LnkTo_unk_CDAB8-Data_Index, loc_35B44
-	enemyloaddata	LnkTo2_Pal_A2328-Data_Index, LnkTo_unk_DC579-Data_Index, loc_34D54
-	enemyloaddata	LnkTo_Pal_A20D6-Data_Index, LnkTo_unk_D0B79-Data_Index, loc_3C9F8
-	enemyloaddata	LnkTo_Pal_A212A-Data_Index, LnkTo_unk_D3151-Data_Index, loc_3D518
-	enemyloaddata	LnkTo_Pal_A217E-Data_Index, LnkTo_unk_D4ED3-Data_Index, loc_3DF56
-	enemyloaddata	LnkTo_Pal_A2154-Data_Index, LnkTo_unk_D3D94-Data_Index, loc_3DB9C
-	enemyloaddata	LnkTo_Pal_A2100-Data_Index, LnkTo_unk_D1ED8-Data_Index, loc_3B84A
+	enemyloaddata	LnkTo1_Pal_A2328-Data_Index, LnkTo_unk_DBA4D-Data_Index, loc_3A770	;03 - Alien robot
+	enemyloaddata	LnkTo_Pal_A1F08-Data_Index, LnkTo_unk_CAD8E-Data_Index, loc_3C6DC	;04 - ? He charges at you
+	enemyloaddata	LnkTo_Pal_A1FB0-Data_Index, LnkTo_unk_CCD87-Data_Index, loc_321C0	;05 - Oil monster
+	enemyloaddata	LnkTo_Pal_A22AA-Data_Index, LnkTo_unk_DB03A-Data_Index, loc_35EF2	;06 - NOTHING
+	enemyloaddata	LnkTo_Pal_A22FE-Data_Index, LnkTo_unk_D744D-Data_Index, loc_33FDA	;07 - Cupid
+	enemyloaddata	LnkTo_Pal_A1EFA-Data_Index, LnkTo_unk_CA1ED-Data_Index, loc_3D158	;08 - ? He charges at you jumping in air
+	enemyloaddata	LnkTo_Pal_A20AC-Data_Index, LnkTo_unk_D03E2-Data_Index, loc_3AF96	;09 - ? He walks towards you when you're looking the other way
+	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B2A8	;0A - Robot skull
+	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B530	;0B - Robot skull (shoots)
+	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_34664	;0C - Flying dragon
+	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_3CD46	;0D - Walking dragon
+	enemyloaddata	LnkTo_Pal_A2004-Data_Index, LnkTo_unk_CDAB8-Data_Index, loc_35B44	;0E - Stormy cloud
+	enemyloaddata	LnkTo2_Pal_A2328-Data_Index, LnkTo_unk_DC579-Data_Index, loc_34D54	;0F - Alien
+	enemyloaddata	LnkTo_Pal_A20D6-Data_Index, LnkTo_unk_D0B79-Data_Index, loc_3C9F8	;10 - Bull-type guy thing
+	enemyloaddata	LnkTo_Pal_A212A-Data_Index, LnkTo_unk_D3151-Data_Index, loc_3D518	;11 - ? Slow walking, can jump in the air
+	enemyloaddata	LnkTo_Pal_A217E-Data_Index, LnkTo_unk_D4ED3-Data_Index, loc_3DF56	;12 - Lion
+	enemyloaddata	LnkTo_Pal_A2154-Data_Index, LnkTo_unk_D3D94-Data_Index, loc_3DB9C	;13 - ? Fast moving
+	enemyloaddata	LnkTo_Pal_A2100-Data_Index, LnkTo_unk_D1ED8-Data_Index, loc_3B84A	;14
 	enemyloaddata	0, 0, 0
-	enemyloaddata	LnkTo_Pal_A2082-Data_Index, LnkTo_unk_CF71D-Data_Index, loc_3333E
-	enemyloaddata	LnkTo_Pal_A2058-Data_Index, LnkTo_unk_CF02F-Data_Index, loc_32782
-	enemyloaddata	LnkTo_Pal_A1FDA-Data_Index, LnkTo_unk_CC7E0-Data_Index, loc_35898
-	enemyloaddata	LnkTo_Pal_A202E-Data_Index, LnkTo_unk_CE944-Data_Index, loc_32BBE
-	enemyloaddata	LnkTo_Pal_A2280-Data_Index, LnkTo_unk_DACAB-Data_Index, loc_3BCF0
-	enemyloaddata	LnkTo_Pal_A2202-Data_Index, LnkTo_unk_D88E7-Data_Index, loc_361AE
-	enemyloaddata	LnkTo_Pal_A2256-Data_Index, LnkTo_unk_DA75D-Data_Index, loc_3E9C8
-	enemyloaddata	LnkTo_Pal_A222C-Data_Index, LnkTo_unk_D985D-Data_Index, loc_364A0
+	enemyloaddata	LnkTo_Pal_A2082-Data_Index, LnkTo_unk_CF71D-Data_Index, loc_3333E	;16
+	enemyloaddata	LnkTo_Pal_A2058-Data_Index, LnkTo_unk_CF02F-Data_Index, loc_32782	;17
+	enemyloaddata	LnkTo_Pal_A1FDA-Data_Index, LnkTo_unk_CC7E0-Data_Index, loc_35898	;18
+	enemyloaddata	LnkTo_Pal_A202E-Data_Index, LnkTo_unk_CE944-Data_Index, loc_32BBE	;19 - Bouncing flame
+	enemyloaddata	LnkTo_Pal_A2280-Data_Index, LnkTo_unk_DACAB-Data_Index, loc_3BCF0	;1A
+	enemyloaddata	LnkTo_Pal_A2202-Data_Index, LnkTo_unk_D88E7-Data_Index, loc_361AE	;1B
+	enemyloaddata	LnkTo_Pal_A2256-Data_Index, LnkTo_unk_DA75D-Data_Index, loc_3E9C8	;1C
+	enemyloaddata	LnkTo_Pal_A222C-Data_Index, LnkTo_unk_D985D-Data_Index, loc_364A0	;1D
 	enemyloaddata	0, 0, 0
 	enemyloaddata	0, 0, 0
-	enemyloaddata	LnkTo_Pal_A2382-Data_Index, LnkTo_unk_DD8BB-Data_Index, sub_373C0
-	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332
-	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_381D6
-	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37DB4
-	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37C14
+	enemyloaddata	LnkTo_Pal_A2382-Data_Index, LnkTo_unk_DD8BB-Data_Index, sub_373C0	;20 - Heady Metal (final boss)
+	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332	;21 - NOTHING
+	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_381D6	;22 - Shiskaboss (all three heads)
+	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37DB4	;23 - Boomerang bosses (all three heads)
+	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37C14	;24 - Bagel Brothers (one head)
 unk_36FEA:	dc.b   1
 	dc.b   2
 	dc.b   2
@@ -50144,19 +50145,19 @@ loc_381D6:
 	move.w	6(a0),$1E(a3)
 	move.w	#0,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_39478,4(a0)
+	move.l	#loc_39478,4(a0)	; head 1
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_38902,4(a0)
+	move.l	#loc_38902,4(a0)	; eye 1
 	addi.w	#-$25,$1E(a3)
 	addi.w	#-$C,$1A(a3)
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_3899A,4(a0)
+	move.l	#loc_3899A,4(a0)	; eye 2
 	addi.w	#$18,$1A(a3)
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
@@ -50165,7 +50166,7 @@ loc_381D6:
 	move.w	6(a0),$1E(a3)
 	move.w	#0,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_39598,4(a0)
+	move.l	#loc_39598,4(a0)	; head 2
 	addi.w	#$48,$1E(a3)
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
@@ -50187,7 +50188,7 @@ loc_381D6:
 	move.w	6(a0),$1E(a3)
 	move.w	#0,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_396BE,4(a0)
+	move.l	#loc_396BE,4(a0)	; head 3
 	addi.w	#$90,$1E(a3)
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
@@ -50209,7 +50210,7 @@ loc_381D6:
 	move.w	6(a0),$1E(a3)
 	move.w	#0,a0
 	jsr	(j_sub_DAC).w
-	move.l	#loc_38494,4(a0)
+	move.l	#loc_38494,4(a0)	; skewer pieces?
 	addi.w	#-$5A,$1E(a3)
 	move.w	$1A(a3),$44(a0)
 	move.w	$1E(a3),$46(a0)
@@ -52053,81 +52054,21 @@ loc_39858:
 ; End of function sub_39846
 
 ; ---------------------------------------------------------------------------
-unk_39872:	dc.b   1
-	dc.b $68 ; h
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $68 ; h
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $68 ; h
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $68 ; h
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   1
-	dc.b $CC ; Ì
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $68 ; h
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $E6 ; æ
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $68 ; h
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-
+; Shishka boss heads movement
+unk_39872:
+	dc.w	$168, 0, -1
+	dc.w	$168, -1, 0
+	dc.w	$168, 0, 1
+	dc.w	$168, 1, 0
+	dc.w	$B4, 0, -2
+	dc.w	$1CC, -1, 0
+	dc.w	$168, 0, 1
+	dc.w	$E6, 2, 0
+	dc.w	$B4, -1, 0
+	dc.w	$12C, 0, 0
+	dc.w	$B4, -1, 0
+	dc.w	$168, 1, 0
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -52169,105 +52110,25 @@ loc_398D6:
 ; End of function sub_398C4
 
 ; ---------------------------------------------------------------------------
-unk_398F0:	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $FF
-
+; Boomerang boss head 1 movement
+unk_398F0:
+	dc.w	$96, 0, 0
+	dc.w	$12C, 0, -1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$12C, 0, -1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$12C, 0, 1
+	dc.w	$12C, 0, -2
+	dc.w	$12C, 0, 2
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -52309,99 +52170,24 @@ loc_3996E:
 ; End of function sub_3995C
 
 ; ---------------------------------------------------------------------------
-unk_39988:	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $FF
-
+; Boomerang boss head 2 movement
+unk_39988:
+	dc.w	$12C, 0, -1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$12C, 0, -1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$12C, 0, 1
+	dc.w	$12C, 0, -2
+	dc.w	$12C, 0, 2
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -52443,105 +52229,25 @@ loc_39A00:
 ; End of function sub_399EE
 
 ; ---------------------------------------------------------------------------
-unk_39A1A:	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $FF
-
+; Boomerang boss head 3 movement
+unk_39A1A:
+	dc.w	$C8, 0, 0
+	dc.w	$12C, 0, -1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$12C, 0, -1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, -1, 0
+	dc.w	$64, 1, 0
+	dc.w	$96, 0, 1
+	dc.w	$64, 1, 0
+	dc.w	$64, -1, 0
+	dc.w	$12C, 0, 1
+	dc.w	$C8, 0, -3
+	dc.w	$C8, 0, 3
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -52583,333 +52289,63 @@ loc_39A98:
 ; End of function sub_39A86
 
 ; ---------------------------------------------------------------------------
-unk_39AB2:	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $C2 ; Â
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b $FF
-	dc.b $FB ; û
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $C2 ; Â
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FF
-
+; Bagel Brothers head movement
+unk_39AB2:
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, -1
+	dc.w	$384, -1, 0
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$32, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$32, 0, 0
+	dc.w	$C8, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$C8, 0, 1
+	dc.w	$96, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$96, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$12C, -3, 0
+	dc.w	$C8, 0, -1
+	dc.w	$384, 1, 0
+	dc.w	$1C2, -2, 0
+	dc.w	$E1, 4, 0
+	dc.w	$B4, -5, 0
+	dc.w	$96, 6, 0
+	dc.w	$C8, 0, 1
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, -1
+	dc.w	$12C, -3, 0
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$96, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$96, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$32, 0, 0
+	dc.w	$E1, -4, 0
+	dc.w	$C8, 0, -1
+	dc.w	$384, 1, 0
+	dc.w	$1C2, -2, 0
+	dc.w	$32, 0, 0
+	dc.w	$B4, 5, 0
+	dc.w	$E1, -4, 0
+	dc.w	$384, 1, 0
+	dc.w	$C8, 0, 1
+	dc.w	$64, 0, 0
+	dc.w	$E1, -4, 0
+	dc.w	$64, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$E1, 4, 0
+	dc.w	$64, 0, 1
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -52951,291 +52387,56 @@ loc_39C14:
 ; End of function sub_39C02
 
 ; ---------------------------------------------------------------------------
-unk_39C2E:	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $C2 ; Â
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $C2 ; Â
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FF
-
+; Bagel Brothers head movement
+unk_39C2E:
+	dc.w	$1E, 0, -1
+	dc.w	$384, -1, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$384, -1, 0
+	dc.w	$32, 0, 0
+	dc.w	$C8, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$C8, 0, 1
+	dc.w	$96, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$12C, -3, 0
+	dc.w	$C8, 0, -1
+	dc.w	$384, 1, 0
+	dc.w	$1C2, -2, 0
+	dc.w	$E1, 4, 0
+	dc.w	$12C, -3, 0
+	dc.w	$96, 6, 0
+	dc.w	$C8, 0, 1
+	dc.w	$1E, 0, -1
+	dc.w	$12C, -3, 0
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$384, -1, 0
+	dc.w	$96, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$12C, -3, 0
+	dc.w	$C8, 0, -1
+	dc.w	$384, 1, 0
+	dc.w	$1C2, -2, 0
+	dc.w	$32, 0, 0
+	dc.w	$B4, 5, 0
+	dc.w	$E1, -4, 0
+	dc.w	$B4, 5, 0
+	dc.w	$C8, 0, 1
+	dc.w	$64, 0, 0
+	dc.w	$12C, -3, 0
+	dc.w	$1E, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$E1, 4, 0
+	dc.w	$64, 0, 1
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -53277,315 +52478,60 @@ loc_39D66:
 ; End of function sub_39D54
 
 ; ---------------------------------------------------------------------------
-unk_39D80:	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b $FF
-	dc.b $FB ; û
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $96 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   1
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $C2 ; Â
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $B4 ; ´
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $84 ; „
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $C8 ; È
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $E1 ; á
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FF
-
+; Bagel Brothers head movement
+unk_39D80:
+	dc.w	$1E, 0, -1
+	dc.w	$384, -1, 0
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$32, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$32, 0, 0
+	dc.w	$C8, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$C8, 0, 1
+	dc.w	$96, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$96, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$12C, -3, 0
+	dc.w	$C8, 0, -1
+	dc.w	$E1, 4, 0
+	dc.w	$B4, -5, 0
+	dc.w	$96, 6, 0
+	dc.w	$C8, 0, 1
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, -1
+	dc.w	$12C, -3, 0
+	dc.w	$32, 0, 0
+	dc.w	$1E, 0, 1
+	dc.w	$12C, 3, 0
+	dc.w	$96, 0, 0
+	dc.w	$384, -1, 0
+	dc.w	$96, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$12C, 3, 0
+	dc.w	$64, 0, 1
+	dc.w	$32, 0, 0
+	dc.w	$E1, -4, 0
+	dc.w	$C8, 0, -1
+	dc.w	$384, 1, 0
+	dc.w	$1C2, -2, 0
+	dc.w	$32, 0, 0
+	dc.w	$B4, 5, 0
+	dc.w	$E1, -4, 0
+	dc.w	$384, 1, 0
+	dc.w	$C8, 0, 1
+	dc.w	$64, 0, 0
+	dc.w	$E1, -4, 0
+	dc.w	$64, 0, 0
+	dc.w	$64, 0, -1
+	dc.w	$E1, 4, 0
+	dc.w	$64, 0, 1
+	dc.w	$FFFF
 ; =============== S U B	R O U T	I N E =======================================
 
 

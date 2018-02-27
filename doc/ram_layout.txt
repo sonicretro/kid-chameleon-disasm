@@ -3,7 +3,7 @@
 
 FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
 FF0280 FF0DA0	?
-FF0DA0 ?		interesting block behavior/Object RAM?
+FF0DA0 ?		Object RAM: $72 bytes per object, $31 slots.
 ?      FF2448
 FF2448 FF3AD8	Object RAM: $1690 bytes, $4C bytes per object ($4C objects)
 FF3AD8 FF4E58	?
@@ -43,6 +43,8 @@ FFF81C	long	X camera position (16.16 fixed point)
 FFF820	long	Y camera position (16.16 fixed point)
 FFF824	long	X camera background position? (16.16 fixed point)
 FFF828	long	Y camera background position? (16.16 fixed point)
+FFF83E  long    Address of next available slot in $FF0DA0
+FFF854  long    Address of next available slot in $FF2448
 FFF890	byte	flag indicating palette has changed
 FFF89E	word	width in 16x16 blocks
 FFF89C	word	width in 8x8 tiles
@@ -179,9 +181,21 @@ hitpoint display, then kid sprites, then other objects.
 Object RAM
 ----------
 
-FF2448	Object layout, $4C bytes per object.
+There are various sections of object RAM, allowing for differently
+sized objects:
+
+Starting at FF0DA0:
+$74 bytes per object, $31 slots.
+sub_D7E writes pointers to next object slot in each object.
+sub_DAC allocates a slot for a new object
+FFF83E = Address of next available slot
+
+Starting at FF2448:
+$4C bytes per object, $4C slots.
 sub_F26 writes pointers to next object slot in each object.
-A pointer to FF2448 is stored in RAM address $FFFFF854
+sub_F6E allocates a slot for a new object
+FFF854 = Address of next available slot
+
 The object data seems to work like a linked list, with
 objects pointing to their successor. In particular, they
 can also point at different regions of the RAM that work
@@ -191,6 +205,8 @@ Note: it's is not entirely clear if the first 4 bytes
 belong to the object as described below, or to the previous
 object (or in fact where the object boundaries are).
 
+
+Object format at FF2448:
 
 FFFF PPPP .... .... .... DD.. .... XXXX 
 XXXX YYYY YYYY AABB .... .... .... .... 
@@ -223,3 +239,10 @@ FF24FA	long	Kid X position (16.16 fixed point)
 FF24FE	long	Kid Y position (16.16 fixed point)
 FF2506	long	Kid X speed
 FF250A	long	Kid Y speed
+
+
+Object format at FF0DA0:
+
+ 4: (long) pointer to object code
+44: (word) x pos?
+46: (word) y pos?

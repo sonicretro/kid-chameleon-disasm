@@ -1,10 +1,10 @@
 LevelSelect_ChkKey:
 	btst	#6,(Ctrl_1_Held).w   ;Ctrl_1_Held
 	sne	(LevelSelect_Flag).w
-	jmp	(loc_204).w
+	jmp	(j_loc_6E2).w
 
 LevelSelect_Loop:
-	jsr	(sub_24C).w
+	jsr	(j_sub_E76).w
 	jsr	(sub_1CC88).l
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	LevelSelect_DrawText
@@ -107,7 +107,7 @@ LevelSelect_make_cmd:
 	beq.s	+
 	move.w	#$E4A8,d7
 +
-	jsr	(sub_208).w
+	jsr	(j_sub_914).w
 	move.l	d5,4(a6)
 	rts
 ; ---------------------------------------------------------------------------
@@ -170,7 +170,7 @@ LevelSelect_DrawTextLine_Clear:
 	move.w	#0,(a6)
 	dbf	d3,LevelSelect_DrawTextLine_Clear
 
-	jsr	(sub_20C).w
+	jsr	(j_sub_924).w
 	rts			; end of text
 ; ---------------------------------------------------------------------------
 LevelSelect_spec_char:
@@ -210,7 +210,7 @@ CostumeSelect_loop3:
 	move.w	#0,(a6)	; clear
 	dbf	d3,-
 	
-	jsr	(sub_20C).w
+	jsr	(j_sub_924).w
 	addq.w	#2,d4
 	cmpi.w	#$1E,d4
 	blt.s	CostumeSelect_loop3
@@ -218,7 +218,7 @@ CostumeSelect_loop3:
 	bclr	#7,(Ctrl_Pressed).w
 	
 CostumeSelect_Loop:
-	jsr	(sub_24C).w
+	jsr	(j_sub_E76).w
 	jsr	(sub_1CC88).l
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	CostumeSelect_DrawText
@@ -240,10 +240,10 @@ CostumeSelect_Loop:
 	st	($FFFFFBCE).w
 	st	($FFFFFC36).w
 
-	jsr	(sub_2C4).w
+	jsr	(j_sub_8C2).w
 	move.w	#8,(Game_Mode).w
 	jsr	(j_StopMusic).l
-	jmp	(loc_204).w
+	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 CostumeSelect_DrawText:
 	move.b	#9,(LevelSelect_ActNumber).w

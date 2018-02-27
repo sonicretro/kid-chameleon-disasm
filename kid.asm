@@ -136,522 +136,260 @@ ROM_Header:	dc.b "SEGA MEGA DRIVE "
 		dc.b "            "
 		dc.b "                                        "
 		dc.b "JUE             "
-; ---------------------------------------------------------------------------
-
-loc_200:
+; ===========================================================================
+j_EntryPoint: ;200
 		jmp	EntryPoint(pc)
-; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR ReadJoypad
-
-loc_204:
+; ===========================================================================
+j_loc_6E2: ;204
 		jmp	loc_6E2(pc)
-; END OF FUNCTION CHUNK	FOR ReadJoypad
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_208:
+; ===========================================================================
+j_sub_914: ;208
 		jmp	sub_914(pc)
-; End of function sub_208
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_20C:
+; ===========================================================================
+j_sub_924: ;20C
 		jmp	sub_924(pc)
-; End of function sub_20C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-j_WaitForVint:
+; ===========================================================================
+j_WaitForVint: ;210
 		jmp	WaitForVint(pc)
-; End of function j_WaitForVint
-
 ; ---------------------------------------------------------------------------
 		jmp	loc_964(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_218:
+; ===========================================================================
+j_Palette_to_VRAM: ;218
 		jmp	Palette_to_VRAM(pc)
-; End of function sub_218
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_21C:
+; ===========================================================================
+j_sub_9AE: ;21C
 		jmp	sub_9AE(pc)
-; End of function sub_21C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_220:
+; ===========================================================================
+j_sub_9FE: ;220
 		jmp	sub_9FE(pc)
-; End of function sub_220
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_224:
+; ===========================================================================
+j_sub_A34: ;224
 		jmp	sub_A34(pc)
-; End of function sub_224
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_228:
+; ===========================================================================
+j_sub_A4A: ;228
 		jmp	sub_A4A(pc)
-; End of function sub_228
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_22C:
+; ===========================================================================
+j_sub_B52: ;22C
 		jmp	sub_B52(pc)
-; End of function sub_22C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_230:
+; ===========================================================================
+j_sub_A5C: ;230
 		jmp	sub_A5C(pc)
-; End of function sub_230
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-j_ReadJoypad:
+; ===========================================================================
+j_ReadJoypad: ;234
 		jmp	ReadJoypad(pc)
-; End of function j_ReadJoypad
-
 ; ---------------------------------------------------------------------------
 		jmp	sub_D7E(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_23C:
+; ===========================================================================
+j_sub_DAC: ;23C
 		jmp	sub_DAC(pc)
-; End of function sub_23C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_240:
+; ===========================================================================
+j_sub_E02: ;240
 		jmp	sub_E02(pc)
-; End of function sub_240
-
 ; ---------------------------------------------------------------------------
-
-loc_244:
+j_sub_E12: ;244
 		jmp	sub_E12(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_248:
+; ===========================================================================
+j_sub_E5E: ;248
 		jmp	sub_E5E(pc)
-; End of function sub_248
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_24C:
+; ===========================================================================
+j_sub_E76: ;24C
 		jmp	sub_E76(pc)
-; End of function sub_24C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_250:
+; ===========================================================================
+j_sub_E90: ;250
 		jmp	sub_E90(pc)
-; End of function sub_250
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_254:
+; ===========================================================================
+j_sub_EFA: ;254
 		jmp	sub_EFA(pc)
-; End of function sub_254
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_258:
+; ===========================================================================
+j_sub_F1A: ;258
 		jmp	sub_F1A(pc)
-; End of function sub_258
-
 ; ---------------------------------------------------------------------------
 		jmp	sub_F26(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_260:
+; ===========================================================================
+j_sub_F5E: ;260
 		jmp	sub_F5E(pc)
-; End of function sub_260
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_264:
+; ===========================================================================
+j_sub_F66: ;264
 		jmp	sub_F66(pc)
-; End of function sub_264
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_268:
+; ===========================================================================
+j_sub_1492: ;268
 		jmp	sub_1492(pc)
-; End of function sub_268
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_26C:
+; ===========================================================================
+j_sub_FF6: ;26C
 		jmp	sub_FF6(pc)
-; End of function sub_26C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-j_nullsub_2:
+; ===========================================================================
+j_nullsub_2: ;270
 		jmp	nullsub_2(pc)
-; End of function j_nullsub_2
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_274:
+; ===========================================================================
+j_sub_1040: ;274
 		jmp	sub_1040(pc)
-; End of function sub_274
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_278:
+; ===========================================================================
+j_sub_105E: ;278
 		jmp	sub_105E(pc)
-; End of function sub_278
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_27C:
+; ===========================================================================
+j_loc_1078: ;27C
 		jmp	loc_1078(pc)
-; End of function sub_27C
-
 ; ---------------------------------------------------------------------------
 		jmp	sub_1120(pc)
 ; ---------------------------------------------------------------------------
 		jmp	sub_113E(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_288:
+; ===========================================================================
+j_sub_11B6: ;288
 		jmp	sub_11B6(pc)
-; End of function sub_288
-
 ; ---------------------------------------------------------------------------
 		jmp	loc_1698(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_290:
+; ===========================================================================
+j_sub_16F0: ;290
 		jmp	sub_16F0(pc)
-; End of function sub_290
-
 ; ---------------------------------------------------------------------------
 		jmp	sub_1B76(pc)
 ; ---------------------------------------------------------------------------
 		jmp	sub_219C(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_29C:
+; ===========================================================================
+j_sub_238E: ;29C
 		jmp	sub_238E(pc)
-; End of function sub_29C
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2A0:
+; ===========================================================================
+j_sub_23B4: ;2A0
 		jmp	sub_23B4(pc)
-; End of function sub_2A0
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2A4:
+; ===========================================================================
+j_sub_292E: ;2A4
 		jmp	sub_292E(pc)
-; End of function sub_2A4
-
 ; ---------------------------------------------------------------------------
 		jmp	unk_2BB6(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2AC:
+; ===========================================================================
+j_sub_8E0: ;2AC
 		jmp	sub_8E0(pc)
-; End of function sub_2AC
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2B0:
+; ===========================================================================
+j_sub_231C: ;2B0
 		jmp	sub_231C(pc)
-; End of function sub_2B0
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2B4:
+; ===========================================================================
+j_sub_28FC: ;2B4
 		jmp	sub_28FC(pc)
-; End of function sub_2B4
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2B8:
+; ===========================================================================
+j_sub_44B0: ;2B8
 		jmp	sub_44B0(pc)
-; End of function sub_2B8
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2BC:
+; ===========================================================================
+j_sub_6526: ;2BC
 		jmp	sub_6526(pc)
-; End of function sub_2BC
-
 ; ---------------------------------------------------------------------------
 		jmp	sub_8A4(pc)
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2C4:
+; ===========================================================================
+j_sub_8C2: ;2C4
 		jmp	sub_8C2(pc)
-; End of function sub_2C4
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2C8:
+; ===========================================================================
+j_Do_Nothing: ;2C8
 		jmp	Do_Nothing(pc)
-; End of function sub_2C8
-
 ; ---------------------------------------------------------------------------
-
-loc_2CC:
+j_sub_14C0: ;2CC
 		jmp	sub_14C0(pc)
 ; ---------------------------------------------------------------------------
-
 return_2D0:
 		rte
 ; ---------------------------------------------------------------------------
-
 loc_2D2:
 		move.w	#2,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2D8:
 		move.w	#3,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2DE:
 		move.w	#4,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2E4:
 		move.w	#5,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2EA:
 		move.w	#6,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2F0:
 		move.w	#7,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2F6:
 		move.w	#8,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_2FC:
 		move.w	#9,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_302:
 		move.w	#$A,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_308:
 		move.w	#$B,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_30E:
 		move.w	#$C,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_314:
 		move.w	#$D,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_31A:
 		move.w	#$E,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_320:
 		move.w	#$F,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_326:
 		move.w	#$10,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_32C:
 		move.w	#$11,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_332:
 		move.w	#$12,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_338:
 		move.w	#$13,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_33E:
 		move.w	#$14,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_344:
 		move.w	#$15,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_34A:
 		move.w	#$16,d0
 		bra.s	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_350:
 		move.w	#$17,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_358:
 		move.w	#$18,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_360:
 		move.w	#$19,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_368:
 		move.w	#$1A,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_370:
 		move.w	#$1B,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_378:
 		move.w	#$1C,d0
 		bra.w	return_2D0
@@ -659,175 +397,140 @@ loc_378:
 		move.w	#$1D,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_388:
 		move.w	#$1E,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_390:
 		move.w	#$1F,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_398:
 		move.w	#$20,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3A0:
 		move.w	#$21,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3A8:
 		move.w	#$22,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3B0:
 		move.w	#$23,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3B8:
 		move.w	#$24,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3C0:
 		move.w	#$25,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3C8:
 		move.w	#$26,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3D0:
 		move.w	#$27,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3D8:
 		move.w	#$28,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3E0:
 		move.w	#$29,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3E8:
 		move.w	#$2A,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3F0:
 		move.w	#$2B,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_3F8:
 		move.w	#$2C,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_400:
 		move.w	#$2D,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_408:
 		move.w	#$2E,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_410:
 		move.w	#$2F,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_418:
 		move.w	#$30,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_420:
 		move.w	#$31,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_428:
 		move.w	#$32,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_430:
 		move.w	#$33,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_438:
 		move.w	#$34,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_440:
 		move.w	#$35,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_448:
 		move.w	#$36,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_450:
 		move.w	#$37,d0
-
 loc_454:
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_458:
 		move.w	#$38,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_460:
 		move.w	#$39,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_468:
 		move.w	#$3A,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_470:
 		move.w	#$3B,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_478:
 		move.w	#$3C,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 loc_480:
 		move.w	#$3D,d0
 		bra.w	return_2D0
 ; ---------------------------------------------------------------------------
-
 V_Int:
 		addq.l	#1,(V_Int_counter).w
 		st	(V_Int_Done).w
 		rte
 ; ---------------------------------------------------------------------------
-
 H_Int:
 		andi.w	#$F0FF,(sp)
 		ori.w	#$500,(sp)
@@ -1020,7 +723,6 @@ SetupValues:	dc.w $8000
 		dc.b $DF ; ﬂ
 		dc.b $FF
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_B610
 
 loc_5AA:
 		tst.w	($C00004).l
@@ -1082,8 +784,8 @@ loc_62A:
 
 loc_65C:
 		move.b	#1,($FFFFF805).w
-		jsr	(sub_20C).w
-		jsr	(sub_21C).w
+		jsr	(j_sub_924).w
+		jsr	(j_sub_9AE).w
 		clr.w	(Game_Mode).w
 		sf	($FFFFFBCF).w
 		sf	($FFFFFBCE).w
@@ -1108,8 +810,7 @@ loc_65C:
 		move.w	#3,(Player_2_Continues).w
 		move.w	#$FFFF,($FFFFFD26).w
 		bsr.w	sub_6E24
-; END OF FUNCTION CHUNK	FOR sub_B610
-; START	OF FUNCTION CHUNK FOR ReadJoypad
+
 
 loc_6E2:
 		lea	($FFFFF7FE).w,sp
@@ -1145,34 +846,21 @@ MainGameLoop:
 		move.w	(Game_Mode).w,d0
 		jsr	GameModesArray(pc,d0.w)
 		bra.s	MainGameLoop
-; END OF FUNCTION CHUNK	FOR ReadJoypad
 ; ---------------------------------------------------------------------------
 
 GameModesArray:
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Level
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Level
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Options_End
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Standard
-; ---------------------------------------------------------------------------
 		bra.w	Mode_Options_End
 ; ---------------------------------------------------------------------------
 
@@ -1516,9 +1204,9 @@ loc_A22:
 
 
 sub_A34:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	d7,($FFFFFC14).w
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	d7,($FFFFFC15).w
 		move.w	($FFFFFC14).w,d7
 		rts
@@ -1529,9 +1217,9 @@ sub_A34:
 
 
 sub_A4A:
-		jsr	(sub_224).w
+		jsr	(j_sub_A34).w
 		move.w	d7,($FFFFFC16).w
-		jsr	(sub_224).w
+		jsr	(j_sub_A34).w
 		move.l	($FFFFFC14).w,d7
 		rts
 ; End of function sub_A4A
@@ -1609,7 +1297,7 @@ loc_B24:
 
 loc_B36:
 		jsr	(j_Start_z80).l
-		jsr	(sub_22C).w
+		jsr	(j_sub_B52).w
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -1670,7 +1358,7 @@ loc_BB2:
 
 loc_BB6:
 					; ReadJoypad+3Cj ...
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		lea	($A10003).l,a0
 		bsr.w	sub_CAA
 		bsr.w	sub_CCE
@@ -1680,7 +1368,7 @@ loc_BB6:
 		bsr.w	sub_CAA
 		bsr.w	sub_CCE
 		move.b	d0,(Ctrl_2).w
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		tst.b	(Demo_Mode_flag).w
 		beq.w	loc_C4E		; held keys new
 		move.w	($FFFFFBC2).w,d7
@@ -1697,7 +1385,7 @@ loc_C0A:
 		move.w	#$82A,($FFFFFBCC).w
 		clr.w	(Current_LevelID).w
 		jsr	(j_StopMusic).l
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 		jmp	loc_6E2(pc)
 ; ---------------------------------------------------------------------------
@@ -1953,7 +1641,7 @@ loc_E0C:
 
 
 sub_E12:
-		jsr	(sub_228).w
+		jsr	(j_sub_A4A).w
 		move.l	sp,($FFFFF84C).w
 		lea	($FFFFF842).w,a5
 ; End of function sub_E12
@@ -2304,7 +1992,7 @@ sub_105E:
 		move.l	(sp)+,$12(a5)
 
 loc_1062:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$18(a3)
 		beq.s	loc_1062
 		move.l	$12(a5),-(sp)
@@ -2905,7 +2593,7 @@ loc_14A4:
 		_move.l	0(a3),d0
 		beq.s	loc_14B2
 		move.l	d0,a3
-		jsr	(sub_288).w
+		jsr	(j_sub_11B6).w
 		bra.s	loc_14A4
 ; ---------------------------------------------------------------------------
 
@@ -3141,7 +2829,7 @@ loc_1686:
 
 loc_1698:
 		movem.l	d0/a0,-(sp)
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	4(a6),d0
 		move.l	#$FE0000,a0
 		move.w	#$3F,d0
@@ -3163,7 +2851,7 @@ loc_16C8:
 loc_16E0:
 		move.w	(a6),(a0)+
 		dbf	d0,loc_16E0
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		movem.l	(sp)+,d0/a0
 		rts
 
@@ -3577,7 +3265,7 @@ loc_1ADA:
 		rts
 ; ---------------------------------------------------------------------------
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_1AEA:
@@ -3963,7 +3651,7 @@ loc_1E4A:
 loc_1E5E:
 		exg	a0,a1
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1F08,4(a0)
 		exg	a0,a1
 		move.w	$1A(a0),$44(a1)
@@ -3994,94 +3682,57 @@ loc_1EA0:
 ; End of function sub_1D84
 
 ; ---------------------------------------------------------------------------
-unk_1EBE:	dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b   0
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $2C ; ,
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b   0
-		dc.b $1C
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
-		dc.b $FF
+unk_1EBE:	dc.w $1C
+		dc.w $1C
+		dc.w 0
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $1C
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $2C ; ,
+		dc.w $1C
+		dc.w $1C
+		dc.w $1C
+		dc.w $FFFF
+		dc.w $FFFF
+		dc.w $FFFF
+		dc.w $FFFF
+		dc.w $FFFF
 ; ---------------------------------------------------------------------------
 
 loc_1F08:
 		move.l	#$3000401,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		st	$13(a3)
 		move.b	#1,$10(a3)
 		move.b	#3,$11(a3)
 		move.l	#stru_1F40,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_1F40:	anim_frame	  1,   2, LnkTo_unk_E0F2E-Data_Index
 		anim_frame	  1,   2, LnkTo_unk_E0F36-Data_Index
@@ -4184,14 +3835,14 @@ loc_200C:
 
 loc_2010:
 		move.w	-2(a1),d0
-		bsr.w	sub_2180
+		bsr.w	j_Palette_to_VRAM0
 		bne.w	loc_211C
 
 loc_201C:
 		tst.b	($FFFFFAA6).w
 		bne.w	loc_2156
 		move.w	(a1)+,d0
-		bsr.w	sub_2180
+		bsr.w	j_Palette_to_VRAM0
 		beq.s	loc_201C
 		subq.w	#4,a1
 		move.w	a1,d7
@@ -4204,7 +3855,7 @@ loc_201C:
 
 loc_2040:
 		move.w	-(a1),d0
-		bsr.w	sub_2180
+		bsr.w	j_Palette_to_VRAM0
 		bne.w	loc_2050
 		subi.w	#$10,d1
 		bra.s	loc_2040
@@ -4217,7 +3868,7 @@ loc_2050:
 loc_2056:
 		suba.w	d3,a1
 		move.w	(a1),d0
-		bsr.w	sub_2180
+		bsr.w	j_Palette_to_VRAM0
 		beq.s	loc_2056
 		add.w	d3,a1
 		move.w	a1,d7
@@ -4233,7 +3884,7 @@ loc_2074:
 		add.w	d3,a1
 		addi.w	#$10,d2
 		move.w	(a1),d0
-		bsr.w	sub_2180
+		bsr.w	j_Palette_to_VRAM0
 		beq.s	loc_2074
 		move.l	($FFFFF85E).w,a0
 		move.w	d2,d7
@@ -4331,7 +3982,7 @@ loc_216A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_2180:
+j_Palette_to_VRAM0:
 		bclr	#$F,d0
 		beq.w	loc_2198
 		andi.w	#$F00,d0
@@ -4344,7 +3995,7 @@ sub_2180:
 loc_2198:
 		moveq	#1,d0
 		rts
-; End of function sub_2180
+; End of function j_Palette_to_VRAM0
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -5123,7 +4774,7 @@ loc_2876:
 		add.w	$A(a4),a0
 		move.l	(a0),d7
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	d7,4(a0)
 		move.w	a3,$44(a0)
 		sf	$12(a3)
@@ -5575,7 +5226,7 @@ loc_40E2:
 
 loc_40EE:
 		move.l	$2A(a2),d1
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a3)
 		bne.w	loc_417A
 		bsr.w	sub_4170
@@ -5594,7 +5245,7 @@ loc_4124:
 		move.l	d1,$E(a3)
 
 loc_4128:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_4170
 		move.l	$E(a3),d7
 		subi.l	#$7000,d7
@@ -5611,7 +5262,7 @@ loc_414A:
 		clr.l	$E(a3)
 
 loc_4160:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	($FFFFFA94).w,d7
 		beq.s	loc_40EE
 		cmp.w	a3,d7
@@ -5640,7 +5291,7 @@ loc_4182:
 
 loc_418A:
 		move.l	$2A(a2),d1
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a3)
 		bne.w	loc_41F8
 		bsr.w	sub_4200
@@ -5652,7 +5303,7 @@ loc_418A:
 		move.l	d1,$E(a3)
 
 loc_41AE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_4200
 		move.l	$E(a3),d7
 		addi.l	#$4000,d7
@@ -5670,7 +5321,7 @@ loc_41D0:
 		move.l	#$800,2(a3)
 
 loc_41EE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a3)
 		beq.s	loc_41EE
 
@@ -5697,7 +5348,7 @@ sub_420A:
 
 loc_4212:
 		move.l	$2A(a2),d1
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a3)
 		bne.w	loc_427A
 		bsr.w	sub_4282
@@ -5707,7 +5358,7 @@ loc_4212:
 		bne.s	loc_4212
 
 loc_4230:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_4282
 		move.l	$E(a3),d7
 		subi.l	#$4000,d7
@@ -5725,7 +5376,7 @@ loc_4252:
 		move.l	#$800,2(a3)
 
 loc_4270:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a3)
 		beq.s	loc_4270
 
@@ -5764,7 +5415,7 @@ loc_429E:
 		moveq	#$3C,d0
 
 loc_42AE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a0)
 		bne.w	loc_42E4
 		bsr.w	sub_4358
@@ -5773,7 +5424,7 @@ loc_42AE:
 		moveq	#$78,d0
 
 loc_42C8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$12(a0)
 		bne.w	loc_42E4
 		bsr.w	sub_4358
@@ -6681,7 +6332,7 @@ loc_613E:
 		cmpi.w	#$FFE5,($FFFFFADC).w
 		bne.s	loc_6172
 		move.w	#$F7,($FFFFFADC).w
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.b	#$F5,d7
 		sub.w	d7,($FFFFFADC).w
 		move.l	(LnkTo_Pal_7B85C).l,a0
@@ -6779,7 +6430,7 @@ loc_623A:
 		subq.b	#1,($FFFFFB3C).w
 		bne.w	loc_62CE
 		move.b	#$25,($FFFFFB3C).w
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.b	#$F,d7
 		sub.b	d7,($FFFFFB3C).w
 		tst.b	($FFFFFB3D).w
@@ -6796,7 +6447,7 @@ loc_625E:
 ; ---------------------------------------------------------------------------
 
 loc_626C:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$FF,d7
 		add.w	(Camera_X_pos).w,d7
 		addi.w	#$28,d7
@@ -7211,7 +6862,7 @@ loc_695C:
 		move.l	d0,4(a6)
 		tst.w	d2
 		bpl.s	loc_69A0
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	(a6),(a1)+
 		move.l	(a6),(a1)+
 		move.l	(a6),(a1)+
@@ -7220,7 +6871,7 @@ loc_695C:
 		move.l	(a6),(a1)+
 		move.l	(a6),(a1)+
 		move.l	(a6),(a1)+
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		addi.w	#8,d7
 		dbf	d5,loc_695C
 		bra.w	loc_69D2
@@ -7231,7 +6882,7 @@ loc_69A0:
 		swap	d2
 		move.w	d2,d1
 		swap	d2
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		subq.w	#1,d1
 
 loc_69AE:
@@ -7244,7 +6895,7 @@ loc_69AE:
 loc_69C0:
 		move.w	(a6),(a1)+
 		dbf	d4,loc_69C0
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		addi.w	#8,d7
 		dbf	d5,loc_695C
 
@@ -7406,8 +7057,8 @@ Game_Paused_ChkStart:
 		clr.w	(Current_Helmet).w
 		move.w	#2,(Number_Hitpoints).w
 		st	($FFFFFC36).w
-		jsr	(sub_2C4).w
-		jmp	(loc_204).w
+		jsr	(j_sub_8C2).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_6B62:	; this was the last life
@@ -7908,13 +7559,13 @@ unk_6D84:	dc.b $86 ; Ü
 
 
 sub_6E24:
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.b	($A10001).l,d0
 		btst	#7,d0
 		seq	($FFFFFC81).w
 		btst	#6,d0
 		sne	($FFFFFC80).w
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; End of function sub_6E24
 
@@ -7978,16 +7629,16 @@ sub_7196:
 		sf	($FFFFF897).w
 		st	(PaletteToDMA_Flag).w
 		move.w	#$2000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_7508,4(a0)
 		move.w	#1,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_7452,4(a0)
 		move.w	#$FFFC,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_BC34,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_73D0,4(a0)
 		bsr.w	sub_BFA6
 		rts
@@ -8239,7 +7890,7 @@ loc_73F4:
 ; ---------------------------------------------------------------------------
 
 loc_7402:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.w	#$10,($FFFFF876).w
 		cmpi.w	#$100,($FFFFF876).w
 		bgt.s	loc_7420
@@ -8253,7 +7904,7 @@ loc_7414:
 
 loc_7420:
 		st	($FFFFFB56).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_73D0
 
 
@@ -8278,7 +7929,7 @@ return_7450:
 ; ---------------------------------------------------------------------------
 
 loc_7452:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	($FFFFFB4C).w
 		beq.s	loc_7464
 		subq.w	#1,($FFFFFB4C).w
@@ -8338,9 +7989,9 @@ loc_74E0:
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
 		st	($FFFFFBCE).w
-		jsr	(sub_2C4).w
+		jsr	(j_sub_8C2).w
 		move.w	#8,(Game_Mode).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_7508:
@@ -8359,7 +8010,7 @@ loc_7526:
 		moveq	#1,d0
 		move.l	a5,($FFFFF850).w
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	a3,($FFFFF85E).w
 		st	$13(a3)
 		move.b	#3,$11(a3)
@@ -8369,7 +8020,7 @@ loc_7526:
 		move.w	(PlayerStart_Y_pos).w,$1E(a3)
 		subq.w	#1,$1E(a3)
 		move.l	#$2010000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,($FFFFF862).w
 		st	$13(a1)
 		move.b	#3,$11(a1)
@@ -8401,7 +8052,7 @@ loc_75C0:
 loc_75D4:
 		move.w	#0,($FFFFFA56).w
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		clr.l	($FFFFFA98).w
 		bsr.w	sub_B610
 		move.w	$1A(a3),($FFFFFA2C).w
@@ -8426,7 +8077,7 @@ loc_7606:
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
 		move.l	#stru_8B36,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$3B,d0
 		jsr	(j_PlaySound).l
@@ -8469,9 +8120,9 @@ loc_76B0:
 		tst.b	($FFFFFA6F).w
 		bne.w	loc_76E4
 		move.l	#stru_8B3C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_868E,4(a0)
 		st	($FFFFFA6F).w
 		bra.w	loc_7772
@@ -8483,10 +8134,10 @@ loc_76E4:
 		tst.b	($FFFFFA65).w
 		bne.w	loc_7772
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_89D2,4(a0)
 		move.l	#stru_8B4E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		st	($FFFFFA65).w
 		bra.w	loc_7772
 ; ---------------------------------------------------------------------------
@@ -8499,7 +8150,7 @@ loc_7718:
 		cmpi.w	#8,($FFFFFB70).w
 		bge.w	loc_7772
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 
 loc_7738:
 		move.l	#sub_86FA,4(a0)
@@ -8514,7 +8165,7 @@ loc_7742:
 		move.w	#1,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
 		move.l	#stru_8B36,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$35,d0
 		jsr	(j_PlaySound).l
@@ -9046,7 +8697,7 @@ loc_7C24:
 		beq.w	loc_7C3A
 		move.l	d7,a0
 		move.l	$C(a0),a0
-		jsr	(sub_250).w
+		jsr	(j_sub_E90).w
 		move.l	d7,a0
 		bra.s	loc_7C24
 ; ---------------------------------------------------------------------------
@@ -9110,7 +8761,7 @@ loc_7CA6:
 
 loc_7CBE:
 		movem.l	d0-a5,-(sp)
-		jsr	(sub_2AC).w
+		jsr	(j_sub_8E0).w
 		movem.l	(sp)+,d0-a5
 		dbf	d0,loc_7CBE
 		bra.s	loc_7CA6
@@ -9148,7 +8799,7 @@ loc_7D0A:
 
 loc_7D22:
 		movem.l	d0-a5,-(sp)
-		jsr	(sub_2AC).w
+		jsr	(j_sub_8E0).w
 		movem.l	(sp)+,d0-a5
 		dbf	d0,loc_7D22
 		bra.s	loc_7D0A
@@ -9671,7 +9322,7 @@ loc_81FA:
 loc_8218:
 		move.w	#1,($FFFFFA56).w
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	#$E,($FFFFFA78).w
 		bsr.w	sub_B610
 		move.w	$1A(a3),($FFFFFA2C).w
@@ -10196,9 +9847,9 @@ sub_868E:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	#$3000001,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	#(LnkTo1_NULL-Data_Index),$22(a3)
 		move.l	($FFFFF85E).w,a0
 		move.w	$1E(a0),d7
@@ -10215,13 +9866,13 @@ loc_86CE:
 		moveq	#3,d0
 
 loc_86D8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_86EC
 		dbf	d0,loc_86D8
 
 loc_86E8:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_86EC:
@@ -10242,7 +9893,7 @@ sub_86FA:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$3000001,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#1,$12(a3)
 		move.b	#3,$11(a3)
@@ -10251,14 +9902,14 @@ loc_8720:
 		move.l	($FFFFF85E).w,a2
 		exg	a2,a3
 		move.l	#stru_8BD8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a2,a3
 		tst.b	($FFFFFA6C).w
 		bne.w	loc_874C
 		move.l	($FFFFF862).w,a4
 		exg	a4,a3
 		move.l	#stru_8BD2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a4,a3
 
 loc_874C:
@@ -10266,15 +9917,15 @@ loc_874C:
 		move.l	$1E(a2),$1E(a3)
 		move.b	$16(a2),$16(a3)
 		move.l	#stru_8BA2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		moveq	#3,d0
 
 loc_876A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.w	loc_879A
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_87B0,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
@@ -10288,7 +9939,7 @@ loc_87A0:
 		move.l	$1E(a2),$1E(a3)
 		tst.b	$18(a3)
 		beq.s	loc_876A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_86FA
 
 
@@ -10298,7 +9949,7 @@ loc_87A0:
 sub_87B0:
 		addq.w	#1,($FFFFFB70).w
 		move.l	#$3000001,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#3,$11(a3)
 		move.w	$44(a5),$1A(a3)
@@ -10321,10 +9972,10 @@ loc_87EC:
 		cmpi.w	#$6000,d5
 		beq.w	loc_899C
 		move.l	#stru_8B98,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_8810:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_899C
 		tst.w	$38(a3)
@@ -10494,9 +10145,9 @@ loc_89A8:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_8BDE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_87B0
 
 
@@ -10506,13 +10157,13 @@ loc_89A8:
 sub_89D2:
 		move.w	($FFFFFA56).w,d0
 		move.w	#6,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	($FFFFFA65).w
 		beq.w	loc_8ABC
 		move.l	#$3000001,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	#stru_8B86,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$20,d0
 		jsr	(j_PlaySound).l
@@ -10539,11 +10190,11 @@ loc_8A42:
 		move.b	$16(a3),$3E(a3)
 
 loc_8A52:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$18(a3)
 		beq.w	loc_8A74
 		move.l	#stru_8B86,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$20,d0
 		jsr	(j_PlaySound).l
@@ -10580,7 +10231,7 @@ loc_8ABC:
 		moveq	#$4B,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_8ACC:
@@ -10592,11 +10243,11 @@ loc_8ACC:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_8BDE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_8AF2:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_89D2
 
 
@@ -10702,7 +10353,7 @@ stru_8BDE:	anim_frame	  1,   2, LnkTo_unk_E0F2E-Data_Index
 loc_8BF0:
 		move.w	#2,($FFFFFA56).w
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_B610
 		move.w	$1A(a3),($FFFFFA2C).w
 		move.w	$1E(a3),($FFFFFA2E).w
@@ -10730,7 +10381,7 @@ loc_8C26:
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
 		move.l	#stru_8B36,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$3B,d0
 		jsr	(j_PlaySound).l
@@ -10765,10 +10416,10 @@ loc_8CB6:
 		tst.b	($FFFFFA65).w
 		bne.w	loc_8D72
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_89D2,4(a0)
 		move.l	#stru_8B4E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		clr.l	$26(a3)
 		st	($FFFFFA65).w
 		bra.w	loc_8D72
@@ -10780,9 +10431,9 @@ loc_8CF8:
 		tst.b	($FFFFFA6F).w
 		bne.w	loc_8D72
 		move.l	#stru_8B3C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_868E,4(a0)
 		st	($FFFFFA6F).w
 		bra.w	loc_8D72
@@ -10796,7 +10447,7 @@ loc_8D2C:
 		cmpi.w	#8,($FFFFFB70).w
 		bge.w	loc_8D72
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_86FA,4(a0)
 
 loc_8D58:
@@ -11278,13 +10929,13 @@ loc_91C0:
 		move.l	a4,d3
 		subq.w	#2,d3
 		moveq	#0,d6
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		tst.l	$2A(a3)
 		bpl.w	loc_91F6
 		moveq	#2,d6
 
 loc_91F6:
-		jsr	(loc_DF0E).l
+		jsr	(j_loc_10DA4).l
 		movem.w	(sp)+,d0-d7
 		move.l	(sp)+,a4
 		bra.s	loc_919E
@@ -11399,7 +11050,7 @@ loc_92EC:
 		move.l	(a2,d7.w),a2
 		move.l	a4,d3
 		moveq	#3,d6
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		tst.l	$26(a3)
 		bpl.w	loc_930E
 		moveq	#1,d6
@@ -11433,13 +11084,13 @@ loc_9338:
 		addq.w	#2,sp
 		rts
 ; ---------------------------------------------------------------------------
-off_933E:	dc.l loc_DEEE
-		dc.l loc_DEEE
-		dc.l loc_DEF6
+off_933E:	dc.l j_sub_10E86
+		dc.l j_sub_10E86
+		dc.l j_sub_10F44
 		dc.l return_937E
 		dc.l return_937E
-		dc.l loc_DF06
-		dc.l loc_DF0E
+		dc.l j_loc_111F4
+		dc.l j_loc_10DA4
 		dc.l return_937E
 		dc.l return_937E
 		dc.l return_937E
@@ -11960,7 +11611,7 @@ loc_976C:
 		bne.w	loc_97FE
 		move.l	#stru_9812,d7
 		exg	a3,a4
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a4
 		sf	($FFFFFA6C).w
 		bra.w	loc_97FE
@@ -11977,7 +11628,7 @@ loc_97A6:
 loc_97BE:
 		move.l	#stru_981C,d7
 		exg	a3,a4
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a4
 		st	($FFFFFA6C).w
 		bra.w	loc_97FE
@@ -12585,7 +12236,7 @@ loc_9D2E:
 		move.w	#6,($FFFFFA56).w
 		bsr.w	sub_71E4
 		sf	($FFFFFA6E).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_7ACC
 		bsr.w	sub_B610
 		move.w	$1A(a3),($FFFFFA2C).w
@@ -13215,7 +12866,7 @@ loc_A28A:
 		move.w	#4,($FFFFFA56).w
 		clr.w	($FFFFFA94).w
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	($FFFFFA94).w,d7
 		bne.w	loc_A9AA
 		bsr.w	sub_B610
@@ -13511,7 +13162,7 @@ sub_A4EE:
 		move.l	d7,$1E(a3)
 		move.l	a2,-(sp)
 		lea	($FFFFF85A).w,a2
-		jsr	(sub_290).w
+		jsr	(j_sub_16F0).w
 		move.l	(sp)+,a2
 		move.w	$38(a3),d7
 		beq.w	loc_A532
@@ -13541,7 +13192,7 @@ loc_A556:
 		move.l	d7,$26(a3)
 		move.l	d7,$2A(a3)
 		move.w	($FFFFFB6C).w,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		asl.w	#4,d1
 		asl.w	#4,d2
 		add.w	d2,d1
@@ -13571,7 +13222,7 @@ loc_A5AE:
 		neg.l	d7
 		move.l	d7,$26(a3)
 		move.w	($FFFFFB6C).w,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		asl.w	#4,d1
 		asl.w	#4,d2
 		sub.w	d2,d1
@@ -13586,7 +13237,7 @@ loc_A5AE:
 
 loc_A5EA:
 		move.l	#stru_8B6A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#4,(Ctrl_Pressed).w
 		move.w	d7,a4
 		clr.l	($FFFFFA98).w
@@ -13594,7 +13245,7 @@ loc_A5EA:
 
 loc_A606:
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	($FFFFFA94).w,d7
 		bne.w	loc_A9AA
 		bsr.w	sub_B610
@@ -13659,7 +13310,7 @@ loc_A6D0:
 		sf	($FFFFFA66).w
 		st	($FFFFFA67).w
 		move.l	#stru_8B74,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.b	($FFFFFA72).w,d7
 		not.b	d7
 		move.b	d7,$16(a3)
@@ -13678,7 +13329,7 @@ loc_A6F8:
 		move.w	#$5A,(Telepad_timer).w
 		bsr.w	sub_71E4
 		sf	($FFFFFA6E).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	($FFFFFA94).w,d7
 		bne.w	loc_A9AA
 		move.w	($FFFFFA96).w,d7
@@ -13721,7 +13372,7 @@ loc_A76A:
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
 		move.l	#stru_8B36,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$3B,d0
 		jsr	(j_PlaySound).l
@@ -13761,10 +13412,10 @@ loc_A7F8:
 		bne.w	loc_A8D6
 		st	($FFFFFA65).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_89D2,4(a0)
 		move.l	#stru_8B60,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_A830:
 		cmpi.w	#2,d7
@@ -13802,7 +13453,7 @@ loc_A87A:
 		cmpi.w	#8,($FFFFFB70).w
 		bge.w	loc_A8D6
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_86FA,4(a0)
 
 loc_A8A6:
@@ -13813,7 +13464,7 @@ loc_A8A6:
 		move.w	#1,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
 		move.l	#stru_8B36,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$35,d0
 		jsr	(j_PlaySound).l
@@ -13931,7 +13582,7 @@ loc_A9E4:
 		clr.l	$2A(a3)
 		st	($FFFFFA66).w
 		move.l	#stru_8B6A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#4,(Ctrl_Pressed).w
 		bra.w	*+4
 
@@ -13939,7 +13590,7 @@ loc_AA22:
 		move.w	#3,($FFFFFA56).w
 		clr.w	($FFFFFA94).w
 		bsr.w	sub_71E4
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	($FFFFFA94).w,d7
 		bne.w	loc_A9AA
 		bsr.w	sub_7ACC
@@ -13958,7 +13609,7 @@ loc_AA22:
 		clr.l	$2A(a3)
 		st	($FFFFFA66).w
 		move.l	#stru_8B6A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#4,(Ctrl_Pressed).w
 
 loc_AA8E:
@@ -14094,12 +13745,12 @@ loc_ABF0:
 		move.w	d6,$1E(a3)
 		add.w	d4,$1A(a3)
 		move.l	#stru_8BB4,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	d0,-(sp)
 		moveq	#$64,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		clr.l	$2A(a3)
 		move.w	#0,($FFFFFA56).w
 		bsr.w	sub_78E8
@@ -14120,7 +13771,7 @@ loc_AC64:
 		sf	($FFFFFA66).w
 		st	($FFFFFA67).w
 		move.l	#stru_8B74,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.b	($FFFFFA72).w,d7
 		not.b	d7
 		move.b	d7,$16(a3)
@@ -14158,10 +13809,10 @@ loc_ACCC:
 		bne.w	loc_AD2C
 		st	($FFFFFA65).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_89D2,4(a0)
 		move.l	#stru_8B60,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_AD2C
 ; ---------------------------------------------------------------------------
 
@@ -14478,19 +14129,19 @@ sub_AFD4:
 
 ; ---------------------------------------------------------------------------
 off_AFD8:	dc.l loc_AFF0
-		dc.l loc_DEFA
-		dc.l loc_DEF6
+		dc.l j_loc_1002E
+		dc.l j_sub_10F44
 		dc.l sub_AFD4
 		dc.l sub_AFD4
-		dc.l loc_DF02
+		dc.l j_loc_110D0
 ; ---------------------------------------------------------------------------
 
 loc_AFF0:
 		moveq	#2,d6
-		jmp	(loc_DEEE).l
+		jmp	(j_sub_10E86).l
 ; ---------------------------------------------------------------------------
 		moveq	#2,d6
-		jmp	(loc_DEF6).l
+		jmp	(j_sub_10F44).l
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -14512,7 +14163,7 @@ loc_B01E:
 		bclr	#$F,d7
 		beq.w	loc_B080
 		move.w	a4,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		moveq	#0,d6
 		andi.w	#$F00,d7
 		asr.w	#6,d7
@@ -14527,19 +14178,19 @@ return_B056:
 		rts
 ; ---------------------------------------------------------------------------
 off_B058:	dc.l loc_B070
-		dc.l loc_DEFA
-		dc.l loc_DEF6
+		dc.l j_loc_1002E
+		dc.l j_sub_10F44
 		dc.l return_B056
 		dc.l return_B056
-		dc.l loc_DF02
+		dc.l j_loc_110D0
 ; ---------------------------------------------------------------------------
 
 loc_B070:
 		moveq	#2,d6
-		jmp	(loc_DEEE).l
+		jmp	(j_sub_10E86).l
 ; ---------------------------------------------------------------------------
 		moveq	#2,d6
-		jmp	(loc_DEF6).l
+		jmp	(j_sub_10F44).l
 ; ---------------------------------------------------------------------------
 
 loc_B080:
@@ -15120,7 +14771,7 @@ loc_B580:
 
 loc_B598:
 		lea	($FFFFF85A).w,a2
-		jsr	(sub_290).w
+		jsr	(j_sub_16F0).w
 		cmpi.w	#$10,$38(a3)
 		bne.w	loc_A6F8
 		clr.w	$38(a3)
@@ -15207,7 +14858,7 @@ loc_B66C:
 
 loc_B672:
 
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 		bra.s	loc_B672
 ; ---------------------------------------------------------------------------
@@ -15359,7 +15010,7 @@ loc_B7CA:
 		add.l	d0,$1E(a3)
 		addi.l	#$4000,d0
 		movem.l	d0-a5,-(sp)
-		jsr	(sub_2AC).w
+		jsr	(j_sub_8E0).w
 		movem.l	(sp)+,d0-a5
 		tst.b	$19(a3)
 		beq.s	loc_B7CA
@@ -15379,7 +15030,7 @@ loc_B7FA:
 
 loc_B80C:
 		movem.l	d0-a5,-(sp)
-		jsr	(sub_2AC).w
+		jsr	(j_sub_8E0).w
 		movem.l	(sp)+,d0-a5
 		tst.b	$19(a3)
 		bne.w	lose_life
@@ -15410,7 +15061,7 @@ loc_B84E:
 
 +
 		st	($FFFFFBCE).w
-		jsr	(sub_2C4).w
+		jsr	(j_sub_8C2).w
 		tst.b	(Two_player_flag).w
 		bne.w	loc_B894
 		tst.b	($FFFFFC29).w
@@ -15453,11 +15104,11 @@ loc_B8D0:
 ; ---------------------------------------------------------------------------
 
 loc_B8DE:
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_B8E2:
-		jmp	(loc_200).w
+		jmp	(j_EntryPoint).w
 ; ---------------------------------------------------------------------------
 
 loc_B8E6:
@@ -15570,7 +15221,7 @@ loc_B9A2:
 		sf	$3C(a3)
 		sf	($FFFFFA26).w
 		move.w	($FFFFFB6C).w,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		asl.w	#4,d1
 		asl.w	#4,d2
 		add.w	d2,d1
@@ -15627,7 +15278,7 @@ loc_BA5A:
 		sf	$3C(a3)
 		st	($FFFFFA26).w
 		move.w	($FFFFFB6C).w,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		asl.w	#4,d1
 		asl.w	#4,d2
 		sub.w	d2,d1
@@ -15720,18 +15371,18 @@ loc_BB74:
 ; End of function sub_BB54
 
 ; ---------------------------------------------------------------------------
-off_BB80:	dc.l loc_DEEE
-		dc.l loc_DEFA
-		dc.l loc_DEF6
+off_BB80:	dc.l j_sub_10E86
+		dc.l j_loc_1002E
+		dc.l j_sub_10F44
 		dc.l return_BBC0
 		dc.l return_BBC0
-		dc.l loc_DF02
+		dc.l j_loc_110D0
 		dc.l return_BBC0
 		dc.l loc_BBD2
-		dc.l loc_DF12
+		dc.l j_return_1142E
 		dc.l loc_BBC2
 		dc.l return_BBC0
-		dc.l loc_DF16
+		dc.l j_loc_FAFE
 		dc.l return_BBC0
 		dc.l return_BBC0
 		dc.l return_BBC0
@@ -15745,7 +15396,7 @@ return_BBC0:
 loc_BBC2:
 		tst.b	($FFFFFA6A).w
 		bne.w	return_BBD0
-		jmp	(loc_DEFE).l
+		jmp	(j_loc_11430).l
 ; ---------------------------------------------------------------------------
 
 return_BBD0:
@@ -15755,7 +15406,7 @@ return_BBD0:
 loc_BBD2:
 		tst.b	($FFFFFA6A).w
 		bne.w	return_BBE0
-		jmp	(loc_DF0A).l
+		jmp	(j_loc_11364).l
 ; ---------------------------------------------------------------------------
 
 return_BBE0:
@@ -15767,7 +15418,7 @@ return_BBE0:
 sub_BBE2:
 		move.w	($FFFFFB6C).w,d3
 		move.w	d3,a4
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		move.w	$1A(a3),d7
 		asr.w	#4,d7
 		cmp.w	d1,d7
@@ -15810,7 +15461,7 @@ loc_BC34:
 		addq.w	#2,d0
 
 loc_BC40:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	($FFFFFA64).w
 		bne.s	loc_BC40
 		tst.b	($FFFFFA73).w
@@ -15826,14 +15477,14 @@ loc_BC56:
 		moveq	#1,d2
 
 loc_BC5C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d2,loc_BC5C
 		move.w	(Current_Helmet).w,d7
 		bsr.w	sub_80D0
 		moveq	#3,d2
 
 loc_BC6E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d2,loc_BC6E
 		dbf	d3,loc_BC56
 		sf	($FFFFFA73).w
@@ -15860,7 +15511,7 @@ loc_BC96:
 		dbf	d7,loc_BC96
 
 loc_BCAC:
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
 		bra.s	loc_BCAC
@@ -16212,7 +15863,7 @@ split_double_digit:
 
 sub_BFA6:
 		move.l	#$FF0004,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,a3
 		move.l	a1,($FFFFFA30).w
 		move.w	(Flag_X_pos).w,$1A(a3)
@@ -16226,7 +15877,7 @@ sub_BFA6:
 		move.w	#(LnkTo_unk_E0FDE-Data_Index),$22(a3)
 		move.l	a1,a4
 		move.l	#$FF0004,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,a3
 		move.l	a1,$3E(a4)
 		move.w	(Flag_X_pos).w,$1A(a3)
@@ -16280,19 +15931,19 @@ loc_C056:
 ; ---------------------------------------------------------------------------
 
 loc_C070:
-		jsr	(sub_254).w
+		jsr	(j_sub_EFA).w
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
 		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C2F2,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_C378,4(a0)
 		move.w	#$24,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	($FFFFF858).w,d0
 		beq.s	loc_C0CC
 
@@ -16302,14 +15953,14 @@ loc_C0B6:
 		move.l	d0,-(sp)
 		cmp.l	($FFFFF85E).w,a3
 		beq.s	loc_C0C8
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 
 loc_C0C8:
 		move.l	(sp)+,d0
 		bne.s	loc_C0B6
 
 loc_C0CC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		st	($FFFFFB49).w
 		st	($FFFFFB4A).w
 		move.w	(Time_Seconds_low_digit).w,d0
@@ -16333,10 +15984,10 @@ loc_C10A:
 		clr.w	($FFFFFC24).w
 		clr.b	(MurderWall_flag).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C326,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C428,4(a0)
 		move.w	#$5F60,d0
 		lea	ArtSom_C65A_HoloBG(pc),a0
@@ -16387,7 +16038,7 @@ loc_C1BC:
 ; ---------------------------------------------------------------------------
 
 loc_C1D0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subi.w	#$10,($FFFFF876).w
 		bmi.s	loc_C1EE
 
@@ -16416,7 +16067,7 @@ loc_C1EE:
 		move.w	d0,$4A(a5)
 
 loc_C21E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFF8B2).w,a0
 		moveq	#$C,d7
 
@@ -16432,7 +16083,7 @@ loc_C228:
 loc_C238:
 		move.l	a0,($FFFFF8B2).w
 		move.w	#$14,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	#$74,d0
 		jsr	(j_PlaySound).l
 		bra.w	loc_D468
@@ -16551,7 +16202,7 @@ loc_C2F2:
 
 loc_C2F4:
 		move.w	#4,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$2FB,d1
 		move.w	#$10E,d2
 		bsr.s	sub_C346
@@ -16564,7 +16215,7 @@ loc_C2F4:
 		addq.w	#1,d0
 		cmpi.w	#8,d0
 		bne.s	loc_C2F4
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_C326:
@@ -16572,14 +16223,14 @@ loc_C326:
 
 loc_C328:
 		move.w	#4,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$625,d1
 		move.w	#$48,d2
 		bsr.s	sub_C346
 		addq.w	#1,d0
 		cmpi.w	#8,d0
 		bne.s	loc_C328
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -16622,7 +16273,7 @@ loc_C38A:
 
 loc_C392:
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$80,d2
 		lea	($FFFF77B2).l,a0
 		bsr.w	sub_C3DA
@@ -16643,7 +16294,7 @@ loc_C3BA:
 		addq.w	#1,d0
 		cmpi.w	#$10,d0
 		bne.s	loc_C392
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_C378
 
 
@@ -16705,7 +16356,7 @@ unk_C418:	dc.b   0
 
 loc_C428:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		lea	($FFFF0006).l,a0
 		moveq	#9,d0
 		moveq	#0,d1
@@ -16731,7 +16382,7 @@ loc_C452:
 		dbf	d0,loc_C436
 		tst.w	d1
 		bne.s	loc_C428
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_C460:
@@ -16740,7 +16391,7 @@ loc_C460:
 
 loc_C466:
 		move.l	#$2000004,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,(a4)+
 		st	$13(a1)
 		move.b	#2,$11(a1)
@@ -16749,7 +16400,7 @@ loc_C466:
 		dbf	d7,loc_C466
 
 loc_C48C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		lea	unk_C534(pc),a1
 		lea	$44(a5),a4
 		moveq	#0,d7
@@ -16857,7 +16508,7 @@ off_C550:	dc.w LnkTo_unk_C86E0-Data_Index
 
 loc_C564:
 		move.l	#$2000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$11(a3)
 		move.w	#$409,$24(a3)
 		bra.s	loc_C592
@@ -16865,7 +16516,7 @@ loc_C564:
 
 loc_C57C:
 		move.l	#$2000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#2,$11(a3)
 		move.w	#$517,$24(a3)
 
@@ -16875,7 +16526,7 @@ loc_C592:
 		move.w	$44(a5),$22(a3)
 
 loc_C5A2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$64(a5),d0
 		add.w	$6C(a5),d0
 		move.w	d0,$64(a5)
@@ -16895,7 +16546,7 @@ loc_C5A2:
 
 loc_C5DE:
 		move.l	#$2000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#2,$11(a3)
 		move.b	#1,$10(a3)
@@ -16907,7 +16558,7 @@ loc_C5DE:
 		moveq	#4,d3
 
 loc_C60C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.w	d2,d0
 		cmpi.w	#$FFF8,d0
 		bge.s	loc_C61E
@@ -16979,16 +16630,16 @@ loc_D05A:
 ; ---------------------------------------------------------------------------
 
 loc_D074:
-		jsr	(sub_254).w
+		jsr	(j_sub_EFA).w
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
 		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C2F2,4(a0)
 		move.w	#$24,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	($FFFFF858).w,d0
 		beq.s	loc_D0C0
 
@@ -16998,22 +16649,22 @@ loc_D0AA:
 		move.l	d0,-(sp)
 		cmp.l	($FFFFF85E).w,a3
 		beq.s	loc_D0BC
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 
 loc_D0BC:
 		move.l	(sp)+,d0
 		bne.s	loc_D0AA
 
 loc_D0C0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		st	($FFFFFB49).w
 		clr.w	($FFFFFC24).w
 		clr.b	(MurderWall_flag).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C326,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C428,4(a0)
 		move.l	(Addr_TtlCrdLetters).l,a0
 		move.w	#$8120,d0
@@ -17053,7 +16704,7 @@ loc_D150:
 ; ---------------------------------------------------------------------------
 
 loc_D15E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subi.w	#$10,($FFFFF876).w
 		cmpi.w	#$70,($FFFFF876).w
 		beq.s	loc_D17E
@@ -17066,7 +16717,7 @@ loc_D170:
 
 loc_D17E:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C57C,4(a0)
 		move.w	#$F2C,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17074,7 +16725,7 @@ loc_D17E:
 		move.w	#$100,$68(a0)
 		move.w	#$FFFE,$70(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C460,4(a0)
 		move.w	#$1C,$A(a0)
 		move.w	#$98,$64(a0)
@@ -17087,7 +16738,7 @@ loc_D17E:
 		tst.b	(Two_player_flag).w
 		beq.w	loc_D25E
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C564,4(a0)
 		move.w	#$FD0,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17096,7 +16747,7 @@ loc_D17E:
 		move.w	#8,$6C(a0)
 		move.l	a0,$44(a5)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C564,4(a0)
 		move.w	#$FD4,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17112,7 +16763,7 @@ loc_D25E:
 		tst.w	(Number_Continues).w
 		bne.w	loc_D2E0
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C57C,4(a0)
 		move.w	#$F0C,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17120,7 +16771,7 @@ loc_D25E:
 		move.w	#$60,$68(a0)
 		move.w	#8,$6C(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C57C,4(a0)
 		move.w	#$F10,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17128,11 +16779,11 @@ loc_D25E:
 		move.w	#$80,$68(a0)
 		move.w	#$FFF8,$6C(a0)
 		move.w	#$3C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$1A3,d0
 
 loc_D2CE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	(Ctrl_Held).w
 		bmi.s	loc_D2DC
 		dbf	d0,loc_D2CE
@@ -17143,7 +16794,7 @@ loc_D2DC:
 
 loc_D2E0:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C57C,4(a0)
 		move.w	#$EF8,$44(a0)
 		move.w	#$1C,$46(a0)
@@ -17152,7 +16803,7 @@ loc_D2E0:
 		move.w	#8,$6C(a0)
 		move.l	a0,$4C(a5)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C460,4(a0)
 		move.w	#$1C,$A(a0)
 		move.w	#$134,$64(a0)
@@ -17161,11 +16812,11 @@ loc_D2E0:
 		move.l	a0,$50(a5)
 		move.w	(Number_Continues).w,$62(a0)
 		move.w	#$1C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$123,d0
 
 loc_D350:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	(Ctrl_Held).w
 		bmi.s	lose_continue
 		dbf	d0,loc_D350
@@ -17192,7 +16843,7 @@ loc_D386:
 		move.w	#$EF,d0
 
 loc_D3AA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	(Ctrl_Held).w
 		bmi.s	lose_continue
 		dbf	d0,loc_D3AA
@@ -17237,9 +16888,9 @@ loc_D418:
 
 loc_D428:
 		jsr	(j_WaitForVint).w
-		jsr	(sub_2C8).w
-		jsr	(sub_218).w
-		jsr	(loc_2CC).w
+		jsr	(j_Do_Nothing).w
+		jsr	(j_Palette_to_VRAM).w
+		jsr	(j_sub_14C0).w
 		subi.w	#$10,($FFFFF876).w
 		bmi.s	loc_D44C
 
@@ -17252,9 +16903,9 @@ loc_D440:
 
 loc_D44C:
 		jsr	(j_WaitForVint).w
-		jsr	(sub_2C8).w
-		jsr	(sub_218).w
-		jsr	(loc_2CC).w
+		jsr	(j_Do_Nothing).w
+		jsr	(j_Palette_to_VRAM).w
+		jsr	(j_sub_14C0).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
 		bra.w	loc_B84E
@@ -17273,7 +16924,7 @@ loc_D468:
 
 loc_D47E:
 		move.l	#$2000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.b	#1,$10(a1)
@@ -17303,7 +16954,7 @@ loc_D4CE:
 		move.w	#$FF48,d1
 		bsr.w	sub_D894
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C460,4(a0)
 		move.w	d5,$A(a0)
 		move.w	#$FF84,d1
@@ -17444,7 +17095,7 @@ loc_D660:
 		bsr.w	sub_D894
 		move.l	(sp)+,d0
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C460,4(a0)
 		move.w	d5,$A(a0)
 		move.w	#$FF5C,d1
@@ -17456,7 +17107,7 @@ loc_D660:
 
 loc_D702:
 		move.w	#$5A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#$1F,d0
 		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
@@ -17473,13 +17124,13 @@ loc_D726:
 		move.w	#$100,($FFFFF876).w
 
 loc_D734:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	#$7C7F,($FFFFF88C).w
 		subi.w	#$10,($FFFFF876).w
 		cmpi.w	#$80,($FFFFF876).w
 		bne.s	loc_D734
 		move.w	#$14,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#$3C,d0
 		lea	$48(a5),a2
 		move.l	(a2)+,a3
@@ -17492,7 +17143,7 @@ loc_D734:
 		move.l	(sp)+,d0
 
 loc_D770:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	$60(a1),d4
 		cmp.l	d2,d4
 		blt.s	loc_D77E
@@ -17519,7 +17170,7 @@ loc_D79E:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C5DE,4(a0)
 		move.w	#$F0,d0
 
@@ -17547,7 +17198,7 @@ loc_D7F4:
 		jsr	(sub_E132C).l
 		move.l	(sp)+,d0
 		move.w	d0,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		cmpi.w	#Final_LevelID,(Current_LevelID).w
 		beq.w	loc_D820
 		addq.w	#1,(Current_LevelID).w
@@ -17559,11 +17210,11 @@ loc_D7F4:
 loc_D820:
 		jsr	(j_StopMusic).l
 		move.w	#$28,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#5,d0
 		jsr	(j_PlaySound).l
 		move.w	#$C8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#$1F,d0
 		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
@@ -17583,7 +17234,7 @@ loc_D85E:
 ; ---------------------------------------------------------------------------
 
 loc_D86C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,($FFFFF876).w
 		bmi.s	loc_D882
 
@@ -17598,7 +17249,7 @@ loc_D882:
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
 		move.w	#$30,(Game_Mode).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; END OF FUNCTION CHUNK	FOR sub_C048
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -17606,7 +17257,7 @@ loc_D882:
 
 sub_D894:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C57C,4(a0)
 		move.w	d0,$44(a0)
 		move.w	d5,$46(a0)
@@ -17623,7 +17274,7 @@ sub_D894:
 
 sub_D8BE:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C460,4(a0)
 		move.w	d5,$A(a0)
 		add.w	d6,d1
@@ -17655,16 +17306,16 @@ loc_D984:
 ; ---------------------------------------------------------------------------
 
 loc_D99E:
-		jsr	(sub_254).w
+		jsr	(j_sub_EFA).w
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
 		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_C2F2,4(a0)
 		move.w	#$24,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	($FFFFF858).w,d0
 		beq.s	loc_D9EA
 
@@ -17674,16 +17325,16 @@ loc_D9D4:
 		move.l	d0,-(sp)
 		cmp.l	($FFFFF85E).w,a3
 		beq.s	loc_D9E6
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 
 loc_D9E6:
 		move.l	(sp)+,d0
 		bne.s	loc_D9D4
 
 loc_D9EA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_C378,4(a0)
 		st	($FFFFFB49).w
 		moveq	#$3F,d0
@@ -17703,7 +17354,7 @@ loc_DA16:
 ; ---------------------------------------------------------------------------
 
 loc_DA30:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subi.w	#$11,($FFFFF876).w
 		subq.w	#1,d0
 		beq.s	loc_DA4A
@@ -17730,7 +17381,7 @@ loc_DA4A:
 
 loc_DA7A:
 		move.w	#4,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$BC,d1
 		move.w	#$644,d2
 		bsr.w	sub_C346
@@ -17740,7 +17391,7 @@ loc_DA7A:
 		addq.w	#1,d0
 		cmpi.w	#8,d0
 		bne.s	loc_DA7A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -17865,64 +17516,46 @@ sub_DEDE:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_DEE2:
+j_loc_DF22: ;DEE2
 
-; FUNCTION CHUNK AT 0000FAE2 SIZE 0000005C BYTES
-; FUNCTION CHUNK AT 0001002E SIZE 0000004C BYTES
-; FUNCTION CHUNK AT 00010DA2 SIZE 00000042 BYTES
-; FUNCTION CHUNK AT 000110D0 SIZE 00000050 BYTES
-; FUNCTION CHUNK AT 000111F4 SIZE 000000A8 BYTES
-; FUNCTION CHUNK AT 00011364 SIZE 0000005C BYTES
-; FUNCTION CHUNK AT 0001142E SIZE 0000006E BYTES
 
 		jmp	loc_DF22(pc)
 ; ---------------------------------------------------------------------------
 		jmp	sub_DF68(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DEEA:
+j_sub_FACE: ;DEEA
 		jmp	sub_FACE(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DEEE:
+j_sub_10E86: ;DEEE
 		jmp	sub_10E86(pc)
 ; ---------------------------------------------------------------------------
 		jmp	return_FAFC(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DEF6:
+j_sub_10F44: ;DEF6
 		jmp	sub_10F44(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DEFA:
+j_loc_1002E: ;DEFA
 		jmp	loc_1002E(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DEFE:
+j_loc_11430: ;DEFE
 		jmp	loc_11430(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF02:
+j_loc_110D0: ;DF02
 		jmp	loc_110D0(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF06:
+j_loc_111F4: ;DF06
 		jmp	loc_111F4(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF0A:
+j_loc_11364: ;DF0A
 		jmp	loc_11364(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF0E:
+j_loc_10DA4: ;DF0E
 		jmp	loc_10DA4(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF12:
+j_return_1142E: ;DF12
 		jmp	return_1142E(pc)
 ; ---------------------------------------------------------------------------
-
-loc_DF16:
+j_loc_FAFE: ;DF16
 		jmp	loc_FAFE(pc)
 ; ---------------------------------------------------------------------------
 		jmp	loc_FAE2(pc)
@@ -17955,7 +17588,7 @@ loc_DF50:
 		clr.w	$A(a0)
 		clr.w	($FFFFF8CA).w
 		rts
-; End of function sub_DEE2
+; End of function j_loc_DF22
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -18099,7 +17732,7 @@ loc_E082:
 loc_E096:
 		move.b	#$60,(a2)
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_E29A,4(a0)
 		move.w	d0,$44(a0)
 		move.w	d6,$46(a0)
@@ -18133,7 +17766,7 @@ loc_E0C2:
 
 sub_E0F8:
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_E304,4(a0)
 		move.w	d0,$44(a0)
 		move.w	d6,$46(a0)
@@ -18309,7 +17942,7 @@ loc_E1BC:
 sub_E1D4:
 		move.b	#$60,(a2)
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_E282,4(a0)
 		move.w	d0,$44(a0)
 		move.w	d6,$46(a0)
@@ -18415,7 +18048,7 @@ unk_E246:	dc.b   0
 
 loc_E282:
 		move.l	#$FF0004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$36(a5),a3
 		tst.w	$50(a5)
 		sne	$16(a3)
@@ -18424,7 +18057,7 @@ loc_E282:
 
 loc_E29A:
 		move.l	#$FF0004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$36(a5),a3
 
 loc_E2A8:
@@ -18450,21 +18083,21 @@ loc_E2D2:
 
 loc_E2E2:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d3,loc_E2E2
 		moveq	#3,d3
 
 loc_E2F0:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d3,loc_E2F0
 		bsr.w	sub_11530
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_E304:
 		move.l	#$FF0004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$36(a5),a3
 		st	$13(a3)
 		move.b	#0,$11(a3)
@@ -18485,13 +18118,13 @@ loc_E304:
 
 loc_E34C:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d3,loc_E34C
 		moveq	#3,d3
 
 loc_E35A:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d3,loc_E35A
 		tst.w	$50(a5)
 		bne.s	loc_E376
@@ -18500,7 +18133,7 @@ loc_E35A:
 		bsr.w	sub_11530
 
 loc_E376:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -19175,9 +18808,9 @@ loc_E7AC:
 		bne.s	loc_E7E0
 		movem.l	d0-d2/a0,-(sp)
 		move.l	#$3000001,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_EADE,4(a0)
 		move.l	a1,($FFFFFABA).w
 		move.l	a0,$C(a1)
@@ -19376,8 +19009,8 @@ loc_E988:
 		clr.w	($FFFFFAB8).w
 		move.l	($FFFFFABA).w,a3
 		move.l	$C(a3),a0
-		jsr	(sub_27C).w
-		jsr	(sub_250).w
+		jsr	(j_loc_1078).w
+		jsr	(j_sub_E90).w
 
 loc_E99C:
 		move.l	($FFFFF832).w,a3
@@ -19540,7 +19173,7 @@ loc_EAC6:
 
 loc_EADE:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_EADE
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
@@ -21534,7 +21167,7 @@ sub_FACE:
 ; End of function sub_FACE
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 loc_FAE2:
 		move.l	a0,-(sp)
@@ -21558,7 +21191,7 @@ loc_FAFE:
 		move.w	d3,a0
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_FB3E,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -21572,7 +21205,7 @@ loc_FAFE:
 		move.w	d4,$1E(a1)
 		movem.l	(sp)+,d4/a0-a1
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21600,44 +21233,44 @@ sub_FB3E:
 		st	$13(a3)
 		move.b	#0,$11(a3)
 		move.l	#stru_FD4C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		moveq	#5,d0
 
 loc_FB94:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_FB94
 		moveq	#5,d1
 
 loc_FBA2:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_FBA2
 		moveq	#4,d0
 
 loc_FBB0:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_FBB0
 		moveq	#4,d1
 
 loc_FBBE:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_FBBE
 		moveq	#3,d0
 
 loc_FBCC:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_FBCC
 		moveq	#4,d1
 
 loc_FBDA:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_FBDA
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		move.w	$44(a5),d1
 		move.w	$46(a5),d2
 		move.l	$48(a5),a1
@@ -21652,8 +21285,8 @@ loc_FBDA:
 		addq.w	#7,d4
 		move.w	d4,$1E(a3)
 		move.l	#stru_FD10,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	d1,d4
 		lsl.w	#4,d4
 		addq.w	#8,d4
@@ -21663,12 +21296,12 @@ loc_FBDA:
 		addq.w	#8,d4
 		move.w	d4,$1E(a3)
 		move.l	#stru_FD3A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_FCA6,4(a0)
-		jsr	(sub_29C).w
+		jsr	(j_sub_238E).w
 		move.w	a3,$44(a0)
 		clr.l	$A(a3)
 		move.l	#$FFFF0000,$E(a3)
@@ -21684,9 +21317,9 @@ loc_FBDA:
 		move.w	#$63,$20(a3)
 		move.b	#$88,$1F(a3)
 		move.w	#$2C3,$18(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_11542
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_FB3E
 
 
@@ -21703,7 +21336,7 @@ sub_FCA6:
 		move.w	6(a3),d0
 
 loc_FCBE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_FD00
 		cmp.w	6(a3),d0
 		beq.s	loc_FCD2
@@ -21724,8 +21357,8 @@ loc_FCEA:
 		move.w	6(a3),d4
 		cmp.w	(Level_height_blocks).w,d4
 		blt.w	loc_FCFE
-		jsr	(sub_2A0).w
-		jmp	(sub_258).w
+		jsr	(j_sub_23B4).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_FCFE:
@@ -21777,7 +21410,7 @@ diamond_pickup:
 
 +
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$64,$3A(a3)
 		st	$3D(a3)
@@ -21786,9 +21419,9 @@ diamond_pickup:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#5,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.l	#stru_10D6E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		cmpi.w	#$63,(Number_Diamonds).w		; Check if more than max diamonds
 		bne.w	diamond_increment
 		sf	$3C(a3)
@@ -21798,11 +21431,11 @@ diamond_pickup:
 		move.l	#$FFFD0000,$2A(a3)
 
 -
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$6000,$2A(a3)
 		tst.b	$19(a3)
 		beq.s	-
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 diamond_increment:
@@ -21821,7 +21454,7 @@ diamond_increment:
 		move.w	#$1F,d2
 
 -
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
 		move.w	$3E(a3),d4
@@ -21853,12 +21486,12 @@ diamond_increment:
 		move.w	#$63,(Number_Diamonds).w
 
 +
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_FE7A:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$64,$3A(a3)
 		st	$3D(a3)
@@ -21867,9 +21500,9 @@ loc_FE7A:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#5,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.l	#stru_10C08,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	$1A(a3),d0
 		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a3)
@@ -21885,7 +21518,7 @@ loc_FE7A:
 		move.w	#$1F,d2
 
 loc_FEEE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
 		move.w	$3E(a3),d4
@@ -21898,12 +21531,12 @@ loc_FEFE:
 		move.w	d4,$1E(a3)
 		dbf	d2,loc_FEEE
 		addq.w	#1,(Number_Lives).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_FF1E:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$64,$3A(a3)
 		st	$3D(a3)
@@ -21912,9 +21545,9 @@ loc_FF1E:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#5,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.l	#stru_10C18,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	$1A(a3),d0
 		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a3)
@@ -21930,7 +21563,7 @@ loc_FF1E:
 		move.w	#$1F,d2
 
 loc_FF92:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
 		move.w	$3E(a3),d4
@@ -21970,7 +21603,7 @@ loc_10002:
 		move.w	#$96,d3
 
 loc_1000A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$3E(a3),d4
 		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
@@ -21980,9 +21613,9 @@ loc_1001E:
 		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d3,loc_1000A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 loc_1002E:
 		move.l	d0,-(sp)
@@ -21993,7 +21626,7 @@ loc_1002E:
 		move.w	d3,a0
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_1007A,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -22007,7 +21640,7 @@ loc_1002E:
 		move.w	d4,$1E(a1)
 		movem.l	(sp)+,d4/a0-a1
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -22037,44 +21670,44 @@ sub_1007A:
 		st	$13(a3)
 		move.b	#0,$11(a3)
 		move.l	#stru_101B6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		moveq	#5,d0
 
 loc_100DA:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_100DA
 		moveq	#5,d1
 
 loc_100E8:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_100E8
 		moveq	#4,d0
 
 loc_100F6:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_100F6
 		moveq	#4,d1
 
 loc_10104:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_10104
 		moveq	#3,d0
 
 loc_10112:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_10112
 		moveq	#4,d1
 
 loc_10120:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_10120
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		move.w	$44(a5),d1
 		move.w	$46(a5),d2
 		move.l	$48(a5),a1
@@ -22082,7 +21715,7 @@ loc_10120:
 		bsr.w	sub_11530
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#loc_102B8,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -22098,7 +21731,7 @@ loc_10120:
 		move.w	d4,$1E(a1)
 		move.w	#$1FFF,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#loc_10330,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -22111,7 +21744,7 @@ loc_10120:
 		move.w	d2,d4
 		lsl.w	#4,d4
 		move.w	d4,$1E(a1)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_101B6:	anim_frame	  1,   3, LnkTo_unk_E0E4E-Data_Index
 		anim_frame	  1,   3, LnkTo_unk_E0E5E-Data_Index
@@ -22150,50 +21783,50 @@ loc_10200:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_10296,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		moveq	#5,d0
 
 loc_10228:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_10228
 		moveq	#5,d1
 
 loc_10236:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_10236
 		moveq	#4,d0
 
 loc_10244:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_10244
 		moveq	#4,d1
 
 loc_10252:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_10252
 		moveq	#3,d0
 
 loc_10260:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_10260
 		moveq	#4,d1
 
 loc_1026E:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_1026E
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		move.w	$44(a5),d1
 		move.w	$46(a5),d2
 		move.l	$48(a5),a1
 		move.w	#$E102,d0
 		bsr.w	sub_11530
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_10296:	anim_frame	  1,   3, LnkTo_unk_E0E4E-Data_Index
 		anim_frame	  1,   3, LnkTo_unk_E0E5E-Data_Index
@@ -22213,9 +21846,9 @@ loc_102B8:
 		move.b	#0,$11(a3)
 		move.w	#(LnkTo_unk_E0F2E-Data_Index),$22(a3)
 		move.l	#stru_102DE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_102DE:	anim_frame	  1,   4, LnkTo_unk_E0F2E-Data_Index
 		anim_frame	  1,   6, LnkTo_unk_E0F36-Data_Index
@@ -22281,16 +21914,16 @@ loc_10354:
 		move.b	#0,$12(a3)
 		move.l	$48(a5),a2
 		move.l	#stru_10D6E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10396:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d3
 		beq.w	loc_10430
 		cmpi.w	#$C8,d3
 		bne.w	loc_103B2
 		move.l	#stru_10D80,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_103B2:
 		move.w	(a2),d4
@@ -22335,13 +21968,13 @@ loc_10404:
 		tst.w	$38(a3)
 		beq.s	loc_10396
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#diamond_pickup,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 
 loc_10430:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; END OF FUNCTION CHUNK	FOR sub_10848
 ; ---------------------------------------------------------------------------
 
@@ -22360,10 +21993,10 @@ loc_10436:
 		bsr.w	sub_10CB0
 		move.w	#$6C,$3A(a3)
 		move.l	#stru_106DC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10464:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22372,7 +22005,7 @@ loc_10464:
 		beq.s	loc_10464
 
 loc_1047C:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_10480:
@@ -22386,10 +22019,10 @@ loc_10480:
 		bsr.w	sub_10CB0
 		move.w	#$70,$3A(a3)
 		move.l	#stru_106E8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_104AE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22398,7 +22031,7 @@ loc_104AE:
 		beq.s	loc_104AE
 
 loc_104C6:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_104CA:
@@ -22412,10 +22045,10 @@ loc_104CA:
 		bsr.w	sub_10CB0
 		move.w	#$74,$3A(a3)
 		move.l	#stru_106F4,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_104F8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22424,7 +22057,7 @@ loc_104F8:
 		beq.s	loc_104F8
 
 loc_10510:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_10514:
@@ -22438,10 +22071,10 @@ loc_10514:
 		bsr.w	sub_10CB0
 		move.w	#$78,$3A(a3)
 		move.l	#stru_106EE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10542:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22450,7 +22083,7 @@ loc_10542:
 		beq.s	loc_10542
 
 loc_1055A:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1055E:
@@ -22464,10 +22097,10 @@ loc_1055E:
 		bsr.w	sub_10CB0
 		move.w	#$7C,$3A(a3)
 		move.l	#stru_106D6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_1058C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22476,7 +22109,7 @@ loc_1058C:
 		beq.s	loc_1058C
 
 loc_105A4:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_105A8:
@@ -22490,10 +22123,10 @@ loc_105A8:
 		bsr.w	sub_10CB0
 		move.w	#$80,$3A(a3)
 		move.l	#stru_106FA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_105D6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22502,7 +22135,7 @@ loc_105D6:
 		beq.s	loc_105D6
 
 loc_105EE:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_105F2:
@@ -22516,10 +22149,10 @@ loc_105F2:
 		bsr.w	sub_10CB0
 		move.w	#$84,$3A(a3)
 		move.l	#stru_106E2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10620:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22528,7 +22161,7 @@ loc_10620:
 		beq.s	loc_10620
 
 loc_10638:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1063C:
@@ -22542,10 +22175,10 @@ loc_1063C:
 		bsr.w	sub_10CB0
 		move.w	#$88,$3A(a3)
 		move.l	#stru_106D0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_1066A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22554,7 +22187,7 @@ loc_1066A:
 		beq.s	loc_1066A
 
 loc_10682:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_10686:
@@ -22568,10 +22201,10 @@ loc_10686:
 		bsr.w	sub_10CB0
 		move.w	#$8C,$3A(a3)
 		move.l	#stru_10700,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_106B4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_10C38
 		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
@@ -22580,7 +22213,7 @@ loc_106B4:
 		beq.s	loc_106B4
 
 loc_106CC:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_106D0:	anim_frame	1, 1, LnkTo_unk_A5AB6-Data_Index
 		dc.b 2
@@ -22616,16 +22249,16 @@ loc_10706:
 		move.w	#$90,$3A(a3)
 		bsr.w	sub_10C78
 		move.l	#stru_10C08,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_1071E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d3
 		beq.s	loc_10768
 		cmpi.w	#$12C,d3
 		bne.w	loc_10738
 		move.l	#stru_10C0E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10738:
 		bsr.w	sub_10C38
@@ -22635,20 +22268,20 @@ loc_10738:
 		tst.w	$38(a3)
 		beq.s	loc_1071E
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_FE7A,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 
 loc_10768:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1076C:
 		move.w	#$94,$3A(a3)
 		bsr.w	sub_10C78
 		move.l	#stru_10C18,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		tst.b	($FFFFFB55).w
 		bne.s	loc_10792
 		move.l	d0,-(sp)
@@ -22660,13 +22293,13 @@ loc_10792:
 		addq.b	#1,($FFFFFB55).w
 
 loc_10796:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d3
 		beq.s	loc_107E0
 		cmpi.w	#$12C,d3
 		bne.w	loc_107B0
 		move.l	#stru_10C1E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_107B0:
 		bsr.w	sub_10C38
@@ -22676,7 +22309,7 @@ loc_107B0:
 		tst.w	$38(a3)
 		beq.s	loc_10796
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_FF1E,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
@@ -22688,7 +22321,7 @@ loc_107E0:
 		jsr	(sub_E132C).l
 
 loc_107EE:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_107F2:
@@ -22696,16 +22329,16 @@ loc_107F2:
 		move.w	#$98,$3A(a3)
 		bsr.w	sub_10C78
 		move.l	#stru_10C28,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_1080A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d3
 		beq.s	loc_10838
 		cmpi.w	#$12C,d3
 		bne.w	loc_10824
 		move.l	#stru_10C2E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_10824:
 		bsr.w	sub_10C38
@@ -22720,7 +22353,7 @@ loc_10838:
 		moveq	#$6A,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -22813,7 +22446,7 @@ loc_108CA:
 		bsr.w	sub_10848
 		move.l	$1A(a3),$6C(a5)
 		move.l	$1E(a3),$70(a5)
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		moveq	#0,d3
 		lea	$44(a5),a2
 		move.l	a2,a0
@@ -22824,14 +22457,14 @@ loc_108E8:
 		dbf	d0,loc_108E8
 
 loc_108EE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#$1E,d3
 		bge.s	loc_10960
 		moveq	#0,d0
 		move.b	byte_108AC(pc,d3.w),d0
 		bmi.s	loc_10960
 		move.l	#$FE0000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	d0,-(sp)
 		moveq	#$2D,d0
 		jsr	(j_PlaySound).l
@@ -22930,7 +22563,7 @@ loc_109E8:										; Could be 10-diamond pickup increment
 
 +
 		exg	a1,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	$44(a5,d2.w)
 		exg	a1,a3
 
@@ -22941,7 +22574,7 @@ loc_10A3A:
 		addq.w	#1,d3
 		cmpi.w	#$118,d3
 		bne.w	loc_108EE
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 unk_10A52:	dc.b $FF
 		dc.b $EC ; Ï
@@ -23036,7 +22669,7 @@ loc_10AC2:
 loc_10AE0:
 		move.l	$1A(a3),$6C(a5)
 		move.l	$1E(a3),$70(a5)
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		moveq	#0,d3
 		lea	$44(a5),a2
 		move.l	a2,a0
@@ -23047,7 +22680,7 @@ loc_10AFA:
 		dbf	d0,loc_10AFA
 
 loc_10B00:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#$15,d3
 		bge.s	loc_10B74
 		moveq	#0,d0
@@ -23055,7 +22688,7 @@ loc_10B00:
 		move.b	(a1,d3.w),d0
 		bmi.s	loc_10B74
 		move.l	#$FE0000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.b	#1,$10(a1)
 		st	$13(a1)
 		move.w	#(LnkTo_unk_E104E-Data_Index),$22(a1)
@@ -23135,9 +22768,9 @@ loc_10BE0:
 
 loc_10BE6:
 		move.l	(a2)+,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		dbf	d0,loc_10BE6
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 unk_10BF4:	dc.b $FF
 		dc.b $F0 ; 
@@ -23280,9 +22913,9 @@ loc_10CF4:
 		move.w	$1E(a0),d6
 		subq.w	#8,d6
 		move.l	$C(a0),a0
-		jsr	(sub_250).w
+		jsr	(j_sub_E90).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_10D3E,4(a0)
 		move.w	d7,$44(a0)
 		move.w	d6,$46(a0)
@@ -23298,15 +22931,15 @@ loc_10D38:
 
 sub_10D3E:
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		clr.w	$24(a3)
 		st	$13(a3)
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		move.l	#stru_102DE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_10D3E
 
 ; ---------------------------------------------------------------------------
@@ -23327,7 +22960,7 @@ stru_10D80:	anim_frame	  1,   3, LnkTo1_unk_E0E66-Data_Index
 		dc.b 2
 		dc.b $21
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 return_10DA2:
 		rts
@@ -23343,7 +22976,7 @@ loc_10DA4:
 		addq.w	#1,($FFFFFB5A).w
 		movem.l	d4/a0-a1,-(sp)
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_10DE4,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23353,7 +22986,7 @@ loc_10DA4:
 
 return_10DE2:
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23379,37 +23012,37 @@ loc_10E0A:
 		bsr.w	sub_11530
 		subq.w	#1,d0
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11530
 		move.w	#1,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		addq.w	#1,d0
 		bsr.w	sub_11530
 		subq.w	#1,d0
 		move.w	#1,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11530
 		move.w	#1,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		addq.w	#1,d0
 		bsr.w	sub_11530
 		subq.w	#1,d0
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11530
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		addq.w	#1,d0
 		bsr.w	sub_11530
 		subq.w	#1,d0
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11530
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11530
 		subq.w	#1,($FFFFFB5A).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_10DE4
 
 
@@ -23427,7 +23060,7 @@ sub_10E86:
 		or.b	#$F,(a0)
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_10EDA,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23484,10 +23117,10 @@ loc_10F26:
 loc_10F2A:
 		move.w	#(LnkTo_unk_E0E56-Data_Index),$22(a3)
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	$4C(a5),d6
-		jsr	(sub_2A4).w
-		jmp	(sub_258).w
+		jsr	(j_sub_292E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_10EDA
 
 
@@ -23506,7 +23139,7 @@ sub_10F44:
 		or.b	#$F,(a0)
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_10F9C,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23563,10 +23196,10 @@ loc_10FE8:
 loc_10FEC:
 		move.w	#(LnkTo_unk_E0E76-Data_Index),$22(a3)
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	$4C(a5),d6
-		jsr	(sub_2A4).w
-		jmp	(sub_258).w
+		jsr	(j_sub_292E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_10F9C
 
 
@@ -23692,7 +23325,7 @@ return_110CE:
 ; End of function sub_110AA
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 loc_110D0:
 		move.l	d0,-(sp)
@@ -23703,7 +23336,7 @@ loc_110D0:
 		move.w	d3,a0
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_11120,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23720,7 +23353,7 @@ loc_1110E:
 		move.w	d4,$1E(a1)
 		movem.l	(sp)+,d4/a0-a1
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23747,20 +23380,20 @@ sub_11120:
 		st	$13(a3)
 		move.b	#0,$11(a3)
 		move.l	#stru_111CE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		tst.w	$4C(a5)
 		bne.s	loc_11196
 		moveq	#3,d0
 
 loc_1117A:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1117A
 		moveq	#3,d0
 
 loc_11188:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_11188
 		bra.s	loc_111B2
 ; ---------------------------------------------------------------------------
@@ -23770,23 +23403,23 @@ loc_11196:
 
 loc_11198:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_11198
 		moveq	#3,d0
 
 loc_111A6:
 		addq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_111A6
 
 loc_111B2:
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		move.w	$44(a5),d1
 		move.w	$46(a5),d2
 		move.l	$48(a5),a1
 		move.w	#$E50B,d0
 		bsr.w	sub_11530
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_11120
 
 ; ---------------------------------------------------------------------------
@@ -23802,7 +23435,7 @@ stru_111CE:	anim_frame	  1,   4, LnkTo_unk_E0E96-Data_Index
 		dc.b 0
 		dc.b 0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 loc_111F4:
 		movem.l	d4/a0-a2,-(sp)
@@ -23859,7 +23492,7 @@ loc_1125C:
 		or.b	#$F,(a2)
 		move.w	#$2001,a0
 		move.l	#$FF0001,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_1129C,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23875,7 +23508,7 @@ loc_1125C:
 loc_11296:
 		movem.l	(sp)+,d4/a0-a2
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23899,7 +23532,7 @@ sub_1129C:
 		move.l	(sp)+,d0
 
 loc_112E2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$4C(a5),d6
 		cmpi.w	#3,d6
 		bne.s	loc_112FE
@@ -23934,7 +23567,7 @@ loc_1130C:
 loc_11328:
 		move.w	#$E50B,d0
 		bsr.w	sub_11530
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_11334:
@@ -23955,11 +23588,11 @@ loc_11334:
 loc_11358:
 		move.w	#$E50B,d0
 		bsr.w	sub_11530
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_1129C
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 loc_11364:
 		move.l	d0,-(sp)
@@ -23976,7 +23609,7 @@ loc_11364:
 		move.b	#$6F,(a2)
 		move.w	#$2001,a0
 		move.l	#$FF0004,a1
-		jsr	(sub_240).w
+		jsr	(j_sub_E02).w
 		move.l	#sub_113C0,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -23991,7 +23624,7 @@ loc_11364:
 loc_113BA:
 		movem.l	(sp)+,d0/a0-a1
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -24011,7 +23644,7 @@ sub_113C0:
 
 loc_113F4:
 		subq.w	#2,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_113F4
 		move.w	#$E710,d0
 		subq.w	#1,d2
@@ -24024,13 +23657,13 @@ loc_113F4:
 
 loc_1141E:
 		subq.w	#1,$1E(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1141E
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_113C0
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_DEE2
+; START	OF FUNCTION CHUNK FOR j_loc_DF22
 
 return_1142E:
 		rts
@@ -24075,7 +23708,7 @@ loc_1146E:
 
 loc_11474:
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_114C0,4(a0)
 		move.w	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -24086,14 +23719,14 @@ loc_11474:
 loc_11496:
 		movem.l	(sp)+,d4/a0-a1
 		rts
-; END OF FUNCTION CHUNK	FOR sub_DEE2
+; END OF FUNCTION CHUNK	FOR j_loc_DF22
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_1149C:
 		move.w	#$2001,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_114F4,4(a0)
 		move.w	d1,$44(a0)
 		subq.w	#1,d2
@@ -24115,13 +23748,13 @@ sub_114C0:
 		move.w	#$EF1B,d0
 		bsr.w	sub_11530
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$EF1A,d0
 		bsr.w	sub_11530
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_11542
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_114C0
 
 
@@ -24137,16 +23770,16 @@ sub_114F4:
 		move.w	#$EF1A,d0
 		bsr.w	sub_11530
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$EF1B,d0
 		bsr.w	sub_11530
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$E919,d0
 		bsr.w	sub_11530
 
 loc_1152C:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_114F4
 
 
@@ -24269,7 +23902,7 @@ loc_119B6:
 		move.l	a4,(Addr_Current_Demo_Keypress).w
 		move.w	d7,(Current_LevelID).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_119D8,4(a0)
 		clr.w	($FFFFFBC2).w
 		bsr.w	Load_InGame
@@ -24279,7 +23912,7 @@ loc_119B6:
 loc_119D8:
 
 		clr.b	(Ctrl_Pressed).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		btst	#7,(Ctrl_1_Pressed).w
 		beq.s	loc_119D8
 		move.w	#$2C,(Game_Mode).w
@@ -24289,17 +23922,17 @@ loc_119D8:
 		move.w	#$82A,($FFFFFBCC).w
 		clr.w	(Current_LevelID).w
 		jsr	(j_StopMusic).l
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 Load_InGame:
 
-		jsr	(sub_2B0).w
-		jsr	(sub_2B4).w
-		jsr	(sub_2B8).w
-		jsr	(sub_2BC).w
+		jsr	(j_sub_231C).w
+		jsr	(j_sub_28FC).w
+		jsr	(j_sub_44B0).w
+		jsr	(j_sub_6526).w
 		jsr	(j_StopMusic).l
 		move.l	#$F,-(sp)
 		jsr	(sub_E133C).l
@@ -24783,7 +24416,7 @@ loc_11EFA:
 		bsr.w	sub_12B8C
 		bsr.w	sub_12C24
 		jsr	(sub_DEDA).l
-		jsr	(sub_DEE2).l
+		jsr	(j_loc_DF22).l
 		bsr.w	sub_14244
 		jsr	(sub_3F57A).l
 		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
@@ -24809,7 +24442,7 @@ loc_11F48:
 		cmpi.w	#7,(Foreground_theme).w
 		bne.s	loc_11F96
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1222C,4(a0)
 		bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
@@ -24818,7 +24451,7 @@ loc_11F96:
 		cmpi.w	#8,(Foreground_theme).w
 		bne.s	loc_11FB0
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1222C,4(a0)
 		bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
@@ -24827,7 +24460,7 @@ loc_11FB0:
 		cmpi.w	#4,(Background_theme).w
 		bne.s	loc_11FC8
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1202A,4(a0)
 
 loc_11FC8:
@@ -24906,7 +24539,7 @@ loc_1202A:
 		move.w	#$19,$48(a5)
 
 loc_12098:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subi.w	#1,$44(a5)
 		bne.s	loc_12110
 		lea	(off_1220E).l,a4
@@ -25034,7 +24667,7 @@ loc_1223A:
 		move.w	d0,d2
 
 loc_1223C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subi.w	#1,d0
 		bne.s	loc_1223C
 		move.w	d2,d0
@@ -26151,7 +25784,7 @@ loc_12E48:
 		move.w	#$8174,4(a6)
 		move	#$2500,sr
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_12E64,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -26166,8 +25799,8 @@ loc_12E6C:
 		jsr	(j_ReadJoypad).w
 		bclr	#7,(Ctrl_1_Pressed).w
 		bne.w	loc_12EDE
-		jsr	(sub_2C8).w
-		jsr	(sub_218).w
+		jsr	(j_Do_Nothing).w
+		jsr	(j_Palette_to_VRAM).w
 		move.w	(sp)+,d2
 		dbf	d2,loc_12E6C
 		moveq	#$28,d3
@@ -26182,9 +25815,9 @@ loc_12E96:
 		move.w	(sp)+,d1
 		bclr	#7,(Ctrl_1_Pressed).w
 		bne.s	loc_12EDE
-		jsr	(sub_2C8).w
+		jsr	(j_Do_Nothing).w
 		move.w	d1,-(sp)
-		jsr	(sub_218).w
+		jsr	(j_Palette_to_VRAM).w
 		move.w	(sp)+,d1
 		subq.w	#1,d1
 		bpl.s	loc_12ED8
@@ -26207,7 +25840,7 @@ loc_12ED8:
 loc_12EDE:
 		move.w	#4,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 Pal_12EEC:	dc.b   0
 		dc.b  $C
@@ -28687,7 +28320,7 @@ loc_14730:
 		move.w	$4E(a5),d2
 
 loc_14772:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d2,loc_14772
 		tst.b	$19(a3)
 		bne.s	loc_14788
@@ -28746,7 +28379,7 @@ loc_147D6:
 ; ---------------------------------------------------------------------------
 
 loc_14804:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_14A58
 
 loc_1480C:
@@ -28757,13 +28390,13 @@ loc_1480C:
 		move.w	d7,$54(a5)
 		dbf	d2,loc_14804
 		addq.w	#2,a0
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_14A58
 		bra.s	loc_147BA
 ; ---------------------------------------------------------------------------
 
 loc_1482E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d2,loc_147D6
 		addq.w	#2,a0
 		bra.s	loc_147BA
@@ -28773,7 +28406,7 @@ loc_1483A:
 		moveq	#$1E,d0
 		jsr	(sub_E132C).l
 		move.w	#$3C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bra.w	loc_1478E
 ; ---------------------------------------------------------------------------
 
@@ -28785,7 +28418,7 @@ loc_1484E:
 ; ---------------------------------------------------------------------------
 
 loc_1485E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_14A58
 
 loc_14866:
@@ -28794,7 +28427,7 @@ loc_14866:
 ; ---------------------------------------------------------------------------
 
 loc_1486C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_14A58
 
 loc_14874:
@@ -28942,7 +28575,7 @@ loc_149E4:
 ; ---------------------------------------------------------------------------
 
 loc_149FC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_14AB0
 		move.l	a1,a2
 		add.w	$52(a5),d1
@@ -28974,7 +28607,7 @@ loc_14A46:
 
 loc_14A4C:
 		move.w	#$3C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bra.w	loc_149CC
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -29079,7 +28712,7 @@ sub_14B28:
 		moveq	#5,d0
 
 loc_14B2A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.s	loc_14B2A
 		moveq	#5,d0
@@ -29095,126 +28728,28 @@ loc_14B2A:
 ; lava fountain positions.
 ; first word: number of entries (3 words each)
 ; each entry: x-pos, y-pos, height
-unk_14B60:	dc.b   0
-		dc.b   3
-		dc.b   1
-		dc.b $80 ; Ä
-		dc.b   3
-		dc.b $12
-		dc.b   0
-		dc.b $60 ; `
-		dc.b   2
-		dc.b $40 ; @
-		dc.b   3
-		dc.b $12
-		dc.b   0
-		dc.b $63 ; c
-		dc.b   3
-		dc.b $46 ; F
-		dc.b   3
-		dc.b $12
-		dc.b $80 ; Ä
-		dc.b   0
-unk_14B74:	dc.b   0
-		dc.b  $D
-		dc.b   2
-		dc.b $90 ; ê
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $20
-		dc.b   3
-		dc.b $D0 ; –
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $20
-		dc.b   5
-		dc.b $10
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $40 ; @
-		dc.b   6
-		dc.b $50 ; P
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $60 ; `
-		dc.b   7
-		dc.b $90 ; ê
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $80 ; Ä
-		dc.b   8
-		dc.b $D0 ; –
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $A0 ; †
-		dc.b  $A
-		dc.b $10
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $C0 ; ¿
-		dc.b  $B
-		dc.b $50 ; P
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   0
-		dc.b $E0 ; ‡
-		dc.b  $C
-		dc.b $90 ; ê
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   1
-		dc.b   0
-		dc.b  $D
-		dc.b $D0 ; –
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   1
-		dc.b   0
-		dc.b  $F
-		dc.b $10
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   1
-		dc.b   0
-		dc.b $10
-		dc.b $50 ; P
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   1
-		dc.b   0
-		dc.b $11
-		dc.b $90 ; ê
-		dc.b   1
-		dc.b $70 ; p
-		dc.b   1
-		dc.b   0
-unk_14BC4:	dc.b   0
-		dc.b   3
-		dc.b   0
-		dc.b $90 ; ê
-		dc.b   3
-		dc.b $30 ; 0
-		dc.b   2
-		dc.b $60 ; `
-		dc.b   0
-		dc.b $10
-		dc.b   1
-		dc.b $D0 ; –
-		dc.b   0
-		dc.b $90 ; ê
-		dc.b   1
-		dc.b $10
-		dc.b   1
-		dc.b $D0 ; –
-		dc.b   0
-		dc.b $90 ; ê
+unk_14B60:	dc.w   3
+		dc.w	$180, $312, $60
+		dc.w	$240, $312, $63
+		dc.w	$346, $312, $8000
+unk_14B74:	dc.w  $D
+		dc.w	$290, $170, $020
+		dc.w	$3D0, $170, $020
+		dc.w	$510, $170, $040
+		dc.w	$650, $170, $060
+		dc.w	$790, $170, $080
+		dc.w	$8D0, $170, $0A0
+		dc.w	$A10, $170, $0C0
+		dc.w	$B50, $170, $0E0
+		dc.w	$C90, $170, $100
+		dc.w	$DD0, $170, $100
+		dc.w	$F10, $170, $100
+		dc.w	$1050, $170, $100
+		dc.w	$1190, $170, $100
+unk_14BC4:	dc.w   3
+		dc.w	$090, $330, $260
+		dc.w	$010, $1D0, $090
+		dc.w	$110, $1D0, $090
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -29277,7 +28812,7 @@ loc_14C5E:
 
 loc_14C6A:
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_14730,4(a0)
 		move.l	(a4)+,$16(a0)
 		move.w	(a4)+,$1A(a0)
@@ -29293,7 +28828,7 @@ loc_14C6A:
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_14B28,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -29547,7 +29082,7 @@ TitleCardArt_Index:
 ; ---------------------------------------------------------------------------
 
 Load_TitleCard:
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
 		move.w	#0,d0
@@ -29561,7 +29096,7 @@ loc_19ABE:
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d0,(a6)
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		move.w	(Current_LevelID).w,d0
 		move.l	(LnkTo_MapOrder_Index).l,a0
 		move.b	(a0,d0.w),d0
@@ -29679,10 +29214,10 @@ loc_19C04:
 		dbf	d4,loc_19C04
 		dbf	d5,loc_19C02
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AB26,4(a0)
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AE2E,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -29742,7 +29277,7 @@ loc_1AB6A:
 		cmpi.b	#$84,d1
 		beq.s	loc_1ABEA
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AC70,4(a0)
 		move.b	d1,$44(a0)
 		move.w	d2,$46(a0)
@@ -29802,7 +29337,7 @@ loc_1ABF4:
 		tst.w	d0
 		beq.s	loc_1AC10
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AD48,4(a0)
 		move.w	d0,$44(a0)
 		move.l	a3,$46(a0)
@@ -29811,11 +29346,11 @@ loc_1AC10:
 		tst.b	(Two_player_flag).w
 		beq.s	loc_1AC26
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AD80,4(a0)
 
 loc_1AC26:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 off_1AC2A:	dc.w LnkTo_unk_C86E8-Data_Index
 		dc.w LnkTo_unk_C86F0-Data_Index
@@ -29856,7 +29391,7 @@ off_1AC2A:	dc.w LnkTo_unk_C86E8-Data_Index
 
 loc_1AC70:
 		move.l	#$3000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#1,$11(a3)
 		clr.w	d7
@@ -29873,7 +29408,7 @@ loc_1AC70:
 		subi.w	#8,d1
 
 loc_1ACB0:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.b	#3,d7
 		beq.s	loc_1ACE6
 		cmpi.b	#2,d7
@@ -29887,7 +29422,7 @@ loc_1ACC8:
 		move.w	#$FFE0,d6
 
 loc_1ACCC:
-		jsr	(sub_224).w
+		jsr	(j_sub_A34).w
 		andi.w	#$FF,d7
 		addi.w	#$3E,d7
 		andi.w	#$FFFC,d7
@@ -29904,7 +29439,7 @@ loc_1ACE6:
 		move.w	#$FFE0,d5
 
 loc_1ACEA:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		subi.w	#$20,d7
 		bgt.s	loc_1ACF8
 		addi.w	#$28,d7
@@ -29933,7 +29468,7 @@ loc_1ACFE:
 		move.w	#$3F,a0
 
 loc_1AD2A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1A(a3),d7
 		cmp.w	d7,d0
 		beq.s	loc_1AD3A
@@ -29956,21 +29491,21 @@ loc_1AD48:
 
 loc_1AD56:
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1AC70,4(a0)
 		move.b	#$7B,$44(a0)
 		move.w	d1,$46(a0)
 		move.w	d2,$48(a0)
 		addi.w	#$10,d1
 		dbf	d3,loc_1AD56
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1AD80:
 		move.w	#$40,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	#$3000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#1,$11(a3)
 		clr.w	d7
@@ -29984,7 +29519,7 @@ loc_1AD80:
 		move.w	#$FFD0,$1A(a3)
 		move.w	#$C0,$1E(a3)
 		move.l	#$3000004,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#1,$11(a1)
 		move.b	#$81,d7
@@ -30003,7 +29538,7 @@ loc_1ADEA:
 		move.w	#$C8,$1E(a1)
 
 loc_1AE10:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmp.w	$1A(a3),d0
 		beq.s	loc_1AE20
 		addi.w	#4,$1A(a3)
@@ -30017,12 +29552,12 @@ loc_1AE20:
 
 loc_1AE2E:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bclr	#7,(Ctrl_Pressed).w
 		beq.s	loc_1AE2E
 		move.w	#$C,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 Load_IntroSequence1:
@@ -30031,7 +29566,7 @@ Load_IntroSequence1:
 		jsr	(j_PlaySound).l
 		bsr.w	sub_1B850
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1B8F4,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -30039,13 +29574,13 @@ Load_IntroSequence1:
 Load_IntroSequence3:
 		bsr.w	sub_1B850
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1B93E,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1C572,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C58C,4(a0)
 		lea	(unk_1AF78).l,a2
 		move.b	($FFFFFC83).w,d7
@@ -30067,13 +29602,13 @@ loc_1AEBA:
 		btst	#0,5(a0)
 		bne.s	loc_1AEE2
 		move.l	#$1FF0000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		bra.s	loc_1AEEC
 ; ---------------------------------------------------------------------------
 
 loc_1AEE2:
 		move.l	#$2010000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 
 loc_1AEEC:
 		move.w	(a0)+,$1A(a1)
@@ -30256,7 +29791,7 @@ loc_1B012:
 		bsr.w	sub_1C5D0
 		bsr.w	sub_1C4FE
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B9D0,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -30277,7 +29812,7 @@ Load_IntroSequence4:
 		jsr	(j_SomeDecToVRAM).l
 		bsr.w	sub_1C4FE
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1B988,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -30316,10 +29851,10 @@ loc_1B100:
 		jsr	(j_SomeDecToRAM).l
 		bsr.w	sub_1C512
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BA28,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BCD0,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -30373,13 +29908,13 @@ loc_1B1E8:
 		bsr.w	sub_1B222
 		st	($FFFFFB4A).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BAB0,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B37C,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1B43A,4(a0)
 		rts
 
@@ -30417,13 +29952,13 @@ loc_1B258:
 		bsr.w	sub_1BF24
 		bsr.w	sub_1B532
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BAC2,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1B5BC,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B6A0,4(a0)
 		rts
 
@@ -30550,20 +30085,20 @@ sub_1B36C:
 
 loc_1B37C:
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#1,d0
 		bsr.w	sub_1B41C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d0
 		bsr.w	sub_1B41C
 		bsr.s	sub_1B36C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#2,d0
 		bsr.w	sub_1B41C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d0
 		bsr.w	sub_1B41C
 		bsr.s	sub_1B36C
@@ -30571,36 +30106,36 @@ loc_1B37C:
 
 loc_1B3BC:
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	d1,d0
 		andi.w	#3,d0
 		addq.w	#1,d0
 		bsr.s	sub_1B41C
 		dbf	d1,loc_1B3BC
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d0
 		bsr.s	sub_1B41C
 		bsr.s	sub_1B36C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#1,d0
 		bsr.s	sub_1B41C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d0
 		bsr.s	sub_1B41C
 		bsr.w	sub_1B36C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#2,d0
 		bsr.s	sub_1B41C
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d0
 		bsr.s	sub_1B41C
 		bsr.w	sub_1B36C
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -30625,12 +30160,12 @@ loc_1B432:
 
 sub_1B43A:
 		move.w	#$2A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		lea	unk_1B4D6(pc),a0
 
 loc_1B446:
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#0,d4
 		move.b	(a0)+,d4
 		bmi.s	loc_1B45A
@@ -30640,7 +30175,7 @@ loc_1B446:
 
 loc_1B45A:
 		move.w	#$39,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 		moveq	#$3F,d0
@@ -30649,7 +30184,7 @@ loc_1B470:
 		move.w	(a0),(a1)+
 		clr.w	(a0)+
 		dbf	d0,loc_1B470
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#7,d4
 		bsr.w	sub_1BF24
 		bsr.w	sub_1B532
@@ -30660,18 +30195,18 @@ loc_1B470:
 loc_1B494:
 		move.w	(a1)+,(a0)+
 		dbf	d0,loc_1B494
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	Load_TitleArt
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B504,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B6AC,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1B5CE,4(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_1B43A
 
 ; ---------------------------------------------------------------------------
@@ -30725,7 +30260,7 @@ unk_1B4F4:	dc.b   0
 
 loc_1B504:
 		move.w	#$A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	(Level_Layout).w,d0
 		asr.l	#4,d0
 		move.l	($FFFFA656).w,d1
@@ -30733,12 +30268,12 @@ loc_1B504:
 		moveq	#$F,d2
 
 loc_1B51A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		sub.l	d0,(Level_Layout).w
 		sub.l	d1,($FFFFA656).w
 		bsr.w	sub_1B222
 		dbf	d2,loc_1B51A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -30797,14 +30332,14 @@ Load_TitleArt:
 
 sub_1B5BC:
 		move.l	#$1FF0000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	#$A5,$1E(a3)
 		bra.s	loc_1B5E4
 ; ---------------------------------------------------------------------------
 
 loc_1B5CE:
 		move.l	#$1FF0000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	#6,$2A(a3)
 		move.w	#$FFA3,$1E(a3)
 
@@ -30816,26 +30351,26 @@ loc_1B5E4:
 		move.w	#$2A,d0
 		st	$13(a3)
 		move.w	#$1E,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		st	$14(a3)
 
 loc_1B610:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1B610
 		sf	$14(a3)
 		move.w	#$14,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_1B652
 		move.w	#$2E,$1A(a3)
 		move.w	#$8C,$1E(a3)
 		move.w	#$A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		bsr.w	sub_1B652
 		move.w	#$5A,$1A(a3)
 		move.w	#$98,$1E(a3)
 
 loc_1B64C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_1B64C
 ; End of function sub_1B5BC
 
@@ -30845,7 +30380,7 @@ loc_1B64C:
 
 sub_1B652:
 		move.l	#$2010000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,a3
 		move.b	#2,$11(a3)
 		move.w	#$2E,$1A(a3)
@@ -30854,7 +30389,7 @@ sub_1B652:
 		st	$14(a3)
 		st	$13(a3)
 		move.l	#stru_1B68A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		rts
 ; End of function sub_1B652
 
@@ -30872,30 +30407,30 @@ loc_1B6A0:
 		moveq	#0,d2
 
 loc_1B6A2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1B71A
 		bra.s	loc_1B6A2
 ; ---------------------------------------------------------------------------
 
 loc_1B6AC:
 		move.w	#$1E,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BB10,4(a0)
 		move.w	#$27,$44(a0)
 		moveq	#$28,d2
 		moveq	#0,d3
 
 loc_1B6CE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1B71A
 		subq.w	#1,d2
 		bne.s	loc_1B6CE
 		moveq	#0,d0
 
 loc_1B6DC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	d0,-(sp)
 		bsr.w	sub_1B71A
 		move.w	(sp)+,d0
@@ -30903,7 +30438,7 @@ loc_1B6DC:
 		cmpi.w	#$1E,d0
 		bne.s	loc_1B6DC
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#unk_1C78A,$44(a0)
 		bra.s	loc_1B6DC
@@ -31184,7 +30719,7 @@ sub_1B8F4:
 		bsr.w	sub_1C54A
 		bsr.w	sub_1C4EA
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#IntroText1,$44(a0)
 		move.l	#loc_1B920,$44(a5)
@@ -31194,12 +30729,12 @@ loc_1B920:
 		move.w	#$12B,d0
 
 loc_1B924:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B924
 		move.w	#$18,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; End of function sub_1B8F4
 
 
@@ -31210,7 +30745,7 @@ sub_1B93E:
 		bsr.w	sub_1C54A
 		bsr.w	sub_1C4EA
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#IntroText3,$44(a0)
 		move.l	#loc_1B96A,$44(a5)
@@ -31220,12 +30755,12 @@ loc_1B96A:
 		move.w	#$EF,d0
 
 loc_1B96E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B96E
 		move.w	#$20,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; End of function sub_1B93E
 
 
@@ -31235,7 +30770,7 @@ loc_1B96E:
 sub_1B988:
 		move.w	#4,(Camera_Y_pos).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#IntroText4,$44(a0)
 		move.l	#loc_1B9B2,$44(a5)
@@ -31245,19 +30780,19 @@ loc_1B9B2:
 		move.w	#$21B,d0
 
 loc_1B9B6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B9B6
 		move.w	#$24,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; End of function sub_1B988
 
 ; ---------------------------------------------------------------------------
 
 loc_1B9D0:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#IntroText2,$44(a0)
 		move.l	#loc_1B9F4,$44(a5)
@@ -31265,12 +30800,12 @@ loc_1B9D0:
 
 loc_1B9F4:
 		move.w	#$3C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$149,d0
 		moveq	#-$40,d1
 
 loc_1BA02:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C1A2
 		bsr.w	sub_1C1A2
 		bsr.w	sub_1C246
@@ -31278,16 +30813,16 @@ loc_1BA02:
 		dbf	d0,loc_1BA02
 		move.w	#$1C,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_1BA28:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#IntroText5,$44(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BC36,4(a0)
 		move.l	#loc_1BA5C,$44(a5)
 		bsr.w	sub_1C204
@@ -31296,7 +30831,7 @@ loc_1BA5C:
 		move.w	#$1BC,d0
 
 loc_1BA60:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1BA60
 		move.w	#$28,(Game_Mode).w
@@ -31313,7 +30848,7 @@ loc_1BA82:
 ; ---------------------------------------------------------------------------
 
 loc_1BA90:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		subi.w	#$20,($FFFFF876).w
 		bmi.s	loc_1BAAC
@@ -31326,14 +30861,14 @@ loc_1BAA0:
 ; ---------------------------------------------------------------------------
 
 loc_1BAAC:
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_1BAB0:
 		move.w	#$B8,d0
 
 loc_1BAB4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1BAB4
 		bra.s	loc_1BAEA
@@ -31341,10 +30876,10 @@ loc_1BAB4:
 
 loc_1BAC2:
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BB10,4(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1C7A0,4(a0)
 		move.l	#unk_1C78A,$44(a0)
 
@@ -31353,7 +30888,7 @@ loc_1BAEA:
 
 loc_1BAEE:
 		clr.b	(Ctrl_Pressed).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bclr	#7,(Ctrl_1_Pressed).w
 		bne.s	loc_1BB52
 		dbf	d0,loc_1BAEE
@@ -31361,12 +30896,12 @@ loc_1BAEE:
 loc_1BB02:
 		move.w	#$10,(Game_Mode).w
 		st	($FFFFFBCE).w
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 
 loc_1BB10:
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#2,$11(a3)
 		move.w	#$94,$1E(a3)
@@ -31383,7 +30918,7 @@ loc_1BB44:
 		lsl.w	#3,d1
 		sub.w	d1,d0
 		move.w	d0,$1A(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_1BB36
 ; ---------------------------------------------------------------------------
 
@@ -31399,7 +30934,7 @@ loc_1BB52:
 		moveq	#5,d7
 		bsr.w	sub_1C5D0
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#2,$11(a3)
 		move.w	#$28,$1A(a3)
@@ -31411,7 +30946,7 @@ loc_1BB52:
 
 Title_InputLoop:
 		clr.b	(Ctrl_Pressed).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bclr	#7,(Ctrl_1_Pressed).w ; start pressed at title screen
 		beq.s	loc_1BBDE
 		move.w	#$14,(Game_Mode).w ; mode options
@@ -31425,7 +30960,7 @@ Title_InputLoop:
 loc_1BBD6:
 		st	($FFFFFBCE).w
 	if insertLevelSelect = 0
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 	else
 		jmp	(LevelSelect_ChkKey).w
 	endif
@@ -31479,56 +31014,56 @@ loc_1BC36:
 		moveq	#0,d4
 		bsr.w	sub_1C034
 		move.w	#$A0,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#1,d4
 		bsr.w	sub_1C034
 		move.w	#$90,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#2,d4
 		bsr.w	sub_1C034
 		move.w	#$B,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#3,d4
 		bsr.w	sub_1C034
 		move.w	#$B,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#4,d4
 		bsr.w	sub_1C034
 		moveq	#3,d4
 		moveq	#$13,d5
 		bsr.w	sub_1C0EE
 		move.w	#$B,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#3,d4
 		moveq	#$13,d5
 		bsr.w	sub_1C112
 		moveq	#5,d4
 		bsr.w	sub_1C034
 		move.w	#$37,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#6,d4
 		bsr.w	sub_1C034
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#7,d4
 		bsr.w	sub_1C034
 		move.w	#8,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#6,d4
 		bsr.w	sub_1C034
 		move.w	#$F,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#5,d4
 		bsr.w	sub_1C034
 
 loc_1BCCA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_1BCCA
 ; ---------------------------------------------------------------------------
 
 loc_1BCD0:
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.w	#$30,$1A(a1)
@@ -31537,7 +31072,7 @@ loc_1BCD0:
 		move.w	#(LnkTo_unk_E1066-Data_Index),$22(a1)
 		move.l	a1,$36(a5)
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.w	#$60,$1A(a1)
@@ -31546,7 +31081,7 @@ loc_1BCD0:
 		move.w	#(LnkTo_unk_E106E-Data_Index),$22(a1)
 		move.l	a1,$3A(a5)
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.w	#0,$1A(a1)
@@ -31554,7 +31089,7 @@ loc_1BCD0:
 		move.w	#$26C,$24(a1)
 		move.w	#(LnkTo_unk_E1076-Data_Index),$22(a1)
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.w	#$30,$1A(a1)
@@ -31562,7 +31097,7 @@ loc_1BCD0:
 		move.w	#$26C,$24(a1)
 		move.w	#(LnkTo_unk_E1076-Data_Index),$22(a1)
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#2,$11(a1)
 		move.w	#$60,$1A(a1)
@@ -31570,23 +31105,23 @@ loc_1BCD0:
 		move.w	#$26C,$24(a1)
 		move.w	#(LnkTo_unk_E107E-Data_Index),$22(a1)
 		move.w	#$1A0,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BE3C,4(a0)
 		move.l	#unk_1BE18,$44(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BE3C,4(a0)
 		move.l	#unk_1BE24,$44(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BE3C,4(a0)
 		move.l	#unk_1BE30,$44(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1BE88,4(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 unk_1BE18:	dc.b $11
 		dc.b $C8 ; »
@@ -31628,7 +31163,7 @@ unk_1BE30:	dc.b $11
 
 loc_1BE3C:
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#2,$11(a3)
 		move.l	$44(a5),a0
@@ -31642,15 +31177,15 @@ loc_1BE3C:
 		st	$14(a3)
 
 loc_1BE74:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$4000,$2A(a3)
 		dbf	d0,loc_1BE74
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1BE88:
 		move.l	#$1FF0000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#3,$11(a3)
 		move.b	#1,$10(a3)
@@ -31687,13 +31222,13 @@ loc_1BF02:
 		move.w	#$1C,d0
 
 loc_1BF0A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$9000,$2A(a3)
 		dbf	d0,loc_1BF0A
 		sf	$14(a3)
 
 loc_1BF1E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_1BF1E
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -32051,7 +31586,7 @@ loc_1C210:
 ; ---------------------------------------------------------------------------
 
 loc_1C21E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1C246
 		addi.w	#$10,($FFFFF876).w
 		cmpi.w	#$100,($FFFFF876).w
@@ -32090,7 +31625,7 @@ loc_1C264:
 		move.w	#$2C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jsr	(j_StopMusic).l
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; End of function sub_1C246
 
 
@@ -32244,7 +31779,7 @@ return_1C548:
 
 sub_1C54A:
 		move.l	#$1000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.w	#$81,$1A(a1)
 		move.w	#$C8,$1E(a1)
@@ -32259,7 +31794,7 @@ sub_1C54A:
 
 sub_1C572:
 		move.l	#$2000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	#$3A,$1A(a3)
 		move.w	#(LnkTo_unk_E10A6-Data_Index),$22(a3)
 		moveq	#1,d0
@@ -32268,7 +31803,7 @@ sub_1C572:
 
 loc_1C58C:
 		move.l	#$2000004,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	#$DE,$1A(a3)
 		move.w	#(LnkTo_unk_E10AE-Data_Index),$22(a3)
 		moveq	#-1,d0
@@ -32279,15 +31814,15 @@ loc_1C5A4:
 		move.w	#$140,$24(a3)
 		moveq	#$41,d1
 		move.w	#$3C,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 
 loc_1C5BE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.w	d0,$1A(a3)
 		dbf	d1,loc_1C5BE
 
 loc_1C5CA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_1C5CA
 ; End of function sub_1C572
 
@@ -32419,7 +31954,7 @@ loc_1C7A0:
 		moveq	#1,d0
 
 loc_1C7AE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.b	#1,d0
 		bne.s	loc_1C7AE
 
@@ -32428,7 +31963,7 @@ loc_1C7B6:
 		move.b	(a1)+,d6
 		cmpi.b	#$FF,d6
 		bne.s	loc_1C7C4
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_1C7C4:
@@ -32635,7 +32170,7 @@ byte_1CA68:	dc.b 0
 		clr.w	(Camera_X_pos).w
 		clr.w	(Camera_Y_pos).w
 		move.l	#$2000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#1,$11(a1)
 		clr.w	$24(a1)
@@ -32643,14 +32178,14 @@ byte_1CA68:	dc.b 0
 		move.w	#(LnkTo_unk_E105E-Data_Index),$22(a1)
 		move.l	a1,a2
 		move.l	#$2000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		st	$16(a1)
 		move.b	#1,$11(a1)
 		move.w	#$3C4,$24(a1)
 		move.w	#(LnkTo_unk_E105E-Data_Index),$22(a1)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1CB2C,4(a0)
 		move.l	a2,$26(a0)
 		move.l	a1,$2A(a0)
@@ -32675,7 +32210,7 @@ loc_1CB2C:
 
 OptionScreen_IntroLoop:
 		bsr.w	sub_1DA24
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d3
 	if insertLevelSelect = 0
 		beq.w	OptionScreen_Loop
@@ -32699,7 +32234,7 @@ loc_1CB88:
 ; ---------------------------------------------------------------------------
 
 OptionScreen_Loop:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_1CC88
 		movem.l	d0-d3/a0-a3,-(sp)
 		bsr.w	DrawOptText1
@@ -32717,7 +32252,7 @@ Option_Exit:
 		move.w	#$2C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jsr	(j_StopMusic).l
-		jmp	(loc_204).w
+		jmp	(j_loc_6E2).w
 ; END OF FUNCTION CHUNK	FOR OptionScreen_Input
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -32973,14 +32508,14 @@ sub_1CDA8:
 		lsr.w	#2,d7
 		addi.w	#$4000,d7
 		swap	d7
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	d7,4(a6)
 		moveq	#$27,d7		; one line of a	plane on screen
 
 loc_1CDD4:
 		move.w	(a4)+,(a6)
 		dbf	d7,loc_1CDD4
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; End of function sub_1CDA8
 
@@ -33015,14 +32550,14 @@ sub_1CDFA:
 		lsr.w	#2,d7
 		addi.w	#$4000,d7
 		swap	d7
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	d7,4(a6)
 		moveq	#$1B,d7
 
 loc_1CE1C:
 		move.w	#$94,(a6)
 		dbf	d7,loc_1CE1C
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; End of function sub_1CDFA
 
@@ -33433,7 +32968,7 @@ loc_1D050:
 
 loc_1D05E:
 		add.w	d6,d7
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	d5,4(a6)
 
 loc_1D068:
@@ -33447,7 +32982,7 @@ loc_1D068:
 ; ---------------------------------------------------------------------------
 
 loc_1D07A:
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts			; end of text
 ; End of function DrawTextLine
 
@@ -33477,18 +33012,18 @@ loc_1D0A2:
 		beq.w	return_1D0EA
 		subi.w	#$41,d7
 		addi.w	#-$1B24,d7
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.w	d7,(a6)
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		moveq	#2,d6
 
 loc_1D0C2:
 		bsr.w	sub_1DA24
 		bsr.w	sub_1CC88
 		movem.l	d0-a5,-(sp)
-		jsr	(sub_268).w
+		jsr	(j_sub_1492).w
 		jsr	(j_WaitForVint).w
-		jsr	(sub_230).w
+		jsr	(j_sub_A5C).w
 		movem.l	(sp)+,d0-a5
 		dbf	d6,loc_1D0C2
 		addi.l	#$20000,d5
@@ -33562,7 +33097,7 @@ Load_EndSequence:
 		moveq	#0,d1
 		bsr.w	sub_1C820
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_1D1B0,4(a0)
 		rts
 ; ---------------------------------------------------------------------------
@@ -33579,7 +33114,7 @@ loc_1D1B4:
 		bsr.w	sub_1D944
 
 loc_1D1C4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_1D1C4
 		bra.s	loc_1D1B4
 ; ---------------------------------------------------------------------------
@@ -33595,7 +33130,7 @@ loc_1D1D6:
 		moveq	#1,d1
 
 loc_1D1DE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_1D1DE
 		dbf	d0,loc_1D1D6
 		moveq	#$5A,d0
@@ -33605,7 +33140,7 @@ loc_1D1EC:
 		bsr.w	sub_1D86C
 		bsr.w	sub_1D846
 		bsr.w	sub_1DA24
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1D1EC
 		moveq	#4,d0
 		bsr.w	sub_1D944
@@ -33620,7 +33155,7 @@ loc_1D1EC:
 
 loc_1D226:
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1D8B4,4(a0)
 		move.w	(a4)+,$44(a0)
 		move.w	(a4)+,$46(a0)
@@ -33635,28 +33170,28 @@ loc_1D24A:
 		moveq	#1,d1
 
 loc_1D252:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_1D252
 		dbf	d0,loc_1D24A
 		move.w	#$8006,d0
 		bsr.w	sub_1D944
 		move.w	#$78,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#7,d0
 
 loc_1D270:
 		moveq	#$20,d7
 		bsr.w	sub_1C85E
 		move.w	#6,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		dbf	d0,loc_1D270
 		move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 		bsr.w	sub_1DA62
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	#$8238,4(a6)
 		move.w	#$8400,4(a6)
 		bsr.w	sub_1CD44
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	#$5580,d0
 		lea	byte_21B79(pc),a0
 		jsr	(j_SomeDecToVRAM).l
@@ -33682,7 +33217,7 @@ loc_1D306:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_1D306
 		move.l	#$2000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$13(a1)
 		move.b	#0,$10(a1)
 		move.b	#0,$11(a1)
@@ -33691,7 +33226,7 @@ loc_1D306:
 		move.w	#$2AC,$24(a1)
 		move.l	a1,a0
 		move.l	#$2000000,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$16(a1)
 		st	$13(a1)
 		move.b	#0,$10(a1)
@@ -33715,7 +33250,7 @@ loc_1D306:
 
 loc_1D3A0:
 		bsr.w	sub_1DA24
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d3
 		beq.w	loc_1D3CA
 		subq.w	#2,(Camera_Y_pos).w
@@ -33775,13 +33310,13 @@ loc_1D412:
 
 loc_1D418:
 		bsr.w	sub_1D830
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1D418
 		bsr.w	sub_1D7E6
 		bsr.w	sub_1D800
 		bsr.w	sub_1CDE0
 		move.l	#$EEE0EC0,($FFFF4EBA).l
-		jsr	(sub_218).w
+		jsr	(j_Palette_to_VRAM).w
 		move.l	($FFFFFA88).w,a4
 		bsr.w	sub_1D7A8
 		move.l	a4,($FFFFFA88).w
@@ -33793,7 +33328,7 @@ loc_1D44C:
 
 loc_1D450:
 		bsr.w	sub_1D830
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d0,loc_1D450
 		moveq	#$3F,d0
 		lea	(Palette_Buffer).l,a0
@@ -33802,8 +33337,8 @@ loc_1D464:
 		clr.w	(a0)+
 		dbf	d0,loc_1D464
 		jsr	(j_WaitForVint).w
-		jsr	(sub_2C8).w
-		jsr	(sub_218).w
+		jsr	(j_Do_Nothing).w
+		jsr	(j_Palette_to_VRAM).w
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
 		clr.w	(Game_Mode).w
@@ -33813,720 +33348,133 @@ loc_1D464:
 ; ---------------------------------------------------------------------------
 EndText1:	dc.b  $B
 		dc.b   2
-		dc.b $43 ; C
-		dc.b $4F ; O
-		dc.b $4E ; N
-		dc.b $47 ; G
-		dc.b $52 ; R
-		dc.b $41 ; A
-		dc.b $54 ; T
-		dc.b $55 ; U
-		dc.b $4C ; L
-		dc.b $41 ; A
-		dc.b $54 ; T
-		dc.b $49 ; I
-		dc.b $4F ; O
-		dc.b $4E ; N
-		dc.b $53 ; S
-		dc.b $6D ; m
-		dc.b $69 ; i
-		dc.b $69 ; i
-		dc.b $69 ; i
-		dc.b   0
+		dc.b "CONGRATULATIONSmiii", 0
 		dc.b  $B
 		dc.b   4
-		dc.b $59 ; Y
-		dc.b $4F ; O
-		dc.b $55 ; U
-		dc.b $6D ; m
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $46 ; F
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $45 ; E
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $4D ; M
-		dc.b   0
+		dc.b "YOUmHAVEmFREEDmTHEM", 0
 		dc.b  $B
 		dc.b   6
-		dc.b $46 ; F
-		dc.b $52 ; R
-		dc.b $4F ; O
-		dc.b $4D ; M
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $45 ; E
-		dc.b $56 ; V
-		dc.b $49 ; I
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $42 ; B
-		dc.b $4F ; O
-		dc.b $53 ; S
-		dc.b $53 ; S
-		dc.b $66 ; f
-		dc.b   0
+		dc.b "FROMmTHEmEVILmBOSSf", 0
 		dc.b   9
 		dc.b   8
-		dc.b $59 ; Y
-		dc.b $4F ; O
-		dc.b $55 ; U
-		dc.b $6D ; m
-		dc.b $57 ; W
-		dc.b $49 ; I
-		dc.b $4C ; L
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $42 ; B
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $4D ; M
-		dc.b $42 ; B
-		dc.b $45 ; E
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "YOUmWILLmBEmREMEMBEREDm", 0
 		dc.b   8
 		dc.b  $A
-		dc.b $41 ; A
-		dc.b $53 ; S
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $46 ; F
-		dc.b $49 ; I
-		dc.b $52 ; R
-		dc.b $53 ; S
-		dc.b $54 ; T
-		dc.b $6D ; m
-		dc.b $48 ; H
-		dc.b $4F ; O
-		dc.b $4C ; L
-		dc.b $4F ; O
-		dc.b $47 ; G
-		dc.b $52 ; R
-		dc.b $41 ; A
-		dc.b $50 ; P
-		dc.b $48 ; H
-		dc.b $49 ; I
-		dc.b $43 ; C
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "ASmTHEmFIRSTmHOLOGRAPHICm", 0
 		dc.b  $C
 		dc.b  $C
-		dc.b $47 ; G
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $43 ; C
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $50 ; P
-		dc.b $49 ; I
-		dc.b $4F ; O
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "GAMEmCHAMPIONmfffmm", 0
 		dc.b  $B
 		dc.b  $F
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $4B ; K
-		dc.b $49 ; I
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b $43 ; C
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $4C ; L
-		dc.b $45 ; E
-		dc.b $4F ; O
-		dc.b $4E ; N
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "THEmKIDmCHAMELEONfm", 0
 		dc.b $FF
 		dc.b $FF
+
 		dc.b  $D
 		dc.b   2
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $68 ; h
-		dc.b $6D ; m
-		dc.b $4E ; N
-		dc.b $4F ; O
-		dc.b $57 ; W
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "ANDhmNOWmffffmmmm", 0
 		dc.b  $B
 		dc.b   4
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $50 ; P
-		dc.b $45 ; E
-		dc.b $4F ; O
-		dc.b $50 ; P
-		dc.b $4C ; L
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $57 ; W
-		dc.b $48 ; H
-		dc.b $4F ; O
-		dc.b $6D ; m
-		dc.b $47 ; G
-		dc.b $41 ; A
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b   0
+		dc.b "THEmPEOPLEmWHOmGAVE", 0
 		dc.b  $A
 		dc.b   6
-		dc.b $55 ; U
-		dc.b $50 ; P
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $49 ; I
-		dc.b $52 ; R
-		dc.b $6D ; m
-		dc.b $4C ; L
-		dc.b $49 ; I
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b $53 ; S
-		dc.b $68 ; h
-		dc.b $6D ; m
-		dc.b $57 ; W
-		dc.b $49 ; I
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "UPmTHEIRmLIVEShmWIVES", 0
 		dc.b   9
 		dc.b   8
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b $53 ; S
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $49 ; I
-		dc.b $54 ; T
-		dc.b $59 ; Y
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $4F ; O
-		dc.b $6D ; m
-		dc.b $4D ; M
-		dc.b $41 ; A
-		dc.b $4B ; K
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $49 ; I
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "ANDmSANITYmTOmMAKEmTHIS", 0
 		dc.b  $B
 		dc.b  $A
-		dc.b $47 ; G
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $41 ; A
-		dc.b $6D ; m
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $41 ; A
-		dc.b $4C ; L
-		dc.b $49 ; I
-		dc.b $54 ; T
-		dc.b $59 ; Y
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "GAMEmAmREALITYmfffmmm", 0
 		dc.b   9
 		dc.b  $C
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "mmmmm", 0
 		dc.b  $C
 		dc.b  $D
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $53 ; S
-		dc.b $45 ; E
-		dc.b $47 ; G
-		dc.b $41 ; A
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $43 ; C
-		dc.b $48 ; H
-		dc.b $4E ; N
-		dc.b $49 ; I
-		dc.b $43 ; C
-		dc.b $41 ; A
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "THEmSEGAmTECHNICALm", 0
 		dc.b  $C
 		dc.b  $F
-		dc.b $6D ; m
-		dc.b $49 ; I
-		dc.b $4E ; N
-		dc.b $53 ; S
-		dc.b $54 ; T
-		dc.b $49 ; I
-		dc.b $54 ; T
-		dc.b $55 ; U
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $6D ; m
-		dc.b $69 ; i
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "mINSTITUTEmTEAMmimm", 0
 		dc.b $FF
 		dc.b $FF
+
 		dc.b  $D
 		dc.b   0
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $47 ; G
-		dc.b $41 ; A
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $44 ; D
-		dc.b $45 ; E
-		dc.b $53 ; S
-		dc.b $49 ; I
-		dc.b $47 ; G
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b   0
+		dc.b "ffmGAMEmDESIGNmff", 0
 		dc.b   8
 		dc.b  $A
-		dc.b $48 ; H
-		dc.b $4F ; O
-		dc.b $59 ; Y
-		dc.b $54 ; T
-		dc.b $6D ; m
-		dc.b $4E ; N
-		dc.b $47 ; G
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "HOYTmNGmm", 0
 		dc.b $15
 		dc.b $11
-		dc.b $42 ; B
-		dc.b $49 ; I
-		dc.b $4C ; L
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $44 ; D
-		dc.b $55 ; U
-		dc.b $4E ; N
-		dc.b $4E ; N
-		dc.b   0
+		dc.b "BILLmDUNN", 0
 		dc.b $13
 		dc.b   8
-		dc.b $52 ; R
-		dc.b $49 ; I
-		dc.b $43 ; C
-		dc.b $4B ; K
-		dc.b $6D ; m
-		dc.b $4D ; M
-		dc.b $41 ; A
-		dc.b $43 ; C
-		dc.b $41 ; A
-		dc.b $52 ; R
-		dc.b $41 ; A
-		dc.b $45 ; E
-		dc.b $47 ; G
-		dc.b   0
+		dc.b "RICKmMACARAEG", 0
 		dc.b   8
 		dc.b $13
-		dc.b $6D ; m
-		dc.b $47 ; G
-		dc.b $52 ; R
-		dc.b $41 ; A
-		dc.b $45 ; E
-		dc.b $4D ; M
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $42 ; B
-		dc.b $41 ; A
-		dc.b $59 ; Y
-		dc.b $4C ; L
-		dc.b $45 ; E
-		dc.b $53 ; S
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "mGRAEMEmBAYLESS", 0
 		dc.b $FF
 		dc.b $FF
+
 		dc.b  $C
 		dc.b   0
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $53 ; S
-		dc.b $4F ; O
-		dc.b $46 ; F
-		dc.b $54 ; T
-		dc.b $57 ; W
-		dc.b $41 ; A
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "fffmSOFTWAREmfffm", 0
 		dc.b   7
 		dc.b   9
-		dc.b $42 ; B
-		dc.b $43 ; C
-		dc.b $66 ; f
-		dc.b $54 ; T
-		dc.b $43 ; C
-		dc.b $48 ; H
-		dc.b $49 ; I
-		dc.b $55 ; U
-		dc.b $6D ; m
-		dc.b $4C ; L
-		dc.b $45 ; E
-		dc.b   0
+		dc.b "BCfTCHIUmLE", 0
 		dc.b $17
 		dc.b $12
-		dc.b $4D ; M
-		dc.b $41 ; A
-		dc.b $52 ; R
-		dc.b $4B ; K
-		dc.b $6D ; m
-		dc.b $43 ; C
-		dc.b $45 ; E
-		dc.b $52 ; R
-		dc.b $4E ; N
-		dc.b $59 ; Y
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "MARKmCERNYm", 0
 		dc.b $16
 		dc.b   9
-		dc.b $53 ; S
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $57 ; W
-		dc.b $4F ; O
-		dc.b $49 ; I
-		dc.b $54 ; T
-		dc.b $41 ; A
-		dc.b   0
+		dc.b "STEVEmWOITA", 0
 		dc.b   7
 		dc.b $12
-		dc.b $42 ; B
-		dc.b $49 ; I
-		dc.b $4C ; L
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $57 ; W
-		dc.b $49 ; I
-		dc.b $4C ; L
-		dc.b $4C ; L
-		dc.b $49 ; I
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "BILLmWILLIS", 0
 		dc.b $FF
 		dc.b $FF
+
 		dc.b  $F
 		dc.b   0
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $6D ; m
-		dc.b $41 ; A
-		dc.b $52 ; R
-		dc.b $54 ; T
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b   0
+		dc.b "fffmARTmfff", 0
 		dc.b $13
 		dc.b   8
-		dc.b $6D ; m
-		dc.b $41 ; A
-		dc.b $4C ; L
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b $41 ; A
-		dc.b $43 ; C
-		dc.b $4B ; K
-		dc.b $45 ; E
-		dc.b $52 ; R
-		dc.b $4D ; M
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "mALANmACKERMANm", 0
 		dc.b   7
 		dc.b $12
-		dc.b $42 ; B
-		dc.b $52 ; R
-		dc.b $45 ; E
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $41 ; A
-		dc.b $6D ; m
-		dc.b $52 ; R
-		dc.b $4F ; O
-		dc.b $53 ; S
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "BRENDAmROSS", 0
 		dc.b   7
 		dc.b   8
-		dc.b $43 ; C
-		dc.b $52 ; R
-		dc.b $41 ; A
-		dc.b $49 ; I
-		dc.b $47 ; G
-		dc.b $6D ; m
-		dc.b $53 ; S
-		dc.b $54 ; T
-		dc.b $49 ; I
-		dc.b $54 ; T
-		dc.b $54 ; T
-		dc.b   0
+		dc.b "CRAIGmSTITT", 0
 		dc.b $16
 		dc.b $12
-		dc.b $6D ; m
-		dc.b $6D ; m
-		dc.b $50 ; P
-		dc.b $41 ; A
-		dc.b $55 ; U
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $4D ; M
-		dc.b $49 ; I
-		dc.b $43 ; C
-		dc.b $41 ; A
-		dc.b   0
+		dc.b "mmPAULmMICA", 0
 		dc.b  $E
 		dc.b  $F
-		dc.b $4A ; J
-		dc.b $55 ; U
-		dc.b $44 ; D
-		dc.b $59 ; Y
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $4F ; O
-		dc.b $54 ; T
-		dc.b $4F ; O
-		dc.b $59 ; Y
-		dc.b $41 ; A
-		dc.b   0
+		dc.b "JUDYmTOTOYA", 0
 		dc.b $FF
 		dc.b $FF
+
 		dc.b  $A
 		dc.b   2
-		dc.b $53 ; S
-		dc.b $4F ; O
-		dc.b $55 ; U
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b $42 ; B
-		dc.b $59 ; Y
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "SOUNDmBYm", 0
 		dc.b  $A
 		dc.b   4
-		dc.b $4E ; N
-		dc.b $55 ; U
-		dc.b $6D ; m
-		dc.b $52 ; R
-		dc.b $4F ; O
-		dc.b $4D ; M
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $54 ; T
-		dc.b $49 ; I
-		dc.b $43 ; C
-		dc.b $6D ; m
-		dc.b $50 ; P
-		dc.b $52 ; R
-		dc.b $4F ; O
-		dc.b $44 ; D
-		dc.b $55 ; U
-		dc.b $43 ; C
-		dc.b $54 ; T
-		dc.b $49 ; I
-		dc.b $4F ; O
-		dc.b $4E ; N
-		dc.b $53 ; S
-		dc.b   0
+		dc.b "NUmROMANTICmPRODUCTIONS", 0
 		dc.b  $A
 		dc.b  $A
-		dc.b $53 ; S
-		dc.b $50 ; P
-		dc.b $45 ; E
-		dc.b $43 ; C
-		dc.b $49 ; I
-		dc.b $41 ; A
-		dc.b $4C ; L
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $4B ; K
-		dc.b $53 ; S
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $4F ; O
-		dc.b $6D ; m
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b $66 ; f
-		dc.b   0
+		dc.b "SPECIALmTHANKSmTOmfff", 0
 		dc.b  $C
 		dc.b  $C
-		dc.b $53 ; S
-		dc.b $43 ; C
-		dc.b $4F ; O
-		dc.b $54 ; T
-		dc.b $54 ; T
-		dc.b $6D ; m
-		dc.b $43 ; C
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $4C ; L
-		dc.b $45 ; E
-		dc.b $52 ; R
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "SCOTTmCHANDLERm", 0
 		dc.b  $C
 		dc.b  $E
-		dc.b $48 ; H
-		dc.b $55 ; U
-		dc.b $47 ; G
-		dc.b $48 ; H
-		dc.b $6D ; m
-		dc.b $42 ; B
-		dc.b $4F ; O
-		dc.b $57 ; W
-		dc.b $45 ; E
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "HUGHmBOWENm", 0
 		dc.b  $C
 		dc.b $10
-		dc.b $48 ; H
-		dc.b $41 ; A
-		dc.b $56 ; V
-		dc.b $45 ; E
-		dc.b $4E ; N
-		dc.b $6D ; m
-		dc.b $43 ; C
-		dc.b $41 ; A
-		dc.b $52 ; R
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $52 ; R
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "HAVENmCARTERm", 0
 		dc.b  $C
 		dc.b $12
-		dc.b $41 ; A
-		dc.b $4E ; N
-		dc.b $44 ; D
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $48 ; H
-		dc.b $45 ; E
-		dc.b $6D ; m
-		dc.b $54 ; T
-		dc.b $45 ; E
-		dc.b $53 ; S
-		dc.b $54 ; T
-		dc.b $6D ; m
-		dc.b $47 ; G
-		dc.b $52 ; R
-		dc.b $4F ; O
-		dc.b $55 ; U
-		dc.b $50 ; P
-		dc.b $6D ; m
-		dc.b   0
+		dc.b "ANDmTHEmTESTmGROUPm", 0
 		dc.b   0
 		dc.b   0
 unk_1D75A:	dc.b   0
@@ -34579,7 +33527,7 @@ unk_1D75A:	dc.b   0
 
 sub_1D786:
 		move.l	#$3000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		sf	$13(a1)
 		move.w	#$509,$24(a1)
 		move.b	#2,$11(a1)
@@ -34652,7 +33600,7 @@ loc_1D80C:
 
 loc_1D814:
 		bsr.w	sub_1D830
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_1D814
 		dbf	d0,loc_1D80C
 		movem.l	$48(a5),d0-d1/d7/a4
@@ -34682,14 +33630,14 @@ word_1D83A:	dc.w   $AF
 
 
 sub_1D846:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	(V_Int_counter).w,d5
 		bclr	#7,d5
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#5,d7
 		move.w	d7,(Camera_X_pos).w
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#5,d7
@@ -34702,19 +33650,19 @@ sub_1D846:
 
 
 sub_1D86C:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	(V_Int_counter).w,d5
 		bclr	#7,d5
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#1,d7
 		move.w	d7,d6
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#1,d7
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_1D9D6,4(a0)
 		move.w	#$A0,$44(a0)
 		add.w	d6,$44(a0)
@@ -34730,29 +33678,29 @@ sub_1D86C:
 
 sub_1D8B4:
 		move.l	#$1000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#2,$11(a3)
 		move.w	#$3DD,$24(a3)
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		move.w	$48(a5),$22(a3)
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	(V_Int_counter).w,d0
 		eor.b	d0,d7
 		andi.w	#$FF,d7
 		lsr.w	#1,d7
 		move.w	d7,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		moveq	#$78,d0
 		moveq	#0,d1
 
 loc_1D8FA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		add.l	d1,$1E(a3)
 		addi.l	#$800,d1
 		dbf	d0,loc_1D8FA
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_1D8B4
 
 ; ---------------------------------------------------------------------------
@@ -34862,14 +33810,14 @@ loc_1D9B6:
 		lsr.w	#2,d5
 		addi.w	#$4000,d5
 		swap	d5
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	d5,4(a6)
 		moveq	#$D,d5
 
 loc_1D9CA:
 		move.w	(a4)+,(a6)
 		dbf	d5,loc_1D9CA
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; End of function sub_1D990
 
@@ -34879,16 +33827,16 @@ loc_1D9CA:
 
 sub_1D9D6:
 		move.l	#$2000000,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.w	#$291,$24(a3)
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		move.b	$48(a5),$10(a3)
 		move.l	#stru_1DA0E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_1D9D6
 
 ; ---------------------------------------------------------------------------
@@ -34905,7 +33853,7 @@ stru_1DA0E:	anim_frame	  1,   3, LnkTo_unk_E10D6-Data_Index
 
 sub_1DA24:
 		movem.l	d6-d7,-(sp)
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.w	(Camera_Y_pos).w,d7
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d7,(a6)
@@ -34920,7 +33868,7 @@ loc_1DA50:
 		move.w	d7,(a6)
 		move.w	d7,(a6)
 		dbf	d6,loc_1DA50
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		movem.l	(sp)+,d6-d7
 		rts
 ; End of function sub_1DA24
@@ -35276,7 +34224,7 @@ loc_3009A:
 		subq.b	#1,($FFFFFAD6).w
 		beq.s	loc_30110
 		move.w	#$8407,4(a6)
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 
 loc_300BA:
 		move.w	(Camera_Y_pos).w,d0
@@ -35292,12 +34240,12 @@ loc_300D2:
 		jsr	(j_Stop_z80).l
 		dma68kToVDP	Horiz_Scroll_Buffer,$1400,$380,VRAM
 		jsr	(j_Start_z80).l
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_30110:
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.w	#$8403,4(a6)
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
@@ -35315,12 +34263,12 @@ loc_30130:
 		move.w	d2,(a6)
 		move.b	#4,($FFFFFAD6).w
 		subq.w	#8,($FFFFFAD8).w
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_30158:
-		jsr	(sub_208).w
+		jsr	(j_sub_914).w
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
 		move.w	(Camera_X_pos).w,d0
@@ -35338,7 +34286,7 @@ loc_3017E:
 		move.w	d0,(a6)
 		move.w	d0,(a6)
 		subq.w	#8,($FFFFFAD8).w
-		jsr	(sub_20C).w
+		jsr	(j_sub_924).w
 		rts
 ; End of function sub_2FFDC
 
@@ -40726,7 +39674,7 @@ loc_320A6:
 		move.w	d7,(a0,d0.w)
 
 loc_320B4:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_320B8:
@@ -40856,7 +39804,7 @@ loc_321C0:
 		move.l	#$1000002,a3
 
 loc_321C6:
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	2(a0),d3
 		move.b	byte_321BC(pc,d3.w),d3
@@ -40961,7 +39909,7 @@ loc_322A8:
 		lsr.w	#8,d0
 
 loc_322AA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3237A
 		dbf	d0,loc_322AA
@@ -40978,8 +39926,8 @@ loc_322C0:
 
 loc_322C8:
 		move.l	#stru_3272E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
 
@@ -40990,8 +39938,8 @@ loc_322DA:
 		move.l	(sp)+,d0
 		sf	$13(a2)
 		move.l	#stru_3274C,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
 
@@ -41012,20 +39960,20 @@ loc_32310:
 		moveq	#8,d0
 
 loc_3231C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3237A
 		dbf	d0,loc_3231C
 		move.l	a0,-(sp)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_32468,4(a0)
 		move.l	(sp)+,a0
 		move.w	#(LnkTo_unk_C77E6-Data_Index),$22(a3)
 		moveq	#8,d0
 
 loc_32348:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3237A
 		dbf	d0,loc_32348
@@ -41035,7 +39983,7 @@ loc_3235E:
 		moveq	#8,d0
 
 loc_32360:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3237A
 		dbf	d0,loc_32360
@@ -41077,8 +40025,8 @@ loc_323C0:
 		move.l	#stru_326EE,d7
 
 loc_323D6:
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.b	d2,$13(a2)
 		bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
@@ -41086,12 +40034,12 @@ loc_323D6:
 loc_323E6:
 		sf	$13(a2)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_32468,4(a0)
 		st	$44(a0)
 		move.l	#stru_32700,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_3242C
@@ -41111,7 +40059,7 @@ loc_3242C:
 		move.w	d7,(a0,d0.w)
 
 loc_3243A:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 return_3243E:
@@ -41119,13 +40067,13 @@ return_3243E:
 ; ---------------------------------------------------------------------------
 		sf	$13(a2)
 		move.l	#stru_3274C,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#$50,d0
 
 loc_32454:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3237A
 		dbf	d0,loc_32454
@@ -41138,7 +40086,7 @@ loc_32468:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 
 loc_3247E:
 		move.l	$A(a5),a0
@@ -41169,7 +40117,7 @@ loc_324DC:
 		addi.w	#$32,$1A(a3)
 
 loc_324E6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		bne.w	loc_324F8
 		tst.b	$19(a3)
@@ -41180,34 +40128,34 @@ loc_324F8:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$10000,$44(a0)
 		move.l	#-$10000,$48(a0)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325E6,4(a0)
 
 loc_32534:
 		move.l	#-$10000,$44(a0)
 		move.l	#-$10000,$48(a0)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$8000,$44(a0)
 		move.l	#-$20000,$48(a0)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#-$8000,$44(a0)
 		move.l	#-$20000,$48(a0)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$2000,$44(a0)
 		move.l	#-$1C000,$48(a0)
-		jsr	(sub_24C).w
-		jmp	(sub_258).w
+		jsr	(j_sub_E76).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_325AC:
@@ -41217,7 +40165,7 @@ loc_325AC:
 
 loc_325B6:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		move.l	$48(a5),d7
@@ -41231,7 +40179,7 @@ loc_325B6:
 
 loc_325E6:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -41255,7 +40203,7 @@ loc_3261C:
 		moveq	#2,d3
 
 loc_3263C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1000,$2A(a3)
 		bsr.w	loc_32682
 		tst.b	$19(a3)
@@ -41263,7 +40211,7 @@ loc_3263C:
 
 loc_32652:
 
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 off_32656:	dc.l loc_326AA
 		dc.l loc_326AA
@@ -41401,7 +40349,7 @@ unk_3276A:	dc.b   0
 
 loc_32782:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -41435,11 +40383,11 @@ loc_327E4:
 loc_327F2:
 		move.l	d7,$26(a3)
 		move.l	#stru_32B6A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		sf	$3D(a3)
 
 loc_32804:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3299C
 		bsr.w	loc_3284C
@@ -41512,7 +40460,7 @@ loc_328A6:
 		move.w	$46(a5),d5
 
 loc_328AA:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.w	$1E(a2),d6
 		eor.b	d6,d7
 		andi.l	#3,d7
@@ -41520,7 +40468,7 @@ loc_328AA:
 		neg.w	d7
 		swap	d7
 		move.l	d7,$2A(a3)
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.w	$1A(a2),d6
 		eor.b	d6,d7
 		andi.l	#3,d7
@@ -41533,10 +40481,10 @@ loc_328E0:
 		swap	d7
 		move.l	d7,$26(a3)
 		move.l	#stru_32B56,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_328F0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_329F8
 		addi.l	#$4000,$2A(a3)
@@ -41547,16 +40495,16 @@ loc_32906:
 		sf	$3C(a3)
 		sf	$14(a3)
 		move.w	#$201,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.l	#stru_32B50,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		moveq	#$A,d3
 		sf	d2
 		st	$3D(a3)
 		st	($FFFFFA28).w
 
 loc_3292E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_32970
 		move.w	$1A(a2),d7
@@ -41581,7 +40529,7 @@ loc_3294C:
 
 loc_32970:
 		move.w	#$100,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		sf	($FFFFFA28).w
 		move.w	#9,d6
 		move.w	#$E,d7
@@ -41703,8 +40651,8 @@ loc_32AA2:
 		st	$3D(a3)
 		sf	$14(a3)
 		move.l	#stru_32B78,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_32AD8
@@ -41724,7 +40672,7 @@ loc_32AD8:
 		move.w	d7,(a0,d0.w)
 
 loc_32AE6:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_32AEA:
@@ -41827,7 +40775,7 @@ unk_32BA6:	dc.b   0
 
 loc_32BBE:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -41852,7 +40800,7 @@ loc_32BBE:
 		moveq	#0,d2
 
 loc_32C1A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		add.l	d0,$2A(a3)
 		bsr.w	loc_32C60
@@ -41918,7 +40866,7 @@ loc_32C8E:
 ; ---------------------------------------------------------------------------
 
 loc_32CC2:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	(Camera_X_pos).w,d6
 		eor.b	d6,d7
 		ext.w	d7
@@ -41936,7 +40884,7 @@ loc_32CE4:
 		cmpi.w	#5,($FFFFFB44).w
 		bge.w	return_32D06
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_33128,4(a0)
 		addq.w	#1,($FFFFFB44).w
 
@@ -41962,7 +40910,7 @@ loc_32D16:
 		cmpi.w	#5,($FFFFFB44).w
 		bge.s	return_32D06
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_330D0,4(a0)
 		addq.w	#1,($FFFFFB44).w
 		st	$44(a0)
@@ -42022,7 +40970,7 @@ loc_32DD2:
 		cmpi.w	#5,($FFFFFB44).w
 		bge.w	return_32D06
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_330D0,4(a0)
 		addq.w	#1,($FFFFFB44).w
 		sf	$44(a0)
@@ -42076,8 +41024,8 @@ loc_32E8C:
 		clr.w	$24(a3)
 		sf	$11(a3)
 		move.l	#stru_345E4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_32ECA
@@ -42097,7 +41045,7 @@ loc_32ECA:
 		move.w	d7,(a0,d0.w)
 
 loc_32ED8:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 unk_32EDC:	dc.b   0
 		dc.b   0
@@ -42397,7 +41345,7 @@ stru_330C2:	anim_frame	  1,   6, LnkTo_unk_C7996-Data_Index
 
 loc_330D0:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#0,$10(a3)
 		move.w	#$19,d0
@@ -42408,10 +41356,10 @@ loc_330D0:
 		move.w	$46(a5),$1A(a3)
 		move.w	$48(a5),$1E(a3)
 		move.l	#stru_330C2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_33110:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_33120
 		subq.w	#1,d3
@@ -42419,12 +41367,12 @@ loc_33110:
 
 loc_33120:
 		subq.w	#1,($FFFFFB44).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_33128:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),d7
@@ -42435,7 +41383,7 @@ loc_33128:
 		addi.w	#$F,$1E(a3)
 		andi.w	#$FFF0,$1E(a3)
 		move.l	#stru_330A8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		st	$13(a3)
 		st	$14(a3)
 		move.b	#0,$10(a3)
@@ -42459,7 +41407,7 @@ loc_33128:
 		bne.w	loc_331CA
 
 loc_331BA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_331CA
 		subq.w	#1,d3
@@ -42467,7 +41415,7 @@ loc_331BA:
 
 loc_331CA:
 		subq.w	#1,($FFFFFB44).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_331D2:
@@ -42620,7 +41568,7 @@ unk_33338:	dc.b   0
 
 loc_3333E:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -42644,7 +41592,7 @@ loc_3333E:
 		move.w	#(LnkTo_unk_C7B0E-Data_Index),$22(a3)
 		move.l	#-$10000,$2A(a3)
 		move.l	#$3000003,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		exg	a1,a3
 		move.w	#$16,d0
@@ -42653,7 +41601,7 @@ loc_3333E:
 		exg	a1,a3
 		exg	a1,a2
 		move.l	#$3000003,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		st	$3D(a1)
 		move.l	a1,$3E(a5)
 		exg	a1,a3
@@ -42666,7 +41614,7 @@ loc_3333E:
 		lea	(off_33520).l,a0
 
 loc_333F6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		cmpi.w	#$10,$38(a3)
 		bne.s	loc_333F6
@@ -42674,7 +41622,7 @@ loc_333F6:
 		clr.l	$2A(a3)
 
 loc_3340E:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$FF,d7
 		asr.w	#2,d7
 		move.w	d7,d0
@@ -42683,12 +41631,12 @@ loc_3340E:
 		eor.b	d7,d0
 
 loc_33424:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.s	loc_33424
 		move.l	#stru_33F90,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		st	$13(a1)
 		st	$14(a1)
 		st	$3C(a1)
@@ -42698,7 +41646,7 @@ loc_33424:
 		clr.l	$2A(a1)
 
 loc_3345C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		addi.l	#$2000,$2A(a1)
 		cmpi.w	#$C,$38(a1)
@@ -42716,8 +41664,8 @@ loc_33488:
 		addi.w	#$A,$1E(a1)
 		exg	a1,a3
 		move.l	#stru_33332,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		exg	a1,a3
 		move.l	$1A(a1),$1A(a2)
 		move.l	$1E(a1),$1E(a2)
@@ -42732,7 +41680,7 @@ loc_33488:
 		bge.w	loc_33506
 		addq.w	#1,($FFFFFB42).w
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_335D8,4(a0)
 		move.w	$1A(a1),$44(a0)
 		addi.w	#1,$44(a0)
@@ -42751,7 +41699,7 @@ loc_3350E:
 ; ---------------------------------------------------------------------------
 
 loc_33516:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bra.s	loc_33516
 ; ---------------------------------------------------------------------------
@@ -42855,7 +41803,7 @@ loc_335D4:
 
 loc_335D8:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		st	$13(a3)
 		move.b	#0,$10(a3)
 		move.w	#$16,d0
@@ -42867,7 +41815,7 @@ loc_335D8:
 		move.b	$44(a4),$44(a5)
 		move.b	$45(a4),$45(a5)
 		move.l	#$3000,$26(a3)
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		bclr	#2,d7
 		beq.w	loc_33630
 		not.b	$16(a3)
@@ -42875,16 +41823,16 @@ loc_335D8:
 
 loc_33630:
 		move.l	#stru_33FA6,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_33F14,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		st	$14(a3)
 		bsr.w	loc_33526
 
 loc_33650:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#0,d6
 		moveq	#-8,d7
 		bsr.w	loc_33550
@@ -42927,7 +41875,7 @@ loc_336AA:
 
 loc_336D0:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#0,d6
 		moveq	#8,d7
 		bsr.w	loc_33550
@@ -42962,7 +41910,7 @@ loc_3371A:
 
 loc_33730:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#8,d6
 		moveq	#0,d7
 		bsr.w	loc_33550
@@ -43000,7 +41948,7 @@ loc_33782:
 ; ---------------------------------------------------------------------------
 
 loc_337A0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#-8,d6
 		moveq	#0,d7
 		bsr.w	loc_33550
@@ -43038,7 +41986,7 @@ loc_337F2:
 ; ---------------------------------------------------------------------------
 
 loc_33810:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#-8,d6
 		moveq	#-8,d7
 		bsr.w	loc_33550
@@ -43066,7 +42014,7 @@ loc_33810:
 ; ---------------------------------------------------------------------------
 
 loc_33866:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_33866
 ; ---------------------------------------------------------------------------
 		cmpi.w	#$4000,d6
@@ -43086,7 +42034,7 @@ loc_33878:
 
 loc_33892:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#8,d6
 		moveq	#-8,d7
 		bsr.w	loc_33550
@@ -43118,7 +42066,7 @@ loc_338CE:
 
 loc_338EA:
 		move.l	#stru_33FB4,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3392C
 ; ---------------------------------------------------------------------------
 
@@ -43126,19 +42074,19 @@ loc_338F8:
 		add.w	d6,$1A(a3)
 		add.w	d7,$1E(a3)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_325B6,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.l	$26(a3),$48(a0)
 		move.l	#stru_33F06,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3392C:
 		sf	$14(a3)
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		subq.w	#1,($FFFFFB42).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3393C:
@@ -43303,7 +42251,7 @@ loc_33A72:
 
 loc_33A7C:
 
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bra.s	loc_33A7C
 ; ---------------------------------------------------------------------------
 off_33A82:	dc.l stru_33E10
@@ -43370,8 +42318,8 @@ loc_33B30:
 		move.b	(a2)+,d7
 		ext.w	d7
 		move.l	(a4,d7.w),d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		tst.b	(a2)+
 		beq.w	loc_33B5E
 		not.b	$16(a3)
@@ -43393,7 +42341,7 @@ loc_33B5E:
 		move.b	(a2)+,d7
 		ext.w	d7
 		move.l	(a4,d7.w),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bsr.w	loc_33526
 		lea	off_33ADA(pc),a4
 		move.b	(a2)+,d7
@@ -44122,7 +43070,7 @@ word_33FD4:	dc.w $1E
 
 loc_33FDA:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		jsr	loc_32188(pc)
 		exg	a1,a3
 		move.l	a3,$36(a5)
@@ -44158,15 +43106,15 @@ loc_33FDA:
 		move.l	($FFFFF86A).w,4(a3)
 		move.l	a3,($FFFFF86A).w
 		st	$3D(a1)
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$FF,d7
 		move.b	(Camera_X_pos).w,d6
 		eor.b	d6,d7
 		move.w	d7,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 
 loc_3408C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_34128
 		sf	$16(a3)
@@ -44284,10 +43232,10 @@ return_34148:
 loc_3414A:
 		st	$3D(a3)
 		move.l	#stru_33FC2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	($FFFFF85E).w,a4
 		move.l	#$FFFC0000,$2A(a4)
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_34188
@@ -44307,7 +43255,7 @@ loc_34188:
 		move.w	d7,(a0,d0.w)
 
 loc_34196:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3419A:
@@ -44335,7 +43283,7 @@ loc_341BE:
 		move.w	#3,d7
 		addq.w	#1,($FFFFFB46).w
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_34266,4(a0)
 		move.w	$4A(a5),$4A(a0)
 		move.w	(a2)+,$44(a0)
@@ -44369,7 +43317,7 @@ loc_34234:
 		add.w	d7,$1E(a1)
 
 loc_34248:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_34128
 		dbf	d3,loc_34248
@@ -44384,7 +43332,7 @@ loc_34266:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -44408,7 +43356,7 @@ loc_34266:
 		bsr.w	loc_3433E
 
 loc_342D6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_34336
 		tst.w	$38(a3)
@@ -44448,7 +43396,7 @@ loc_3432E:
 
 loc_34336:
 		subq.w	#1,($FFFFFB46).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3433E:
@@ -44974,7 +43922,7 @@ stru_34652:	anim_frame	  1,   4, LnkTo_unk_C75EE-Data_Index
 
 loc_34664:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -45001,7 +43949,7 @@ loc_346C0:
 
 loc_346C4:
 		move.l	#stru_34600,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		clr.w	$38(a3)
 		clr.l	$2A(a3)
 		clr.l	$26(a3)
@@ -45097,7 +44045,7 @@ loc_34776:
 		neg.l	$26(a3)
 
 loc_3478C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	$26(a3),d7
 		bmi.w	loc_347B2
 		addi.l	#$200,d7
@@ -45141,7 +44089,7 @@ loc_34804:
 		clr.l	$26(a3)
 
 loc_3480A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		beq.w	loc_3482E
 		bmi.w	loc_3492C
@@ -45208,7 +44156,7 @@ loc_348A0:
 		bne.s	loc_348CE
 		exg	a0,a1
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_34BAC,4(a0)
 		move.w	$26(a3),$44(a0)
 		move.w	#3,$46(a0)
@@ -45239,7 +44187,7 @@ loc_348E4:
 		subq.w	#1,d2
 
 loc_348FC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		beq.w	loc_34924
 		bmi.w	loc_3492C
@@ -45258,13 +44206,13 @@ loc_34924:
 
 loc_3492C:
 		move.l	#stru_345E4,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		sf	$14(a3)
 		clr.w	$24(a3)
 		move.w	#2,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3CD16,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),d7
@@ -45272,7 +44220,7 @@ loc_3492C:
 		move.w	d7,$46(a0)
 		move.b	$16(a3),$48(a0)
 		move.w	$46(a5),$4A(a0)
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_34998
@@ -45292,7 +44240,7 @@ loc_34998:
 		move.w	d7,(a0,d0.w)
 
 loc_349A6:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 		move.w	$1E(a3),d7
 		cmp.w	$44(a5),d7
@@ -45321,7 +44269,7 @@ loc_349DE:
 		subq.w	#4,d7
 		move.l	off_349C6(pc,d7.w),a4
 		move.l	#stru_34652,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		jmp	(a4)
 ; ---------------------------------------------------------------------------
 
@@ -45330,7 +44278,7 @@ loc_34A00:
 		move.w	#2,$26(a3)
 
 loc_34A0A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		subi.l	#$1000,$26(a3)
@@ -45343,7 +44291,7 @@ loc_34A24:
 		move.w	#$FFFE,$26(a3)
 
 loc_34A2E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		addi.l	#$1000,$26(a3)
@@ -45355,7 +44303,7 @@ loc_34A48:
 		move.w	#$FFFD,$2A(a3)
 
 loc_34A4E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		addi.l	#$5000,$2A(a3)
@@ -45367,7 +44315,7 @@ loc_34A68:
 		move.w	#3,$2A(a3)
 
 loc_34A6E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		subi.l	#$2000,$2A(a3)
@@ -45380,20 +44328,20 @@ loc_34A88:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		sf	$3C(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	d0,$1A(a3)
 		move.l	d1,$1E(a3)
 		st	$3C(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#stru_34652,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#$FFFE,$26(a3)
 		move.w	#$FFFE,$2A(a3)
 
 loc_34AC2:
 		addi.l	#$2000,$2A(a3)
 		beq.w	loc_34B44
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		bra.s	loc_34AC2
@@ -45404,20 +44352,20 @@ loc_34ADC:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		sf	$3C(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	d0,$1A(a3)
 		move.l	d1,$1E(a3)
 		st	$3C(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#stru_34652,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#2,$26(a3)
 		move.w	#$FFFE,$2A(a3)
 
 loc_34B16:
 		addi.l	#$2000,$2A(a3)
 		beq.w	loc_34B44
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		bne.w	loc_34B30
 		bra.s	loc_34B16
@@ -45447,7 +44395,7 @@ loc_34B4C:
 
 loc_34B70:
 		move.l	d7,$2A(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		beq.s	loc_34B4C
 		bmi.w	loc_3492C
@@ -45470,7 +44418,7 @@ loc_34B96:
 
 loc_34BAC:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -45501,14 +44449,14 @@ loc_34BE6:
 		move.w	#6,d0
 
 loc_34C26:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		bne.s	loc_34C4A
 		dbf	d0,loc_34C26
 		move.w	#(LnkTo_unk_C75D6-Data_Index),$22(a3)
 
 loc_34C3A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		bne.s	loc_34C4A
 		tst.b	$19(a3)
@@ -45519,14 +44467,14 @@ loc_34C4A:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		move.w	#(LnkTo_unk_C75DE-Data_Index),$22(a3)
-		jsr	(sub_24C).w
-		jsr	(sub_24C).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
+		jsr	(j_sub_E76).w
+		jsr	(j_sub_E76).w
 		move.w	#(LnkTo_unk_C75E6-Data_Index),$22(a3)
-		jsr	(sub_24C).w
-		jsr	(sub_24C).w
-		jsr	(sub_24C).w
-		jmp	(sub_258).w
+		jsr	(j_sub_E76).w
+		jsr	(j_sub_E76).w
+		jsr	(j_sub_E76).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_34C7E:	anim_frame	  1,   5, LnkTo_unk_C8418-Data_Index
 		anim_frame	  1,   5, LnkTo_unk_C8420-Data_Index
@@ -45605,7 +44553,7 @@ unk_34D48:	dc.b $FF
 
 loc_34D54:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -45633,7 +44581,7 @@ loc_34D54:
 		clr.l	$2A(a3)
 		clr.l	$26(a3)
 		move.l	#stru_34C7E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	($FFFFF85E).w,a2
 
 loc_34DD6:
@@ -45648,7 +44596,7 @@ loc_34DE4:
 		bsr.w	loc_34F8E
 		bsr.w	loc_352E4
 		bsr.w	loc_34F18
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_35280
 		bsr.w	loc_35076
 		subq.w	#1,$44(a5)
@@ -45806,7 +44754,7 @@ loc_34F8E:
 		bne.w	return_34FFC
 		tst.b	$4C(a5)
 		bne.w	return_34FFC
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$FF,d7
 		cmpi.w	#4,d7
 		bgt.w	return_34FFC
@@ -45826,7 +44774,7 @@ loc_34FD6:
 		subq.w	#1,$48(a5)
 		beq.w	loc_34FFE
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3556C,4(a0)
 
 return_34FFC:
@@ -46014,7 +44962,7 @@ loc_35174:
 
 loc_35180:
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_355E2,4(a0)
 		move.w	#$FFFF,$46(a0)
 		move.w	$26(a3),$44(a0)
@@ -46022,13 +44970,13 @@ loc_35180:
 		st	$14(a3)
 		move.l	#$30000,$2A(a3)
 		move.l	#stru_34CA0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_351B6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		beq.s	loc_351B6
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 unk_351C4:	dc.b $FF
 		dc.b $FB ; ˚
@@ -46079,7 +45027,7 @@ loc_351EE:
 
 loc_351F2:
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_354DA,4(a0)
 		moveq	#0,d7
 		move.w	(a4)+,d7
@@ -46107,7 +45055,7 @@ loc_35228:
 		move.w	d0,$3A(a3)
 		jsr	loc_32146(pc)
 		move.l	#stru_34D02,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		st	$13(a1)
 		sf	$19(a1)
@@ -46115,7 +45063,7 @@ loc_35228:
 		sf	$3C(a1)
 		move.b	#1,$10(a1)
 		move.l	#stru_34C92,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		addi.l	#$40000,$2A(a3)
 		move.l	#$FFFFF400,d2
 		moveq	#0,d3
@@ -46163,7 +45111,7 @@ loc_352D2:
 		move.w	d7,(a0,d0.w)
 
 loc_352E0:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_352E4:
@@ -46192,7 +45140,7 @@ return_35324:
 ; ---------------------------------------------------------------------------
 
 loc_35326:
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.l	($FFFFF85E).w,a4
 		move.w	$1A(a3),d6
 		eor.b	d6,d7
@@ -46529,7 +45477,7 @@ return_354D8:
 
 loc_354DA:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.l	$44(a5),$26(a3)
@@ -46555,7 +45503,7 @@ loc_35512:
 		move.w	#5,d0
 
 loc_3554A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.s	loc_3555A
 		not.b	$16(a3)
@@ -46565,12 +45513,12 @@ loc_3555A:
 		addi.l	#$3000,$2A(a3)
 		tst.b	$19(a3)
 		beq.s	loc_3554A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3556C:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -46592,15 +45540,15 @@ loc_3556C:
 		addi.w	#8,$1A(a3)
 
 loc_355D4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		beq.s	loc_355D4
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_355E2:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -46620,10 +45568,10 @@ loc_355E2:
 		move.w	d0,$3A(a3)
 		jsr	loc_32146(pc)
 		move.l	#stru_34CD0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3564C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		moveq	#1,d0
 		bsr.w	loc_32054
 		addi.l	#$2000,$2A(a3)
@@ -46641,7 +45589,7 @@ loc_3566C:
 
 loc_35680:
 		sf	$3D(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		lea	(off_356B6).l,a4
 		moveq	#0,d0
@@ -46690,11 +45638,11 @@ word_356E4:	dc.w $FFFF
 
 loc_356F2:
 
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$2F,d7
 		cmpi.w	#$A,d7
 		bgt.s	loc_356CE
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#6,d7
 		move.w	word_356E4(pc,d7.w),d7
 		move.w	d7,$2A(a3)
@@ -46760,7 +45708,7 @@ loc_35788:
 		move.l	#$FFFC0000,$2A(a3)
 		sf	$3C(a3)
 		move.l	#stru_34CAE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_357E6
 ; ---------------------------------------------------------------------------
 
@@ -46773,17 +45721,17 @@ loc_357C2:
 		clr.l	$26(a3)
 		sf	$3C(a3)
 		move.l	#stru_34CAE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		tst.w	d0
 		bne.w	loc_357E6
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 
 loc_357E2:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_357E6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$4000,$2A(a3)
 		tst.b	$19(a3)
 		beq.s	loc_357E6
@@ -46862,7 +45810,7 @@ unk_3588C:	dc.b   0
 
 loc_35898:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -46882,7 +45830,7 @@ loc_35898:
 		move.b	(a4)+,$46(a5)
 		move.b	(a4)+,$47(a5)
 		move.l	#stru_35B10,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		lea	unk_35A0C(pc),a0
 		bsr.w	loc_35326
 		bsr.w	loc_3592E
@@ -46890,7 +45838,7 @@ loc_35898:
 
 loc_35908:
 		bsr.w	loc_35008
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_35948
 		subq.w	#1,$44(a5)
@@ -46966,8 +45914,8 @@ loc_35986:
 loc_359B2:
 
 		move.l	#stru_35B1E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_359E0
@@ -46987,7 +45935,7 @@ loc_359E0:
 		move.w	d7,(a0,d0.w)
 
 loc_359EE:
-		jsr	(sub_258).w
+		jsr	(j_sub_F1A).w
 
 loc_359F2:
 		move.l	(a0),d7
@@ -47281,7 +46229,7 @@ dword_35B38:	dc.l $FFFFD000
 
 loc_35B44:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		clr.l	$2A(a3)
 		move.w	2(a0),d7
@@ -47304,7 +46252,7 @@ loc_35B44:
 		st	$44(a5)
 		sf	$45(a5)
 		move.l	#stru_35EA0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_35BAC:
 		lea	(unk_35BC4).l,a0
@@ -47356,8 +46304,8 @@ loc_35C0E:
 		addq.w	#4,sp
 		clr.l	$26(a3)
 		move.l	#stru_35EBA,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_35C42
@@ -47377,14 +46325,14 @@ loc_35C42:
 		move.w	d7,(a0,d0.w)
 
 loc_35C50:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_35C54:
 		lsr.w	#8,d0
 
 loc_35C56:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_35BDE
 		bsr.w	loc_35CA2
@@ -47405,8 +46353,8 @@ loc_35C7A:
 
 loc_35C82:
 		move.l	#stru_35EC8,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_35BAC
 ; ---------------------------------------------------------------------------
 off_35C94:	dc.w LnkTo_unk_C787E-Data_Index
@@ -47425,7 +46373,7 @@ loc_35CA2:
 		bne.w	return_35CD6
 		subq.w	#1,d2
 		bne.s	return_35CD6
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		andi.w	#$2F,d7
 		cmpi.w	#$A,d7
 		bgt.s	loc_35CD2
@@ -47521,7 +46469,7 @@ loc_35D8C:
 
 loc_35D9E:
 		move.l	#stru_35EC8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		st	$45(a5)
 
 return_35DAC:
@@ -47537,7 +46485,7 @@ loc_35DAE:
 loc_35DB8:
 		move.l	a0,-(sp)
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_35DF0,4(a0)
 		move.w	d1,$46(a0)
 		swap	d1
@@ -47547,14 +46495,14 @@ loc_35DB8:
 		move.b	d7,$48(a0)
 		move.l	(sp)+,a0
 		move.l	#stru_35EA0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		sf	$45(a5)
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_35DF0:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -47587,7 +46535,7 @@ loc_35DF0:
 		subi.w	#8,$1A(a3)
 
 loc_35E8A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		bne.s	loc_35E9C
 		tst.b	$19(a3)
@@ -47596,7 +46544,7 @@ loc_35E8A:
 ; ---------------------------------------------------------------------------
 
 loc_35E9C:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_35EA0:	anim_frame	  1,  $B, LnkTo_unk_C78B6-Data_Index
 		anim_frame	  1,  $B, LnkTo_unk_C78BE-Data_Index
@@ -47628,7 +46576,7 @@ stru_35EC8:	anim_frame	  1,   3, LnkTo_unk_C787E-Data_Index
 
 loc_35EF2:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -47641,14 +46589,14 @@ loc_35EF2:
 		jsr	loc_32146(pc)
 		st	$3C(a3)
 		move.l	#stru_36174,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		sf	$19(a3)
 		move.w	#0,$2A(a3)
 		move.l	#$10000,$26(a3)
 		move.w	#$A,d1
 
 loc_35F4E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		subq.w	#1,d1
 		bne.w	loc_35F62
@@ -47754,8 +46702,8 @@ loc_36052:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		move.l	#stru_36182,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_36088
@@ -47775,10 +46723,10 @@ loc_36088:
 		move.w	d7,(a0,d0.w)
 
 loc_36096:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -47792,13 +46740,13 @@ loc_36096:
 		move.w	d0,$3A(a3)
 		jsr	loc_32146(pc)
 		move.l	$4A(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		sf	$19(a3)
 		move.w	$46(a5),$2A(a3)
 		move.w	$44(a5),$26(a3)
 
 loc_360F4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.s	loc_3610E
 		tst.w	d0
@@ -47814,7 +46762,7 @@ loc_36106:
 ; ---------------------------------------------------------------------------
 
 loc_3610E:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 		move.w	#6,d0
 		clr.l	d7
@@ -47894,7 +46842,7 @@ word_361A4:	dc.w $2000
 
 loc_361AE:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	2(a0),d7
 		add.w	d7,d7
@@ -47914,7 +46862,7 @@ loc_361AE:
 
 loc_361F4:
 		move.w	#$3C,d0
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.w	$1A(a2),d6
 		eor.b	d6,d7
 		bclr	#7,d7
@@ -47924,12 +46872,12 @@ loc_361F4:
 		sf	$3C(a3)
 
 loc_36212:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.s	loc_36212
 
 loc_3621A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1E(a2),d7
 		sub.w	d1,d7
 		move.w	d7,$1E(a3)
@@ -47943,8 +46891,8 @@ loc_3621A:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_3647E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		st	$3C(a3)
 		sf	$3D(a3)
 
@@ -47957,7 +46905,7 @@ loc_3625E:
 
 loc_36274:
 		move.l	d7,$2A(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		beq.s	loc_3625E
 		bmi.w	loc_36346
@@ -47974,10 +46922,10 @@ loc_362A4:
 		clr.l	$2A(a3)
 		sf	$3C(a3)
 		move.l	#stru_363FE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_362B6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$18(a3)
 		bne.w	loc_36320
 		move.w	$38(a3),d7
@@ -48002,7 +46950,7 @@ loc_362EE:
 		move.l	#$FFFD0000,$2A(a3)
 
 loc_3630A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_36346
 		addi.l	#$6000,$2A(a3)
@@ -48016,8 +46964,8 @@ loc_36320:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_36456,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		clr.w	$22(a3)
 		bra.w	loc_361F4
 ; ---------------------------------------------------------------------------
@@ -48026,13 +46974,13 @@ loc_36346:
 		st	$3D(a3)
 		sf	$14(a3)
 		move.l	#stru_36468,d7
-		jsr	(sub_274).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_E76).w
 		move.l	d0,-(sp)
 		moveq	#$11,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		moveq	#0,d0
 		move.b	$42(a5),d0
 		bpl.s	loc_3638C
@@ -48052,7 +47000,7 @@ loc_3638C:
 		move.w	d7,(a0,d0.w)
 
 loc_3639A:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3639E:
@@ -48150,7 +47098,7 @@ stru_3647E:	anim_frame	  1,   4, LnkTo_unk_C7F48-Data_Index
 
 loc_364A0:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
@@ -48191,13 +47139,13 @@ loc_3651E:
 		move.w	#1,$26(a3)
 
 loc_3652E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		move.l	#stru_367BE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_36540:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		bsr.w	loc_3656C
 		addi.l	#$FA0,$2A(a3)
@@ -48213,7 +47161,7 @@ loc_3656C:
 		move.w	$1E(a3),d4
 		cmp.w	(Level_height_blocks).w,d4
 		blt.w	return_3657C
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 return_3657C:
@@ -48233,10 +47181,10 @@ loc_36580:
 		clr.l	$2A(a3)
 		clr.l	$26(a3)
 		move.l	#stru_367AE,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_365AC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		move.w	#8,d7
 		bsr.w	loc_33286
@@ -48255,10 +47203,10 @@ loc_365D8:
 		subq.w	#1,d2
 		beq.w	loc_3664E
 		move.l	#stru_367CC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_365F2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		cmpi.w	#(LnkTo_unk_C7FB0-Data_Index),$22(a3)
 		bne.s	loc_36616
@@ -48296,10 +47244,10 @@ loc_3664E:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#stru_367FA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_36664:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	loc_32054
 		move.w	#8,d7
 		bsr.w	loc_33286
@@ -48329,7 +47277,7 @@ loc_366A4:
 		move.w	d7,(a0,d0.w)
 
 loc_366B2:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_366B6:
@@ -48337,8 +47285,8 @@ loc_366B6:
 		tst.b	$18(a3)
 		beq.w	loc_365AC
 		move.l	#stru_367B4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_366D0:
 		move.w	#$FFFE,$2A(a3)
@@ -48578,7 +47526,7 @@ loc_3690A:
 		move.w	#$FFFF,a0
 
 loc_3691E:
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		lea	(EnemyLoad_Index).l,a3
 		clr.w	d0
 		move.b	(a1),d0
@@ -49403,7 +48351,7 @@ sub_37002:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$20,d0
 		move.w	d0,$3A(a3)
@@ -49415,11 +48363,11 @@ sub_37002:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#4,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.w	#$3C,d0
 
 loc_37054:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		cmpi.w	#$1C,d7
 		beq.s	loc_370C2
@@ -49468,7 +48416,7 @@ loc_370C2:
 		clr.w	$38(a3)
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_37002
 
 
@@ -49481,7 +48429,7 @@ sub_370D2:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$20,d0
 		move.w	d0,$3A(a3)
@@ -49493,20 +48441,20 @@ sub_370D2:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#3,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.w	#$78,d0
 		move.l	#stru_37BD8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3712E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$2710,$2A(a3)
 		tst.b	$18(a3)
 		beq.s	loc_3712E
 		move.l	#0,$2A(a3)
 
 loc_37148:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		cmpi.w	#$1C,d7
 		beq.s	loc_371B6
@@ -49556,9 +48504,9 @@ loc_371B6:
 		clr.l	$26(a3)
 		clr.l	$2A(a3)
 		move.l	#stru_37BC6,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_371D4:
@@ -49582,10 +48530,10 @@ loc_371F4:
 
 loc_37200:
 		move.l	#$37C0E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3720A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d7
 		cmpi.w	#$1C,d7
 		beq.s	loc_371B6
@@ -49612,7 +48560,7 @@ loc_3724A:
 		tst.b	$18(a3)
 		beq.s	loc_3720A
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_37002,4(a0)
 		move.w	$1E(a3),d6
 		addi.w	#8,d6
@@ -49636,9 +48584,9 @@ loc_37280:
 
 sub_3728C:
 		move.l	#stru_37BFC,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3728C
 
 
@@ -49647,7 +48595,7 @@ sub_3728C:
 
 sub_3729E:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$20,d0
 		move.w	d0,$3A(a3)
@@ -49659,15 +48607,15 @@ sub_3729E:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#1,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.w	#$64,d0
 		addq.b	#1,($FFFFFB4F).w
 		move.l	#stru_37BEA,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_372F6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		subq.w	#1,d0
 		bne.s	loc_37300
 		bra.s	loc_3731C
@@ -49692,10 +48640,10 @@ loc_3731A:
 
 loc_3731C:
 		move.l	#stru_37BFC,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		subq.b	#1,($FFFFFB4F).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3729E
 
 
@@ -49704,7 +48652,7 @@ loc_3731C:
 
 sub_37332:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -49716,7 +48664,7 @@ sub_37332:
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		addq.w	#2,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.w	#$FFFC,$2A(a3)
 		move.l	($FFFFF85E).w,a1
 		move.w	$1A(a1),d5
@@ -49731,14 +48679,14 @@ loc_37394:
 		move.l	#$7FFF,$26(a3)
 
 loc_3739C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$BB8,$2A(a3)
 		bsr.w	sub_37AF0
 		move.w	d6,$22(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_373BE
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_373BE:
@@ -49840,14 +48788,14 @@ sub_373C0:
 		move.l	a1,(a2)+
 		move.l	($FFFFFB7A).w,a3
 		move.l	#stru_37B8A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#0,d6
 		move.l	#0,d7
 		bsr.w	sub_376EC
 		moveq	#$1E,d0
 
 loc_37582:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFF85E).w,a1
 		move.w	$1A(a1),d5
 		move.w	$1A(a3),d3
@@ -49893,7 +48841,7 @@ loc_375DE:
 		tst.b	$18(a3)
 		beq.s	loc_3763A
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_370D2,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
@@ -49906,13 +48854,13 @@ loc_3761E:
 		cmpi.w	#6,d2
 		blt.s	loc_37630
 		move.l	#stru_37B98,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3763A
 ; ---------------------------------------------------------------------------
 
 loc_37630:
 		move.l	#stru_37BC0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3763A:
 		bsr.w	sub_37708
@@ -49927,7 +48875,7 @@ loc_3763A:
 
 sub_3764A:
 		move.l	#$1010002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.w	4(a0),$1A(a1)
 		move.w	6(a0),$1E(a1)
 		move.b	#0,$10(a1)
@@ -49947,7 +48895,7 @@ sub_3764A:
 
 sub_37680:
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.w	4(a0),$1A(a1)
 		move.w	6(a0),$1E(a1)
 		move.b	#0,$10(a1)
@@ -49967,7 +48915,7 @@ sub_37680:
 
 sub_376B6:
 		move.l	#$FF0002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.w	4(a0),$1A(a1)
 		move.w	6(a0),$1E(a1)
 		move.b	#0,$10(a1)
@@ -50034,7 +48982,7 @@ loc_3772A:
 		cmpi.w	#$C,d7
 		bgt.s	loc_37768
 		addq.w	#2,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		move.l	d0,-(sp)
 		moveq	#$48,d0
 		jsr	(j_PlaySound).l
@@ -50046,7 +48994,7 @@ loc_37768:
 		cmpi.w	#$18,d7
 		bgt.s	loc_37778
 		subq.w	#2,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		bra.s	loc_377BC
 ; ---------------------------------------------------------------------------
 
@@ -50054,16 +49002,16 @@ loc_37778:
 		cmpi.w	#$24,d7
 		bgt.s	loc_377BC
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3729E,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_37332,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)
 
 loc_377BC:
@@ -50206,20 +49154,20 @@ loc_378D6:
 loc_37922:
 		lea	($FFFFFB72).w,a1
 		move.l	($FFFFFB72).w,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)+
 		move.l	($FFFFFB76).w,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)+
 		move.l	($FFFFFB7A).w,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)+
 		lea	($FFFFFBAE).w,a1
 		move.l	($FFFFFBAE).w,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)+
 		move.l	($FFFFFBB2).w,a3
-		jsr	(sub_27C).w
+		jsr	(j_loc_1078).w
 		clr.l	(a1)
 		rts
 ; End of function sub_378C8
@@ -50672,25 +49620,25 @@ stru_37BFC:	anim_frame	  1, $32, LnkTo_unk_C8478-Data_Index
 
 loc_37C14:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39478,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.l	#1,$1E(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39022,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_390BA,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -50699,7 +49647,7 @@ loc_37C14:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39598,4(a0)
 		addi.w	#-$96,$1E(a3)
 		addi.w	#-$64,$1A(a3)
@@ -50707,14 +49655,14 @@ loc_37C14:
 		move.w	$1E(a3),$46(a0)
 		move.l	#1,$1E(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39152,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_391EA,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -50723,7 +49671,7 @@ loc_37C14:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_396BE,4(a0)
 		addi.w	#-$12C,$1E(a3)
 		addi.w	#0,$1A(a3)
@@ -50731,41 +49679,41 @@ loc_37C14:
 		move.w	$1E(a3),$46(a0)
 		move.l	#1,$1E(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39282,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3931A,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_37DB4:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_37F30,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38C92,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38D2A,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -50774,20 +49722,20 @@ loc_37DB4:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38012,4(a0)
 		addi.w	#-$C8,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38DC2,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38E5A,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -50796,30 +49744,30 @@ loc_37DB4:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_380F4,4(a0)
 		addi.w	#-$1C2,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38EF2,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38F8A,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_37F30:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$23,d0
 		move.w	d0,$3A(a3)
@@ -50837,7 +49785,7 @@ loc_37F30:
 		move.w	#1,d1
 
 loc_37F80:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39952
 		move.w	d7,($FFFFFB72).w
 		tst.w	d7
@@ -50869,10 +49817,10 @@ loc_37FC2:
 loc_37FC6:
 		move.b	$16(a3),($FFFFFB86).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_37FD6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39952
 		move.w	d7,($FFFFFB72).w
 		tst.w	d7
@@ -50886,7 +49834,7 @@ loc_37FEA:
 		bsr.w	sub_397E4
 
 loc_37FF4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39952
 		move.w	d7,($FFFFFB72).w
 		tst.w	d7
@@ -50902,7 +49850,7 @@ loc_38008:
 
 loc_38012:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$23,d0
 		move.w	d0,$3A(a3)
@@ -50920,7 +49868,7 @@ loc_38012:
 		move.w	#1,d1
 
 loc_38062:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_399E4
 		move.w	d7,($FFFFFB74).w
 		tst.w	d7
@@ -50952,10 +49900,10 @@ loc_380A4:
 loc_380A8:
 		move.b	$16(a3),($FFFFFB87).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_380B8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_399E4
 		move.w	d7,($FFFFFB74).w
 		tst.w	d7
@@ -50969,7 +49917,7 @@ loc_380CC:
 		bsr.w	sub_397E4
 
 loc_380D6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_399E4
 		move.w	d7,($FFFFFB74).w
 		tst.w	d7
@@ -50985,7 +49933,7 @@ loc_380EA:
 
 loc_380F4:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$23,d0
 		move.w	d0,$3A(a3)
@@ -51003,7 +49951,7 @@ loc_380F4:
 		move.w	#1,d1
 
 loc_38144:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39A7C
 		move.w	d7,($FFFFFB76).w
 		tst.w	d7
@@ -51035,10 +49983,10 @@ loc_38186:
 loc_3818A:
 		move.b	$16(a3),($FFFFFB88).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3819A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39A7C
 		move.w	d7,($FFFFFB76).w
 		tst.w	d7
@@ -51052,7 +50000,7 @@ loc_381AE:
 		bsr.w	sub_397E4
 
 loc_381B8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39A7C
 		move.w	d7,($FFFFFB76).w
 		tst.w	d7
@@ -51068,24 +50016,24 @@ loc_381CC:
 
 loc_381D6:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a0
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39478,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38902,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3899A,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -51094,20 +50042,20 @@ loc_381D6:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_39598,4(a0)
 		addi.w	#$48,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38A32,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38ACA,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -51116,20 +50064,20 @@ loc_381D6:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_396BE,4(a0)
 		addi.w	#$90,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38B62,4(a0)
 		addi.w	#-$25,$1E(a3)
 		addi.w	#-$C,$1A(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#$FFFF,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38BFA,4(a0)
 		addi.w	#$18,$1A(a3)
 		move.w	$1A(a3),$44(a0)
@@ -51138,65 +50086,65 @@ loc_381D6:
 		move.w	4(a0),$1A(a3)
 		move.w	6(a0),$1E(a3)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38494,4(a0)
 		addi.w	#-$5A,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38512,4(a0)
 		addi.w	#$28,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38590,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3860E,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3868C,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3870A,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38788,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38806,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_38884,4(a0)
 		addi.w	#$20,$1E(a3)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38494:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51211,7 +50159,7 @@ loc_38494:
 		moveq	#1,d0
 
 loc_384D6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_384E8
@@ -51223,12 +50171,12 @@ loc_384E8:
 		move.l	#$FFFF2000,$26(a3)
 
 loc_384F6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38510
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38510:
@@ -51237,7 +50185,7 @@ loc_38510:
 
 loc_38512:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51252,7 +50200,7 @@ loc_38512:
 		moveq	#1,d0
 
 loc_38554:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_38566
@@ -51264,12 +50212,12 @@ loc_38566:
 		move.l	#$E000,$26(a3)
 
 loc_38574:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3858E
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3858E:
@@ -51278,7 +50226,7 @@ loc_3858E:
 
 loc_38590:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51293,7 +50241,7 @@ loc_38590:
 		moveq	#1,d0
 
 loc_385D2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_385E4
@@ -51305,12 +50253,12 @@ loc_385E4:
 		move.l	#$FFFF4000,$26(a3)
 
 loc_385F2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3860C
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3860C:
@@ -51319,7 +50267,7 @@ loc_3860C:
 
 loc_3860E:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51334,7 +50282,7 @@ loc_3860E:
 		moveq	#1,d0
 
 loc_38650:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_38662
@@ -51346,12 +50294,12 @@ loc_38662:
 		move.l	#$C000,$26(a3)
 
 loc_38670:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3868A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3868A:
@@ -51360,7 +50308,7 @@ loc_3868A:
 
 loc_3868C:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51375,7 +50323,7 @@ loc_3868C:
 		moveq	#1,d0
 
 loc_386CE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_386E0
@@ -51387,12 +50335,12 @@ loc_386E0:
 		move.l	#$FFFF6000,$26(a3)
 
 loc_386EE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38708
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38708:
@@ -51401,7 +50349,7 @@ loc_38708:
 
 loc_3870A:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51416,7 +50364,7 @@ loc_3870A:
 		moveq	#1,d0
 
 loc_3874C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_3875E
@@ -51428,12 +50376,12 @@ loc_3875E:
 		move.l	#$A000,$26(a3)
 
 loc_3876C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38786
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38786:
@@ -51442,7 +50390,7 @@ loc_38786:
 
 loc_38788:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51457,7 +50405,7 @@ loc_38788:
 		moveq	#1,d0
 
 loc_387CA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_387DC
@@ -51469,12 +50417,12 @@ loc_387DC:
 		move.l	#$FFFF8000,$26(a3)
 
 loc_387EA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38804
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38804:
@@ -51483,7 +50431,7 @@ loc_38804:
 
 loc_38806:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51498,7 +50446,7 @@ loc_38806:
 		moveq	#1,d0
 
 loc_38848:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_3885A
@@ -51510,12 +50458,12 @@ loc_3885A:
 		move.l	#$8000,$26(a3)
 
 loc_38868:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38882
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38882:
@@ -51524,7 +50472,7 @@ loc_38882:
 
 loc_38884:
 		move.l	#$1010002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$22,d0
 		move.w	d0,$3A(a3)
@@ -51539,7 +50487,7 @@ loc_38884:
 		moveq	#1,d0
 
 loc_388C6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_39846
 		cmpi.b	#3,($FFFFFB4E).w
 		beq.s	loc_388D8
@@ -51551,12 +50499,12 @@ loc_388D8:
 		move.l	#$FFFF6000,$26(a3)
 
 loc_388E6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38900
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38900:
@@ -51565,7 +50513,7 @@ loc_38900:
 
 loc_38902:
 		move.l	#$1020002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51579,7 +50527,7 @@ loc_38902:
 		sf	d0
 
 loc_3893E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_393C8
@@ -51597,14 +50545,14 @@ loc_38962:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_38976:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38998
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38998:
@@ -51613,7 +50561,7 @@ loc_38998:
 
 loc_3899A:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51627,7 +50575,7 @@ loc_3899A:
 		sf	d0
 
 loc_389D6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_39420
@@ -51645,14 +50593,14 @@ loc_389FA:
 		move.l	#$4000,$26(a3)
 
 loc_38A0E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38A30
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38A30:
@@ -51661,7 +50609,7 @@ loc_38A30:
 
 loc_38A32:
 		move.l	#$1020002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51675,7 +50623,7 @@ loc_38A32:
 		sf	d0
 
 loc_38A6E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_393C8
@@ -51693,14 +50641,14 @@ loc_38A92:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_38AA6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38AC8
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38AC8:
@@ -51709,7 +50657,7 @@ loc_38AC8:
 
 loc_38ACA:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51723,7 +50671,7 @@ loc_38ACA:
 		sf	d0
 
 loc_38B06:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_39420
@@ -51741,14 +50689,14 @@ loc_38B2A:
 		move.l	#$4000,$26(a3)
 
 loc_38B3E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38B60
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38B60:
@@ -51757,7 +50705,7 @@ loc_38B60:
 
 loc_38B62:
 		move.l	#$1020002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51771,7 +50719,7 @@ loc_38B62:
 		sf	d0
 
 loc_38B9E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_393C8
@@ -51789,14 +50737,14 @@ loc_38BC2:
 		move.l	#-$4000,$26(a3)
 
 loc_38BD6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38BF8
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38BF8:
@@ -51805,7 +50753,7 @@ loc_38BF8:
 
 loc_38BFA:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51819,7 +50767,7 @@ loc_38BFA:
 		sf	d0
 
 loc_38C36:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_39420
@@ -51837,14 +50785,14 @@ loc_38C5A:
 		move.l	#$4000,$26(a3)
 
 loc_38C6E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38C90
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38C90:
@@ -51853,7 +50801,7 @@ loc_38C90:
 
 loc_38C92:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51867,7 +50815,7 @@ loc_38C92:
 		sf	d0
 
 loc_38CCE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_393C8
@@ -51885,14 +50833,14 @@ loc_38CF2:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_38D06:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38D28
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38D28:
@@ -51901,7 +50849,7 @@ loc_38D28:
 
 loc_38D2A:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51915,7 +50863,7 @@ loc_38D2A:
 		sf	d0
 
 loc_38D66:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_39420
@@ -51933,14 +50881,14 @@ loc_38D8A:
 		move.l	#$4000,$26(a3)
 
 loc_38D9E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38DC0
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38DC0:
@@ -51949,7 +50897,7 @@ loc_38DC0:
 
 loc_38DC2:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -51963,7 +50911,7 @@ loc_38DC2:
 		sf	d0
 
 loc_38DFE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_393C8
@@ -51981,14 +50929,14 @@ loc_38E22:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_38E36:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38E58
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38E58:
@@ -51997,7 +50945,7 @@ loc_38E58:
 
 loc_38E5A:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52011,7 +50959,7 @@ loc_38E5A:
 		sf	d0
 
 loc_38E96:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_39420
@@ -52029,14 +50977,14 @@ loc_38EBA:
 		move.l	#$4000,$26(a3)
 
 loc_38ECE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38EF0
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38EF0:
@@ -52045,7 +50993,7 @@ loc_38EF0:
 
 loc_38EF2:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52059,7 +51007,7 @@ loc_38EF2:
 		sf	d0
 
 loc_38F2E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_393C8
@@ -52077,14 +51025,14 @@ loc_38F52:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_38F66:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38F88
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_38F88:
@@ -52093,7 +51041,7 @@ loc_38F88:
 
 loc_38F8A:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#1,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52107,7 +51055,7 @@ loc_38F8A:
 		sf	d0
 
 loc_38FC6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_39420
@@ -52125,14 +51073,14 @@ loc_38FEA:
 		move.l	#$4000,$26(a3)
 
 loc_38FFE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39020
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_39020:
@@ -52141,7 +51089,7 @@ loc_39020:
 
 loc_39022:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52155,7 +51103,7 @@ loc_39022:
 		sf	d0
 
 loc_3905E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_393C8
@@ -52173,14 +51121,14 @@ loc_39082:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_39096:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_390B8
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_390B8:
@@ -52189,7 +51137,7 @@ loc_390B8:
 
 loc_390BA:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52203,7 +51151,7 @@ loc_390BA:
 		sf	d0
 
 loc_390F6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7A).w,a2
 		move.b	($FFFFFB86).w,d2
 		bsr.w	sub_39420
@@ -52221,14 +51169,14 @@ loc_3911A:
 		move.l	#$4000,$26(a3)
 
 loc_3912E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39150
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_39150:
@@ -52237,7 +51185,7 @@ loc_39150:
 
 loc_39152:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52251,7 +51199,7 @@ loc_39152:
 		sf	d0
 
 loc_3918E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_393C8
@@ -52269,14 +51217,14 @@ loc_391B2:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_391C6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_391E8
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_391E8:
@@ -52285,7 +51233,7 @@ loc_391E8:
 
 loc_391EA:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52299,7 +51247,7 @@ loc_391EA:
 		sf	d0
 
 loc_39226:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB7E).w,a2
 		move.b	($FFFFFB87).w,d2
 		bsr.w	sub_39420
@@ -52317,14 +51265,14 @@ loc_3924A:
 		move.l	#$4000,$26(a3)
 
 loc_3925E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39280
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_39280:
@@ -52333,7 +51281,7 @@ loc_39280:
 
 loc_39282:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52347,7 +51295,7 @@ loc_39282:
 		sf	d0
 
 loc_392BE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_393C8
@@ -52365,14 +51313,14 @@ loc_392E2:
 		move.l	#$FFFFC000,$26(a3)
 
 loc_392F6:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39318
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_39318:
@@ -52381,7 +51329,7 @@ loc_39318:
 
 loc_3931A:
 		move.l	#$1030002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -52395,7 +51343,7 @@ loc_3931A:
 		sf	d0
 
 loc_39356:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	($FFFFFB82).w,a2
 		move.b	($FFFFFB88).w,d2
 		bsr.w	sub_39420
@@ -52413,14 +51361,14 @@ loc_3937A:
 		move.l	#$4000,$26(a3)
 
 loc_3938E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_37A22
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
 		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_393B0
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_393B0:
@@ -52435,7 +51383,7 @@ sub_393B2:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		addq.w	#4,$A(a3)
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 		rts
 ; End of function sub_393B2
 
@@ -52469,7 +51417,7 @@ loc_39402:
 		addq.w	#1,$A(a3)
 
 loc_39406:
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 
 return_3940A:
 		rts
@@ -52516,7 +51464,7 @@ loc_3945A:
 		addq.w	#1,$A(a3)
 
 loc_3945E:
-		jsr	(sub_26C).w
+		jsr	(j_sub_FF6).w
 
 return_39462:
 		rts
@@ -52541,7 +51489,7 @@ word_3946E:	dc.w $C
 
 loc_39478:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$22,d0
 		tst.w	d2
@@ -52573,7 +51521,7 @@ loc_394E2:
 		move.w	#$14,$3E(a3)
 
 loc_394E8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_394F6
 		bsr.w	sub_398BC
@@ -52614,10 +51562,10 @@ loc_39534:
 loc_39538:
 		move.b	$16(a3),($FFFFFB86).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_39548:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_39556
 		bsr.w	sub_398BC
@@ -52640,7 +51588,7 @@ loc_39566:
 		bsr.w	sub_397E4
 
 loc_39570:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_3957E
 		bsr.w	sub_398BC
@@ -52665,7 +51613,7 @@ loc_3958E:
 
 loc_39598:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$22,d0
 		tst.w	d2
@@ -52698,7 +51646,7 @@ loc_39608:
 		move.w	#$14,$3E(a3)
 
 loc_3960E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_3961C
 		bsr.w	sub_398BC
@@ -52739,10 +51687,10 @@ loc_3965A:
 loc_3965E:
 		move.b	$16(a3),($FFFFFB87).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3966E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_3967C
 		bsr.w	sub_398BC
@@ -52765,7 +51713,7 @@ loc_3968C:
 		bsr.w	sub_397E4
 
 loc_39696:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_396A4
 		bsr.w	sub_398BC
@@ -52790,7 +51738,7 @@ loc_396B4:
 
 loc_396BE:
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$22,d0
 		tst.w	d2
@@ -52823,7 +51771,7 @@ loc_3972E:
 		move.w	#$14,$3E(a3)
 
 loc_39734:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_39742
 		bsr.w	sub_398BC
@@ -52864,10 +51812,10 @@ loc_39780:
 loc_39784:
 		move.b	$16(a3),($FFFFFB88).w
 		move.l	#stru_39FC6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_39794:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_397A2
 		bsr.w	sub_398BC
@@ -52890,7 +51838,7 @@ loc_397B2:
 		bsr.w	sub_397E4
 
 loc_397BC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	d2
 		bne.s	loc_397CA
 		bsr.w	sub_398BC
@@ -52919,14 +51867,14 @@ sub_397E4:
 		tst.w	d1
 		bne.s	loc_397FA
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3A0D2,4(a0)
 		bra.s	loc_3980A
 ; ---------------------------------------------------------------------------
 
 loc_397FA:
 		move.w	#0,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3A1EA,4(a0)
 
 loc_3980A:
@@ -52947,7 +51895,7 @@ loc_3982C:
 loc_39836:
 		move.w	d6,$44(a0)
 		move.l	#stru_39FD8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		rts
 ; End of function sub_397E4
 
@@ -54540,33 +53488,33 @@ loc_39EBE:
 
 loc_39EE2:
 		move.l	#stru_39FEE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A004,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3A016,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A028,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3A03A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A050,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3A062,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A074,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	d0,-(sp)
 		moveq	#$57,d0
 		jsr	(j_PlaySound).l
@@ -54575,22 +53523,22 @@ loc_39EE2:
 
 loc_39F7A:
 		move.l	#stru_3A086,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A09C,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3A0AE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		eori.b	#$FF,$16(a3)
 		move.l	#stru_3A0C0,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		subq.w	#1,d0
 		bne.s	loc_39F7A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_39FC6:	anim_frame	  1, $14, LnkTo_unk_C8608-Data_Index
 		anim_frame	  1, $28, LnkTo_unk_C8610-Data_Index
@@ -54688,7 +53636,7 @@ loc_3A0D2:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$21,d0
 		move.w	d0,$3A(a3)
@@ -54703,21 +53651,21 @@ loc_3A0D2:
 		move.w	$46(a5),$1E(a3)
 		move.w	$48(a5),$26(a3)
 		move.l	#stru_3A1CC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3A134:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#0,$40(a3)
 		bne.s	loc_3A168
 		clr.l	$26(a3)
 		move.l	#stru_3A1D6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3A14E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#0,$42(a3)
 		bne.s	loc_3A15E
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3A15E:
@@ -54747,9 +53695,9 @@ sub_3A172:
 
 loc_3A192:
 		move.l	#stru_3A1E0,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 return_3A1A4:
@@ -54772,7 +53720,7 @@ sub_3A1A6:
 		bne.w	return_3A1CA
 
 loc_3A1C6:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 return_3A1CA:
@@ -54800,7 +53748,7 @@ loc_3A1EA:
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 		move.l	#$1040002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.b	#0,$10(a3)
 		move.w	#$23,d0
 		move.w	d0,$3A(a3)
@@ -54815,10 +53763,10 @@ loc_3A1EA:
 		move.w	$48(a5),$26(a3)
 		move.b	$48(a5),d0
 		move.l	#stru_3A308,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3A24C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	d0
 		beq.s	loc_3A25E
 		addi.l	#$7D0,$26(a3)
@@ -54831,20 +53779,20 @@ loc_3A25E:
 loc_3A266:
 		subq.w	#1,$40(a3)
 		bne.s	loc_3A270
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3A270:
 		cmpi.w	#0,$1A(a3)
 		bgt.s	loc_3A27C
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3A27C:
 		move.w	$1A(a3),d5
 		cmp.w	(Level_width_pixels).w,d5
 		ble.s	loc_3A28A
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3A28A:
@@ -54953,9 +53901,9 @@ stru_3A378:	anim_frame	  1,   3, LnkTo_unk_C7746-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_3A392:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -54994,7 +53942,7 @@ loc_3A414:
 		tst.b	($FFFFFB50).w
 		bne.s	loc_3A444
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3A48E,4(a0)
 		addi.b	#1,($FFFFFB50).w
 
@@ -55003,14 +53951,14 @@ loc_3A444:
 		cmpi.w	#5,d7
 		bne.s	loc_3A464
 		move.l	#stru_3A334,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3A334,$62(a5)
 		bra.s	loc_3A476
 ; ---------------------------------------------------------------------------
 
 loc_3A464:
 		move.l	#stru_3A31A,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3A31A,$62(a5)
 
 loc_3A476:
@@ -55045,7 +53993,7 @@ loc_3A4B8:
 
 loc_3A4C2:
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	($FFFFFB50).w
 		beq.s	loc_3A53E
 		move.l	a3,a1
@@ -55056,7 +54004,7 @@ loc_3A4D6:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_3A4D6
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	($FFFFFB50).w
 		beq.s	loc_3A53E
 		move.l	a3,a1
@@ -55068,7 +54016,7 @@ loc_3A4F6:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_3A4F6
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	($FFFFFB50).w
 		beq.s	loc_3A53E
 		move.l	a3,a1
@@ -55080,7 +54028,7 @@ loc_3A516:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_3A516
 		move.w	#3,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	($FFFFFB50).w
 		beq.s	loc_3A53E
 		move.l	a3,a1
@@ -55095,7 +54043,7 @@ loc_3A536:
 ; ---------------------------------------------------------------------------
 
 loc_3A53E:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3A542:
@@ -55117,7 +54065,7 @@ loc_3A564:
 		bge.w	loc_3A586
 		exg	a0,a4
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3A63C,4(a0)
 		exg	a0,a4
 		addq.w	#1,($FFFFFB44).w
@@ -55137,18 +54085,18 @@ loc_3A586:
 
 loc_3A5A6:
 		move.l	#stru_3A378,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		subi.b	#1,($FFFFFB50).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
 loc_3A5BE:
 		move.l	#stru_3A34E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3A5D4:
 		clr.w	$38(a3)
@@ -55169,7 +54117,7 @@ loc_3A5E4:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3A610:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3A610
@@ -55186,7 +54134,7 @@ stru_3A622:	anim_frame	  1,   6, LnkTo_unk_C7776-Data_Index
 
 loc_3A63C:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -55200,7 +54148,7 @@ loc_3A63C:
 		move.w	$24(a0),$24(a3)
 		move.b	$11(a0),$11(a3)
 		move.l	#stru_3A622,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#$96,d3
 		moveq	#8,d7
 		move.w	#$3E7,d6
@@ -55218,7 +54166,7 @@ loc_3A63C:
 		bne.w	loc_3A6DA
 
 loc_3A6CA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.w	loc_3A6DA
 		subq.w	#1,d3
@@ -55226,7 +54174,7 @@ loc_3A6CA:
 
 loc_3A6DA:
 		subq.w	#1,($FFFFFB44).w
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_3A6E2:	anim_frame	  1,   9, LnkTo_unk_C82A8-Data_Index
 		anim_frame	  1,   9, LnkTo_unk_C82B0-Data_Index
@@ -55282,7 +54230,7 @@ stru_3A762:	anim_frame	  1,   3, LnkTo_unk_C8260-Data_Index
 loc_3A770:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -55313,9 +54261,9 @@ loc_3A7AC:
 loc_3A7EE:
 		addi.l	#$8000,$50(a5)
 		move.l	#stru_3A6E2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		move.b	#0,$10(a1)
 		move.w	$4A(a3),$4A(a1)
@@ -55332,7 +54280,7 @@ loc_3A7EE:
 		move.w	#$10,$46(a1)
 		exg	a1,a3
 		move.l	#stru_3A716,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		move.l	#loc_3A890,a0
 		move.l	#$10001,$54(a5)
@@ -55390,8 +54338,8 @@ loc_3A8FC:
 loc_3A90C:
 		addi.w	#4,$1E(a2)
 		move.l	#stru_3A744,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		subi.w	#1,$44(a3)
 		beq.s	loc_3A96C
 		tst.b	$19(a3)
@@ -55403,10 +54351,10 @@ loc_3A936:
 		sf	$3D(a2)
 		subi.w	#4,$1E(a2)
 		move.l	#stru_3A6E2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a2
 		move.l	#stru_3A716,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a2
 
 loc_3A958:
@@ -55423,14 +54371,14 @@ loc_3A96C:
 		st	$3D(a3)
 		st	$3D(a2)
 		move.l	#stru_3A74A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		st	$13(a2)
 		move.l	#stru_3A6FC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a2,a3
 		move.l	#stru_3A730,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a2,a3
 		move.l	#$28000,$50(a5)
 		move.w	#$800,$38(a2)
@@ -55451,8 +54399,8 @@ loc_3A9D2:
 		st	$3D(a2)
 		st	$3D(a3)
 		move.l	#stru_3A74A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; END OF FUNCTION CHUNK	FOR sub_3C4F8
 ; ---------------------------------------------------------------------------
@@ -55460,7 +54408,7 @@ loc_3A9D2:
 loc_3A9F0:
 		subi.w	#1,$54(a5)
 		bne.s	loc_3AA0C
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		lsr.w	#1,d7
 		addi.w	#$F,d7
 		move.w	d7,$54(a5)
@@ -55476,7 +54424,7 @@ loc_3AA0C:
 loc_3AA18:
 		exg	a0,a1
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3ABB6,4(a0)
 		exg	a0,a1
 		move.l	$3A(a5),a2
@@ -55488,7 +54436,7 @@ loc_3AA18:
 		moveq	#8,d0
 
 loc_3AA4C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a2)
 		bne.w	loc_3AAD4
 		dbf	d0,loc_3AA4C
@@ -55506,7 +54454,7 @@ loc_3AA6C:
 		moveq	#4,d0
 
 loc_3AA72:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a2)
 		bne.w	loc_3AAD4
 		dbf	d0,loc_3AA72
@@ -55514,7 +54462,7 @@ loc_3AA72:
 		moveq	#$A,d0
 
 loc_3AA88:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a2)
 		bne.w	loc_3AAD4
 		dbf	d0,loc_3AA88
@@ -55565,17 +54513,17 @@ loc_3AB04:
 loc_3AB14:
 		addi.w	#4,$1E(a2)
 		move.l	#stru_3A744,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		subi.w	#1,$44(a3)
 		beq.s	loc_3AB56
 		sf	$3D(a2)
 		subi.w	#4,$1E(a2)
 		move.l	#stru_3A6E2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a2
 		move.l	#stru_3A716,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a2
 		bra.w	loc_3AAC4
 ; ---------------------------------------------------------------------------
@@ -55586,14 +54534,14 @@ loc_3AB56:
 		st	$3D(a3)
 		st	$3D(a2)
 		move.l	#stru_3A74A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		st	$13(a2)
 		move.l	#stru_3A6FC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a2,a3
 		move.l	#stru_3A730,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a2,a3
 		move.l	#$28000,$50(a5)
 		move.w	#$800,$38(a2)
@@ -55609,9 +54557,9 @@ loc_3AB56:
 
 sub_3ABB6:
 		move.w	#$A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$3A(a0),a1
 		move.l	$36(a0),a0
@@ -55638,8 +54586,8 @@ loc_3AC0C:
 		subi.w	#2,d0
 		sub.w	d0,$1E(a3)
 		move.l	#stru_3A754,d7
-		jsr	(sub_274).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.s	loc_3AC48
 		moveq	#$3A,d0
@@ -55647,7 +54595,7 @@ loc_3AC0C:
 
 loc_3AC48:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1A(a3),d0
 		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FF80,d0
@@ -55673,9 +54621,9 @@ loc_3AC7E:
 loc_3AC92:
 		add.w	d0,$1A(a3)
 		move.l	#stru_3A762,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3ABB6
 
 ; ---------------------------------------------------------------------------
@@ -55701,7 +54649,7 @@ stru_3ACC4:	anim_frame	  1,   8, LnkTo_unk_C8158-Data_Index
 loc_3ACDA:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -55733,7 +54681,7 @@ loc_3AD4C:
 		move.w	#$20,$4A(a5)
 		move.w	#$A,$48(a5)
 		move.l	#stru_3ACA8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#loc_3AEC4,a0
 		tst.b	$16(a3)
 		beq.w	loc_3C0D2
@@ -55744,7 +54692,7 @@ loc_3AD7C:
 		st	$14(a3)
 		st	$3C(a3)
 		move.l	#stru_3ACA8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$18000,$26(a3)
 		move.w	$1A(a3),d7
 		sub.w	$1A(a4),d7
@@ -55753,7 +54701,7 @@ loc_3AD7C:
 
 loc_3ADA4:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		move.w	$38(a3),d4
 		beq.w	loc_3AE78
@@ -55783,20 +54731,20 @@ loc_3ADFA:
 		beq.s	loc_3AE28
 		sf	$14(a3)
 		move.l	#stru_3ACBE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		st	$14(a3)
 		clr.w	$38(a3)
 		move.l	#stru_3ACA8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3ADA4
 ; ---------------------------------------------------------------------------
 
 loc_3AE28:
 		sf	$14(a3)
 		move.l	#stru_3ACC4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
@@ -55846,7 +54794,7 @@ loc_3AE84:
 		move.l	#-$48000,$2A(a3)
 
 loc_3AEB2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3AEB2
@@ -55867,18 +54815,18 @@ loc_3AEC4:
 
 loc_3AEE6:
 		move.l	#stru_3ACC4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
 loc_3AEF8:
 		move.l	#stru_3ACBE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		clr.w	$38(a3)
 		move.l	#stru_3ACA8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3AF14:
 		clr.w	$38(a3)
@@ -55899,7 +54847,7 @@ loc_3AF24:
 		move.l	#-$48000,$2A(a3)
 
 loc_3AF50:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3AF50
@@ -55926,9 +54874,9 @@ stru_3AF82:	anim_frame	  1, $14, LnkTo_unk_C7C16-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_3AF96:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -55961,7 +54909,7 @@ loc_3B00A:
 		move.w	#$1E,$4A(a5)
 		move.w	#$C,$48(a5)
 		move.l	#stru_3AF62,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		addi.w	#1,($FFFFFA06).w
 		move.l	#loc_3B048,a0
 		tst.b	$16(a3)
@@ -56001,17 +54949,17 @@ loc_3B08C:
 
 loc_3B094:
 		move.l	#stru_3AF82,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
 loc_3B0A6:
 		move.l	#stru_3AF7C,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3AF62,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3B0BE:
 		clr.w	$38(a3)
@@ -56059,7 +55007,7 @@ loc_3B11E:
 		st	$15(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	#stru_3AF62,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#7,$3A(a3)
 		bra.s	loc_3B174
 ; ---------------------------------------------------------------------------
@@ -56109,7 +55057,7 @@ loc_3B180:
 
 loc_3B1A6:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.l	$26(a3)
 		bmi.s	loc_3B1BE
 		subi.l	#$4000,$26(a3)
@@ -56210,7 +55158,7 @@ stru_3B29A:	anim_frame	  1, $10, LnkTo_unk_C7EB8-Data_Index
 loc_3B2A8:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -56269,9 +55217,9 @@ loc_3B36A:
 loc_3B372:
 		addi.l	#$8000,$50(a5)
 		move.l	#stru_3B270,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		move.b	#0,$10(a1)
 		move.w	$4A(a3),$4A(a1)
@@ -56288,7 +55236,7 @@ loc_3B372:
 		move.w	#8,$46(a1)
 		exg	a1,a3
 		move.l	#stru_3B27E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		move.l	#loc_3B41C,a0
 		lea	($FFFFFA34).w,a4
@@ -56350,8 +55298,8 @@ loc_3B480:
 		sf	$13(a2)
 		st	$3D(a2)
 		move.l	#stru_3B29A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
@@ -56359,9 +55307,9 @@ loc_3B49A:
 		move.l	#0,$50(a5)
 		move.w	#6,$46(a2)
 		move.l	#stru_3B294,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#5,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 
 loc_3B4BA:
 		clr.w	$38(a2)
@@ -56407,7 +55355,7 @@ stru_3B526:	anim_frame	  1,   6, LnkTo_unk_C7EE8-Data_Index
 loc_3B530:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -56467,9 +55415,9 @@ loc_3B5FA:
 		addi.l	#$8000,$50(a5)
 		move.w	#$49,$54(a5)
 		move.l	#stru_3B4CA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		move.b	#0,$10(a1)
 		move.w	$4A(a3),$4A(a1)
@@ -56488,7 +55436,7 @@ loc_3B5FA:
 		bne.s	loc_3B682
 		exg	a1,a3
 		move.l	#stru_3B4D8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		bra.s	loc_3B690
 ; ---------------------------------------------------------------------------
@@ -56496,7 +55444,7 @@ loc_3B5FA:
 loc_3B682:
 		exg	a1,a3
 		move.l	#stru_3B4F6,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 
 loc_3B690:
@@ -56536,8 +55484,8 @@ loc_3B6E6:
 		sf	$13(a2)
 		st	$3D(a2)
 		move.l	#stru_3B518,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
@@ -56545,9 +55493,9 @@ loc_3B700:
 		move.l	#0,$50(a5)
 		move.w	#6,$46(a2)
 		move.l	#stru_3B294,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#5,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 
 loc_3B720:
 		clr.w	$38(a2)
@@ -56558,7 +55506,7 @@ loc_3B720:
 
 loc_3B730:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a4
 		move.l	$3A(a4),a1
 		move.l	$36(a4),a2
@@ -56585,15 +55533,15 @@ loc_3B77E:
 		addi.w	#6,d4
 		sub.w	d4,$1E(a3)
 		move.l	#stru_3B526,d7
-		jsr	(sub_274).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_E76).w
 		tst.b	$19(a3)
 		bne.s	loc_3B7BA
 		moveq	#$41,d0
 		jsr	(j_PlaySound).l
 
 loc_3B7BA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1A(a3),d4
 		sub.w	(Camera_X_pos).w,d4
 		cmpi.w	#$FF80,d4
@@ -56610,7 +55558,7 @@ loc_3B7BA:
 		beq.s	loc_3B7BA
 
 loc_3B7EC:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_3B7F0:	anim_frame	  1,   6, LnkTo_unk_C7D36-Data_Index
 		anim_frame	  1,   6, LnkTo_unk_C7D3E-Data_Index
@@ -56649,9 +55597,9 @@ stru_3B83C:	anim_frame	  1, $19, LnkTo_unk_C7CDE-Data_Index
 
 loc_3B84A:
 		addi.w	#1,($FFFFFA06).w
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -56664,9 +55612,9 @@ loc_3B84A:
 		bset	#7,$3A(a3)
 		move.b	#0,$10(a3)
 		move.l	#stru_3B7F0,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$1010002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		move.b	#0,$10(a1)
 		st	$13(a1)
@@ -56680,7 +55628,7 @@ loc_3B84A:
 		subi.w	#$FFF0,$1A(a1)
 		exg	a1,a3
 		move.l	#stru_3B802,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		clr.w	d1
 		move.w	$22(a3),d3
@@ -56688,7 +55636,7 @@ loc_3B84A:
 		move.b	#$A,$5B(a5)
 
 loc_3B904:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		move.w	$38(a3),d7
 		bmi.s	loc_3B93C
@@ -56713,23 +55661,23 @@ loc_3B93C:
 		move.l	$3A(a5),a4
 		sf	$13(a4)
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3BA74,4(a0)
 		move.l	a0,a4
 		move.w	#$6000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3BA74,4(a0)
 		move.l	a4,$5C(a0)
 		move.l	a0,$5C(a4)
 		move.b	$42(a5),$42(a0)
 		move.b	$42(a5),$42(a4)
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3B9B0,4(a0)
 		move.l	#stru_3B810,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
-		jmp	(sub_258).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 word_3B9A0:	dc.w $FFF0
 		dc.b $FF
@@ -56750,7 +55698,7 @@ word_3B9A0:	dc.w $FFF0
 
 loc_3B9B0:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a2
 		move.l	$36(a2),a4
 		move.w	$1A(a4),$1A(a3)
@@ -56767,7 +55715,7 @@ loc_3B9B0:
 		moveq	#4,d1
 
 loc_3BA00:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1A(a3),d7
 		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$FEFC,d7
@@ -56803,7 +55751,7 @@ loc_3BA3C:
 ; ---------------------------------------------------------------------------
 
 loc_3BA5C:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 dword_3BA60:	dc.l $12000
 		dc.b   0
@@ -56826,7 +55774,7 @@ dword_3BA60:	dc.l $12000
 
 loc_3BA74:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a2
 		move.l	$36(a2),a4
 		move.w	$1A(a4),$1A(a3)
@@ -56873,7 +55821,7 @@ loc_3BB24:
 		move.l	#-$10000,$2A(a3)
 
 loc_3BB2C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		tst.l	$2A(a3)
 		beq.s	loc_3BB42
@@ -56920,7 +55868,7 @@ loc_3BB94:
 		sf	$3C(a3)
 		sf	$14(a3)
 		move.l	#stru_3B81C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#loc_3BBC4,a0
 		tst.b	$16(a3)
 		beq.w	loc_3C0D2
@@ -56959,7 +55907,7 @@ loc_3BBF6:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3BC22:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3BC22
@@ -56969,10 +55917,10 @@ loc_3BC34:
 		subi.w	#1,$44(a3)
 		beq.s	loc_3BC56
 		move.l	#stru_3B836,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3B81C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3BBE6
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_3C3CE
@@ -56982,8 +55930,8 @@ loc_3BC56:
 		cmpi.b	#$A,$5B(a5)
 		beq.s	loc_3BC78
 		move.l	#stru_3B83C,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		tst.b	$5B(a5)
 		beq.s	loc_3BCA6
 
@@ -57006,13 +55954,13 @@ loc_3BC98:
 		clr.w	(a0,d0.w)
 
 loc_3BCA2:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3BCA6:
 		move.l	$5C(a5),a2
 		st	$5B(a2)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; END OF FUNCTION CHUNK	FOR sub_3C3CE
 ; ---------------------------------------------------------------------------
 stru_3BCB2:	anim_frame	  1,   9, LnkTo_unk_C80E0-Data_Index
@@ -57041,9 +55989,9 @@ stru_3BCE2:	anim_frame	  1,  $A, LnkTo_unk_C8090-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_3BCF0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -57078,10 +56026,10 @@ loc_3BD6C:
 loc_3BD74:
 		addi.l	#$8000,$50(a5)
 		move.l	#stru_3BCB2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		st	$13(a1)
 		st	$3C(a1)
@@ -57096,10 +56044,10 @@ loc_3BD74:
 		bset	#6,$3A(a1)
 		exg	a1,a3
 		move.l	#stru_3BCBC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3E(a5)
 		st	$13(a1)
 		st	$16(a1)
@@ -57115,7 +56063,7 @@ loc_3BD74:
 		bset	#6,$3A(a1)
 		exg	a1,a3
 		move.l	#stru_3BCBC,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a1,a3
 		lea	($FFFFFA34).w,a4
 		tst.b	(a4,d5.w)
@@ -57174,17 +56122,17 @@ loc_3BE8E:
 
 loc_3BEDE:
 		move.w	a4,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		move.w	d0,d6
-		jsr	(loc_DEEE).l
+		jsr	(j_sub_10E86).l
 		bra.w	loc_3BF02
 ; ---------------------------------------------------------------------------
 
 loc_3BEF2:
 		move.w	a4,d3
-		jsr	(loc_DEEA).l
+		jsr	(j_sub_FACE).l
 		move.w	d0,d6
-		jsr	(loc_DEF6).l
+		jsr	(j_sub_10F44).l
 
 loc_3BF02:
 		move.w	$38(a3),d4
@@ -57198,25 +56146,25 @@ loc_3BF02:
 
 loc_3BF1C:
 		move.l	#stru_3BCD4,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a0,a3
 		move.l	$3A(a5),a3
 		move.l	#stru_3BCE2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	$3E(a5),a3
 		move.l	#stru_3BCE2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a0,a3
-		jsr	(sub_278).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
 loc_3BF4E:
 		move.l	#stru_3BCCE,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3BCB2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3BF66:
 		tst.b	$16(a3)
@@ -57307,7 +56255,7 @@ loc_3C03A:
 		bsr.w	sub_3BF72
 
 loc_3C044:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -57381,7 +56329,7 @@ loc_3C0E6:
 		bsr.w	sub_3BF72
 
 loc_3C0F0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -57455,7 +56403,7 @@ loc_3C18A:
 		bsr.w	sub_3BF72
 
 loc_3C194:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 
 loc_3C19C:
@@ -57558,7 +56506,7 @@ loc_3C276:
 		bsr.w	sub_3BF72
 
 loc_3C280:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3C3CE
 
 loc_3C288:
@@ -57823,7 +56771,7 @@ loc_3C4E6:
 		move.w	d7,(a0,d0.w)
 
 loc_3C4F4:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3C3CE
 
 
@@ -57854,7 +56802,7 @@ loc_3C50E:
 		bne.s	return_3C536
 		exg	a0,a4
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3B730,4(a0)
 		exg	a0,a4
 
@@ -57878,7 +56826,7 @@ return_3C552:
 loc_3C554:
 		cmpi.w	#2,$40(a3)
 		beq.w	loc_3C5FC
-		jsr	(sub_228).w
+		jsr	(j_sub_A4A).w
 		cmpi.w	#$A,d7
 		ble.s	loc_3C56A
 		rts
@@ -57930,7 +56878,7 @@ loc_3C5D8:
 		clr.w	$4E(a5)
 		exg	a3,a4
 		move.l	#stru_3A716,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		exg	a3,a4
 
 loc_3C5EE:
@@ -58029,7 +56977,7 @@ stru_3C6D6:	anim_frame	1, $14, LnkTo_unk_C76EE-Data_Index
 loc_3C6DC:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -58073,7 +57021,7 @@ loc_3C766:
 		cmpi.w	#2,d7
 		bge.s	loc_3C7C0
 		move.l	#stru_3C632,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C632,$62(a5)
 		move.l	#stru_3C666,$66(a5)
 		bra.s	loc_3C7F8
@@ -58082,7 +57030,7 @@ loc_3C766:
 loc_3C7C0:
 		bgt.s	loc_3C7DE
 		move.l	#stru_3C64C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C64C,$62(a5)
 		move.l	#stru_3C666,$66(a5)
 		bra.s	loc_3C7F8
@@ -58090,7 +57038,7 @@ loc_3C7C0:
 
 loc_3C7DE:
 		move.l	#stru_3C64C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C64C,$62(a5)
 		move.l	#stru_3C680,$66(a5)
 
@@ -58127,12 +57075,12 @@ loc_3C848:
 		subi.w	#1,$44(a3)
 		beq.s	loc_3C87E
 		move.l	#stru_3C6D0,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3C91A
 ; ---------------------------------------------------------------------------
 
@@ -58142,8 +57090,8 @@ loc_3C87E:
 
 loc_3C886:
 		move.l	#stru_3C69A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -58161,7 +57109,7 @@ loc_3C898:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3C8CC:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3C8CC
@@ -58179,12 +57127,12 @@ loc_3C8EC:
 
 loc_3C8F2:
 		move.l	#stru_3C6D6,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#7,$3A(a3)
 
 loc_3C91A:
@@ -58210,7 +57158,7 @@ loc_3C93C:
 
 loc_3C954:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d4
 		beq.s	loc_3C954
 		cmpi.w	#$C,d4
@@ -58265,7 +57213,7 @@ stru_3C9EA:	anim_frame	  1, $1E, LnkTo_unk_C7C56-Data_Index
 loc_3C9F8:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -58306,7 +57254,7 @@ loc_3CA7E:
 		cmpi.w	#4,d7
 		bge.s	loc_3CACA
 		move.l	#stru_3C97C,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C97C,$62(a5)
 		move.l	#stru_3C9B0,$66(a5)
 		bra.s	loc_3CB02
@@ -58315,7 +57263,7 @@ loc_3CA7E:
 loc_3CACA:
 		bgt.s	loc_3CAE8
 		move.l	#stru_3C996,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C996,$62(a5)
 		move.l	#stru_3C9B0,$66(a5)
 		bra.s	loc_3CB02
@@ -58323,7 +57271,7 @@ loc_3CACA:
 
 loc_3CAE8:
 		move.l	#stru_3C996,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3C996,$62(a5)
 		move.l	#stru_3C9CA,$66(a5)
 
@@ -58351,19 +57299,19 @@ loc_3CB38:
 		subq.w	#1,$44(a3)
 		beq.s	loc_3CB64
 		move.l	#stru_3C9E4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3CBF6
 ; ---------------------------------------------------------------------------
 
 loc_3CB64:
 		move.l	#stru_3C9EA,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -58381,7 +57329,7 @@ loc_3CB76:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3CBA8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3CBA8
@@ -58399,12 +57347,12 @@ loc_3CBC8:
 
 loc_3CBCE:
 		move.l	#stru_3C9E4,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bclr	#7,$3A(a3)
 
 loc_3CBF6:
@@ -58512,7 +57460,7 @@ stru_3CCEC:	anim_frame	  1,   7, LnkTo_unk_C755E-Data_Index
 loc_3CD16:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	$44(a5),$1A(a3)
 		move.w	$46(a5),$1E(a3)
 		move.b	$48(a5),$16(a3)
@@ -58524,7 +57472,7 @@ loc_3CD16:
 loc_3CD46:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -58587,14 +57535,14 @@ loc_3CDFC:
 		cmpi.w	#3,d7
 		bne.s	loc_3CE48
 		move.l	#stru_3CC90,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3CC90,$62(a5)
 		bra.s	loc_3CE5A
 ; ---------------------------------------------------------------------------
 
 loc_3CE48:
 		move.l	#stru_3CC5E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3CC5E,$62(a5)
 
 loc_3CE5A:
@@ -58638,10 +57586,10 @@ loc_3CEBE:
 		tst.b	$5C(a5)
 		bne.w	loc_3CF4C
 		move.l	#stru_3CCE6,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3CF4C
 ; ---------------------------------------------------------------------------
 
@@ -58657,8 +57605,8 @@ loc_3CEE4:
 
 loc_3CEFC:
 		move.l	#stru_3CCEC,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -58674,7 +57622,7 @@ loc_3CF0E:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3CF3A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3CF3A
@@ -58710,14 +57658,14 @@ loc_3CF6E:
 loc_3CF90:
 		exg	a0,a1
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3D02A,4(a0)
 		exg	a0,a1
 		move.l	#stru_3CCC2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3CFAE:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d4
 		bmi.w	loc_3CE9A
 		beq.s	loc_3CFE4
@@ -58742,17 +57690,17 @@ loc_3CFDA:
 loc_3CFE4:
 		move.b	$5B(a5),d4
 		beq.s	loc_3CFAE
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		cmpi.w	#2,$40(a3)
 		bne.s	loc_3D002
 		move.l	#stru_3CC90,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3D00C
 ; ---------------------------------------------------------------------------
 
 loc_3D002:
 		move.l	#stru_3CC5E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3D00C:
 		tst.b	$5C(a5)
@@ -58770,7 +57718,7 @@ loc_3D01E:
 
 loc_3D02A:
 		move.l	#$3000003,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.l	$36(a0),a0
 		move.w	$1A(a0),$1A(a3)
@@ -58789,10 +57737,10 @@ loc_3D070:
 		add.w	d0,$1A(a3)
 		st	$13(a3)
 		move.l	#stru_3CCC8,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3D082:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.b	$5B(a5),d0
 		bne.w	loc_3D09E
 		tst.b	$18(a3)
@@ -58801,7 +57749,7 @@ loc_3D082:
 		move.b	#1,$5B(a0)
 
 loc_3D09E:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 stru_3D0A2:	anim_frame	  1,   9, LnkTo_unk_C766E-Data_Index
 		anim_frame	  1,   9, LnkTo_unk_C7676-Data_Index
@@ -58861,7 +57809,7 @@ stru_3D11E:	anim_frame	  1,   9, LnkTo_unk_C7656-Data_Index
 loc_3D158:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -58887,7 +57835,7 @@ loc_3D194:
 		move.w	#$32,$54(a5)
 		move.l	#loc_3D2DE,$6A(a5)
 		move.l	#stru_3D0A2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3D0A2,$62(a5)
 		move.l	#stru_3D0D4,$66(a5)
 		move.w	#$5CC,$4A(a3)
@@ -58917,20 +57865,20 @@ loc_3D23E:
 		subq.w	#1,$44(a3)
 		beq.s	loc_3D268
 		move.l	#stru_3D118,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3D2BC
 ; ---------------------------------------------------------------------------
 
 loc_3D268:
 		st	$3D(a3)
 		move.l	#stru_3D11E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -58946,7 +57894,7 @@ loc_3D27E:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3D2AA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3D2AA
@@ -58988,7 +57936,7 @@ loc_3D2F4:
 		moveq	#5,d1
 
 loc_3D320:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		tst.w	$38(a3)
 		bne.w	loc_3D21E
 		dbf	d1,loc_3D320
@@ -59007,7 +57955,7 @@ loc_3D348:
 		st	$3C(a3)
 
 loc_3D35A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		move.w	$38(a3),d4
 		beq.s	loc_3D3B4
@@ -59077,11 +58025,11 @@ loc_3D420:
 		move.w	#5,d1
 
 loc_3D44A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		dbf	d1,loc_3D44A
 		st	$15(a3)
 		move.l	#stru_3D0A2,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#loc_3D21E,a0
 
 loc_3D466:
@@ -59106,7 +58054,7 @@ loc_3D48A:
 
 loc_3D496:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$1800,$2A(a3)
 		move.w	$38(a3),d4
 		cmpi.w	#$C,d4
@@ -59122,8 +58070,8 @@ loc_3D4BC:
 		sf	$14(a3)
 		sf	$3C(a3)
 		move.l	#stru_3D11E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -59153,7 +58101,7 @@ stru_3D50A:	anim_frame	  1, $14, LnkTo_unk_C7D56-Data_Index
 loc_3D518:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -59194,7 +58142,7 @@ loc_3D5AA:
 		move.l	#loc_3D92A,$6A(a5)
 		move.w	#$A00,$4A(a3)
 		move.l	#stru_3D4EA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3D4EA,$62(a5)
 		move.w	#$A,$42(a3)
 		move.w	#$12C,$54(a5)
@@ -59252,11 +58200,11 @@ loc_3D670:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3DB4E
 		move.l	#stru_3D504,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3D638
 ; ---------------------------------------------------------------------------
 
@@ -59273,7 +58221,7 @@ loc_3D698:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3D6C8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3D6C8
@@ -59360,7 +58308,7 @@ loc_3D79C:
 loc_3D7CA:
 		sf	$4C(a5)
 		move.l	#stru_3D4EA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		st	$15(a3)
 		move.l	$5E(a5),$50(a5)
 		tst.b	$16(a3)
@@ -59456,7 +58404,7 @@ loc_3D8D6:
 
 loc_3D8E6:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$1800,$2A(a3)
 		cmpi.w	#$C,$38(a3)
@@ -59544,7 +58492,7 @@ loc_3D9C0:
 		move.w	#(LnkTo_unk_C7D6E-Data_Index),$22(a3)
 
 loc_3D9DA:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$2800,$2A(a3)
 		cmpi.l	#$FFFF8000,$2A(a3)
@@ -59590,7 +58538,7 @@ loc_3DA56:
 		move.l	#0,$26(a3)
 		move.l	#0,$2A(a3)
 		move.l	#stru_3D4EA,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		clr.w	$38(a3)
 		move.l	#0,$2A(a3)
 		sf	$14(a3)
@@ -59617,7 +58565,7 @@ loc_3DAB0:
 
 loc_3DABC:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$1800,$2A(a3)
 		cmpi.w	#$C,$38(a3)
@@ -59649,7 +58597,7 @@ loc_3DB0A:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3DB3C:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3DB3C
@@ -59657,8 +58605,8 @@ loc_3DB3C:
 
 loc_3DB4E:
 		move.l	#stru_3D50A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 stru_3DB60:	anim_frame	  1,   6, LnkTo_unk_C7DDE-Data_Index
@@ -59687,7 +58635,7 @@ stru_3DB8E:	anim_frame	  1,   6, LnkTo_unk_C7E0E-Data_Index
 loc_3DB9C:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -59715,11 +58663,11 @@ loc_3DBD8:
 		move.w	#9,$48(a5)
 		move.l	#loc_3DD7E,$6A(a5)
 		move.l	#stru_3DB60,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#stru_3DB60,$62(a5)
 		move.w	#$A,$42(a3)
 		move.l	#$1000002,a1
-		jsr	(sub_264).w
+		jsr	(j_sub_F66).w
 		move.l	a1,$3A(a5)
 		move.w	$1A(a3),$1A(a1)
 		move.w	$1E(a3),$1E(a1)
@@ -59765,10 +58713,10 @@ loc_3DCD4:
 		subq.w	#1,$44(a3)
 		beq.s	loc_3DCF4
 		move.l	#stru_3DB7A,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		move.l	#stru_3DB60,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.s	loc_3DD5C
 ; ---------------------------------------------------------------------------
 
@@ -59776,8 +58724,8 @@ loc_3DCF4:
 		move.l	$3A(a5),a4
 		st	$3D(a4)
 		move.l	#stru_3DB80,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -59797,7 +58745,7 @@ loc_3DD0E:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3DD4A:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3DD4A
@@ -59876,8 +58824,8 @@ loc_3DDEE:
 		move.l	#0,$50(a5)
 		ori.w	#$C000,$3A(a3)
 		move.l	#stru_3DB8E,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3DE3C:
 		cmp.w	a2,d3
@@ -59888,7 +58836,7 @@ loc_3DE40:
 		sf	$3D(a4)
 		move.w	#(LnkTo_unk_C7DDE-Data_Index),$22(a3)
 		move.l	#stru_3DB60,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	$5E(a5),$50(a5)
 		andi.w	#$FFF,$3A(a3)
 
@@ -59987,7 +58935,7 @@ stru_3DF48:	anim_frame	  1,  $A, LnkTo_unk_C7E38-Data_Index
 loc_3DF56:
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$44(a5),a4
 		move.w	2(a4),$40(a3)
 		move.w	4(a4),$1A(a3)
@@ -60027,11 +58975,11 @@ loc_3DFF0:
 		move.w	#$14,$48(a5)
 		move.l	#loc_3E03C,$6A(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.w	#$A,$42(a3)
 		move.l	#$3C,$54(a5)
 		move.l	#loc_3E318,a0
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		move.b	d7,$71(a5)
 		bne.s	loc_3E030
 		addi.b	#$4B,$71(a5)
@@ -60079,10 +59027,10 @@ loc_3E078:
 		tst.b	$5B(a5)
 		bgt.w	loc_3E11E
 		move.l	#stru_3DF0E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3E09E:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d4
 		cmpi.w	#$1C,d4
 		beq.w	loc_3E318
@@ -60105,13 +59053,13 @@ loc_3E0D6:
 loc_3E0DA:
 		exg	a0,a1
 		move.w	#$8000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#loc_3E12A,4(a0)
 		exg	a0,a1
 		addi.b	#1,$5B(a5)
 
 loc_3E0F4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$38(a3),d4
 		cmpi.w	#$1C,d4
 		beq.w	loc_3E318
@@ -60121,7 +59069,7 @@ loc_3E0F4:
 		tst.b	$18(a3)
 		beq.s	loc_3E0F4
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3E11E:
 		tst.b	$16(a3)
@@ -60131,7 +59079,7 @@ loc_3E11E:
 
 loc_3E12A:
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.l	$A(a5),a0
 		move.b	$71(a0),$71(a5)
 		move.l	$36(a0),a0
@@ -60154,10 +59102,10 @@ loc_3E180:
 		add.w	d7,$1A(a3)
 		move.l	d6,$26(a3)
 		move.l	#stru_3DF34,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3E192:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E2CE
 		move.w	$38(a3),d4
 		beq.s	loc_3E1C2
@@ -60171,7 +59119,7 @@ loc_3E192:
 loc_3E1B4:
 		move.l	$A(a5),a0
 		subi.b	#1,$5B(a0)
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; ---------------------------------------------------------------------------
 
 loc_3E1C2:
@@ -60246,7 +59194,7 @@ loc_3E2A4:
 		neg.l	$26(a3)
 
 loc_3E2A8:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E2CE
 		move.w	$38(a3),d4
 		beq.s	loc_3E2C0
@@ -60290,7 +59238,7 @@ loc_3E30E:
 		subi.b	#1,$5B(a0)
 
 loc_3E314:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3E2CE
 
 ; ---------------------------------------------------------------------------
@@ -60309,11 +59257,11 @@ loc_3E32C:
 		beq.s	loc_3E378
 		bset	#7,$3A(a3)
 		move.l	#stru_3DF42,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bclr	#7,$3A(a3)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 
 loc_3E356:
 		clr.w	$38(a3)
@@ -60333,8 +59281,8 @@ loc_3E36C:
 loc_3E378:
 		st	$3D(a3)
 		move.l	#stru_3DF48,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		clr.b	$71(a5)
 		bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
@@ -60346,7 +59294,7 @@ loc_3E392:
 		sf	$5C(a5)
 
 loc_3E3A2:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -60399,7 +59347,7 @@ loc_3E406:
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E3A2
 ; ---------------------------------------------------------------------------
 
@@ -60446,7 +59394,7 @@ loc_3E48E:
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E546
 ; ---------------------------------------------------------------------------
 
@@ -60466,7 +59414,7 @@ loc_3E4CE:
 		move.l	$50(a5),$5E(a5)
 		move.w	$4C(a5),$50(a5)
 		move.l	$66(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E392
 ; ---------------------------------------------------------------------------
 
@@ -60481,7 +59429,7 @@ loc_3E50A:
 		move.l	$50(a5),$5E(a5)
 		move.w	$4C(a5),$50(a5)
 		move.l	$66(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	*+4
 
 loc_3E546:
@@ -60491,7 +59439,7 @@ loc_3E546:
 		sf	$5C(a5)
 
 loc_3E556:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -60544,7 +59492,7 @@ loc_3E5BA:
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E556
 ; ---------------------------------------------------------------------------
 
@@ -60591,7 +59539,7 @@ loc_3E642:
 		move.w	#$FF88,$42(a3)
 		move.l	$5E(a5),$50(a5)
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E392
 ; ---------------------------------------------------------------------------
 
@@ -60615,7 +59563,7 @@ loc_3E694:
 ; ---------------------------------------------------------------------------
 
 loc_3E6A4:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -60697,7 +59645,7 @@ loc_3E732:
 
 loc_3E76E:
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E392
 ; ---------------------------------------------------------------------------
 
@@ -60731,7 +59679,7 @@ loc_3E7B0:
 ; ---------------------------------------------------------------------------
 
 loc_3E7C0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -60813,7 +59761,7 @@ loc_3E84E:
 
 loc_3E88A:
 		move.l	$62(a5),d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		bra.w	loc_3E546
 ; ---------------------------------------------------------------------------
 
@@ -60914,7 +59862,7 @@ loc_3E97C:
 		move.w	d7,(a0,d0.w)
 
 loc_3E98A:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3E8BA
 
 ; ---------------------------------------------------------------------------
@@ -60950,7 +59898,7 @@ loc_3E9C8:
 		move.l	$44(a5),a1
 
 loc_3E9D0:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		move.w	$1A(a0),d4
 		sub.w	4(a1),d4
 		cmpi.w	#$FFB0,d4
@@ -60964,7 +59912,7 @@ loc_3E9D0:
 		bgt.s	loc_3E9D0
 		addi.w	#1,($FFFFFA06).w
 		move.l	#$1000002,a3
-		jsr	(sub_260).w
+		jsr	(j_sub_F5E).w
 		move.w	2(a1),$40(a3)
 		move.w	4(a1),$1A(a3)
 		move.w	6(a1),$1E(a3)
@@ -60985,11 +59933,11 @@ loc_3EA48:
 		st	$13(a3)
 		move.w	#(LnkTo_unk_C8050-Data_Index),$22(a3)
 		move.w	#$A,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		st	$3C(a3)
 		st	$14(a3)
 		move.l	#stru_3E98E,d7
-		jsr	(sub_274).w
+		jsr	(j_sub_1040).w
 		move.l	#$28000,$2A(a3)
 		move.l	#$1200,d3
 		tst.w	$40(a3)
@@ -60998,7 +59946,7 @@ loc_3EA48:
 
 loc_3EA88:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		add.l	d3,$2A(a3)
 		tst.b	$15(a3)
@@ -61043,7 +59991,7 @@ loc_3EB00:
 
 loc_3EB0E:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EB78
@@ -61061,7 +60009,7 @@ loc_3EB0E:
 loc_3EB40:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EB78
@@ -61077,8 +60025,8 @@ loc_3EB60:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F176
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EB78:
 		dbf	d1,loc_3EB0E
@@ -61090,7 +60038,7 @@ loc_3EB78:
 
 loc_3EB92:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EBFC
@@ -61108,7 +60056,7 @@ loc_3EB92:
 loc_3EBC4:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EBFC
@@ -61124,8 +60072,8 @@ loc_3EBE4:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F176
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EBFC:
 		dbf	d1,loc_3EB92
@@ -61151,7 +60099,7 @@ loc_3EC32:
 
 loc_3EC48:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3ECB2
@@ -61169,7 +60117,7 @@ loc_3EC48:
 loc_3EC7A:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3ECB2
@@ -61185,8 +60133,8 @@ loc_3EC9A:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F18C
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3ECB2:
 		dbf	d1,loc_3EC48
@@ -61198,7 +60146,7 @@ loc_3ECB2:
 
 loc_3ECCC:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3ED36
@@ -61216,7 +60164,7 @@ loc_3ECCC:
 loc_3ECFE:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3ED36
@@ -61232,8 +60180,8 @@ loc_3ED1E:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F18C
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3ED36:
 		dbf	d1,loc_3ECCC
@@ -61264,7 +60212,7 @@ loc_3ED80:
 
 loc_3ED8E:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EDF8
@@ -61282,7 +60230,7 @@ loc_3ED8E:
 loc_3EDC0:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EDF8
@@ -61298,8 +60246,8 @@ loc_3EDE0:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F176
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EDF8:
 		dbf	d1,loc_3ED8E
@@ -61311,7 +60259,7 @@ loc_3EDF8:
 
 loc_3EE12:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EE7C
@@ -61329,7 +60277,7 @@ loc_3EE12:
 loc_3EE44:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EE7C
@@ -61345,8 +60293,8 @@ loc_3EE64:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F176
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EE7C:
 		dbf	d1,loc_3EE12
@@ -61372,7 +60320,7 @@ loc_3EEB2:
 
 loc_3EEC8:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EF32
@@ -61390,7 +60338,7 @@ loc_3EEC8:
 loc_3EEFA:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EF32
@@ -61406,8 +60354,8 @@ loc_3EF1A:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F18C
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EF32:
 		dbf	d1,loc_3EEC8
@@ -61419,7 +60367,7 @@ loc_3EF32:
 
 loc_3EF4C:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3EFB6
@@ -61437,7 +60385,7 @@ loc_3EF4C:
 loc_3EF7E:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3EFB6
@@ -61453,8 +60401,8 @@ loc_3EF9E:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F18C
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3EFB6:
 		dbf	d1,loc_3EF4C
@@ -61484,7 +60432,7 @@ loc_3F000:
 
 loc_3F00A:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3F074
@@ -61502,7 +60450,7 @@ loc_3F00A:
 loc_3F03C:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3F074
@@ -61518,8 +60466,8 @@ loc_3F05C:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F158
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3F074:
 		dbf	d1,loc_3F00A
@@ -61545,7 +60493,7 @@ loc_3F09E:
 
 loc_3F0A8:
 		clr.w	$38(a3)
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3F29A
 		move.w	$38(a3),d4
 		beq.s	loc_3F112
@@ -61563,7 +60511,7 @@ loc_3F0A8:
 loc_3F0DA:
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.s	loc_3F112
@@ -61579,8 +60527,8 @@ loc_3F0FA:
 		subi.w	#1,$44(a3)
 		beq.w	loc_3F158
 		move.l	#stru_3E9C2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 
 loc_3F112:
 		dbf	d1,loc_3F0A8
@@ -61608,24 +60556,24 @@ loc_3F158:
 		bne.w	loc_3EFEC
 		sf	$14(a3)
 		move.l	#stru_3E9AC,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 
 loc_3F176:
 		sf	$14(a3)
 		move.l	#stru_3E998,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 
 loc_3F18C:
 		sf	$14(a3)
 		move.l	#stru_3E9A2,d7
-		jsr	(sub_274).w
-		jsr	(sub_278).w
+		jsr	(j_sub_1040).w
+		jsr	(j_sub_105E).w
 		bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 
@@ -61650,7 +60598,7 @@ loc_3F1B8:
 		beq.s	loc_3F1E6
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.w	loc_3EA88
@@ -61664,7 +60612,7 @@ loc_3F1E6:
 		clr.w	$38(a3)
 
 loc_3F200:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		addi.l	#$4000,$2A(a3)
 		move.w	$38(a3),d4
 		beq.s	loc_3F200
@@ -61695,7 +60643,7 @@ loc_3F244:
 		bne.s	loc_3F262
 		exg	a0,a4
 		move.w	#$A000,a0
-		jsr	(sub_23C).w
+		jsr	(j_sub_DAC).w
 		move.l	#sub_3F3F0,4(a0)
 		exg	a0,a4
 		bra.w	loc_3EA88
@@ -61711,7 +60659,7 @@ loc_3F262:
 		move.l	#$FFFB8000,$2A(a3)
 
 loc_3F288:
-		jsr	(sub_24C).w
+		jsr	(j_sub_E76).w
 		bsr.w	sub_3E8BA
 		addi.l	#$4000,$2A(a3)
 		bra.s	loc_3F288
@@ -61794,7 +60742,7 @@ loc_3F354:
 		move.w	d7,(a0,d0.w)
 
 loc_3F362:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3F29A
 
 
@@ -61866,14 +60814,14 @@ loc_3F3CE:
 
 sub_3F3F0:
 		move.w	#$F,-(sp)
-		jsr	(sub_248).w
+		jsr	(j_sub_E5E).w
 		tst.b	$19(a3)
 		bne.s	loc_3F406
 		moveq	#$3F,d0
 		jsr	(j_PlaySound).l
 
 loc_3F406:
-		jmp	(sub_258).w
+		jmp	(j_sub_F1A).w
 ; End of function sub_3F3F0
 
 ; ---------------------------------------------------------------------------
@@ -62956,7 +61904,7 @@ loc_3FE04:
 		andi.w	#$F,d0
 		bne.s	loc_3FE62
 		addq.w	#1,($FFFFF5C0).w
-		jsr	(sub_220).w
+		jsr	(j_sub_9FE).w
 		lsl.w	#2,d7
 		divu.w	#$140,d7
 		swap	d7

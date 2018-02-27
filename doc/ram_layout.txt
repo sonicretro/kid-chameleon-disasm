@@ -1,54 +1,109 @@
 # This list is highly incomplete, and primarily included to
 # have all known RAM addresses in one place.
-FFF81C	X camera position (long)
-FFF820	Y camera position (long)
-FFF824	X camera background position? (long)
-FFF828	Y camera background position? (long)
-FFF89E  width in 16x16 blocks
-FFF89C  width in 8x8 tiles
-FFF89A  width in pixels
-FFF8BA  maximal camera X position (width in pixels - $140)
-FFF8A4  height in 16x16 blocks
-FFF8A2  height in 8x8 tiles
-FFF8A0  height in pixels
-FFF8BC  maximal camera Y position (height in pixels - $E0)
-FFFAC1  Murder wall flag
-FFFAC2  Murder wall flag if both bits of the 3rd entry of maphdr are set?
-FFF8AA  Foreground theme
-FFF8AC  Background theme
-FFFB40  top 4 bits from 4th entry of maphdr. 1 = lava shoots up, 2 = stormy level, 3 = stormy level with hail
-FFFB48  background format (flag) - 0 = pieces, 1 = enigma. only depends on bg theme
-FFF8A6  background width
-FFF8A8  background height
-FFFAD1	game paused menu option (byte)
-FFFAD2  flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
-FFFBC4	Pointer to current Keypress in Demo
-FFFBC9	Demo Mode flag (for input)
-FFFBCA	Game Mode:
-	00 - SegaScreen
-	04 - IntroSequence1
-	08 - TitleCard
-	0C - InGame        ; also Results screen
-	10 - DemoPlay
-	14 - OptionMenu
-	18 - IntroSequence2
-	1C - IntroSequence3
-	20 - IntroSequence4
-	24 - IntroSequence5
-	28 - IntroSequence6 ; is also TitleScreen if intro played completely
-	2C - TitleScreen
-	30 - EndSequence
-FFFBD4	address of map header
-FFFC2A  player x start position
-FFFC2C  player y start position
-FFFC2E  flag x position
-FFFC30  flag y position
-FFFC38	two player flag ?
-FFFC3E 	number of lives
-FFFC40	Number of hit-points filled
-FFFC42 	Number of Diamonds
-FFFC44	Current LevelID
-FFFC46 	Costume/helmet
+
+FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
+FF0280 FF0DA0	?
+FF0DA0 ?		interesting block behavior/Object RAM?
+?      FF2448
+FF2448 FF3AD8	Object RAM: $1690 bytes, $4C bytes per object ($4C objects)
+FF3AD8 FF4E58	?
+FF4E58 FF4ED8	Palette_Buffer: $80 bytes
+FF4ED8 FF4FD8	more palette buffers?
+FF4FD8 FF503A	?
+FF503A FF52C2	Block_Mappings: $288 bytes
+FF52C2 FF7392	Level foreground layout: $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
+FF7392 FF7432	Horizontal scrolling related data
+FF7432 FF77B2	Horizontal Scroll Buffer: $380 bytes. a.k.a. deformation array
+FF77B2 FFA652	?
+FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
+FFE7F2 ?		?
+?      FFFFFF	Misc variables
+
+# To be merged with the above table:
+FF7D8E	Some Palette Buffer	(0x40 bytes)
+FF87B2  BG tile layout buffer (bytes or plane map depending on $FFFFFB48)
+FF8EB2  BG tile layout buffer (plane map) 
+FF95B2  BG tile layout buffer (plane map)
+FF98F2  BG tile layout buffer (plane map) for hail
+
+
+# Miscellaneous variables
+FFF5BE	word	Diamond power timer
+FFF806	word	V-Int counter (number of frames since start of game)
+FFF80A	byte	Indicator that V-Int has occurred (flag)
+FFF80C	byte	Ctrl_1	# Bitmask for controller buttons: SACBRLDU
+FFF80D	byte	Ctrl_1_Held (currently held down)
+FFF80E	byte	Ctrl_1_Pressed (newly pressed this frame)
+FFF80F	byte	Ctrl_2
+FFF810	byte	Ctrl_2_Held
+FFF811	byte	Ctrl_2_Pressed
+FFF812	byte	Ctrl_Held	# depending on input mode (i.e. currently active player?):
+FFF813	byte	Ctrl_Pressed # depending on input mode (i.e. currently active player?):
+FFF81C	long	X camera position (16.16 fixed point)
+FFF820	long	Y camera position (16.16 fixed point)
+FFF824	long	X camera background position? (16.16 fixed point)
+FFF828	long	Y camera background position? (16.16 fixed point)
+FFF890	byte	flag indicating palette has changed
+FFF89E	word	width in 16x16 blocks
+FFF89C	word	width in 8x8 tiles
+FFF89A	word	width in pixels
+FFF8A0	word	height in pixels
+FFF8A2	word	height in 8x8 tiles
+FFF8A4	word	height in 16x16 blocks
+FFF8A6	word	background width
+FFF8A8	word	background height
+FFF8AA	word	Foreground theme
+FFF8AA	word	Theme music
+FFF8AC	word	Background theme
+FFF8AC	word	Theme background
+FFF8AE	long	Address of theme mappings
+FFF8BA	word	maximal camera X position (width in pixels - $140)
+FFF8BC	word	maximal camera Y position (height in pixels - $E0)
+FFFA70	word	Telepad timer
+FFFAC1	byte	Murder wall flag:	-1 = Murder wall, 0 = None
+FFFAC2	byte	Murder wall flag if both bits of the 3rd entry of maphdr are set?
+FFFAC8	long	Murder wall speed
+FFFACC	long	Murder wall terminal speed
+FFFAD1	byte	selected option in Pause menu: 0=continue, 1=restart/give up
+FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
+FFFB40	word	Level Special Effects: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
+FFFB48	byte	background format (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+FFFBC4	word	Pointer to current Keypress in Demo
+FFFBC9  byte    Demo Mode flag (for input)
+FFFBCA  word    Game Mode:
+    00 - SegaScreen
+    04 - IntroSequence1
+    08 - TitleCard
+    0C - InGame        ; also Results screen
+    10 - DemoPlay
+    14 - OptionMenu
+    18 - IntroSequence2
+    1C - IntroSequence3
+    20 - IntroSequence4
+    24 - IntroSequence5
+    28 - IntroSequence6 ; is also TitleScreen if intro played completely
+    2C - TitleScreen
+    30 - EndSequence
+FFFBD4  long    address of map header
+FFFC18	word	Lives displayed on counter
+FFFC1A	word	number of diamonds from previous frame (displayed on counter?)
+FFFC1C	word	Time: Frames
+FFFC1E	word	Time: Seconds (1st digit)
+FFFC20	word	Time: Seconds (2nd digit)
+FFFC22	word	Time: Minutes
+FFFC2A	word	player x start position
+FFFC2C	word	player y start position
+FFFC2E	word	flag x position
+FFFC30	word	flag y position
+FFFC38	word	two player flag ?
+FFFC3B	byte	No Hit Bonus: 0 = retained, -1 = lost
+FFFC3C	byte	No Prize Bonus: 0 = retained, -1 = lost
+FFFC3D	byte	Level completion time (seconds)
+FFFC3E	word 	number of lives
+FFFC40	word	Number of hit-points filled
+FFFC42	word 	Number of Diamonds
+FFFC44	word	Current LevelID
+FFFC46	word 	Costume/helmet
 	00 - None
 	01 - Skycutter
 	02 - Cyclone
@@ -59,102 +114,112 @@ FFFC46 	Costume/helmet
 	07 - Berzerker
 	08 - Maniaxe
 	09 - Micromax
-FFFC48	Number of continues
-!FFFDC7	HACK: used as level select indicator (byte)
-FFFDC8	selected sub-option 1 in options menu (flag)
-FFFDC9	selected sub-option 3 in options menu (flag)
-FFFDCA	selected sub-option 2 in options menu (word)
-FFFDCC	selected option in options menu
+FFFC48	word	Number of continues
+FFFC4A	word	Extra hit point slots
+FFFC4C	long	Score
+FFFC54	word	Player 1 - Lives
+FFFC56	word	Player 1 - Hit points
+FFFC58	word	Player 1 - Diamonds
+FFFC5A	word	Player 1 - Level number
+FFFC5C	word	Player 1 - Transformation number
+FFFC5E	word	Player 1 - Continues
+FFFC60	word	Player 1 - Extra hit point slots
+FFFC62	long	Player 1 - Score
+FFFC6A	word	Player 2 - Lives
+FFFC6C	word	Player 2 - Hit points
+FFFC6E	word	Player 2 - Diamonds
+FFFC70	word	Player 2 - Level number
+FFFC72	word	Player 2 - Transformation number
+FFFC74	word	Player 2 - Continues
+FFFC76	word	Player 2 - Extra hit point slots
+FFFC78	long	Player 2 - Score
+FFFDC8	byte	selected sub-option 1 in options menu (flag). 2 Players: One controller = 0, Two = -1
+FFFDC9	byte	selected sub-option 3 in options menu (flag). Speed: Normal = 0, Fast = -1
+FFFDCA	word	selected sub-option 2 in options menu: Controls (0-5)
+FFFDCC	word	Options menu selection
+FFFDCC	word	selected option in options menu
+FFFDCE	word	Clocks collected in level
+!FFFDC6	byte	HACK: used for level select
+!FFFDC7	byte	HACK: used as level select flag
+FF0DB8	word	Menu timer
+FF0DBD	byte	main menu option
+FF0DC1	byte	main menu option * 2
+FF2596	word	main menu option selector Y position
 
-FF0DB8	Menu timer (word)
-FF0DBD	main menu option
-FF0DC1	main menu option * 2
-FF2596	main menu option selector Y position
+# unsure about these:
+FF0DB8    Menu timer    ; word
+FF0DBD    main menu option  ; byte
+FF0DC1    main menu option * 2  ; byte
+FF2596    main menu option selector Y position  ; word
+?FFFAD2    flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?  ; byte
 
-# Bitmask for controller keys: SACBRLDU
-FFF80C	Ctrl_1
-FFF80D	Ctrl_1_Held (currently held down)
-FFF80E	Ctrl_1_Pressed (newly pressed this frame)
-FFF80F	Ctrl_2
-FFF810	Ctrl_2_Held
-FFF811	Ctrl_2_Pressed
-# depending on input mode (i.e. currently active player?):
-FFF812	Ctrl_Held
-FFF813	Ctrl_Pressed
 
-FF0DA0	interesting block behavior (?)
-FF2448	Object layout
-FF4E58	Some Palette Buffer	(0x80 bytes)
-FF503A	Mappings for blocks
-FF52C2	Level tile layout
-FF73C8-FF77AF	deformation array
-FF7D8E	Some Palette Buffer	(0x40 bytes)
-FFA652	Level layout buffer
-FF87B2  BG tile layout buffer (bytes or plane map depending on $FFFFFB48)
-FF8EB2  BG tile layout buffer (plane map) 
-FF95B2  BG tile layout buffer (plane map)
-FF98F2  BG tile layout buffer (plane map) for hail
 
-# from http://kidchameleon.wikia.com/wiki/RAM_Addresses:
-FF24FA	2 Byte		Kid X position
-FF24FC	2 Byte		Kid X subposition
-FF24FE	2 Byte		Kid Y position
-FF2500	2 Byte		Kid Y subposition
-FF2506	2 Byte		Kid X speed
-FF2508	2 Byte		Kid X subspeed
-FF250A	2 Byte		Kid Y speed
-FF250C	2 Byte		Kid Y subspeed
-FFF5BE	2 Byte		Diamond power timer
-FFF812	1 Byte		Controller held buttons
-FFF813	1 Byte		Controller newly pressed buttons
-FFF81C	2 Byte		Camera X position
-FFF820	2 Byte		Camera Y position
-FFF8AA	2 Byte		Theme music
-FFF8AC	2 Byte		Theme background
-FFFA70	2 Byte		Telepad timer
-FFFAC1	1 Byte		-1 = Murder wall, 0 = None
-FFFAC8	2 Byte		Murder wall speed
-FFFACA	2 Byte		Murder wall subspeed
-FFFACC	2 Byte		Murder wall terminal speed
-FFFACE	2 Byte		Murder wall terminal subspeed
-FFFAD1	1 Byte		Pause menu selection
-FFFB40	2 Byte		1 = Geyser, 2 = Rain, 3 = Hail, 0 = None
-FFFBCA	2 Byte		Screen number x 4
-FFFC18	2 Byte		Lives displayed on counter
-FFFC1A	2 Byte		Diamonds displayed on counter
-FFFC1C	2 Byte		Time: Frames
-FFFC1E	2 Byte		Time: Seconds (1st digit)
-FFFC20	2 Byte		Time: Seconds (2nd digit)
-FFFC22	2 Byte		Time: Minutes
-FFFC3B	1 Byte		No Hit Bonus: 0 = retained, -1 = lost
-FFFC3C	1 Byte		No Prize Bonus: 0 = retained, -1 = lost
-FFFC3D	1 Byte		Level completion time (seconds)
-FFFC3E	2 Byte		Lives
-FFFC40	2 Byte		Hit points
-FFFC42	2 Byte		Diamonds
-FFFC44	2 Byte		Level number
-FFFC46	2 Byte		Transformation number
-FFFC48	2 Byte		Continues
-FFFC4A	2 Byte		Extra hit point slots
-FFFC4C	4 Byte		Score
-FFFC54	2 Byte		Player 1 - Lives
-FFFC56	2 Byte		Player 1 - Hit points
-FFFC58	2 Byte		Player 1 - Diamonds
-FFFC5A	2 Byte		Player 1 - Level number
-FFFC5C	2 Byte		Player 1 - Transformation number
-FFFC5E	2 Byte		Player 1 - Continues
-FFFC60	2 Byte		Player 1 - Extra hit point slots
-FFFC62	4 Byte		Player 1 - Score
-FFFC6A	2 Byte		Player 2 - Lives
-FFFC6C	2 Byte		Player 2 - Hit points
-FFFC6E	2 Byte		Player 2 - Diamonds
-FFFC70	2 Byte		Player 2 - Level number
-FFFC72	2 Byte		Player 2 - Transformation number
-FFFC74	2 Byte		Player 2 - Continues
-FFFC76	2 Byte		Player 2 - Extra hit point slots
-FFFC78	4 Byte		Player 2 - Score
-FFFDC8	1 Byte		2 Players: One controller = 0, Two = -1
-FFFDC9	1 Byte		Speed: Normal = 0, Fast = -1
-FFFDCA	2 Byte		Controls mode
-FFFDCC	2 Byte		Options menu selection
-FFFDCE	2 Byte		Clocks collected in level
+Palette_Buffer ($FFFF4E58):
+- is transferred to CRAM via DMA
+
+
+Sprite Table ($FFFF0000), $280 bytes, 8 bytes per sprite
+- is transferred to VRAM via DMA
+- The first few slots seems to fixed for various HUD elements:
+ 0:  Ankh
+ 8:  first digit of number of lives
+10:  second digit of number of lives, or x
+18:  Minutes
+20:  colon
+28:  Seconds, upper digit
+30:  Seconds, lower digit
+38:  diamond
+40:  first digit of number of diamonds
+48:  second digit of number of diamonds, or x
+The slots after 50 are allocated dynamically, first the
+hitpoint display, then kid sprites, then other objects.
+
+
+Object RAM
+----------
+
+FF2448	Object layout, $4C bytes per object.
+sub_F26 writes pointers to next object slot in each object.
+A pointer to FF2448 is stored in RAM address $FFFFF854
+The object data seems to work like a linked list, with
+objects pointing to their successor. In particular, they
+can also point at different regions of the RAM that work
+in a similar vein, just with different object sizes, e.g. $FFFF0DA0.
+
+Note: it's is not entirely clear if the first 4 bytes
+belong to the object as described below, or to the previous
+object (or in fact where the object boundaries are).
+
+
+FFFF PPPP .... .... .... DD.. .... XXXX 
+XXXX YYYY YYYY AABB .... .... .... .... 
+.... QQQQ QQQQ CCCC .... .... .... ....
+.... .... .... .... .... .... .... ....
+.... .... .... .... .... ....
+
+X - X position
+Y - Y position
+A - Object
+B - Type
+D - direction: FF right, 00 left
+Q - pointer at current animation frame definition in ROM
+C - some counter (for dragon, anyway)
+P - pointer to next object
+
+
+Object, Type (not certain if these are really object types):
+00 (50) - Kid Chameleon
+05 (60-78) - Dragon
+11 (2C) - Flag exit pole (active)
+11 (40) - Waving flag
+12 - End stage
+10/FD/79: diamonds/helmets falling/landing/on ground
+
+
+The Kid is part of the object RAM and starts at $24EC.
+In particular, we have the following RAM addresses:
+FF24FA	long	Kid X position (16.16 fixed point)
+FF24FE	long	Kid Y position (16.16 fixed point)
+FF2506	long	Kid X speed
+FF250A	long	Kid Y speed

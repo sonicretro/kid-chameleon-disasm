@@ -38,13 +38,7 @@ Boss3_LevelID = $2A
 Boss4_LevelID = $33
 
 ; Variable names for RAM locations
-Button_Input = $FFFFF80D		; The current buttons being pressed: SACBRLDU
-Number_Lives = $FFFFFC3E		; The current internal number of lives
-Number_Diamonds = $FFFFFC42		; The current internal number of diamonds
-Current_Helmet = $FFFFFC46		; The ID of the worn helmet
-								;	0		1		2		3		4		5		6		7		8		9
-								;	Kid		Skycut	Cyclone	Stealth	Eyeclop	Jugger	Knight	Berzerk	Maniaxe	Micromax
-Number_Continues = $FFFFFC48	; The current internal number of continues
+	include	"variables.asm"
 
 ; Default Options that are selected 
 ; $00xxxxxx / $FFxxxxxx: 1st/2nd controller for second player
@@ -187,7 +181,7 @@ j_WaitForVint:
 ; Attributes: thunk
 
 sub_218:
-		jmp	sub_970(pc)
+		jmp	Palette_to_VRAM(pc)
 ; End of function sub_218
 
 
@@ -515,7 +509,7 @@ sub_2C4:
 ; Attributes: thunk
 
 sub_2C8:
-		jmp	sub_956(pc)
+		jmp	Do_Nothing(pc)
 ; End of function sub_2C8
 
 ; ---------------------------------------------------------------------------
@@ -829,8 +823,8 @@ loc_480:
 ; ---------------------------------------------------------------------------
 
 V_Int:
-		addq.l	#1,($FFFFF806).w
-		st	($FFFFF80A).w
+		addq.l	#1,(V_Int_counter).w
+		st	(V_Int_Done).w
 		rte
 ; ---------------------------------------------------------------------------
 
@@ -1047,24 +1041,24 @@ loc_5E6:
 		move.w	d1,4(a6)
 		addi.w	#$100,d1
 		dbf	d0,loc_5E6
-		move.l	($FFFFFDC8).w,d7
-		lea	($FFFF0000).l,a0
+		move.l	(Options_Suboption_2PController).w,d7
+		lea	(Sprite_Table).l,a0
 
 loc_5FE:
-		; clear entire RAM, except selected option ($FFFFFDC8, 4 bytes)
+		; clear entire RAM, except selected option (Options_Suboption_2PController, 4 bytes)
 		move.w	#$3FFF,d0
 		moveq	#0,d1
 loc_604:
 		move.l	d1,(a0)+
 		dbf	d0,loc_604
-		move.l	d7,($FFFFFDC8).w
+		move.l	d7,(Options_Suboption_2PController).w
 		cmpi.w	#5,d7
 	if Default_Options = 0
 		bls.s	loc_61C
-		move.l	#0,($FFFFFDC8).w
+		move.l	#0,(Options_Suboption_2PController).w
 	else
 		nop	; not strictly necessary, but avoids shifting stuff
-		move.l	#Default_Options,($FFFFFDC8).w
+		move.l	#Default_Options,(Options_Suboption_2PController).w
 	endif
 
 loc_61C:
@@ -1090,28 +1084,28 @@ loc_65C:
 		move.b	#1,($FFFFF805).w
 		jsr	(sub_20C).w
 		jsr	(sub_21C).w
-		clr.w	($FFFFFBCA).w
+		clr.w	(Game_Mode).w
 		sf	($FFFFFBCF).w
 		sf	($FFFFFBCE).w
 		sf	($FFFFFC29).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
-		sf	($FFFFFC38).w
+		sf	(Two_player_flag).w
 		sf	($FFFFFBC8).w
-		sf	($FFFFFBC9).w
-		move.w	(word_4033A).l,($FFFFFC5A).w
-		move.w	#3,($FFFFFC54).w
-		clr.l	($FFFFFC62).w
-		clr.w	($FFFFFC5C).w
-		move.w	#2,($FFFFFC56).w
-		move.w	#3,($FFFFFC5E).w
+		sf	(Demo_Mode_flag).w
+		move.w	(word_4033A).l,(Player_1_LevelID).w
+		move.w	#3,(Player_1_Lives).w
+		clr.l	(Player_1_Score).w
+		clr.w	(Player_1_Helmet).w
+		move.w	#2,(Player_1_Hitpoints).w
+		move.w	#3,(Player_1_Continues).w
 		move.w	#$FFFF,($FFFFFC84).w
-		move.w	(word_4033A).l,($FFFFFC70).w
-		move.w	#3,($FFFFFC6A).w
-		clr.l	($FFFFFC78).w
-		clr.w	($FFFFFC72).w
-		move.w	#2,($FFFFFC6C).w
-		move.w	#3,($FFFFFC74).w
+		move.w	(word_4033A).l,(Player_2_LevelID).w
+		move.w	#3,(Player_2_Lives).w
+		clr.l	(Player_2_Score).w
+		clr.w	(Player_2_Helmet).w
+		move.w	#2,(Player_2_Hitpoints).w
+		move.w	#3,(Player_2_Continues).w
 		move.w	#$FFFF,($FFFFFD26).w
 		bsr.w	sub_6E24
 ; END OF FUNCTION CHUNK	FOR sub_B610
@@ -1134,7 +1128,7 @@ loc_700:
 loc_70E:
 		move.l	d1,(a6)
 		dbf	d0,loc_70E
-		lea	($FFFF0000).l,a0
+		lea	(Sprite_Table).l,a0
 		move.w	#$7DE0,d0
 		moveq	#0,d1
 
@@ -1148,7 +1142,7 @@ loc_720:
 
 MainGameLoop:
 		bsr.w	WaitForVint
-		move.w	($FFFFFBCA).w,d0
+		move.w	(Game_Mode).w,d0
 		jsr	GameModesArray(pc,d0.w)
 		bra.s	MainGameLoop
 ; END OF FUNCTION CHUNK	FOR ReadJoypad
@@ -1183,8 +1177,8 @@ GameModesArray:
 ; ---------------------------------------------------------------------------
 
 Mode_Standard:
-		bsr.w	sub_956
-		bsr.w	sub_970
+		bsr.w	Do_Nothing
+		bsr.w	Palette_to_VRAM
 		bsr.w	sub_A5C
 		jsr	(sub_2FFDC).l
 		bsr.w	sub_1596
@@ -1197,8 +1191,8 @@ Mode_Standard:
 ; ---------------------------------------------------------------------------
 
 Mode_Options_End:
-		bsr.w	sub_956
-		bsr.w	sub_970
+		bsr.w	Do_Nothing
+		bsr.w	Palette_to_VRAM
 		bsr.w	sub_A5C
 		bsr.w	sub_E12
 		bsr.w	sub_1444
@@ -1210,7 +1204,7 @@ Mode_Options_End:
 
 Mode_Level:
 		bsr.w	sub_A5C
-		bsr.w	sub_970
+		bsr.w	Palette_to_VRAM
 		jsr	(sub_2FFDC).l
 		bsr.w	sub_1596
 		bsr.w	sub_6874
@@ -1276,10 +1270,10 @@ loc_892:
 
 sub_8A4:
 
-		lea	($FFFFFC54).w,a0
+		lea	(Player_1_Lives).w,a0
 		tst.b	($FFFFFC39).w
 		beq.w	loc_8B4
-		lea	($FFFFFC6A).w,a0
+		lea	(Player_2_Lives).w,a0
 
 loc_8B4:
 		moveq	#$A,d0
@@ -1296,10 +1290,10 @@ loc_8BA:
 
 
 sub_8C2:
-		lea	($FFFFFC54).w,a0
+		lea	(Player_1_Lives).w,a0
 		tst.b	($FFFFFC39).w
 		beq.w	loc_8D2
-		lea	($FFFFFC6A).w,a0
+		lea	(Player_2_Lives).w,a0
 
 loc_8D2:
 		moveq	#$A,d0
@@ -1321,7 +1315,7 @@ sub_8E0:
 		bsr.w	sub_2444
 		bsr.w	WaitForVint
 		bsr.w	sub_A5C
-		bsr.w	sub_970
+		bsr.w	Palette_to_VRAM
 		move.b	#4,($FFFFFAD6).w
 
 loc_8FE:
@@ -1363,11 +1357,10 @@ return_938:
 
 
 WaitForVint:
-		sf	($FFFFF80A).w
-
-loc_93E:
-		tst.b	($FFFFF80A).w
-		beq.s	loc_93E
+		sf	(V_Int_Done).w
+-
+		tst.b	(V_Int_Done).w
+		beq.s	-
 		tst.b	($FFFFFC80).w
 		beq.w	return_954
 		move.w	#$4C9,d0
@@ -1382,16 +1375,15 @@ return_954:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_956:
+;956
+Do_Nothing:
 		move.w	d0,-(sp)
 		move.w	#$264,d0
-
-loc_95C:
-		dbf	d0,loc_95C
+-
+		dbf	d0,-
 		move.w	(sp)+,d0
 		rts
-; End of function sub_956
+; End of function Do_Nothing
 
 ; ---------------------------------------------------------------------------
 
@@ -1404,18 +1396,15 @@ loc_964:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_970:
-		tst.b	($FFFFF890).w
-		bne.s	return_9AC
+;970
+Palette_to_VRAM:
+		tst.b	(PaletteToDMA_Flag).w
+		bne.s	+
 		jsr	(j_Stop_z80).l
-		dma68kToVDP	$FFFF4E58,$0000,$80,CRAM
+		dma68kToVDP	Palette_Buffer,$0000,$80,CRAM
 		jsr	(j_Start_z80).l
-
-return_9AC:
++
 		rts
-; End of function sub_970
-
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -1560,7 +1549,7 @@ sub_A5C:
 
 loc_A70:
 		jsr	(j_Stop_z80).l
-		dma68kToVDP	$FFFF0000,$1000,$280,VRAM
+		dma68kToVDP	Sprite_Table,$1000,$280,VRAM
 		jsr	(j_Start_z80).l
 		jsr	(j_Stop_z80).l
 		tst.b	($FFFFFB49).w
@@ -1625,7 +1614,7 @@ loc_B36:
 ; ---------------------------------------------------------------------------
 
 loc_B42:
-		clr.l	($FFFF0000).l
+		clr.l	(Sprite_Table).l
 		clr.l	($FFFF0004).l
 		bra.w	loc_A70
 ; End of function sub_A5C
@@ -1636,7 +1625,7 @@ loc_B42:
 
 sub_B52:
 		clr.b	($FFFFF836).w
-		lea	($FFFF0000).l,a4
+		lea	(Sprite_Table).l,a4
 		move.l	a4,($FFFFF832).w
 		lea	($FFFF0500).l,a4
 		move.l	a4,($FFFFF838).w
@@ -1653,27 +1642,27 @@ ReadJoypad:
 ; FUNCTION CHUNK AT 00000204 SIZE 00000004 BYTES
 ; FUNCTION CHUNK AT 000006E2 SIZE 00000064 BYTES
 
-		tst.b	($FFFFFDC8).w
+		tst.b	(Options_Suboption_2PController).w
 		beq.w	loc_B8C
 		tst.b	($FFFFFC39).w
 		beq.w	loc_B8C
-		move.b	($FFFFF812).w,($FFFFF810).w
-		move.b	($FFFFF813).w,($FFFFF811).w
+		move.b	(Ctrl_Held).w,(Ctrl_2_Held).w
+		move.b	(Ctrl_Pressed).w,(Ctrl_2_Pressed).w
 		bra.w	loc_B98
 ; ---------------------------------------------------------------------------
 
 loc_B8C:
 					; ReadJoypad+Cj
-		move.b	($FFFFF812).w,(Button_Input).w
-		move.b	($FFFFF813).w,($FFFFF80E).w
+		move.b	(Ctrl_Held).w,(Ctrl_1_Held).w
+		move.b	(Ctrl_Pressed).w,(Ctrl_1_Pressed).w
 
 loc_B98:
 		tst.w	(word_7190).w
 		beq.s	loc_BB6
 		tst.b	($FFFFFB49).w
-		cmpi.b	#$C0,(Button_Input).w
+		cmpi.b	#$C0,(Ctrl_1_Held).w
 		bne.s	loc_BB6
-		cmpi.b	#$10,($FFFFF810).w
+		cmpi.b	#$10,(Ctrl_2_Held).w
 		bne.s	loc_BB6
 
 loc_BB2:
@@ -1685,28 +1674,28 @@ loc_BB6:
 		lea	($A10003).l,a0
 		bsr.w	sub_CAA
 		bsr.w	sub_CCE
-		move.b	d0,($FFFFF80C).w
+		move.b	d0,(Ctrl_1).w
 		move.b	d0,d2
 		lea	($A10005).l,a0
 		bsr.w	sub_CAA
 		bsr.w	sub_CCE
-		move.b	d0,($FFFFF80F).w
+		move.b	d0,(Ctrl_2).w
 		jsr	(sub_20C).w
-		tst.b	($FFFFFBC9).w
+		tst.b	(Demo_Mode_flag).w
 		beq.w	loc_C4E		; held keys new
 		move.w	($FFFFFBC2).w,d7
 		cmpi.w	#$3F2,d7
 		blt.w	loc_C22
-		move.w	#0,($FFFFFBCA).w
+		move.w	#0,(Game_Mode).w
 
 loc_BFE:
-		sf	($FFFFFBC9).w
+		sf	(Demo_Mode_flag).w
 		st	($FFFFFBCE).w
 		st	($FFFFFC36).w
 
 loc_C0A:
 		move.w	#$82A,($FFFFFBCC).w
-		clr.w	($FFFFFC44).w
+		clr.w	(Current_LevelID).w
 		jsr	(j_StopMusic).l
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
@@ -1716,45 +1705,45 @@ loc_C0A:
 loc_C22:
 		addq.w	#1,d7
 		move.w	d7,($FFFFFBC2).w
-		move.l	($FFFFFBC4).w,a4
+		move.l	(Addr_Current_Demo_Keypress).w,a4
 		move.b	(a4),d6
 		andi.b	#$80,d2
 		bclr	#7,d6
 		or.b	d2,d6
-		move.b	d6,($FFFFF80C).w
+		move.b	d6,(Ctrl_1).w
 		andi.w	#1,d7
 		bne.w	loc_C4E		; held keys new
 		addq.w	#1,a4
-		move.l	a4,($FFFFFBC4).w
+		move.l	a4,(Addr_Current_Demo_Keypress).w
 		bra.w	*+4
 
 loc_C4E:
 					; ReadJoypad+D4j
-		move.b	($FFFFF80C).w,d0 ; held	keys new
-		move.b	(Button_Input).w,d1 ; held	keys old
+		move.b	(Ctrl_1).w,d0 ; held	keys new
+		move.b	(Ctrl_1_Held).w,d1 ; held	keys old
 		eor.b	d1,d0		; keys held _either_ old or new
-		and.b	($FFFFF80C).w,d0 ; newly pressed keys
-		or.b	d0,($FFFFF80E).w
-		move.b	($FFFFF80C).w,(Button_Input).w
-		move.b	($FFFFF80F).w,d0
-		move.b	($FFFFF810).w,d1
+		and.b	(Ctrl_1).w,d0 ; newly pressed keys
+		or.b	d0,(Ctrl_1_Pressed).w
+		move.b	(Ctrl_1).w,(Ctrl_1_Held).w
+		move.b	(Ctrl_2).w,d0
+		move.b	(Ctrl_2_Held).w,d1
 		eor.b	d1,d0
-		and.b	($FFFFF80F).w,d0
-		or.b	d0,($FFFFF811).w
-		move.b	($FFFFF80F).w,($FFFFF810).w
-		tst.b	($FFFFFDC8).w
+		and.b	(Ctrl_2).w,d0
+		or.b	d0,(Ctrl_2_Pressed).w
+		move.b	(Ctrl_2).w,(Ctrl_2_Held).w
+		tst.b	(Options_Suboption_2PController).w
 		beq.w	loc_C9C
 		tst.b	($FFFFFC39).w
 		beq.w	loc_C9C
-		move.b	($FFFFF810).w,($FFFFF812).w
-		move.b	($FFFFF811).w,($FFFFF813).w
+		move.b	(Ctrl_2_Held).w,(Ctrl_Held).w
+		move.b	(Ctrl_2_Pressed).w,(Ctrl_Pressed).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_C9C:
 					; ReadJoypad+11Ej
-		move.b	(Button_Input).w,($FFFFF812).w
-		move.b	($FFFFF80E).w,($FFFFF813).w
+		move.b	(Ctrl_1_Held).w,(Ctrl_Held).w
+		move.b	(Ctrl_1_Pressed).w,(Ctrl_Pressed).w
 		rts
 ; End of function ReadJoypad
 
@@ -1786,9 +1775,9 @@ sub_CAA:
 
 sub_CCE:
 					; ReadJoypad+6Cp
-		tst.b	($FFFFFBC9).w
+		tst.b	(Demo_Mode_flag).w
 		bne.w	return_D7C
-		move.w	($FFFFFDCA).w,d7
+		move.w	(Options_Suboption_Controls).w,d7
 		beq.w	return_D7C
 		subq.w	#1,d7
 		add.w	d7,d7
@@ -2527,7 +2516,7 @@ sub_11B6:
 		beq.w	return_129C
 		move.l	d7,a4
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		tst.b	$12(a3)
 		bne.s	loc_11EA
 		move.w	6(a4),d6
@@ -2544,7 +2533,7 @@ loc_11EE:
 		cmpi.w	#$FF80,d7
 		blt.w	return_129C
 		move.w	$1A(a3),d6
-		sub.w	($FFFFF81C).w,d6
+		sub.w	(Camera_X_pos).w,d6
 		cmpi.w	#$160,d6
 		bgt.w	return_129C
 		cmpi.w	#$FFC0,d6
@@ -2960,7 +2949,7 @@ loc_14EE:
 		moveq	#$F,d4
 		lea	($FFFF4ED8).l,a0
 		lea	($FFFF4F58).l,a1
-		lea	($FFFF4E58).l,a2
+		lea	(Palette_Buffer).l,a2
 		tst.l	d7
 		beq.s	loc_1518
 		clr.l	($FFFFF888).w
@@ -3074,13 +3063,13 @@ loc_15D2:
 		move.l	d0,a0
 		move.w	#$FFFF,(a0)
 		lea	($FFFF47A6).l,a0
-		move.l	($FFFFF8AE).w,a1
-		lea	($FFFF503A).l,a2
-		move.w	($FFFFF81C).w,d4
+		move.l	(Addr_ThemeMappings).w,a1
+		lea	(Block_Mappings).l,a2
+		move.w	(Camera_X_pos).w,d4
 		lsr.w	#4,d4
 		move.w	d4,d6
 		addi.w	#$14,d6
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		lsr.w	#4,d5
 		move.w	d5,d7
 		addi.w	#$E,d7
@@ -3220,7 +3209,7 @@ loc_1734:
 loc_173E:
 		tst.w	d0
 		bmi.w	loc_1AEA
-		cmp.w	($FFFFF89A).w,d1
+		cmp.w	(Level_width_pixels).w,d1
 		bge.w	loc_1B0A
 		move.w	d0,d2
 		andi.w	#$FFF0,d2
@@ -3238,7 +3227,7 @@ loc_173E:
 		bmi.w	loc_1B30
 		move.w	d0,d1
 		add.w	(a4)+,d1
-		cmp.w	($FFFFF8A0).w,d1
+		cmp.w	(Level_height_blocks).w,d1
 		bge.w	loc_1B50
 		move.w	d0,d3
 		andi.w	#$FFF0,d3
@@ -3264,7 +3253,7 @@ loc_17A0:
 		addi.w	#$10,d2
 		dbf	d4,loc_1796
 		addi.w	#$10,d3
-		add.w	($FFFFF89C).w,a3
+		add.w	(Level_width_tiles).w,a3
 		subq.w	#2,a3
 		suba.w	d5,a3
 		suba.w	d5,a3
@@ -3360,7 +3349,7 @@ loc_1844:
 		andi.w	#$7000,d3
 		cmpi.w	#$6000,d3
 		beq.w	loc_1A12
-		suba.w	($FFFFF89C).w,a5
+		suba.w	(Level_width_tiles).w,a5
 		move.w	(a5),d3
 		andi.w	#$7000,d3
 		cmpi.w	#$6000,d3
@@ -3380,7 +3369,7 @@ loc_18AA:
 		andi.w	#$7000,d3
 		cmpi.w	#$6000,d3
 		beq.w	loc_1A6C
-		add.w	($FFFFF89C).w,a5
+		add.w	(Level_width_tiles).w,a5
 		move.w	(a5),d3
 		andi.w	#$7000,d3
 		cmpi.w	#$6000,d3
@@ -3404,7 +3393,7 @@ loc_18E4:
 		andi.w	#$7000,d4
 		cmpi.w	#$6000,d4
 		beq.w	loc_1A12
-		suba.w	($FFFFF89C).w,a5
+		suba.w	(Level_width_tiles).w,a5
 		move.w	(a5),d4
 		andi.w	#$7000,d4
 		cmpi.w	#$6000,d4
@@ -3425,7 +3414,7 @@ loc_1928:
 		andi.w	#$7000,d4
 		cmpi.w	#$6000,d4
 		beq.w	loc_1A6C
-		add.w	($FFFFF89C).w,a5
+		add.w	(Level_width_tiles).w,a5
 		move.w	(a5),d4
 		andi.w	#$7000,d4
 		cmpi.w	#$6000,d4
@@ -3508,12 +3497,12 @@ loc_1A00:
 ; ---------------------------------------------------------------------------
 
 loc_1A12:
-		suba.w	($FFFFF89C).w,a3
+		suba.w	(Level_width_tiles).w,a3
 		move.w	(a3),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$4000,d7
 		bne.w	loc_1A30
-		move.w	($FFFFF89C).w,d7
+		move.w	(Level_width_tiles).w,d7
 		sub.w	d7,($FFFFFB6C).w
 		bra.w	loc_1A94
 ; ---------------------------------------------------------------------------
@@ -3521,7 +3510,7 @@ loc_1A12:
 loc_1A30:
 		cmpi.w	#$5000,d7
 		bne.w	loc_1A44
-		move.w	($FFFFF89C).w,d7
+		move.w	(Level_width_tiles).w,d7
 		sub.w	d7,($FFFFFB6C).w
 		bra.w	loc_1AB8
 ; ---------------------------------------------------------------------------
@@ -3608,7 +3597,7 @@ loc_1B0A:
 		cmp.l	a2,d7
 		beq.s	loc_1ADA
 		sub.w	$1A(a2),d1
-		move.w	($FFFFF89A).w,d7
+		move.w	(Level_width_pixels).w,d7
 		sub.w	d1,d7
 		subq.w	#1,d7
 		move.w	d7,$1A(a2)
@@ -3634,7 +3623,7 @@ loc_1B50:
 		cmp.l	a2,d7
 		beq.s	loc_1ADA
 		sub.w	$1E(a2),d1
-		move.w	($FFFFF8A0).w,d7
+		move.w	(Level_height_blocks).w,d7
 		sub.w	d1,d7
 		subq.w	#1,d7
 		move.w	d7,$1E(a2)
@@ -4136,8 +4125,8 @@ return_1F8C:
 sub_1F8E:
 		moveq	#0,d5
 		move.w	d7,d5
-		subi.w	#$A652,d5
-		divu.w	($FFFFF89C).w,d5
+		subi.w	#Level_Layout&$FFFF,d5
+		divu.w	(Level_width_tiles).w,d5
 		move.w	d5,d6
 		swap	d5
 		lsr.w	#1,d5
@@ -4185,7 +4174,7 @@ loc_1FF2:
 		cmpi.w	#$6000,d0
 		bge.w	loc_2010
 		dbf	d3,loc_1FF2
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		dbf	d1,loc_1FEE
 
 loc_200C:
@@ -4223,7 +4212,7 @@ loc_2040:
 
 loc_2050:
 		addq.w	#2,a1
-		move.w	($FFFFF89C).w,d3
+		move.w	(Level_width_tiles).w,d3
 
 loc_2056:
 		suba.w	d3,a1
@@ -4313,7 +4302,7 @@ loc_211C:
 		andi.w	#$7000,d0
 		cmpi.w	#$4000,d0
 		beq.w	loc_216A
-		suba.w	($FFFFF89C).w,a1
+		suba.w	(Level_width_tiles).w,a1
 		subq.w	#2,a1
 		move.w	(a1),d0
 		andi.w	#$7000,d0
@@ -4559,7 +4548,7 @@ loc_2326:
 
 
 sub_2366:
-		move.w	($FFFFFC44).w,d7
+		move.w	(Current_LevelID).w,d7
 		move.l	(LnkTo_MapOrder_Index).l,a4
 		move.b	(a4,d7.w),d7
 		ext.w	d7
@@ -4685,7 +4674,7 @@ loc_244C:
 		beq.w	loc_256E
 		move.w	d7,a2
 		move.w	2(a2),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$140,d7
 		bge.s	loc_244C
 		move.w	d7,d6
@@ -4694,7 +4683,7 @@ loc_244C:
 		bmi.s	loc_244C
 		addi.w	#$80,d7
 		move.w	6(a2),d6
-		sub.w	($FFFFF820).w,d6
+		sub.w	(Camera_Y_pos).w,d6
 		cmpi.w	#$E0,d6
 		bge.s	loc_244C
 		move.w	d6,d5
@@ -5147,7 +5136,7 @@ loc_2876:
 
 Pal_FadeOut:
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_28A6:
@@ -5166,8 +5155,8 @@ loc_28B8:
 
 loc_28C6:
 		bsr.w	WaitForVint
-		bsr.w	sub_956
-		bsr.w	sub_970
+		bsr.w	Do_Nothing
+		bsr.w	Palette_to_VRAM
 		bsr.w	sub_14C0
 		subi.w	#$10,($FFFFF876).w
 		bmi.s	loc_28EA
@@ -5181,8 +5170,8 @@ loc_28DE:
 
 loc_28EA:
 		bsr.w	WaitForVint
-		bsr.w	sub_956
-		bsr.w	sub_970
+		bsr.w	Do_Nothing
+		bsr.w	Palette_to_VRAM
 		bsr.w	sub_14C0
 		rts
 ; End of function Pal_FadeOut
@@ -5403,8 +5392,8 @@ loc_2A56:
 		moveq	#0,d0
 		move.b	($FFFFF836).w,d0
 		move.w	#$8228,d4
-		move.w	($FFFFF820).w,d1
-		move.w	($FFFFF81C).w,d2
+		move.w	(Camera_Y_pos).w,d1
+		move.w	(Camera_X_pos).w,d2
 		move.w	#$80,d3
 		move.l	#$36B0,d7
 		_move.l	0(a1),d6
@@ -6399,11 +6388,11 @@ unk_5DFA:	dc.b $A2 ; ¢
 
 
 sub_5E02:
-		tst.b	($FFFFFAC1).w
+		tst.b	(MurderWall_flag).w
 		beq.w	return_5F68
 		move.l	($FFFFF85E).w,a0
 		move.w	($FFFFFAC4).w,d0
-		tst.b	($FFFFFAC2).w
+		tst.b	(MurderWall_flag2).w
 		beq.s	loc_5E24
 		addi.w	#$110,d0
 		sub.w	($FFFFFA7C).w,d0
@@ -6421,9 +6410,9 @@ loc_5E34:
 		move.w	#4,$38(a0)
 
 loc_5E3A:
-		move.w	($FFFFF81C).w,d3
+		move.w	(Camera_X_pos).w,d3
 		sub.w	($FFFFFAC4).w,d3
-		tst.b	($FFFFFAC2).w
+		tst.b	(MurderWall_flag2).w
 		beq.s	loc_5E4A
 		neg.w	d3
 
@@ -6435,7 +6424,7 @@ loc_5E4A:
 
 loc_5E52:
 		move.w	#$80,d6
-		tst.b	($FFFFFAC2).w
+		tst.b	(MurderWall_flag2).w
 		beq.s	loc_5E64
 		addi.w	#$110,d6
 		add.w	d3,d6
@@ -6448,7 +6437,7 @@ loc_5E64:
 loc_5E66:
 		move.w	#$80,d7
 		clr.l	d5
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		divu.w	#$30,d5
 		swap	d5
 		sub.w	d5,d7
@@ -6467,7 +6456,7 @@ loc_5E94:
 		move.w	(a1,d2.w),d3
 		moveq	#5,d0
 		move.l	($FFFFF832).w,a0
-		tst.b	($FFFFFAC2).w
+		tst.b	(MurderWall_flag2).w
 		bne.w	loc_5F6A
 
 loc_5EB2:
@@ -6591,7 +6580,7 @@ dword_6028:	dc.l 0
 
 
 sub_6034:
-		move.w	($FFFFFB40).w,d0
+		move.w	(Level_Special_Effects).w,d0
 		subq.w	#1,d0
 		ble.s	return_6046
 		add.w	d0,d0
@@ -6616,14 +6605,14 @@ sub_6048:
 		beq.w	loc_60EE
 		move.b	#$7F,($FFFFF88B).w
 		move.b	#$80,($FFFFF888).w
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 		move.w	#$1F,d0
 
 loc_607A:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_607A
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4F58).l,a1
 		move.w	#$1F,d0
 
@@ -6633,7 +6622,7 @@ loc_6090:
 		move.l	($FFFFFADE).w,a0
 		lea	($FFFF4F8A).l,a1
 		moveq	#6,d0
-		cmpi.w	#7,($FFFFF8AA).w
+		cmpi.w	#7,(Foreground_theme).w
 		beq.s	loc_60C0
 
 loc_60AA:
@@ -6663,9 +6652,9 @@ loc_60E0:
 ; ---------------------------------------------------------------------------
 
 loc_60EE:
-		cmpi.w	#3,($FFFFFB40).w
+		cmpi.w	#3,(Level_Special_Effects).w
 		bgt.s	loc_6172
-		cmpi.w	#7,($FFFFF8AC).w
+		cmpi.w	#7,(Background_theme).w
 		bne.s	loc_6172
 		cmpi.w	#$5DC,d6
 		bls.w	loc_61C2
@@ -6678,7 +6667,7 @@ loc_60EE:
 		move.l	(sp)+,d0
 		move.w	#0,($FFFFFADC).w
 		move.l	(LnkTo_Pal_7B86C).l,a0
-		move.w	(a0)+,($FFFF4E58).l
+		move.w	(a0)+,(Palette_Buffer).l
 		lea	($FFFF4E8A).l,a1
 		moveq	#6,d0
 
@@ -6696,7 +6685,7 @@ loc_613E:
 		andi.b	#$F5,d7
 		sub.w	d7,($FFFFFADC).w
 		move.l	(LnkTo_Pal_7B85C).l,a0
-		move.w	(a0)+,($FFFF4E58).l
+		move.w	(a0)+,(Palette_Buffer).l
 		lea	($FFFF4E8A).l,a1
 		moveq	#6,d0
 
@@ -6707,7 +6696,7 @@ loc_616C:
 loc_6172:
 		cmpi.w	#$834,d6
 		bls.s	loc_61C2
-		cmpi.w	#3,($FFFFFB40).w
+		cmpi.w	#3,(Level_Special_Effects).w
 		bne.s	return_61C0
 		cmpi.w	#$873,($FFFFF808).w
 		bls.s	return_61C0
@@ -6745,9 +6734,9 @@ loc_61C2:
 
 
 sub_61CA:
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		subi.w	#$10,d0
-		move.w	($FFFFF820).w,d1
+		move.w	(Camera_Y_pos).w,d1
 		addi.w	#$E0,d1
 		lea	($FFFFFAE2).w,a0
 		move.l	a0,a1
@@ -6809,9 +6798,9 @@ loc_625E:
 loc_626C:
 		jsr	(sub_220).w
 		andi.w	#$FF,d7
-		add.w	($FFFFF81C).w,d7
+		add.w	(Camera_X_pos).w,d7
 		addi.w	#$28,d7
-		move.w	($FFFFF820).w,d6
+		move.w	(Camera_Y_pos).w,d6
 		move.w	d7,d2
 		swap	d2
 		move.w	d6,d2
@@ -6965,9 +6954,9 @@ loc_63C4:
 ; ---------------------------------------------------------------------------
 
 loc_6402:
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		addi.w	#$80,d7
-		sub.w	($FFFFF81C).w,d6
+		sub.w	(Camera_X_pos).w,d6
 		addi.w	#$80,d6
 		move.l	($FFFFF832).w,a4
 		move.w	d6,6(a4)
@@ -7005,9 +6994,9 @@ loc_6462:
 		move.w	(a0),d7
 		bmi.s	loc_64AE
 		move.w	2(a0),d6
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		addi.w	#$80,d7
-		sub.w	($FFFFF81C).w,d6
+		sub.w	(Camera_X_pos).w,d6
 		addi.w	#$80,d6
 		move.l	($FFFFF832).w,a4
 		move.w	d6,6(a4)
@@ -7109,12 +7098,12 @@ sub_6526:
 		tst.b	($FFFFFC36).w
 		beq.w	return_6550
 		sf	($FFFFFC36).w
-		clr.w	($FFFFFC1E).w
-		clr.w	($FFFFFC20).w
-		move.w	#3,($FFFFFC22).w
-		clr.w	($FFFFFDCE).w
-		sf	($FFFFFC3B).w
-		sf	($FFFFFC3C).w
+		clr.w	(Time_Seconds_low_digit).w
+		clr.w	(Time_Seconds_high_digit).w
+		move.w	#3,(Time_Minutes).w
+		clr.w	(Clocks_collected).w
+		sf	(NoHit_Bonus_Flag).w
+		sf	(NoPrize_Bonus_Flag).w
 		clr.w	($FFFFFC24).w
 
 return_6550:
@@ -7136,7 +7125,7 @@ sub_6874:
 
 loc_687C:
 		bsr.w	sub_6C54
-		bsr.w	sub_970
+		bsr.w	Palette_to_VRAM
 		jsr	(sub_E1334).l
 		cmpi.b	#3,($FFFFFAD0).w
 		bne.s	loc_6894
@@ -7145,7 +7134,7 @@ loc_687C:
 
 loc_6894:
 		bsr.w	WaitForVint
-		lea	($FFFF0000).l,a0
+		lea	(Sprite_Table).l,a0
 		move.w	#$676,d6
 		move.w	d6,d5
 		addi.w	#$18,d5
@@ -7164,7 +7153,7 @@ loc_68C0:
 		addq.w	#8,a0
 		dbf	d3,loc_68AC
 		jsr	(j_Stop_z80).l
-		dma68kToVDP	$FFFF0000,$1000,$280,VRAM
+		dma68kToVDP	Sprite_Table,$1000,$280,VRAM
 		jsr	(j_Start_z80).l
 		lea	word_6552(pc),a0
 		move.w	(a0)+,d0
@@ -7181,7 +7170,7 @@ loc_690C:
 		move.l	(a0)+,(a6)
 		move.l	(a0)+,(a6)
 		dbf	d0,loc_690C
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		addi.w	#$60,d0
 		lsr.w	#3,d0
 		andi.w	#$3F,d0
@@ -7202,7 +7191,7 @@ loc_693A:
 		swap	d2
 
 loc_6948:
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		addi.w	#$40,d7
 		lea	($FFFF77B2).l,a1
 		moveq	#4,d5
@@ -7260,7 +7249,7 @@ loc_69C0:
 		dbf	d5,loc_695C
 
 loc_69D2:
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		addi.w	#$60,d0
 		lsr.w	#3,d0
 		andi.w	#$3F,d0
@@ -7281,7 +7270,7 @@ loc_69EC:
 		swap	d2
 
 restart_text:							; Restart Round dialog
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		addi.w	#$40,d7
 		cmpi.w	#1,(Number_Lives).w		; Check if lives > 1
 		bgt.s	+							; Branch to set text to "Restart Round"
@@ -7344,16 +7333,16 @@ loc_6A76:
 		dbf	d5,loc_6A1E
 
 loc_6A84:
-		bclr	#0,($FFFFF813).w
-		bclr	#1,($FFFFF813).w
-		move.b	#0,($FFFFFAD1).w
-		move.w	($FFFFF81C).w,d0
+		bclr	#0,(Ctrl_Pressed).w
+		bclr	#1,(Ctrl_Pressed).w
+		move.b	#0,(Pause_Option).w
+		move.w	(Camera_X_pos).w,d0
 		addi.w	#$68,d0
 		lsr.w	#3,d0
 		andi.w	#$3F,d0
 		add.w	d0,d0
 		move.w	d0,d1
-		move.w	($FFFFF820).w,d3
+		move.w	(Camera_Y_pos).w,d3
 		addi.w	#$48,d3
 		lsr.w	#3,d3
 		andi.w	#$1F,d3
@@ -7362,7 +7351,7 @@ loc_6A84:
 		ori.w	#$4000,d0
 		swap	d0
 		move.w	#0,d0
-		move.w	($FFFFF820).w,d3
+		move.w	(Camera_Y_pos).w,d3
 		addi.w	#$58,d3
 		lsr.w	#3,d3
 		andi.w	#$1F,d3
@@ -7376,46 +7365,46 @@ loc_6A84:
 Game_Paused_Loop:
 		jsr	(j_WaitForVint).w
 		jsr	(j_ReadJoypad).w
-		bclr	#0,($FFFFF813).w
+		bclr	#0,(Ctrl_Pressed).w
 		beq.s	loc_6B0E
 		; up pressed
-		tst.b	($FFFFFAD1).w
+		tst.b	(Pause_Option).w
 		beq.s	Game_Paused_ChkStart
 		; move cursor up
 		move.l	d0,4(a6)
 		move.w	#$867C,(a6)
 		move.l	d1,4(a6)
 		move.w	#$8678,(a6)
-		subi.b	#1,($FFFFFAD1).w
+		subi.b	#1,(Pause_Option).w
 		bra.s	Game_Paused_ChkStart
 ; ---------------------------------------------------------------------------
 
 loc_6B0E:
-		bclr	#1,($FFFFF813).w
+		bclr	#1,(Ctrl_Pressed).w
 		beq.s	Game_Paused_ChkStart
 		; down pressed
-		tst.b	($FFFFFAD1).w
+		tst.b	(Pause_Option).w
 		bne.s	Game_Paused_ChkStart
 		; move cursor down
 		move.l	d0,4(a6)
 		move.w	#$8678,(a6)
 		move.l	d1,4(a6)
 		move.w	#$867C,(a6)
-		addi.b	#1,($FFFFFAD1).w
+		addi.b	#1,(Pause_Option).w
 
 Game_Paused_ChkStart:
-		bclr	#7,($FFFFF813).w
+		bclr	#7,(Ctrl_Pressed).w
 		beq.s	Game_Paused_Loop
 		; start pressed
-		tst.b	($FFFFFAD1).w
+		tst.b	(Pause_Option).w
 		beq.s	loc_6B68
 		; restart level/give up
 		subi.w	#1,(Number_Lives).w
 		beq.s	loc_6B62
 		; lives left --> restart level
-		clr.w	($FFFFFC4A).w
+		clr.w	(Extra_hitpoint_slots).w
 		clr.w	(Current_Helmet).w
-		move.w	#2,($FFFFFC40).w
+		move.w	#2,(Number_Hitpoints).w
 		st	($FFFFFC36).w
 		jsr	(sub_2C4).w
 		jmp	(loc_204).w
@@ -7425,7 +7414,7 @@ loc_6B62:	; this was the last life
 		move.b	#3,($FFFFFAD0).w
 
 loc_6B68:	; continue game
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		addi.w	#$60,d0
 		lsr.w	#3,d0
 		andi.w	#$3F,d0
@@ -7446,7 +7435,7 @@ loc_6B82:
 		swap	d2
 
 loc_6B90:
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		addi.w	#$40,d7
 		lea	($FFFF77B2).l,a1
 		moveq	#4,d5
@@ -7529,14 +7518,14 @@ loc_6C3E:
 
 
 sub_6C54:
-		lea	($FFFF4E58).l,a4
+		lea	(Palette_Buffer).l,a4
 		lea	($FFFF7D8E).l,a3
 		moveq	#$1F,d7
 
 loc_6C62:
 		move.l	(a4)+,(a3)+
 		dbf	d7,loc_6C62
-		lea	($FFFF4E58).l,a4
+		lea	(Palette_Buffer).l,a4
 		moveq	#$E,d7
 
 loc_6C70:
@@ -7582,14 +7571,14 @@ loc_6C9E:
 
 
 sub_6CCA:
-		lea	($FFFF4E58).l,a4
+		lea	(Palette_Buffer).l,a4
 		lea	($FFFF7D8E).l,a3
 		moveq	#$1F,d7
 
 loc_6CD8:
 		move.l	(a3)+,(a4)+
 		dbf	d7,loc_6CD8
-		bsr.w	sub_970
+		bsr.w	Palette_to_VRAM
 		rts
 ; End of function sub_6CCA
 
@@ -7987,7 +7976,7 @@ off_7192:	dc.l loc_B84E
 
 sub_7196:
 		sf	($FFFFF897).w
-		st	($FFFFF890).w
+		st	(PaletteToDMA_Flag).w
 		move.w	#$2000,a0
 		jsr	(sub_23C).w
 		move.l	#loc_7508,4(a0)
@@ -8017,7 +8006,7 @@ loc_71EC:
 		move.l	d7,a0
 		move.w	($FFFFF892).w,d2
 		move.w	($FFFFF894).w,d3
-		move.w	($FFFFF89A).w,d1
+		move.w	(Level_width_pixels).w,d1
 		subi.w	#$140,d1
 		move.w	$1A(a0),d0
 		subi.w	#$A0,d0
@@ -8030,7 +8019,7 @@ loc_720E:
 		move.w	d1,d0
 
 loc_7214:
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		cmpi.w	#4,d4
 		bgt.s	loc_7226
 		cmp.w	d4,d0
@@ -8050,7 +8039,7 @@ loc_7226:
 ; ---------------------------------------------------------------------------
 
 loc_7234:
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		addq.w	#4,d0
 		asr.w	#3,d0
 		move.w	d0,d2
@@ -8066,8 +8055,8 @@ loc_7246:
 		moveq	#-8,d2
 
 loc_724E:
-		add.w	d2,($FFFFF81C).w
-		move.w	($FFFFF8A0).w,d1
+		add.w	d2,(Camera_X_pos).w
+		move.w	(Level_height_blocks).w,d1
 		subi.w	#$E0,d1
 		move.w	$1E(a0),d0
 		subi.w	#$A0,d0
@@ -8088,7 +8077,7 @@ loc_726C:
 		subq.w	#2,($FFFFFB58).w
 
 loc_727E:
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$20,d7
 		bge.s	loc_728C
 		subq.w	#1,($FFFFFB58).w
@@ -8104,7 +8093,7 @@ loc_728C:
 		subi.w	#1,($FFFFFB58).w
 
 loc_72A8:
-		move.w	($FFFFF820).w,d4
+		move.w	(Camera_Y_pos).w,d4
 		cmpi.w	#4,d4
 		bgt.s	loc_72BA
 		cmp.w	d4,d0
@@ -8124,7 +8113,7 @@ loc_72BA:
 ; ---------------------------------------------------------------------------
 
 loc_72C8:
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		addq.w	#4,d0
 		asr.w	#3,d0
 		move.w	d0,d3
@@ -8140,61 +8129,61 @@ loc_72DA:
 		moveq	#-8,d3
 
 loc_72E2:
-		add.w	d3,($FFFFF820).w
-		move.l	($FFFFF81C).w,d0
+		add.w	d3,(Camera_Y_pos).w
+		move.l	(Camera_X_pos).w,d0
 		lsr.l	#2,d0
-		move.l	d0,($FFFFF824).w
-		move.l	($FFFFF820).w,d0
+		move.l	d0,(Camera_BG_X_pos).w
+		move.l	(Camera_Y_pos).w,d0
 		lsr.l	#2,d0
-		move.l	d0,($FFFFF828).w
-		tst.b	($FFFFFAC1).w
+		move.l	d0,(Camera_BG_Y_pos).w
+		tst.b	(MurderWall_flag).w
 		beq.w	loc_73C2
 		clr.l	d1
-		tst.b	($FFFFFAC2).w
+		tst.b	(MurderWall_flag2).w
 		bne.s	loc_736E
-		cmpi.w	#8,($FFFFFC44).w
+		cmpi.w	#8,(Current_LevelID).w
 		bne.s	loc_7316
 		move.w	#$80,d1
 
 loc_7316:
 		addi.w	#$80,d1
-		addi.l	#$100,($FFFFFAC8).w
-		move.l	($FFFFFAC8).w,d7
-		cmp.l	($FFFFFACC).w,d7
+		addi.l	#$100,(MurderWall_speed).w
+		move.l	(MurderWall_speed).w,d7
+		cmp.l	(MurderWall_max_speed).w,d7
 		blt.s	loc_7334
-		move.l	($FFFFFACC).w,d7
-		move.l	d7,($FFFFFAC8).w
+		move.l	(MurderWall_max_speed).w,d7
+		move.l	d7,(MurderWall_speed).w
 
 loc_7334:
 		add.l	d7,($FFFFFAC4).w
-		move.w	($FFFFF8BA).w,d0
+		move.w	(Camera_max_X_pos).w,d0
 		cmp.w	($FFFFFAC4).w,d0
 		bgt.s	loc_7346
 		move.w	d0,($FFFFFAC4).w
 
 loc_7346:
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		sub.w	($FFFFFAC4).w,d0
 		ble.s	loc_7364
 		cmp.w	d1,d0
 		blt.w	loc_73C2
-		move.w	($FFFFF81C).w,($FFFFFAC4).w
+		move.w	(Camera_X_pos).w,($FFFFFAC4).w
 		sub.w	d1,($FFFFFAC4).w
 		bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
 loc_7364:
-		move.w	($FFFFFAC4).w,($FFFFF81C).w
+		move.w	($FFFFFAC4).w,(Camera_X_pos).w
 		bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
 loc_736E:
-		addi.l	#$100,($FFFFFAC8).w
-		move.l	($FFFFFAC8).w,d7
-		cmp.l	($FFFFFACC).w,d7
+		addi.l	#$100,(MurderWall_speed).w
+		move.l	(MurderWall_speed).w,d7
+		cmp.l	(MurderWall_max_speed).w,d7
 		blt.s	loc_7388
-		move.l	($FFFFFACC).w,d7
-		move.l	d7,($FFFFFAC8).w
+		move.l	(MurderWall_max_speed).w,d7
+		move.l	d7,(MurderWall_speed).w
 
 loc_7388:
 		sub.l	d7,($FFFFFAC4).w
@@ -8202,20 +8191,20 @@ loc_7388:
 		move.l	#0,($FFFFFAC4).w
 
 loc_7396:
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		sub.w	($FFFFFAC4).w,d0
 		bge.s	loc_73B8
 
 loc_73A0:
 		cmpi.w	#$FF80,d0
 		bgt.w	loc_73C2
-		move.w	($FFFFF81C).w,($FFFFFAC4).w
+		move.w	(Camera_X_pos).w,($FFFFFAC4).w
 		addi.w	#$80,($FFFFFAC4).w
 		bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
 loc_73B8:
-		move.w	($FFFFFAC4).w,($FFFFF81C).w
+		move.w	($FFFFFAC4).w,(Camera_X_pos).w
 		bra.w	*+4
 
 loc_73C2:
@@ -8230,9 +8219,9 @@ loc_73C2:
 
 
 sub_73D0:
-		sf	($FFFFF890).w
+		sf	(PaletteToDMA_Flag).w
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_73E2:
@@ -8274,9 +8263,9 @@ loc_7420:
 sub_7428:
 		cmpi.w	#5,(Current_Helmet).w
 		bne.w	return_7450
-		btst	#7,($FFFFF812).w
+		btst	#7,(Ctrl_Held).w
 		beq.s	return_7450
-		btst	#6,($FFFFF812).w
+		btst	#6,(Ctrl_Held).w
 		beq.w	return_7450
 		cmpi.w	#5,(Number_Diamonds).w
 		blt.s	return_7450
@@ -8296,8 +8285,8 @@ loc_7452:
 		beq.w	loc_D980
 
 loc_7464:
-		move.b	($FFFFF812).w,d0
-		lea	($FFFFF814).w,a0
+		move.b	(Ctrl_Held).w,d0
+		lea	(Ctrl_A_Held).w,a0
 		add.b	d0,d0
 		add.b	d0,d0
 		scs	(a0)+
@@ -8312,29 +8301,29 @@ loc_7464:
 		add.b	d0,d0
 		scs	(a0)+
 		sne	(a0)
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.w	loc_749C
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_749C
-		sf	($FFFFF817).w
+		sf	(Ctrl_Right_Held).w
 
 loc_749C:
-		tst.b	($FFFFFBC9).w
+		tst.b	(Demo_Mode_flag).w
 		bne.w	loc_74B0
-		tst.b	($FFFFFDC9).w
+		tst.b	(Options_Suboption_Speed).w
 		beq.w	loc_74B0
-		not.b	($FFFFF814).w
+		not.b	(Ctrl_A_Held).w
 
 loc_74B0:
-		bclr	#7,($FFFFF813).w
+		bclr	#7,(Ctrl_Pressed).w
 		beq.s	loc_7452
 		tst.b	($FFFFFC37).w
 		beq.s	loc_74C8
-		btst	#5,($FFFFF812).w
+		btst	#5,(Ctrl_Held).w
 		bne.w	loc_74E0
 
 loc_74C8:
-		btst	#6,($FFFFF812).w
+		btst	#6,(Ctrl_Held).w
 		bne.s	loc_7452
 		tst.b	($FFFFFB56).w
 		beq.w	loc_7452
@@ -8343,14 +8332,14 @@ loc_74C8:
 ; ---------------------------------------------------------------------------
 
 loc_74E0:
-		btst	#6,($FFFFF812).w
+		btst	#6,(Ctrl_Held).w
 		beq.w	loc_7452
-		addq.w	#1,($FFFFFC44).w
+		addq.w	#1,(Current_LevelID).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
 		st	($FFFFFBCE).w
 		jsr	(sub_2C4).w
-		move.w	#8,($FFFFFBCA).w
+		move.w	#8,(Game_Mode).w
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
 
@@ -8376,8 +8365,8 @@ loc_7526:
 		move.b	#3,$11(a3)
 		move.b	#0,$10(a3)
 		move.b	#1,$12(a3)
-		move.w	($FFFFFC2A).w,$1A(a3)
-		move.w	($FFFFFC2C).w,$1E(a3)
+		move.w	(PlayerStart_X_pos).w,$1A(a3)
+		move.w	(PlayerStart_Y_pos).w,$1E(a3)
 		subq.w	#1,$1E(a3)
 		move.l	#$2010000,a1
 		jsr	(sub_264).w
@@ -8388,8 +8377,8 @@ loc_7526:
 loc_757E:
 		move.b	#0,$10(a1)
 		move.b	#1,$12(a1)
-		move.w	($FFFFFC2A).w,$1A(a1)
-		move.w	($FFFFFC2C).w,$1E(a1)
+		move.w	(PlayerStart_X_pos).w,$1A(a1)
+		move.w	(PlayerStart_Y_pos).w,$1E(a1)
 		subq.w	#1,$1E(a1)
 		bsr.w	sub_B41C
 		clr.w	($FFFFFB70).w
@@ -8426,7 +8415,7 @@ loc_7606:
 		bsr.w	sub_7428
 		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_7650
-		move.b	($FFFFF812).w,d0
+		move.b	(Ctrl_Held).w,d0
 		andi.b	#$C0,d0
 		cmpi.b	#$C0,d0
 		bne.s	loc_7650
@@ -8444,16 +8433,16 @@ loc_7606:
 		move.l	(sp)+,d0
 
 loc_7650:
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		bne.s	loc_7664
 		subi.w	#8,($FFFFFB58).w
 		bge.s	loc_7664
 		move.w	#0,($FFFFFB58).w
 
 loc_7664:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bne.w	loc_A426
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_7772
 		cmpi.w	#6,(Current_Helmet).w
 		bne.w	loc_76B0
@@ -8467,7 +8456,7 @@ loc_7664:
 loc_7696:
 		add.w	d6,d7
 		bmi.w	loc_7772
-		cmp.w	($FFFFF89A).w,d7
+		cmp.w	(Level_width_pixels).w,d7
 		bge.w	loc_7772
 		bsr.w	sub_922C
 		beq.w	loc_7772
@@ -8532,7 +8521,7 @@ loc_7742:
 		move.l	(sp)+,d0
 
 loc_7772:
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		beq.s	loc_779C
 		tst.b	($FFFFFA28).w
 		bne.w	loc_779C
@@ -8549,7 +8538,7 @@ loc_779C:
 		bne.w	loc_7828
 		move.w	($FFFFFA78).w,d0
 		move.w	$1A(a3),d7
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_77E6
 		add.w	d0,d7
 		addq.w	#1,d7
@@ -8574,7 +8563,7 @@ loc_77C2:
 ; ---------------------------------------------------------------------------
 
 loc_77E6:
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_7828
 		sub.w	d0,d7
 		subq.w	#1,d7
@@ -8817,7 +8806,7 @@ sub_7A10:
 		bne.w	loc_7A60
 		move.w	d4,d7
 		add.w	$1A(a3),d7
-		cmp.w	($FFFFF89A).w,d7
+		cmp.w	(Level_width_pixels).w,d7
 		bge.w	loc_7A98
 		move.w	#$E,d7
 		moveq	#0,d6
@@ -8836,7 +8825,7 @@ loc_7A60:
 		add.w	d4,d7
 		move.w	d7,$1A(a3)
 		add.w	d4,d7
-		cmp.w	($FFFFF89A).w,d7
+		cmp.w	(Level_width_pixels).w,d7
 		bge.w	loc_7A90
 		move.w	d4,d7
 		moveq	#0,d6
@@ -8969,7 +8958,7 @@ loc_7B74:
 		move.w	(sp),d6
 		add.w	$1A(a3),d6
 		move.w	d6,d4
-		cmp.w	($FFFFF89A).w,d6
+		cmp.w	(Level_width_pixels).w,d6
 		bge.w	loc_7BCE
 		move.w	2(sp),d7
 		bsr.w	sub_7BEA
@@ -9033,7 +9022,7 @@ loc_7C02:
 		move.w	(a4),d6
 		andi.w	#$4000,d6
 		bne.w	loc_7C18
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		dbf	d7,loc_7C02
 		moveq	#0,d7
 		rts
@@ -9131,7 +9120,7 @@ loc_7CD0:
 		move.w	($FFFFFBD0).w,(Current_Helmet).w
 		beq.w	loc_7E14
 		move.w	(Current_Helmet).w,d7
-		tst.b	($FFFFFBC9).w
+		tst.b	(Demo_Mode_flag).w
 		bne.s	loc_7CFE
 		jsr	(sub_E1334).l
 		moveq	#0,d0
@@ -9260,8 +9249,8 @@ loc_7DF0:
 loc_7E14:
 		lea	unk_7ECC(pc),a4
 		moveq	#0,d0
-		move.w	($FFFFF8AA).w,d0
-		tst.b	($FFFFFAC1).w
+		move.w	(Foreground_theme).w,d0
+		tst.b	(MurderWall_flag).w
 		beq.s	loc_7E26
 		moveq	#$B,d0
 
@@ -9318,8 +9307,8 @@ loc_7E90:
 sub_7EB2:
 		move.b	unk_7EC2(pc,d0.w),d0
 		ext.w	d0
-		add.w	($FFFFFC4A).w,d0
-		move.w	d0,($FFFFFC40).w
+		add.w	(Extra_hitpoint_slots).w,d0
+		move.w	d0,(Number_Hitpoints).w
 		rts
 ; End of function sub_7EB2
 
@@ -9696,12 +9685,12 @@ loc_8218:
 		bne.s	loc_825C
 
 loc_8252:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bra.w	loc_8E16
 ; ---------------------------------------------------------------------------
 
 loc_825C:
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		bne.s	loc_82D8
 		subi.w	#8,($FFFFFB58).w
 		bge.s	loc_8270
@@ -9724,7 +9713,7 @@ loc_8298:
 		bsr.w	sub_B41C
 
 loc_829C:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_82BA
 		move.w	#2,($FFFFFA56).w
@@ -9741,7 +9730,7 @@ loc_82BA:
 
 loc_82CA:
 		clr.w	($FFFFF8F0).w
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bra.w	loc_8E3E
 ; ---------------------------------------------------------------------------
 
@@ -9992,14 +9981,14 @@ sub_8506:
 		bne.s	loc_8560
 
 loc_8518:
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_8524
 		st	$16(a3)
 		bra.s	loc_8572
 ; ---------------------------------------------------------------------------
 
 loc_8524:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_85AC
 
 loc_852C:
@@ -10037,14 +10026,14 @@ return_855E:
 ; ---------------------------------------------------------------------------
 
 loc_8560:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_856C
 		sf	$16(a3)
 		bra.s	loc_852C
 ; ---------------------------------------------------------------------------
 
 loc_856C:
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_85AC
 
 loc_8572:
@@ -10135,9 +10124,9 @@ sub_8600:
 
 loc_8616:
 		add.w	$1A(a3),d1
-		cmp.w	($FFFFF89A).w,d1
+		cmp.w	(Level_width_pixels).w,d1
 		blt.s	loc_8626
-		move.w	($FFFFF89A).w,d1
+		move.w	(Level_width_pixels).w,d1
 		subq.w	#1,d1
 
 loc_8626:
@@ -10616,7 +10605,7 @@ loc_8AF2:
 
 sub_8AF6:
 		move.w	$1A(a3),d7
-		move.w	($FFFFF81C).w,d6
+		move.w	(Camera_X_pos).w,d6
 		subi.w	#$10,d6
 		cmp.w	d6,d7
 		blt.w	loc_8B32
@@ -10624,7 +10613,7 @@ sub_8AF6:
 		cmp.w	d6,d7
 		bgt.w	loc_8B32
 		move.w	$1E(a3),d7
-		move.w	($FFFFF820).w,d6
+		move.w	(Camera_Y_pos).w,d6
 		subi.w	#$10,d6
 		cmp.w	d6,d7
 		blt.w	loc_8B32
@@ -10720,7 +10709,7 @@ loc_8BF0:
 		bsr.w	sub_7ACC
 
 loc_8C12:
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		bne.s	loc_8C26
 		subi.w	#8,($FFFFFB58).w
 		bge.s	loc_8C26
@@ -10730,7 +10719,7 @@ loc_8C26:
 		bsr.w	sub_7428
 		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_8C70
-		move.b	($FFFFF812).w,d0
+		move.b	(Ctrl_Held).w,d0
 		andi.b	#$C0,d0
 		cmpi.b	#$C0,d0
 		bne.s	loc_8C70
@@ -10748,9 +10737,9 @@ loc_8C26:
 		move.l	(sp)+,d0
 
 loc_8C70:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bne.w	loc_A426
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		beq.s	loc_8CB6
 		tst.b	($FFFFFA28).w
 		bne.w	loc_8CB6
@@ -10769,7 +10758,7 @@ loc_8C70:
 ; ---------------------------------------------------------------------------
 
 loc_8CB6:
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_8D72
 		cmpi.w	#8,(Current_Helmet).w
 		bne.w	loc_8CF8
@@ -11011,7 +11000,7 @@ sub_8F26:
 		cmp.w	d0,d4
 		ble.w	loc_9022
 		add.w	d4,d7
-		cmp.w	($FFFFF89A).w,d7
+		cmp.w	(Level_width_pixels).w,d7
 		bge.w	loc_8F86
 		bsr.w	sub_922C
 		beq.w	loc_9022
@@ -11122,7 +11111,7 @@ sub_902A:
 		cmp.w	d0,d4
 		ble.w	loc_913A
 		add.w	d4,d7
-		cmp.w	($FFFFF8A0).w,d7
+		cmp.w	(Level_height_blocks).w,d7
 		bge.w	loc_9142
 		bsr.w	sub_914A
 		beq.w	loc_913A
@@ -11346,7 +11335,7 @@ sub_922C:
 		asr.w	#4,d7
 		bmi.w	loc_9380
 		add.w	d7,d7
-		cmp.w	($FFFFF89C).w,d7
+		cmp.w	(Level_width_tiles).w,d7
 		bgt.w	loc_9380
 		add.w	d7,a4
 		move.w	$1E(a3),d7
@@ -11376,7 +11365,7 @@ loc_9294:
 		beq.w	loc_92B6
 
 loc_92AA:
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		dbf	d5,loc_9294
 		bra.w	loc_9318
 ; ---------------------------------------------------------------------------
@@ -11506,7 +11495,7 @@ loc_93AE:
 ; ---------------------------------------------------------------------------
 
 loc_93D4:
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$4000,d7
@@ -11648,9 +11637,9 @@ loc_950A:
 loc_9512:
 		cmpi.w	#1,($FFFFFA0A).w
 		bne.s	loc_9526
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		bne.s	loc_9526
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_957C
 
 loc_9526:
@@ -11723,9 +11712,9 @@ loc_95A4:
 
 loc_95BA:
 		move.w	d2,($FFFFF8F0).w
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		bne.s	loc_9600
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		bne.s	loc_9600
 		move.w	d1,d0
 		add.w	d0,d0
@@ -11936,7 +11925,7 @@ loc_9732:
 		cmpi.w	#$6000,d5
 		beq.w	loc_9754
 		dbf	d4,loc_9732
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		dbf	d6,loc_972E
 		movem.l	(sp)+,a0-a1
 		moveq	#0,d7
@@ -11967,7 +11956,7 @@ loc_976C:
 		bne.w	loc_97FE
 		bsr.w	sub_9832
 		bne.w	loc_97FE
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		bne.w	loc_97FE
 		move.l	#stru_9812,d7
 		exg	a3,a4
@@ -11982,7 +11971,7 @@ loc_97A6:
 		bne.w	loc_97BE
 		bsr.w	sub_9832
 		bne.w	loc_97BE
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		beq.w	loc_97D4
 
 loc_97BE:
@@ -12176,7 +12165,7 @@ loc_996A:
 
 loc_9974:
 		moveq	#$10,d7
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		beq.s	loc_997E
 		moveq	#$20,d7
 
@@ -12256,14 +12245,14 @@ loc_9A14:
 sub_9A20:
 		tst.b	$16(a3)
 		bne.s	loc_9A84
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_9A32
 		st	$16(a3)
 		bra.s	loc_9A90
 ; ---------------------------------------------------------------------------
 
 loc_9A32:
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		bne.s	loc_9A6E
 		cmpi.l	#$20000,d0
 		bge.s	loc_9A56
@@ -12297,14 +12286,14 @@ loc_9A6E:
 ; ---------------------------------------------------------------------------
 
 loc_9A84:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_9A90
 		sf	$16(a3)
 		bra.s	loc_9A32
 ; ---------------------------------------------------------------------------
 
 loc_9A90:
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		bne.s	loc_9ACA
 		cmpi.l	#$FFFE0000,d0
 		ble.s	loc_9AB2
@@ -12363,18 +12352,18 @@ loc_9B08:
 loc_9B14:
 		tst.b	$16(a3)
 		bne.s	loc_9B7E
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_9B26
 		st	$16(a3)
 		bra.s	loc_9B90
 ; ---------------------------------------------------------------------------
 
 loc_9B26:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_9BEE
 
 loc_9B2E:
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		bne.s	loc_9B62
 		tst.l	d0
 		bmi.s	loc_9B5C
@@ -12424,18 +12413,18 @@ loc_9B78:
 ; ---------------------------------------------------------------------------
 
 loc_9B7E:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_9B8A
 		sf	$16(a3)
 		bra.s	loc_9B2E
 ; ---------------------------------------------------------------------------
 
 loc_9B8A:
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_9BEE
 
 loc_9B90:
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		bne.s	loc_9BCE
 		tst.l	d0
 		bpl.s	loc_9BC8
@@ -12616,14 +12605,14 @@ loc_9D58:
 
 loc_9D86:
 		lea	$14(a0),a1
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		beq.s	loc_9D94
 		lea	$10(a1),a1
 
 loc_9D94:
 		move.l	$26(a3),d0
-		move.b	($FFFFF817).w,d1
-		move.b	($FFFFF818).w,d2
+		move.b	(Ctrl_Right_Held).w,d1
+		move.b	(Ctrl_Left_Held).w,d2
 		tst.b	($FFFFFA26).w
 		beq.s	loc_9DAA
 		neg.l	d0
@@ -12634,9 +12623,9 @@ loc_9DAA:
 		bne.s	loc_9DC0
 		tst.b	d2
 		bne.s	loc_9DF2
-		tst.b	($FFFFF81A).w
+		tst.b	(Ctrl_Up_Held).w
 		bne.s	loc_9DC0
-		tst.b	($FFFFF819).w
+		tst.b	(Ctrl_Down_Held).w
 		bne.s	loc_9DF2
 		bra.s	loc_9E2E
 ; ---------------------------------------------------------------------------
@@ -12867,7 +12856,7 @@ unk_9EE4:	dc.b   0
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_9F18:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bne.w	loc_B580
 		move.l	#$40000,d1
 		move.l	$26(a3),d0
@@ -12959,7 +12948,7 @@ loc_9FFE:
 		move.w	$1A(a3),d0
 		lsr.w	#4,d0
 		addq.w	#1,d0
-		cmp.w	($FFFFF89E).w,d0
+		cmp.w	(Level_width_blocks).w,d0
 		bge.s	loc_A036
 		add.w	d0,d0
 		add.w	d0,a0
@@ -13081,7 +13070,7 @@ loc_A15C:
 		tst.b	d1
 		bne.s	loc_A16C
 		moveq	#$40,d0
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		beq.s	loc_A172
 		moveq	#$50,d0
 		bra.s	loc_A172
@@ -13234,11 +13223,11 @@ loc_A28A:
 		move.w	$1E(a3),($FFFFFA2E).w
 		bsr.w	sub_7ACC
 		bne.w	loc_A6F8
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bne.w	loc_A426
 		tst.b	$16(a3)
 		beq.w	loc_A2E2
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_A2F6
 		sf	$16(a3)
 		bsr.w	sub_B270
@@ -13246,7 +13235,7 @@ loc_A28A:
 ; ---------------------------------------------------------------------------
 
 loc_A2E2:
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.w	loc_A2F6
 		st	$16(a3)
 		bsr.w	sub_B270
@@ -13284,7 +13273,7 @@ loc_A338:
 		cmpi.w	#2,d7
 		bge.s	loc_A330
 		bsr.w	sub_78E8
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bra.w	loc_75D4
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
@@ -13295,7 +13284,7 @@ sub_A34C:
 		moveq	#0,d6
 		move.w	($FFFFFA76).w,d7
 		addi.w	#$80,d7
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_A382
 		move.l	d0,-(sp)
 		moveq	#$1C,d0
@@ -13452,7 +13441,7 @@ loc_A466:
 		tst.l	$1E(a3)
 		bpl.s	loc_A480
 		moveq	#0,d0
-		move.w	($FFFFF8A0).w,d0
+		move.w	(Level_height_blocks).w,d0
 		swap	d0
 		move.l	d0,$1E(a3)
 
@@ -13598,7 +13587,7 @@ loc_A5AE:
 loc_A5EA:
 		move.l	#stru_8B6A,d7
 		jsr	(sub_274).w
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		move.w	d7,a4
 		clr.l	($FFFFFA98).w
 		move.b	($FFFFFAA3).w,($FFFFFA72).w
@@ -13643,21 +13632,21 @@ loc_A666:
 		bgt.w	loc_A6F8
 		tst.b	($FFFFFA72).w
 		bne.w	loc_A69E
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.w	loc_A6AE
 		st	$16(a3)
 		bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_A69E:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_A6AE
 		sf	$16(a3)
 		bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_A6AE:
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		beq.w	loc_A6F4
 		move.l	#$FFFC0000,$2A(a3)
 		move.l	#$FFFE0000,d7
@@ -13686,7 +13675,7 @@ loc_A6F8:
 		move.w	#3,($FFFFFA56).w
 		clr.w	($FFFFFA94).w
 		clr.w	($FFFFFA96).w
-		move.w	#$5A,($FFFFFA70).w
+		move.w	#$5A,(Telepad_timer).w
 		bsr.w	sub_71E4
 		sf	($FFFFFA6E).w
 		jsr	(sub_24C).w
@@ -13721,7 +13710,7 @@ loc_A76A:
 		bsr.w	sub_7428
 		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_A7B4
-		move.b	($FFFFF812).w,d0
+		move.b	(Ctrl_Held).w,d0
 		andi.b	#$C0,d0
 		cmpi.b	#$C0,d0
 		bne.s	loc_A7B4
@@ -13740,7 +13729,7 @@ loc_A76A:
 
 loc_A7B4:
 		move.w	(Current_Helmet).w,d7
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		beq.w	loc_A7F8
 		tst.b	($FFFFFA6A).w
 		beq.w	loc_A7F8
@@ -13764,7 +13753,7 @@ loc_A7E8:
 ; ---------------------------------------------------------------------------
 
 loc_A7F8:
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_A8D6
 		cmpi.w	#8,d7
 		bne.w	loc_A830
@@ -13885,8 +13874,8 @@ loc_A94E:
 		bsr.w	sub_AF7A
 		bne.w	loc_A762
 		bsr.w	sub_DB22
-		bclr	#4,($FFFFF813).w
-		bclr	#5,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
+		bclr	#5,(Ctrl_Pressed).w
 		cmpi.w	#6,(Current_Helmet).w
 		bne.w	loc_A984
 		move.l	d0,-(sp)
@@ -13918,8 +13907,8 @@ loc_A9AA:
 ; ---------------------------------------------------------------------------
 
 loc_A9BE:
-		bclr	#4,($FFFFF813).w
-		bclr	#5,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
+		bclr	#5,(Ctrl_Pressed).w
 		bsr.w	sub_DB22
 		move.w	d7,a4
 		move.l	$26(a3),d7
@@ -13943,7 +13932,7 @@ loc_A9E4:
 		st	($FFFFFA66).w
 		move.l	#stru_8B6A,d7
 		jsr	(sub_274).w
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		bra.w	*+4
 
 loc_AA22:
@@ -13970,7 +13959,7 @@ loc_AA22:
 		st	($FFFFFA66).w
 		move.l	#stru_8B6A,d7
 		jsr	(sub_274).w
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 
 loc_AA8E:
 		move.w	$1E(a3),($FFFFFB5C).w
@@ -13980,17 +13969,17 @@ loc_AA8E:
 loc_AA9C:
 		tst.b	($FFFFFA72).w
 		bne.w	loc_AAB8
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		bne.w	loc_AD34
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	kid_flip
 		bra.w	loc_AAC8
 ; ---------------------------------------------------------------------------
 
 loc_AAB8:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		bne.w	loc_AD34
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.w	kid_flip
 
 loc_AAC8:
@@ -14050,7 +14039,7 @@ kid_flip:
 		bsr.w	sub_7428
 		bsr.w	sub_AF10
 		beq.w	loc_AD34
-		bclr	#4,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
 		beq.w	loc_ACB0
 		cmpi.w	#0,(Current_Helmet).w
 		bne.w	loc_AC42
@@ -14072,7 +14061,7 @@ loc_ABA4:
 		cmpi.w	#$6000,d5
 		bge.w	loc_AD2C
 		move.w	a4,a2
-		suba.w	($FFFFF89C).w,a2
+		suba.w	(Level_width_tiles).w,a2
 		move.w	(a2),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
@@ -14093,7 +14082,7 @@ loc_ABD4:
 		andi.w	#$FFF0,d6
 
 loc_ABF0:
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		addi.w	#$10,d6
 		move.w	(a4),d7
 		andi.w	#$7000,d7
@@ -14154,7 +14143,7 @@ loc_ACA4:
 ; ---------------------------------------------------------------------------
 
 loc_ACB0:
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_AD2C
 		cmpi.w	#2,(Current_Helmet).w
 		bne.w	loc_ACCC
@@ -14202,14 +14191,14 @@ loc_AD34:
 		sf	($FFFFFA67).w
 		tst.b	($FFFFFA72).w
 		beq.w	loc_AD58
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.w	loc_A76A
 		subq.w	#1,$1A(a3)
 		bra.w	loc_A76A
 ; ---------------------------------------------------------------------------
 
 loc_AD58:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.w	loc_A76A
 		addq.w	#1,$1A(a3)
 		bra.w	loc_A76A
@@ -14297,7 +14286,7 @@ loc_AE0E:
 		cmpi.w	#$6000,d7
 		bge.s	loc_ADEC
 		move.w	a4,a0
-		suba.w	($FFFFF89C).w,a0
+		suba.w	(Level_width_tiles).w,a0
 		move.w	(a0),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
@@ -14306,14 +14295,14 @@ loc_AE0E:
 		beq.w	loc_AE5A
 		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AE5A
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
 		bge.s	loc_ADEC
 
 loc_AE5A:
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
@@ -14364,7 +14353,7 @@ loc_AEAE:
 		cmpi.w	#$6000,d7
 		bge.s	loc_AE88
 		move.w	a4,a0
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		move.w	(a0),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
@@ -14373,14 +14362,14 @@ loc_AEAE:
 		beq.w	loc_AEFA
 		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AEFA
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
 		bge.s	loc_AE88
 
 loc_AEFA:
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
@@ -14428,7 +14417,7 @@ loc_AF5C:
 		andi.w	#$7000,d6
 		cmpi.w	#$6000,d6
 		bge.w	loc_AF76
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d7,loc_AF5C
 		moveq	#0,d7
 		rts
@@ -14576,7 +14565,7 @@ loc_B09E:
 		lea	unk_A4B2(pc),a0
 		move.w	(a0,d0.w),d1
 		ext.l	d1
-		tst.b	($FFFFF814).w
+		tst.b	(Ctrl_A_Held).w
 		beq.s	loc_B0B6
 		move.l	d1,d2
 		asr.l	#1,d2
@@ -14587,7 +14576,7 @@ loc_B0B6:
 		add.w	d0,d0
 		move.l	(a0,d0.w),d2
 		move.l	$26(a3),d0
-		tst.b	($FFFFF818).w
+		tst.b	(Ctrl_Left_Held).w
 		beq.s	loc_B0E2
 		st	$16(a3)
 		sub.l	d1,d0
@@ -14601,7 +14590,7 @@ loc_B0B6:
 ; ---------------------------------------------------------------------------
 
 loc_B0E2:
-		tst.b	($FFFFF817).w
+		tst.b	(Ctrl_Right_Held).w
 		beq.s	loc_B0FE
 		sf	$16(a3)
 		add.l	d1,d0
@@ -14640,7 +14629,7 @@ loc_B118:
 		sub.w	($FFFFFA78).w,d7
 		bmi.w	loc_B140
 		add.w	($FFFFFA78).w,d0
-		cmp.w	($FFFFF89A).w,d0
+		cmp.w	(Level_width_pixels).w,d0
 		bge.w	loc_B150
 		rts
 ; ---------------------------------------------------------------------------
@@ -14653,7 +14642,7 @@ loc_B140:
 ; ---------------------------------------------------------------------------
 
 loc_B150:
-		move.w	($FFFFF89A).w,d7
+		move.w	(Level_width_pixels).w,d7
 		subq.w	#1,d7
 		sub.w	($FFFFFA78).w,d7
 		move.w	d7,$1A(a3)
@@ -14686,7 +14675,7 @@ loc_B19C:
 		beq.w	loc_B1D4
 		move.l	$2A(a3),d7
 		move.l	#$2000,d6
-		tst.w	($FFFFF816).w
+		tst.w	(Ctrl_B_Held).w
 		bne.w	loc_B1BC
 		move.l	#$4000,d6
 
@@ -14704,7 +14693,7 @@ loc_B1CE:
 loc_B1D4:
 		move.l	$2A(a3),d7
 		bpl.s	loc_B1E0
-		tst.b	($FFFFF816).w
+		tst.b	(Ctrl_B_Held).w
 		bne.s	loc_B1E8
 
 loc_B1E0:
@@ -14735,7 +14724,7 @@ loc_B20E:
 loc_B214:
 		move.w	($FFFFFA76).w,d7
 		addi.w	#$400,d7
-		bclr	#5,($FFFFF813).w
+		bclr	#5,(Ctrl_Pressed).w
 		beq.w	loc_B23A
 		subi.w	#$3000,d7
 		cmpi.w	#$8001,d7
@@ -14865,7 +14854,7 @@ loc_B350:
 		addq.w	#2,a4
 		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_B3A8
-		tst.b	($FFFFF815).w
+		tst.b	(Ctrl_C_Held).w
 		beq.w	loc_B3A8
 		moveq	#0,d7
 		move.b	($FFFFFA6F).w,d7
@@ -14992,14 +14981,14 @@ sub_B43A:
 		move.w	($FFFFFA78).w,d1
 		cmpi.w	#1,($FFFFFA56).w
 		bne.w	loc_B4A0
-		move.w	($FFFFFC44).w,d5
+		move.w	(Current_LevelID).w,d5
 		subq.w	#WarpCheatStart_LevelID,d5
 		bne.w	loc_B482
 		cmpi.l	#$9D3005F,d4
 		bne.w	loc_B482
-		btst	#4,($FFFFF812).w
+		btst	#4,(Ctrl_Held).w
 		beq.w	loc_B482
-		move.w	#WarpCheatDest_LevelID,($FFFFFC44).w
+		move.w	#WarpCheatDest_LevelID,(Current_LevelID).w
 		move.w	#$28,$38(a3)
 		move.w	#$A0,$3A(a3)
 
@@ -15028,9 +15017,9 @@ loc_B4A0:
 
 loc_B4B2:
 		asr.w	#4,d2
-		cmp.w	($FFFFF89E).w,d2
+		cmp.w	(Level_width_blocks).w,d2
 		ble.s	loc_B4C0
-		move.w	($FFFFF89E).w,d2
+		move.w	(Level_width_blocks).w,d2
 		subq.w	#1,d2
 
 loc_B4C0:
@@ -15067,7 +15056,7 @@ loc_B4FA:
 
 loc_B514:
 		dbf	d2,loc_B4E0
-		move.w	#$5A,($FFFFFA70).w
+		move.w	#$5A,(Telepad_timer).w
 
 loc_B51E:
 		tst.w	d7
@@ -15075,7 +15064,7 @@ loc_B51E:
 ; ---------------------------------------------------------------------------
 
 loc_B522:
-		subi.w	#1,($FFFFFA70).w
+		subi.w	#1,(Telepad_timer).w
 		bne.s	loc_B51E
 		moveq	#-1,d7
 		subq.w	#2,a0
@@ -15285,21 +15274,21 @@ loc_B700:
 		lea	unk_BDB6(pc),a0
 		move.w	(Current_Helmet).w,d7
 		move.b	(a0,d7.w),d7
-		add.w	($FFFFFC4A).w,d7
+		add.w	(Extra_hitpoint_slots).w,d7
 		move.l	(sp)+,a0
-		tst.w	($FFFFFC40).w
+		tst.w	(Number_Hitpoints).w
 		bgt.s	loc_B722
-		move.w	#1,($FFFFFC40).w
+		move.w	#1,(Number_Hitpoints).w
 
 loc_B722:
-		cmp.w	($FFFFFC40).w,d7
+		cmp.w	(Number_Hitpoints).w,d7
 		bge.s	loc_B72C
-		move.w	d7,($FFFFFC40).w
+		move.w	d7,(Number_Hitpoints).w
 
 loc_B72C:
-		st	($FFFFFC3B).w
+		st	(NoHit_Bonus_Flag).w
 		st	($FFFFFA73).w
-		subq.w	#1,($FFFFFC40).w
+		subq.w	#1,(Number_Hitpoints).w
 		beq.w	loc_B786
 
 loc_B73C:
@@ -15356,7 +15345,7 @@ loc_B79C:
 		moveq	#$60,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
-		clr.w	($FFFFFC4A).w
+		clr.w	(Extra_hitpoint_slots).w
 		move.l	($FFFFF862).w,a4
 		sf	$13(a4)
 		sf	$3C(a3)
@@ -15401,11 +15390,11 @@ loc_B80C:
 ; ---------------------------------------------------------------------------
 
 lose_life:							; Death management
-		clr.w	($FFFFFC4A).w
+		clr.w	(Extra_hitpoint_slots).w
 		clr.w	(Current_Helmet).w		; Clears current helmet
 		subq.w	#1,(Number_Lives).w		; Subtracts 1 from Number_Lives
 		beq.w	loc_D052
-		move.w	#2,($FFFFFC40).w
+		move.w	#2,(Number_Hitpoints).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
 
@@ -15422,42 +15411,42 @@ loc_B84E:
 +
 		st	($FFFFFBCE).w
 		jsr	(sub_2C4).w
-		tst.b	($FFFFFC38).w
+		tst.b	(Two_player_flag).w
 		bne.w	loc_B894
 		tst.b	($FFFFFC29).w
 		bne.w	+
-		move.w	#8,($FFFFFBCA).w
+		move.w	#8,(Game_Mode).w
 
 +
-		tst.w	($FFFFFC54).w
+		tst.w	(Player_1_Lives).w
 		beq.w	loc_B8E2
 		bra.w	loc_B8DE
 ; ---------------------------------------------------------------------------
 
 loc_B894:
-		tst.w	($FFFFFC54).w
+		tst.w	(Player_1_Lives).w
 		beq.w	loc_B8D0
-		tst.w	($FFFFFC6A).w
+		tst.w	(Player_2_Lives).w
 		bne.w	loc_B8BA
 		sf	($FFFFFC39).w
 
 loc_B8A8:
 		tst.b	($FFFFFC29).w
 		bne.w	loc_B8DE
-		move.w	#8,($FFFFFBCA).w
+		move.w	#8,(Game_Mode).w
 		bra.w	loc_B8DE
 ; ---------------------------------------------------------------------------
 
 loc_B8BA:
 		tst.b	($FFFFFC29).w
 		bne.w	loc_B8DE
-		move.w	#8,($FFFFFBCA).w
+		move.w	#8,(Game_Mode).w
 		not.b	($FFFFFC39).w
 		bra.w	loc_B8DE
 ; ---------------------------------------------------------------------------
 
 loc_B8D0:
-		tst.w	($FFFFFC6A).w
+		tst.w	(Player_2_Lives).w
 		beq.w	loc_B8E2
 		st	($FFFFFC39).w
 		bra.s	loc_B8A8
@@ -15473,7 +15462,7 @@ loc_B8E2:
 
 loc_B8E6:
 		bgt.w	loc_B906
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		rts
 ; ---------------------------------------------------------------------------
 word_B8F0:	dc.w	 1
@@ -15492,7 +15481,7 @@ word_B8F0:	dc.w	 1
 loc_B906:
 		cmpi.w	#$90,d5
 		bge.w	loc_B93A
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		move.w	d5,d7
 		subi.w	#$68,d7
 		asr.w	#1,d7
@@ -15518,7 +15507,7 @@ loc_B93A:
 
 
 sub_B944:
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		move.l	d0,-(sp)
 		moveq	#$29,d0
 		jsr	(j_PlaySound).l
@@ -15531,14 +15520,14 @@ sub_B944:
 
 
 sub_B956:
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		rts
 ; End of function sub_B956
 
 ; ---------------------------------------------------------------------------
 
 loc_B95C:
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		addq.w	#1,(Number_Continues).w
 		move.l	d0,-(sp)
 		moveq	#$2C,d0
@@ -15548,7 +15537,7 @@ loc_B95C:
 ; ---------------------------------------------------------------------------
 
 loc_B972:
-		st	($FFFFFC3C).w
+		st	(NoPrize_Bonus_Flag).w
 		rts
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
@@ -15576,8 +15565,8 @@ loc_B9A2:
 		clr.w	$20(a3)
 		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_BB08
-		bclr	#4,($FFFFF813).w
-		bclr	#5,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
+		bclr	#5,(Ctrl_Pressed).w
 		sf	$3C(a3)
 		sf	($FFFFFA26).w
 		move.w	($FFFFFB6C).w,d3
@@ -15633,8 +15622,8 @@ loc_BA5A:
 		clr.w	$20(a3)
 		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_BB30
-		bclr	#4,($FFFFF813).w
-		bclr	#5,($FFFFF813).w
+		bclr	#4,(Ctrl_Pressed).w
+		bclr	#5,(Ctrl_Pressed).w
 		sf	$3C(a3)
 		st	($FFFFFA26).w
 		move.w	($FFFFFB6C).w,d3
@@ -15883,10 +15872,10 @@ loc_BCB2:
 		move.w	(a4),d7
 		andi.w	#$FF,d7
 		asl.w	#4,d7
-		move.w	d7,($FFFFFC2C).w
+		move.w	d7,(PlayerStart_Y_pos).w
 		move.w	2(a4),d7
 		asl.w	#4,d7
-		move.w	d7,($FFFFFC2A).w
+		move.w	d7,(PlayerStart_X_pos).w
 		move.w	(a4),d7
 		asr.w	#8,d7
 		moveq	#0,d6
@@ -15904,12 +15893,12 @@ loc_BCD6:
 ; ---------------------------------------------------------------------------
 
 loc_BCEA:
-		cmp.w	($FFFFFC44).w,d6
+		cmp.w	(Current_LevelID).w,d6
 		beq.w	loc_BCF6
 		st	($FFFFFC36).w
 
 loc_BCF6:
-		move.w	d6,($FFFFFC44).w
+		move.w	d6,(Current_LevelID).w
 		st	($FFFFFC29).w
 		move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp?
 		moveq	#-5,d6
@@ -15943,10 +15932,10 @@ loc_BD38:
 loc_BD40:
 		move.l	($FFFFF85E).w,a2
 		move.w	$1A(a2),d5
-		sub.w	($FFFFF81C).w,d5
+		sub.w	(Camera_X_pos).w,d5
 		addi.w	#$80,d5
 		move.w	$1E(a2),d6
-		sub.w	($FFFFF820).w,d6
+		sub.w	(Camera_Y_pos).w,d6
 		subi.w	#$2C,d6
 		addi.w	#$80,d6
 		lea	unk_BD8A(pc),a4
@@ -16017,17 +16006,17 @@ unk_BDB6:	dc.b   2
 
 
 sub_BDC0:
-		lea	($FFFF0000).l,a0
+		lea	(Sprite_Table).l,a0
 		move.w	#$A,$4A(a0)
 		move.l	#$FFFF0050,a2
 		move.b	#$A,d4
-		move.w	($FFFFFC40).w,d0
+		move.w	(Number_Hitpoints).w,d0
 		move.w	(Current_Helmet).w,d2
 		tst.b	($FFFFFA6D).w
 		bne.w	loc_BE82
 		moveq	#0,d1
 		move.b	unk_BDB6(pc,d2.w),d1
-		add.w	($FFFFFC4A).w,d1
+		add.w	(Extra_hitpoint_slots).w,d1
 		move.w	#$80,d2
 		tst.b	($FFFFFB49).w
 		beq.s	loc_BE08
@@ -16113,20 +16102,20 @@ loc_BE82:
 		bne.w	loc_BF12
 		tst.b	($FFFFFB4B).w
 		bne.w	loc_BF12
-		subq.w	#1,($FFFFFC1C).w
+		subq.w	#1,(Time_SubSeconds).w
 		bne.w	loc_BF12
-		move.w	#$3C,($FFFFFC1C).w
-		subq.w	#1,($FFFFFC1E).w
+		move.w	#$3C,(Time_SubSeconds).w
+		subq.w	#1,(Time_Seconds_low_digit).w
 		bpl.s	loc_BEE8
-		move.w	#9,($FFFFFC1E).w
-		subq.w	#1,($FFFFFC20).w
+		move.w	#9,(Time_Seconds_low_digit).w
+		subq.w	#1,(Time_Seconds_high_digit).w
 		bpl.s	loc_BEE8
-		move.w	#5,($FFFFFC20).w
-		subq.w	#1,($FFFFFC22).w
+		move.w	#5,(Time_Seconds_high_digit).w
+		subq.w	#1,(Time_Minutes).w
 		bpl.s	loc_BEE8
-		clr.w	($FFFFFC1E).w
-		clr.w	($FFFFFC20).w
-		clr.w	($FFFFFC22).w
+		clr.w	(Time_Seconds_low_digit).w
+		clr.w	(Time_Seconds_high_digit).w
+		clr.w	(Time_Minutes).w
 		move.l	($FFFFF85E).w,a3
 		move.w	#4,$38(a3)
 		move.l	d0,-(sp)
@@ -16135,22 +16124,22 @@ loc_BE82:
 		move.l	(sp)+,d0
 
 loc_BEE8:
-		move.w	($FFFFFC1E).w,d0
-		addi.w	#-$7946,d0
+		move.w	(Time_Seconds_low_digit).w,d0
+		addi.w	#$86BA,d0
 		move.w	d0,$34(a0)
-		move.w	($FFFFFC20).w,d0
-		addi.w	#-$7946,d0
+		move.w	(Time_Seconds_high_digit).w,d0
+		addi.w	#$86BA,d0
 		move.w	d0,$2C(a0)
-		move.w	($FFFFFC22).w,d0
-		addi.w	#-$7946,d0
+		move.w	(Time_Minutes).w,d0
+		addi.w	#$86BA,d0
 		move.w	d0,$1C(a0)
 		moveq	#0,d7
 		bsr.w	sub_BD0A
 
 loc_BF12:
-		tst.w	($FFFFFC22).w
+		tst.w	(Time_Minutes).w
 		bne.w	loc_BF2A
-		cmpi.w	#2,($FFFFFC20).w
+		cmpi.w	#2,(Time_Seconds_high_digit).w
 		bgt.w	loc_BF2A
 		moveq	#1,d7
 		bsr.w	sub_BD0A
@@ -16162,13 +16151,13 @@ loc_BF2A:
 		moveq	#$63,d0
 		move.w	d0,(Number_Lives).w
 
-life_display							; Lives display
-		cmp.w	($FFFFFC18).w,d0
+life_display:							; Lives display
+		cmp.w	(Number_Lives_prev).w,d0
 		beq.s	diamond_display
 		swap	d0
 		clr.w	d0
 		swap	d0
-		move.w	(Number_Lives).w,($FFFFFC18).w
+		move.w	(Number_Lives).w,(Number_Lives_prev).w
 		bsr.w	calc_display_number
 		move.w	d1,$C(a0)
 		swap	d1
@@ -16176,12 +16165,12 @@ life_display							; Lives display
 
 diamond_display:
 		move.w	(Number_Diamonds).w,d0
-		cmp.w	($FFFFFC1A).w,d0
+		cmp.w	(Number_Diamonds_prev).w,d0
 		beq.w	return_BF80
 		swap	d0
 		clr.w	d0
 		swap	d0
-		move.w	(Number_Diamonds).w,($FFFFFC1A).w
+		move.w	(Number_Diamonds).w,(Number_Diamonds_prev).w
 		bsr.w	calc_display_number			; Create diamond number in d1
 		move.w	d1,$44(a0)					; Put d1.w at $44(a0)
 		swap	d1							; Flip d1
@@ -16194,7 +16183,9 @@ return_BF80:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; Get VRAM tile ID for a given 2-digit number
+; Input: d0 - number to process
+; Output: d1 - VRAM tile ID for each of the 2 digits of d0.
 calc_display_number:
 		move.w	#$86BA,d6			; Moves something to d6
 		move.w	d6,d1				; Moves what's in d6 to d1
@@ -16211,7 +16202,7 @@ calc_display_number:
 
 split_double_digit:
 		divu.w	#$A,d0		; Divides d0 by 10
-		add.l	d0,d1		; Adds the divided d0 to d1
+		add.l	d0,d1		; Adds the modulus/divided d0 to d1
 		rts					; Return
 ; End of function calc_display_number
 
@@ -16224,8 +16215,8 @@ sub_BFA6:
 		jsr	(sub_264).w
 		move.l	a1,a3
 		move.l	a1,($FFFFFA30).w
-		move.w	($FFFFFC2E).w,$1A(a3)
-		move.w	($FFFFFC30).w,$1E(a3)
+		move.w	(Flag_X_pos).w,$1A(a3)
+		move.w	(Flag_Y_pos).w,$1E(a3)
 		move.b	($FFFFFAD2).w,d5
 		lsl.w	#4,d5
 		add.w	d5,$1E(a3)
@@ -16238,21 +16229,21 @@ sub_BFA6:
 		jsr	(sub_264).w
 		move.l	a1,a3
 		move.l	a1,$3E(a4)
-		move.w	($FFFFFC2E).w,$1A(a3)
-		move.w	($FFFFFC30).w,$1E(a3)
+		move.w	(Flag_X_pos).w,$1A(a3)
+		move.w	(Flag_Y_pos).w,$1E(a3)
 		move.b	($FFFFFAD2).w,d5
 		lsl.w	#4,d5
 		add.w	d5,$1E(a3)
 		st	$13(a3)
 		move.b	#1,$10(a3)
 		move.w	#(LnkTo_unk_E0FFE-Data_Index),$22(a3)
-		cmpi.w	#Boss1_LevelID,($FFFFFC44).w
+		cmpi.w	#Boss1_LevelID,(Current_LevelID).w
 		beq.s	loc_C03A
-		cmpi.w	#Boss2_LevelID,($FFFFFC44).w
+		cmpi.w	#Boss2_LevelID,(Current_LevelID).w
 		beq.s	loc_C03A
-		cmpi.w	#Boss3_LevelID,($FFFFFC44).w
+		cmpi.w	#Boss3_LevelID,(Current_LevelID).w
 		beq.s	loc_C03A
-		cmpi.w	#Boss4_LevelID,($FFFFFC44).w
+		cmpi.w	#Boss4_LevelID,(Current_LevelID).w
 		bne.s	return_C046
 
 loc_C03A:
@@ -16293,7 +16284,7 @@ loc_C070:
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
-		clr.w	($FFFFFB40).w
+		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_C2F2,4(a0)
@@ -16321,16 +16312,16 @@ loc_C0CC:
 		jsr	(sub_24C).w
 		st	($FFFFFB49).w
 		st	($FFFFFB4A).w
-		move.w	($FFFFFC1E).w,d0
-		move.w	($FFFFFC20).w,d1
+		move.w	(Time_Seconds_low_digit).w,d0
+		move.w	(Time_Seconds_high_digit).w,d1
 		mulu.w	#$A,d1
 		add.w	d1,d0
-		move.w	($FFFFFC22).w,d1
+		move.w	(Time_Minutes).w,d1
 		mulu.w	#$3C,d1
 		add.w	d1,d0
 		neg.w	d0
 		addi.w	#$B4,d0
-		move.w	($FFFFFDCE).w,d1
+		move.w	(Clocks_collected).w,d1
 		mulu.w	#$B4,d1
 		add.w	d1,d0
 		cmpi.w	#$FF,d0
@@ -16338,9 +16329,9 @@ loc_C0CC:
 		move.w	#$FF,d0
 
 loc_C10A:
-		move.b	d0,($FFFFFC3D).w
+		move.b	d0,(Level_completion_time).w
 		clr.w	($FFFFFC24).w
-		clr.b	($FFFFFAC1).w
+		clr.b	(MurderWall_flag).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_C326,4(a0)
@@ -16377,7 +16368,7 @@ loc_C190:
 		dbf	d0,loc_C190
 		dbf	d1,loc_C186
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_C1AA:
@@ -16407,10 +16398,10 @@ loc_C1DC:
 ; ---------------------------------------------------------------------------
 
 loc_C1EE:
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		move.w	d0,d2
 		addi.w	#$13F,d2
-		move.w	($FFFFF820).w,d1
+		move.w	(Camera_Y_pos).w,d1
 		move.w	d1,d3
 		addi.w	#$DF,d3
 		lsr.w	#4,d0
@@ -16804,10 +16795,10 @@ loc_C4E2:
 		move.w	d7,d0
 		mulu.w	#$C,d0
 		add.w	$64(a5),d0
-		add.w	($FFFFF81C).w,d0
+		add.w	(Camera_X_pos).w,d0
 		move.w	d0,$1A(a0)
 		move.w	$68(a5),d0
-		add.w	($FFFFF820).w,d0
+		add.w	(Camera_Y_pos).w,d0
 		move.w	d0,$1E(a0)
 		addq.w	#1,d7
 		cmpi.w	#7,d7
@@ -16888,12 +16879,12 @@ loc_C5A2:
 		move.w	$64(a5),d0
 		add.w	$6C(a5),d0
 		move.w	d0,$64(a5)
-		add.w	($FFFFF81C).w,d0
+		add.w	(Camera_X_pos).w,d0
 		move.w	d0,$1A(a3)
 		move.w	$68(a5),d1
 		add.w	$70(a5),d1
 		move.w	d1,$68(a5)
-		add.w	($FFFFF820).w,d1
+		add.w	(Camera_Y_pos).w,d1
 		move.w	d1,$1E(a3)
 		subq.w	#1,$46(a5)
 		bne.s	loc_C5A2
@@ -16948,10 +16939,10 @@ loc_C638:
 
 loc_C644:
 		move.w	d0,d4
-		add.w	($FFFFF81C).w,d4
+		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
 		move.w	d1,d4
-		add.w	($FFFFF820).w,d4
+		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		bra.s	loc_C60C
 ; ---------------------------------------------------------------------------
@@ -16992,7 +16983,7 @@ loc_D074:
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
-		clr.w	($FFFFFB40).w
+		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_C2F2,4(a0)
@@ -17017,7 +17008,7 @@ loc_D0C0:
 		jsr	(sub_24C).w
 		st	($FFFFFB49).w
 		clr.w	($FFFFFC24).w
-		clr.b	($FFFFFAC1).w
+		clr.b	(MurderWall_flag).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_C326,4(a0)
@@ -17045,7 +17036,7 @@ loc_D12E:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_D12E
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_D142:
@@ -17089,11 +17080,11 @@ loc_D17E:
 		move.w	#$98,$64(a0)
 		move.w	#$100,$68(a0)
 		move.w	#$FFFE,$70(a0)
-		move.l	($FFFFFC4C).w,$60(a0)
-		clr.l	($FFFFFC4C).w
+		move.l	(Score).w,$60(a0)
+		clr.l	(Score).w
 		clr.l	$44(a5)
 		clr.l	$48(a5)
-		tst.b	($FFFFFC38).w
+		tst.b	(Two_player_flag).w
 		beq.w	loc_D25E
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
@@ -17142,7 +17133,7 @@ loc_D25E:
 
 loc_D2CE:
 		jsr	(sub_24C).w
-		tst.b	($FFFFF812).w
+		tst.b	(Ctrl_Held).w
 		bmi.s	loc_D2DC
 		dbf	d0,loc_D2CE
 
@@ -17175,7 +17166,7 @@ loc_D2E0:
 
 loc_D350:
 		jsr	(sub_24C).w
-		tst.b	($FFFFF812).w
+		tst.b	(Ctrl_Held).w
 		bmi.s	lose_continue
 		dbf	d0,loc_D350
 		move.l	$44(a5),d0
@@ -17202,7 +17193,7 @@ loc_D386:
 
 loc_D3AA:
 		jsr	(sub_24C).w
-		tst.b	($FFFFF812).w
+		tst.b	(Ctrl_Held).w
 		bmi.s	lose_continue
 		dbf	d0,loc_D3AA
 		bra.w	loc_D3F0
@@ -17217,18 +17208,18 @@ lose_continue:							; Losing a Continue
 		clr.w	(Current_Helmet).w
 		clr.w	($FFFFFBCC).w
 		clr.w	(Number_Diamonds).w
-		clr.w	($FFFFFC4A).w
-		move.w	#2,($FFFFFC40).w
+		clr.w	(Extra_hitpoint_slots).w
+		move.w	#2,(Number_Hitpoints).w
 		st	($FFFFFC36).w
 		bra.w	loc_B84E
 ; ---------------------------------------------------------------------------
 
 loc_D3F0:
-		clr.w	($FFFFFBCA).w
+		clr.w	(Game_Mode).w
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_D40A:
@@ -17276,9 +17267,9 @@ loc_D468:
 		beq.s	loc_D4CE
 		moveq	#2,d6
 		move.w	#$11C,d2
-		add.w	($FFFFF81C).w,d2
+		add.w	(Camera_X_pos).w,d2
 		moveq	#0,d3
-		move.b	($FFFFFC3D).w,d3
+		move.b	(Level_completion_time).w,d3
 
 loc_D47E:
 		move.l	#$2000000,a1
@@ -17288,7 +17279,7 @@ loc_D47E:
 		move.b	#1,$10(a1)
 		move.w	#$517,$24(a1)
 		move.w	#$D4,d0
-		add.w	($FFFFF820).w,d0
+		add.w	(Camera_Y_pos).w,d0
 		move.w	d0,$1E(a1)
 		move.w	d2,$1A(a1)
 		subi.w	#$C,d2
@@ -17330,18 +17321,18 @@ loc_D4CE:
 		move.w	#$F2C,d0
 		move.w	#$FF98,d1
 		bsr.w	sub_D894
-		move.l	($FFFFFC4C).w,d0
+		move.l	(Score).w,d0
 		move.w	#$1B0,d1
 		bsr.w	sub_D8BE
 		move.l	a0,(a2)+
 		subi.w	#$18,d7
 		addi.w	#$40,d6
 		addq.w	#8,d5
-		move.w	($FFFFFC1E).w,d0
-		move.w	($FFFFFC20).w,d1
+		move.w	(Time_Seconds_low_digit).w,d0
+		move.w	(Time_Seconds_high_digit).w,d1
 		mulu.w	#$A,d1
 		add.w	d1,d0
-		move.w	($FFFFFC22).w,d1
+		move.w	(Time_Minutes).w,d1
 		mulu.w	#$64,d1
 		add.w	d1,d0
 		mulu.w	#$A,d0
@@ -17360,7 +17351,7 @@ loc_D4CE:
 		subi.w	#$18,d7
 		addi.w	#$40,d6
 		addq.w	#8,d5
-		tst.b	($FFFFFC3B).w
+		tst.b	(NoHit_Bonus_Flag).w
 		bne.w	loc_D5D2
 		move.w	#$F18,d0
 		move.w	#$FF38,d1
@@ -17378,7 +17369,7 @@ loc_D4CE:
 		addq.w	#8,d5
 
 loc_D5D2:
-		tst.b	($FFFFFC3C).w
+		tst.b	(NoPrize_Bonus_Flag).w
 		bne.w	loc_D60E
 		move.w	#$F1C,d0
 		move.w	#$FF20,d1
@@ -17396,7 +17387,7 @@ loc_D5D2:
 		addq.w	#8,d5
 
 loc_D60E:
-		move.w	($FFFFFC44).w,d0
+		move.w	(Current_LevelID).w,d0
 		cmpi.w	#$49,d0
 		bge.w	loc_D660
 		lea	unk_D8E8(pc),a1
@@ -17421,11 +17412,11 @@ loc_D60E:
 		addq.w	#8,d5
 
 loc_D660:
-		move.w	($FFFFFC44).w,d0
+		move.w	(Current_LevelID).w,d0
 		cmpi.w	#$49,d0
 		bge.w	loc_D702
 		lea	unk_D934(pc),a1
-		move.b	($FFFFFC3D).w,d1
+		move.b	(Level_completion_time).w,d1
 		cmp.b	(a1,d0.w),d1
 		bhi.w	loc_D702
 		move.b	(a1,d0.w),d0
@@ -17467,7 +17458,7 @@ loc_D702:
 		move.w	#$5A,-(sp)
 		jsr	(sub_248).w
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_D718:
@@ -17508,14 +17499,14 @@ loc_D770:
 		move.l	d2,d4
 
 loc_D77E:
-		move.l	($FFFFFC4C).w,d5
-		add.l	d4,($FFFFFC4C).w
+		move.l	(Score).w,d5
+		add.l	d4,(Score).w
 		move.l	d5,d6
 		add.l	d4,d6
-		cmpi.l	#$98967F,($FFFFFC4C).w
+		cmpi.l	#$98967F,(Score).w
 		blt.s	loc_D79E
 		move.l	#$98967F,d6
-		move.l	d6,($FFFFFC4C).w
+		move.l	d6,(Score).w
 
 loc_D79E:
 		divu.w	#$C350,d5
@@ -17533,7 +17524,7 @@ loc_D79E:
 		move.w	#$F0,d0
 
 loc_D7CE:
-		move.l	($FFFFFC4C).w,$60(a3)
+		move.l	(Score).w,$60(a3)
 		sub.l	d2,$60(a1)
 		bgt.s	loc_D7E4
 		clr.l	$60(a1)
@@ -17557,9 +17548,9 @@ loc_D7F4:
 		move.l	(sp)+,d0
 		move.w	d0,-(sp)
 		jsr	(sub_248).w
-		cmpi.w	#Final_LevelID,($FFFFFC44).w
+		cmpi.w	#Final_LevelID,(Current_LevelID).w
 		beq.w	loc_D820
-		addq.w	#1,($FFFFFC44).w
+		addq.w	#1,(Current_LevelID).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
 		bra.w	loc_B84E
@@ -17574,7 +17565,7 @@ loc_D820:
 		move.w	#$C8,-(sp)
 		jsr	(sub_248).w
 		moveq	#$1F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 
 loc_D84E:
@@ -17606,7 +17597,7 @@ loc_D876:
 loc_D882:
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
-		move.w	#$30,($FFFFFBCA).w
+		move.w	#$30,(Game_Mode).w
 		jmp	(loc_204).w
 ; END OF FUNCTION CHUNK	FOR sub_C048
 
@@ -17668,7 +17659,7 @@ loc_D99E:
 		st	($FFFFFB6A).w
 		move.w	#$8200,4(a6)
 		move.w	#$8407,4(a6)
-		clr.w	($FFFFFB40).w
+		clr.w	(Level_Special_Effects).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_C2F2,4(a0)
@@ -17696,7 +17687,7 @@ loc_D9EA:
 		move.l	#sub_C378,4(a0)
 		st	($FFFFFB49).w
 		moveq	#$3F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 		lea	($FFFF4F58).l,a2
 
@@ -17725,12 +17716,12 @@ loc_DA3E:
 ; ---------------------------------------------------------------------------
 
 loc_DA4A:
-		move.l	#$F4241,($FFFFFC4C).w
+		move.l	#$F4241,(Score).w
 		clr.w	($FFFFFBCC).w
 		st	($FFFFFC36).w
-		move.w	#$20,($FFFFFC2A).w
-		move.w	#$48F,($FFFFFC2C).w
-		move.w	#HundredKTripDest_LevelID,($FFFFFC44).w
+		move.w	#$20,(PlayerStart_X_pos).w
+		move.w	#$48F,(PlayerStart_Y_pos).w
+		move.w	#HundredKTripDest_LevelID,(Current_LevelID).w
 		clr.w	(Current_Helmet).w
 		st	($FFFFFC29).w
 		bra.w	loc_B84E
@@ -18045,9 +18036,9 @@ loc_DFEE:
 
 loc_E000:
 		asr.w	#4,d1
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		ble.s	loc_E00E
-		move.w	($FFFFF89E).w,d1
+		move.w	(Level_width_blocks).w,d1
 		subq.w	#1,d1
 
 loc_E00E:
@@ -18686,7 +18677,7 @@ sub_E446:
 
 loc_E48E:
 		addq.w	#1,d5
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 		dbf	d6,sub_E446
 		rts
 ; End of function sub_E446
@@ -18715,10 +18706,10 @@ loc_E4B2:
 
 loc_E4C4:
 		add.w	$1A(a0),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		addi.w	#$80,d0
 		add.w	$1E(a0),d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		addi.w	#$80,d1
 		move.l	($FFFFF832).w,a2
 		moveq	#0,d2
@@ -19106,12 +19097,12 @@ loc_E70A:
 		move.b	d2,($FFFFF836).w
 		move.w	a1,d1
 		subi.w	#$80,d1
-		add.w	($FFFFF81C).w,d1
+		add.w	(Camera_X_pos).w,d1
 		asr.w	#4,d1
 		bmi.s	loc_E79C
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bge.s	loc_E79C
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_Y_pos).w,d0
 		subi.w	#$80,d0
 		add.w	d0,d5
 		add.w	d0,d6
@@ -19120,9 +19111,9 @@ loc_E70A:
 		moveq	#0,d5
 
 loc_E738:
-		cmp.w	($FFFFF8A4).w,d5
+		cmp.w	(Level_height_pixels).w,d5
 		blt.s	loc_E744
-		move.w	($FFFFF8A4).w,d5
+		move.w	(Level_height_pixels).w,d5
 		subq.w	#1,d5
 
 loc_E744:
@@ -19131,9 +19122,9 @@ loc_E744:
 		moveq	#0,d6
 
 loc_E74A:
-		cmp.w	($FFFFF8A4).w,d6
+		cmp.w	(Level_height_pixels).w,d6
 		blt.s	loc_E756
-		move.w	($FFFFF8A4).w,d6
+		move.w	(Level_height_pixels).w,d6
 		subq.w	#1,d6
 
 loc_E756:
@@ -19158,7 +19149,7 @@ loc_E756:
 
 loc_E786:
 		addq.w	#1,d1
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bge.s	loc_E79C
 		addq.w	#2,a2
 
@@ -19361,10 +19352,10 @@ loc_E936:
 loc_E948:
 		move.l	($FFFFFABA).w,a1
 		subi.w	#$80,d6
-		add.w	($FFFFF81C).w,d6
+		add.w	(Camera_X_pos).w,d6
 		move.w	d6,$1A(a1)
 		subi.w	#$80,d5
-		add.w	($FFFFF820).w,d5
+		add.w	(Camera_Y_pos).w,d5
 		move.w	d5,$1E(a1)
 		andi.w	#$FE,d7
 		add.w	d7,d7
@@ -19392,12 +19383,12 @@ loc_E99C:
 		move.l	($FFFFF832).w,a3
 		moveq	#0,d2
 		move.b	($FFFFF836).w,d3
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		lsr.w	#4,d4
 		subq.w	#4,d4
 		move.w	d4,d5
 		addi.w	#$1C,d5
-		move.w	($FFFFF820).w,d6
+		move.w	(Camera_Y_pos).w,d6
 		lsr.w	#4,d6
 		subq.w	#4,d6
 		move.w	d6,d7
@@ -19423,10 +19414,10 @@ loc_E9CA:
 		cmp.w	d7,d2
 		bgt.s	loc_EA3E
 		lsl.w	#4,d1
-		sub.w	($FFFFF81C).w,d1
+		sub.w	(Camera_X_pos).w,d1
 		addi.w	#$80,d1
 		lsl.w	#4,d2
-		sub.w	($FFFFF820).w,d2
+		sub.w	(Camera_Y_pos).w,d2
 		addi.w	#$80,d2
 		add.w	d0,d0
 		add.w	d0,d0
@@ -19565,9 +19556,9 @@ loc_EAE4:
 loc_EAF8:
 		move.w	($FFFFFA80).w,d1
 		addq.w	#1,d1
-		cmp.w	($FFFFF8A0).w,d1
+		cmp.w	(Level_height_blocks).w,d1
 		blt.w	loc_EB0C
-		move.w	($FFFFF8A0).w,d1
+		move.w	(Level_height_blocks).w,d1
 		subq.w	#1,d1
 
 loc_EB0C:
@@ -19585,9 +19576,9 @@ loc_EB0C:
 loc_EB2A:
 		move.w	($FFFFFA7C).w,d2
 		addq.w	#1,d2
-		cmp.w	($FFFFF89A).w,d2
+		cmp.w	(Level_width_pixels).w,d2
 		blt.w	loc_EB3E
-		move.w	($FFFFF89A).w,d2
+		move.w	(Level_width_pixels).w,d2
 		subq.w	#1,d2
 
 loc_EB3E:
@@ -19611,7 +19602,7 @@ loc_EB4C:
 
 loc_EB62:
 		dbf	d3,loc_EB4C
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		dbf	d1,loc_EB48
 
 loc_EB6E:
@@ -19797,11 +19788,11 @@ loc_EC22:
 		move.w	d0,a5
 		move.w	($FFFFF8C6).w,d0
 		beq.w	loc_EDDA
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		lsr.w	#4,d4
 		move.w	d4,d6
 		addi.w	#$14,d6
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		lsr.w	#4,d5
 		move.w	d5,d7
 		addi.w	#$E,d7
@@ -19922,10 +19913,10 @@ loc_ED16:
 		cmp.w	d7,d2
 		bgt.s	loc_ED52
 		lsl.w	#4,d1
-		sub.w	($FFFFF81C).w,d1
+		sub.w	(Camera_X_pos).w,d1
 		addi.w	#$84,d1
 		lsl.w	#4,d2
-		sub.w	($FFFFF820).w,d2
+		sub.w	(Camera_Y_pos).w,d2
 		addi.w	#$84,d2
 		move.w	d2,(a2)+
 		addq.w	#1,a5
@@ -19952,7 +19943,7 @@ loc_ED52:
 ; ---------------------------------------------------------------------------
 
 loc_ED7C:
-		move.w	($FFFFF8AA).w,d0
+		move.w	(Foreground_theme).w,d0
 		add.w	d0,d0
 		add.w	d0,d0
 		move.l	(LnkTo_ThemeCollision_Index).l,a4
@@ -19993,11 +19984,11 @@ loc_EDBC:
 loc_EDDA:
 		move.w	($FFFFF8CA).w,d0
 		beq.w	loc_F05A
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		move.w	d4,d6
 		subq.w	#8,d4
 		addi.w	#$140,d6
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		move.w	d5,d7
 		subq.w	#8,d5
 		addi.w	#$140,d7
@@ -20011,7 +20002,7 @@ loc_EDFA:
 		bpl.w	loc_EEBC
 		move.w	2(a0),d0
 		addq.w	#4,d0
-		cmp.w	($FFFFF89A).w,d0
+		cmp.w	(Level_width_pixels).w,d0
 		bge.w	loc_EFA0
 		addq.w	#1,8(a0)
 		move.w	8(a0),d0
@@ -20053,7 +20044,7 @@ loc_EE62:
 		move.w	8(a0),d0
 		bgt.s	loc_EE80
 		bne.s	loc_EEAC
-		move.w	($FFFFF89C).w,d1
+		move.w	(Level_width_tiles).w,d1
 		sub.w	d1,(a0)
 		bra.s	loc_EEAC
 ; ---------------------------------------------------------------------------
@@ -20063,7 +20054,7 @@ loc_EE80:
 		bne.s	loc_EE92
 		moveq	#0,d0
 		move.w	d0,8(a0)
-		move.w	($FFFFF89C).w,d1
+		move.w	(Level_width_tiles).w,d1
 		sub.w	d1,(a0)
 
 loc_EE92:
@@ -20123,13 +20114,13 @@ loc_EEFE:
 loc_EF0C:
 		move.w	4(a0),d0
 		addq.w	#4,d0
-		cmp.w	($FFFFF8A0).w,d0
+		cmp.w	(Level_height_blocks).w,d0
 		bge.w	loc_EFA0
 		addq.w	#1,8(a0)
 		move.w	8(a0),d0
 		bgt.s	loc_EF2E
 		bne.s	loc_EF56
-		move.w	($FFFFF89C).w,d1
+		move.w	(Level_width_tiles).w,d1
 		add.w	d1,(a0)
 		bra.s	loc_EF56
 ; ---------------------------------------------------------------------------
@@ -20139,7 +20130,7 @@ loc_EF2E:
 		bne.s	loc_EF40
 		moveq	#0,d0
 		move.w	d0,8(a0)
-		move.w	($FFFFF89C).w,d1
+		move.w	(Level_width_tiles).w,d1
 		add.w	d1,(a0)
 
 loc_EF40:
@@ -20169,9 +20160,9 @@ loc_EF62:
 		blt.s	loc_EF94
 		cmp.w	d7,d2
 		bgt.s	loc_EF94
-		sub.w	($FFFFF81C).w,d1
+		sub.w	(Camera_X_pos).w,d1
 		addi.w	#$80,d1
-		sub.w	($FFFFF820).w,d2
+		sub.w	(Camera_Y_pos).w,d2
 		addi.w	#$80,d2
 		move.w	d2,(a2)+
 		addq.w	#1,a5
@@ -20323,9 +20314,9 @@ loc_F09E:
 		bgt.s	loc_F0D0
 		move.w	d0,d3
 		addq.w	#3,d3
-		cmp.w	($FFFFF89E).w,d3
+		cmp.w	(Level_width_blocks).w,d3
 		blt.s	loc_F0D8
-		move.w	($FFFFF89E).w,d3
+		move.w	(Level_width_blocks).w,d3
 		subq.w	#1,d3
 		bra.s	loc_F0D8
 ; ---------------------------------------------------------------------------
@@ -20345,9 +20336,9 @@ loc_F0D8:
 loc_F0E0:
 		move.w	d1,d5
 		addq.w	#2,d5
-		cmp.w	($FFFFF8A4).w,d5
+		cmp.w	(Level_height_pixels).w,d5
 		blt.s	loc_F0F0
-		move.w	($FFFFF8A4).w,d5
+		move.w	(Level_height_pixels).w,d5
 		subq.w	#1,d5
 
 loc_F0F0:
@@ -20381,7 +20372,7 @@ loc_F106:
 		lsr.w	#1,d6
 		bcc.s	loc_F14C
 		move.l	a1,a4
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		tst.b	1(a4)
 		bne.s	loc_F170
 
@@ -20395,7 +20386,7 @@ loc_F156:
 		lsr.w	#1,d6
 		bcc.s	loc_F166
 		move.l	a1,a4
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		tst.b	1(a4)
 		bne.s	loc_F170
 
@@ -20413,7 +20404,7 @@ loc_F176:
 		clr.w	(a3)+
 
 loc_F17C:
-		add.w	($FFFFF89C).w,a1
+		add.w	(Level_width_tiles).w,a1
 		addq.w	#1,d4
 		dbf	d5,loc_F106
 
@@ -20425,9 +20416,9 @@ loc_F186:
 		bgt.s	loc_F1A8
 		move.w	d1,d4
 		addq.w	#2,d4
-		cmp.w	($FFFFF8A4).w,d4
+		cmp.w	(Level_height_pixels).w,d4
 		blt.s	loc_F1B0
-		move.w	($FFFFF8A4).w,d4
+		move.w	(Level_height_pixels).w,d4
 		subq.w	#1,d4
 		bra.s	loc_F1B0
 ; ---------------------------------------------------------------------------
@@ -20447,9 +20438,9 @@ loc_F1B0:
 loc_F1B8:
 		move.w	d0,d5
 		addq.w	#3,d5
-		cmp.w	($FFFFF89E).w,d5
+		cmp.w	(Level_width_blocks).w,d5
 		blt.s	loc_F1C8
-		move.w	($FFFFF89E).w,d5
+		move.w	(Level_width_blocks).w,d5
 		subq.w	#1,d5
 
 loc_F1C8:
@@ -20483,7 +20474,7 @@ loc_F1DE:
 		lsr.w	#1,d6
 		bcc.s	loc_F224
 		move.l	a1,a4
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		tst.b	1(a4)
 		bne.s	loc_F248
 
@@ -20497,7 +20488,7 @@ loc_F22E:
 		lsr.w	#1,d6
 		bcc.s	loc_F23E
 		move.l	a1,a4
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		tst.b	1(a4)
 		bne.s	loc_F248
 
@@ -20520,11 +20511,11 @@ loc_F254:
 		dbf	d5,loc_F1DE
 
 loc_F25C:
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		lsr.w	#4,d4
 		move.w	d4,d6
 		addi.w	#$14,d6
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		lsr.w	#4,d5
 		move.w	d5,d7
 		addi.w	#$E,d7
@@ -20664,7 +20655,7 @@ loc_F386:
 		lsr.w	#1,d0
 		bcc.s	loc_F3B2
 		move.l	a3,a4
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		move.w	d1,(a4)
 		move.w	2(a0),(a1)+
 		move.w	4(a0),(a1)
@@ -20694,7 +20685,7 @@ loc_F3CC:
 
 loc_F3D6:
 		move.w	a3,a4
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		move.w	d2,(a4)
 		move.w	2(a0),(a1)+
 		move.w	4(a0),(a1)
@@ -20746,14 +20737,14 @@ loc_F41E:
 		cmp.w	d7,d3
 		bgt.s	loc_F462
 		lsl.w	#4,d3
-		sub.w	($FFFFF820).w,d3
+		sub.w	(Camera_Y_pos).w,d3
 		addi.w	#$80,d3
 		move.w	d3,(a2)+
 		addq.w	#1,a5
 		move.w	a5,(a2)+
 		move.w	d1,(a2)+
 		lsl.w	#4,d2
-		sub.w	($FFFFF81C).w,d2
+		sub.w	(Camera_X_pos).w,d2
 		addi.w	#$80,d2
 		move.w	d2,(a2)+
 
@@ -20772,7 +20763,7 @@ loc_F462:
 		cmp.w	d7,d3
 		bgt.s	loc_F4A4
 		lsl.w	#4,d3
-		sub.w	($FFFFF820).w,d3
+		sub.w	(Camera_Y_pos).w,d3
 		addi.w	#$80,d3
 		move.w	d3,(a2)+
 		addq.w	#1,a5
@@ -20781,7 +20772,7 @@ loc_F462:
 		addi.w	#$14,d3
 		move.w	d3,(a2)+
 		lsl.w	#4,d2
-		sub.w	($FFFFF81C).w,d2
+		sub.w	(Camera_X_pos).w,d2
 		addi.w	#$80,d2
 		move.w	d2,(a2)+
 
@@ -20800,7 +20791,7 @@ loc_F4A4:
 		cmp.w	d7,d3
 		bgt.s	loc_F4E6
 		lsl.w	#4,d3
-		sub.w	($FFFFF820).w,d3
+		sub.w	(Camera_Y_pos).w,d3
 		addi.w	#$80,d3
 		move.w	d3,(a2)+
 		addq.w	#1,a5
@@ -20809,7 +20800,7 @@ loc_F4A4:
 		addi.w	#$1000,d3
 		move.w	d3,(a2)+
 		lsl.w	#4,d2
-		sub.w	($FFFFF81C).w,d2
+		sub.w	(Camera_X_pos).w,d2
 		addi.w	#$80,d2
 		move.w	d2,(a2)+
 
@@ -20828,7 +20819,7 @@ loc_F4E6:
 		cmp.w	d7,d3
 		bgt.s	loc_F528
 		lsl.w	#4,d3
-		sub.w	($FFFFF820).w,d3
+		sub.w	(Camera_Y_pos).w,d3
 		addi.w	#$80,d3
 		move.w	d3,(a2)+
 		addq.w	#1,a5
@@ -20837,7 +20828,7 @@ loc_F4E6:
 		addi.w	#$814,d3
 		move.w	d3,(a2)+
 		lsl.w	#4,d2
-		sub.w	($FFFFF81C).w,d2
+		sub.w	(Camera_X_pos).w,d2
 		addi.w	#$80,d2
 		move.w	d2,(a2)+
 
@@ -21090,13 +21081,13 @@ sub_F730:
 		move.w	($FFFFF8D8).w,d6
 		beq.w	return_FACC
 		subq.w	#1,d6
-		move.w	($FFFFF81C).w,d4
+		move.w	(Camera_X_pos).w,d4
 		lsr.w	#4,d4
 		swap	d6
 		move.w	d4,d6
 		addi.w	#$14,d6
 		swap	d6
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		lsr.w	#4,d5
 		move.w	d5,d7
 		addi.w	#$E,d7
@@ -21240,14 +21231,14 @@ loc_F872:
 
 loc_F87A:
 		addq.w	#1,d1
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_F85A
 		bra.s	loc_F890
 ; ---------------------------------------------------------------------------
 
 loc_F886:
 		move.w	a3,(a4)
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_F886
 
 loc_F890:
@@ -21318,7 +21309,7 @@ loc_F90A:
 		move.w	d2,(a1)+
 		swap	d2
 		lsl.w	#3,d2
-		move.l	($FFFFF8AE).w,a5
+		move.l	(Addr_ThemeMappings).w,a5
 		add.w	d2,a5
 		move.l	(a5)+,(a1)+
 		move.l	(a5)+,(a1)+
@@ -21373,15 +21364,15 @@ loc_F96A:
 		move.w	d2,(a1)+
 		swap	d2
 		lsl.w	#3,d2
-		move.l	($FFFFF8AE).w,a5
+		move.l	(Addr_ThemeMappings).w,a5
 		add.w	d2,a5
 		move.l	(a5)+,(a1)+
 		move.l	(a5)+,(a1)+
 
 loc_F994:
 		addq.w	#1,d1
-		add.w	($FFFFF89E).w,a3
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_blocks).w,a3
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_F96A
 		bra.s	loc_F9B6
 ; ---------------------------------------------------------------------------
@@ -21392,8 +21383,8 @@ loc_F9A4:
 loc_F9A6:
 		move.b	(a3),d2
 		move.w	d2,(a4)
-		add.w	($FFFFF89E).w,a3
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_blocks).w,a3
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_F9A6
 
 loc_F9B6:
@@ -21442,10 +21433,10 @@ loc_FA06:
 
 loc_FA0C:
 		lsl.w	#4,d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		addi.w	#$80,d0
 		lsl.w	#4,d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		addi.w	#$80,d1
 		move.w	#$24A,d3
 		btst	#0,3(a0)
@@ -21497,10 +21488,10 @@ loc_FA7E:
 
 loc_FA84:
 		lsl.w	#4,d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		addi.w	#$80,d0
 		lsl.w	#4,d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		addi.w	#$80,d1
 		move.w	#$24A,d3
 		btst	#0,3(a0)
@@ -21534,8 +21525,8 @@ return_FACC:
 sub_FACE:
 		moveq	#0,d1
 		move.w	d3,d1
-		subi.w	#$A652,d1
-		divu.w	($FFFFF89C).w,d1
+		subi.w	#Level_Layout&$FFFF,d1
+		divu.w	(Level_width_tiles).w,d1
 		move.w	d1,d2
 		swap	d1
 		lsr.w	#1,d1
@@ -21731,7 +21722,7 @@ loc_FCE2:
 
 loc_FCEA:
 		move.w	6(a3),d4
-		cmp.w	($FFFFF8A0).w,d4
+		cmp.w	(Level_height_blocks).w,d4
 		blt.w	loc_FCFE
 		jsr	(sub_2A0).w
 		jmp	(sub_258).w
@@ -21816,10 +21807,10 @@ diamond_pickup:
 
 diamond_increment:
 		move.l	$1A(a3),d0
-		sub.l	($FFFFF81C).w,d0
+		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a3)
 		move.l	$1E(a3),d0
-		sub.l	($FFFFF820).w,d0
+		sub.l	(Camera_Y_pos).w,d0
 		move.l	d0,$42(a3)
 		move.l	#$1260000,d0
 		sub.l	$3E(a3),d0
@@ -21834,10 +21825,10 @@ diamond_increment:
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
 		move.w	$3E(a3),d4
-		add.w	($FFFFF81C).w,d4
+		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
 		move.w	$42(a3),d4
-		add.w	($FFFFF820).w,d4
+		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d2,-
 		addq.w	#1,(Number_Diamonds).w
@@ -21880,10 +21871,10 @@ loc_FE7A:
 		move.l	#stru_10C08,d7
 		jsr	(sub_274).w
 		move.l	$1A(a3),d0
-		sub.l	($FFFFF81C).w,d0
+		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a3)
 		move.l	$1E(a3),d0
-		sub.l	($FFFFF820).w,d0
+		sub.l	(Camera_Y_pos).w,d0
 		move.l	d0,$42(a3)
 		move.l	#$1270000,d0
 		sub.l	$3E(a3),d0
@@ -21900,10 +21891,10 @@ loc_FEEE:
 		move.w	$3E(a3),d4
 
 loc_FEFE:
-		add.w	($FFFFF81C).w,d4
+		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
 		move.w	$42(a3),d4
-		add.w	($FFFFF820).w,d4
+		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d2,loc_FEEE
 		addq.w	#1,(Number_Lives).w
@@ -21925,10 +21916,10 @@ loc_FF1E:
 		move.l	#stru_10C18,d7
 		jsr	(sub_274).w
 		move.l	$1A(a3),d0
-		sub.l	($FFFFF81C).w,d0
+		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a3)
 		move.l	$1E(a3),d0
-		sub.l	($FFFFF820).w,d0
+		sub.l	(Camera_Y_pos).w,d0
 		move.l	d0,$42(a3)
 		move.l	#$380000,d0
 		sub.l	$3E(a3),d0
@@ -21943,50 +21934,50 @@ loc_FF92:
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
 		move.w	$3E(a3),d4
-		add.w	($FFFFF81C).w,d4
+		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
 		move.w	$42(a3),d4
-		add.w	($FFFFF820).w,d4
+		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d2,loc_FF92
-		addq.w	#1,($FFFFFC1E).w
-		cmpi.w	#$A,($FFFFFC1E).w
+		addq.w	#1,(Time_Seconds_low_digit).w
+		cmpi.w	#$A,(Time_Seconds_low_digit).w
 		bne.s	loc_FFDE
-		clr.w	($FFFFFC1E).w
-		addq.w	#1,($FFFFFC20).w
-		cmpi.w	#6,($FFFFFC20).w
+		clr.w	(Time_Seconds_low_digit).w
+		addq.w	#1,(Time_Seconds_high_digit).w
+		cmpi.w	#6,(Time_Seconds_high_digit).w
 		bne.s	loc_FFDE
-		clr.w	($FFFFFC20).w
-		addq.w	#1,($FFFFFC22).w
+		clr.w	(Time_Seconds_high_digit).w
+		addq.w	#1,(Time_Minutes).w
 
 loc_FFDE:
-		move.w	($FFFFFC22).w,d7
+		move.w	(Time_Minutes).w,d7
 		addq.w	#3,d7
 		cmpi.w	#$A,d7
 		blt.w	loc_FFF8
 		move.w	#$A,d7
-		clr.w	($FFFFFC1E).w
-		clr.w	($FFFFFC20).w
+		clr.w	(Time_Seconds_low_digit).w
+		clr.w	(Time_Seconds_high_digit).w
 
 loc_FFF8:
-		move.w	d7,($FFFFFC22).w
+		move.w	d7,(Time_Minutes).w
 
 loc_FFFC:
-		move.w	#1,($FFFFFC1C).w
+		move.w	#1,(Time_SubSeconds).w
 
 loc_10002:
-		addq.w	#1,($FFFFFDCE).w
+		addq.w	#1,(Clocks_collected).w
 		move.w	#$96,d3
 
 loc_1000A:
 		jsr	(sub_24C).w
 		move.w	$3E(a3),d4
-		add.w	($FFFFF81C).w,d4
+		add.w	(Camera_X_pos).w,d4
 		move.w	d4,$1A(a3)
 		move.w	$42(a3),d4
 
 loc_1001E:
-		add.w	($FFFFF820).w,d4
+		add.w	(Camera_Y_pos).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d3,loc_1000A
 		jmp	(sub_258).w
@@ -22309,7 +22300,7 @@ loc_103B2:
 		beq.s	loc_103DE
 		btst	#$10,d3
 		beq.s	loc_103DA
-		move.w	($FFFFF89C).w,d4
+		move.w	(Level_width_tiles).w,d4
 		move.w	(a2,d4.w),d4
 		andi.w	#$7000,d4
 		beq.s	loc_103DE
@@ -22332,13 +22323,13 @@ loc_103DE:
 		cmp.w	d2,d0
 		beq.s	loc_10402
 		bclr	#$10,d3
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 
 loc_10402:
 		move.w	d2,d0
 
 loc_10404:
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10430
 		tst.w	$38(a3)
@@ -22374,7 +22365,7 @@ loc_10436:
 loc_10464:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_1047C
 		tst.w	$38(a3)
@@ -22400,7 +22391,7 @@ loc_10480:
 loc_104AE:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_104C6
 		tst.w	$38(a3)
@@ -22426,7 +22417,7 @@ loc_104CA:
 loc_104F8:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10510
 		tst.w	$38(a3)
@@ -22452,7 +22443,7 @@ loc_10514:
 loc_10542:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_1055A
 		tst.w	$38(a3)
@@ -22478,7 +22469,7 @@ loc_1055E:
 loc_1058C:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_105A4
 		tst.w	$38(a3)
@@ -22504,7 +22495,7 @@ loc_105A8:
 loc_105D6:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_105EE
 		tst.w	$38(a3)
@@ -22530,7 +22521,7 @@ loc_105F2:
 loc_10620:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10638
 		tst.w	$38(a3)
@@ -22556,7 +22547,7 @@ loc_1063C:
 loc_1066A:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10682
 		tst.w	$38(a3)
@@ -22582,7 +22573,7 @@ loc_10686:
 loc_106B4:
 		jsr	(sub_24C).w
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_106CC
 		tst.w	$38(a3)
@@ -22638,7 +22629,7 @@ loc_1071E:
 
 loc_10738:
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10768
 		tst.w	$38(a3)
@@ -22679,7 +22670,7 @@ loc_10796:
 
 loc_107B0:
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_107E0
 		tst.w	$38(a3)
@@ -22718,7 +22709,7 @@ loc_1080A:
 
 loc_10824:
 		bsr.w	sub_10C38
-		move.w	($FFFFF8A0).w,d4
+		move.w	(Level_height_blocks).w,d4
 		cmp.w	$1E(a3),d4
 		ble.s	loc_10838
 		tst.w	$38(a3)
@@ -22763,7 +22754,7 @@ loc_1086A:
 loc_10876:
 		cmp.w	(a1),d1
 		bne.s	loc_10886
-		move.w	($FFFFFC44).w,d2
+		move.w	(Current_LevelID).w,d2
 		cmp.w	2(a1),d2
 		beq.w	loc_10354
 
@@ -22781,7 +22772,7 @@ loc_1089A:
 		move.w	d1,(a0)
 		lsl.w	#2,d0
 		move.w	$4A(a5),2(a0,d0.w)
-		move.w	($FFFFFC44).w,4(a0,d0.w)
+		move.w	(Current_LevelID).w,4(a0,d0.w)
 		rts
 ; End of function sub_10848
 
@@ -22887,10 +22878,10 @@ loc_10984:
 
 loc_10988:
 		move.l	$1A(a1),d0
-		sub.l	($FFFFF81C).w,d0
+		sub.l	(Camera_X_pos).w,d0
 		move.l	d0,$3E(a1)
 		move.l	$1E(a1),d0
-		sub.l	($FFFFF820).w,d0
+		sub.l	(Camera_Y_pos).w,d0
 		move.l	d0,$42(a1)
 		move.l	#$1260000,d0
 		sub.l	$3E(a1),d0
@@ -22907,10 +22898,10 @@ loc_109C0:
 		move.l	$2A(a1),d0
 		add.l	d0,$42(a1)
 		move.w	$3E(a1),d0
-		add.w	($FFFFF81C).w,d0
+		add.w	(Camera_X_pos).w,d0
 		move.w	d0,$1A(a1)
 		move.w	$42(a1),d0
-		add.w	($FFFFF820).w,d0
+		add.w	(Camera_Y_pos).w,d0
 		move.w	d0,$1E(a1)
 
 loc_109E8:										; Could be 10-diamond pickup increment
@@ -23018,7 +23009,7 @@ unk_10A7A:	dc.b   0
 
 loc_10A90:
 		bsr.w	sub_10848
-		move.l	($FFFFFC4C).w,d0
+		move.l	(Score).w,d0
 		move.l	d0,d1
 		addi.l	#$2710,d1
 		cmpi.l	#$98967F,d1
@@ -23026,7 +23017,7 @@ loc_10A90:
 		move.l	#$98967F,d1
 
 loc_10AAE:
-		move.l	d1,($FFFFFC4C).w
+		move.l	d1,(Score).w
 		divu.w	#$C350,d0
 		divu.w	#$C350,d1
 		cmp.w	d0,d1
@@ -23034,9 +23025,9 @@ loc_10AAE:
 		addq.w	#1,(Number_Lives).w
 
 loc_10AC2:
-		cmpi.l	#$186A0,($FFFFFC4C).w
+		cmpi.l	#$186A0,(Score).w
 		blt.s	loc_10AE0
-		cmpi.w	#HundredKTripStart_LevelID,($FFFFFC44).w
+		cmpi.w	#HundredKTripStart_LevelID,(Current_LevelID).w
 		bne.s	loc_10AE0
 		tst.w	($FFFFFB4C).w
 		bne.s	loc_10AE0
@@ -23112,10 +23103,10 @@ loc_10B98:
 
 loc_10B9A:
 		move.w	$1A(a1),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		move.w	d0,$3E(a1)
 		move.w	$1E(a1),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		move.w	d0,$42(a1)
 
 loc_10BB2:
@@ -23123,7 +23114,7 @@ loc_10BB2:
 		cmpi.w	#$10,d2
 		bne.s	loc_10BCA
 		move.w	$1A(a1),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FFE0,d0
 		blt.s	loc_10BE0
 
@@ -23216,7 +23207,7 @@ loc_10C50:
 		cmp.w	d2,d0
 		beq.s	loc_10C74
 		bclr	#$10,d3
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 
 loc_10C74:
 		move.w	d2,d0
@@ -23590,7 +23581,7 @@ sub_11006:
 		bne.s	loc_11020
 		tst.w	d2
 		beq.w	loc_11080
-		suba.w	($FFFFF89C).w,a0
+		suba.w	(Level_width_tiles).w,a0
 		bra.s	loc_11052
 ; ---------------------------------------------------------------------------
 
@@ -23599,7 +23590,7 @@ loc_11020:
 		bge.s	loc_11036
 		move.w	d1,d4
 		addq.w	#1,d4
-		cmp.w	($FFFFF89E).w,d4
+		cmp.w	(Level_width_blocks).w,d4
 		bge.w	loc_11080
 		addq.w	#2,a0
 		bra.s	loc_11052
@@ -23609,9 +23600,9 @@ loc_11036:
 		bne.s	loc_1104A
 		move.w	d2,d4
 		addq.w	#1,d4
-		cmp.w	($FFFFF8A4).w,d4
+		cmp.w	(Level_height_pixels).w,d4
 		bge.w	loc_11080
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		bra.s	loc_11052
 ; ---------------------------------------------------------------------------
 
@@ -23819,7 +23810,7 @@ loc_111F4:
 		cmpi.w	#3,d6
 		bne.s	loc_11230
 		addq.w	#2,a2
-		move.w	($FFFFF89E).w,d4
+		move.w	(Level_width_blocks).w,d4
 		subq.w	#1,d4
 
 loc_11208:
@@ -23947,7 +23938,7 @@ loc_11328:
 ; ---------------------------------------------------------------------------
 
 loc_11334:
-		move.w	($FFFFF89E).w,d4
+		move.w	(Level_width_blocks).w,d4
 		subq.w	#1,d4
 		cmp.w	d4,d1
 		bge.w	loc_11358
@@ -23979,7 +23970,7 @@ loc_11364:
 		tst.w	d2
 		beq.s	loc_113BA
 		move.w	d3,a2
-		suba.w	($FFFFF89C).w,a2
+		suba.w	(Level_width_tiles).w,a2
 		btst	#6,(a2)
 		bne.s	loc_113BA
 		move.b	#$6F,(a2)
@@ -24026,7 +24017,7 @@ loc_113F4:
 		subq.w	#1,d2
 		bsr.w	sub_11530
 		addq.w	#1,d2
-		add.w	($FFFFF89C).w,a1
+		add.w	(Level_width_tiles).w,a1
 		bsr.w	sub_11542
 		addi.w	#$10,$1E(a3)
 		move.w	#$F,d0
@@ -24052,7 +24043,7 @@ loc_11430:
 		bmi.s	loc_11474
 		moveq	#0,d4
 		move.w	d3,a1
-		suba.w	($FFFFF89C).w,a1
+		suba.w	(Level_width_tiles).w,a1
 		tst.w	(a1)
 		bne.s	loc_11448
 		bsr.s	sub_1149C
@@ -24069,7 +24060,7 @@ loc_11448:
 loc_11458:
 		addq.w	#1,d1
 		addq.w	#1,d1
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bge.s	loc_1146E
 		tst.w	2(a1)
 		bne.s	loc_1146E
@@ -24185,7 +24176,7 @@ sub_11542:
 		moveq	#0,d0
 		move.b	(a0,d1.w),d0
 		move.w	d1,-(sp)
-		move.w	($FFFFF8AA).w,d1
+		move.w	(Foreground_theme).w,d1
 		add.w	d1,d1
 		add.w	d1,d1
 		move.l	(LnkTo_ThemeCollision_Index).l,a0
@@ -24242,7 +24233,7 @@ off_1194C:	dc.l sub_12D64
 ; ---------------------------------------------------------------------------
 
 LoadGameModeData:
-		move.w	($FFFFFBCA).w,d0
+		move.w	(Game_Mode).w,d0
 		move.l	GameLoadArray(pc,d0.l),a0
 		jsr	(a0)
 		clr.w	($FFFF0280).l
@@ -24266,7 +24257,7 @@ GameLoadArray:	dc.l Load_SegaScreen
 ; ---------------------------------------------------------------------------
 
 Load_DemoPlay:
-		st	($FFFFFBC9).w
+		st	(Demo_Mode_flag).w
 		lea	(Demo_InputData1).l,a4
 		move.w	#$15,d7
 		not.b	($FFFFFBC8).w
@@ -24275,8 +24266,8 @@ Load_DemoPlay:
 		move.w	#$1B,d7
 
 loc_119B6:
-		move.l	a4,($FFFFFBC4).w
-		move.w	d7,($FFFFFC44).w
+		move.l	a4,(Addr_Current_Demo_Keypress).w
+		move.w	d7,(Current_LevelID).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_119D8,4(a0)
@@ -24287,16 +24278,16 @@ loc_119B6:
 
 loc_119D8:
 
-		clr.b	($FFFFF813).w
+		clr.b	(Ctrl_Pressed).w
 		jsr	(sub_24C).w
-		btst	#7,($FFFFF80E).w
+		btst	#7,(Ctrl_1_Pressed).w
 		beq.s	loc_119D8
-		move.w	#$2C,($FFFFFBCA).w
-		sf	($FFFFFBC9).w
+		move.w	#$2C,(Game_Mode).w
+		sf	(Demo_Mode_flag).w
 		st	($FFFFFBCE).w
 		st	($FFFFFC36).w
 		move.w	#$82A,($FFFFFBCC).w
-		clr.w	($FFFFFC44).w
+		clr.w	(Current_LevelID).w
 		jsr	(j_StopMusic).l
 		jmp	(loc_204).w
 
@@ -24313,7 +24304,7 @@ Load_InGame:
 		move.l	#$F,-(sp)
 		jsr	(sub_E133C).l
 		move.l	(sp)+,d0
-		move.w	($FFFFFC44).w,d0
+		move.w	(Current_LevelID).w,d0
 		move.l	(LnkTo_MapOrder_Index).l,a0
 		move.b	(a0,d0.w),d0
 		ext.w	d0
@@ -24322,17 +24313,17 @@ Load_InGame:
 		move.w	(a0,d0.w),d0
 		move.l	#word_4033A,a0
 		add.w	d0,a0
-		move.l	a0,($FFFFFBD4).w
+		move.l	a0,(Addr_MapHeader).w
 		moveq	#0,d0
 		move.b	(a0)+,d0	; x size
 		mulu.w	#$14,d0
-		move.w	d0,($FFFFF89E).w
+		move.w	d0,(Level_width_blocks).w
 		add.w	d0,d0
-		move.w	d0,($FFFFF89C).w
+		move.w	d0,(Level_width_tiles).w
 		lsl.w	#3,d0
-		move.w	d0,($FFFFF89A).w
+		move.w	d0,(Level_width_pixels).w
 		subi.w	#$140,d0
-		move.w	d0,($FFFFF8BA).w
+		move.w	d0,(Camera_max_X_pos).w
 		moveq	#0,d0
 		move.b	(a0)+,d0	; y size + flags
 		move.b	d0,d1
@@ -24342,27 +24333,27 @@ Load_InGame:
 		move.b	d1,($FFFFFAD2).w
 		andi.b	#$3F,d0
 		mulu.w	#$E,d0
-		move.w	d0,($FFFFF8A4).w
+		move.w	d0,(Level_height_pixels).w
 		add.w	d0,d0
-		move.w	d0,($FFFFF8A2).w
+		move.w	d0,(Level_height_tiles).w
 		lsl.w	#3,d0
-		move.w	d0,($FFFFF8A0).w
+		move.w	d0,(Level_height_blocks).w
 		subi.w	#$E0,d0
-		move.w	d0,($FFFFF8BC).w
+		move.w	d0,(Camera_max_Y_pos).w
 		ext.w	d1
-		add.w	d1,($FFFFF8A4).w
+		add.w	d1,(Level_height_pixels).w
 		add.w	d1,d1
-		add.w	d1,($FFFFF8A2).w
+		add.w	d1,(Level_height_tiles).w
 		lsl.w	#3,d1
-		add.w	d1,($FFFFF8A0).w
-		add.w	d1,($FFFFF8BC).w
-		move.w	($FFFFFC44).w,d2
+		add.w	d1,(Level_height_blocks).w
+		add.w	d1,(Camera_max_Y_pos).w
+		move.w	(Current_LevelID).w,d2
 		move.l	(LnkTo_MapOrder_Index).l,a2
 		move.b	(a2,d2.w),d2
 		cmpi.w	#$54,d2
 		beq.s	loc_11AE4
 		move.l	#$FFFFDD02,a3
-		cmpi.w	#$12C,($FFFFF89E).w
+		cmpi.w	#$12C,(Level_width_blocks).w
 		bgt.s	loc_11AEA
 
 loc_11AE4:
@@ -24372,15 +24363,15 @@ loc_11AEA:
 		lea	($FFFF4A00).l,a1
 		move.w	a3,(a1)+
 		move.w	a3,(a1)+
-		lea	($FFFFA652).w,a2
-		move.w	($FFFFF8A4).w,d0
+		lea	(Level_Layout).w,a2
+		move.w	(Level_height_pixels).w,d0
 		subq.w	#1,d0
 
 loc_11AFE:
 		move.w	a2,(a1)+
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 		dbf	d0,loc_11AFE
-		move.w	($FFFFF89E).w,d0
+		move.w	(Level_width_blocks).w,d0
 		subq.w	#1,d0
 		move.w	#$6000,d1
 
@@ -24392,7 +24383,7 @@ loc_11B12:
 loc_11B1A:
 		move.w	a3,(a1)+
 		dbf	d0,loc_11B1A
-		move.w	($FFFFF89E).w,d0
+		move.w	(Level_width_blocks).w,d0
 		subq.w	#1,d0
 		moveq	#0,d1
 
@@ -24400,27 +24391,27 @@ loc_11B28:
 		move.w	d1,(a3)+
 		dbf	d0,loc_11B28
 		lea	($FFFF4BB8).l,a3
-		lea	($FFFF52C2).l,a4
-		move.w	($FFFFF8A4).w,d0
+		lea	(Level_terrain_layout).l,a4
+		move.w	(Level_height_pixels).w,d0
 		subq.w	#1,d0
 
 loc_11B40:
 		move.w	a4,(a3)+
-		add.w	($FFFFF89E).w,a4
+		add.w	(Level_width_blocks).w,a4
 		dbf	d0,loc_11B40
-		move.w	($FFFFF89C).w,d0
+		move.w	(Level_width_tiles).w,d0
 		lsr.w	#2,d0
 		addi.w	#$1E,d0
-		move.w	d0,($FFFFF8A6).w
-		move.w	($FFFFF8A2).w,d0
+		move.w	d0,(Background_width).w
+		move.w	(Level_height_tiles).w,d0
 		lsr.w	#2,d0
 		addi.w	#$15,d0
-		move.w	d0,($FFFFF8A8).w
+		move.w	d0,(Background_height).w
 		lea	($FFFF4D5C).l,a2
 		lea	($FFFF87B2).w,a1
-		move.w	($FFFFF8A8).w,d0
+		move.w	(Background_height).w,d0
 		subq.w	#1,d0
-		move.w	($FFFFF8A6).w,d1
+		move.w	(Background_width).w,d1
 
 loc_11B7A:
 		move.w	a1,(a2)+
@@ -24431,14 +24422,14 @@ loc_11B7A:
 		bpl.s	loc_11B9A
 		btst	#6,d7
 		beq.s	loc_11B92
-		st	($FFFFFAC2).w
+		st	(MurderWall_flag2).w
 
 loc_11B92:
 		andi.w	#$3F,d7
-		st	($FFFFFAC1).w
+		st	(MurderWall_flag).w
 
 loc_11B9A:
-		move.w	d7,($FFFFF8AA).w
+		move.w	d7,(Foreground_theme).w
 		clr.w	($FFFFF898).w
 		sf	($FFFFF896).w
 		lsl.w	#2,d7
@@ -24447,14 +24438,14 @@ loc_11B9A:
 		move.w	d0,d1
 		rol.b	#4,d1
 		andi.w	#$F,d1
-		move.w	d1,($FFFFFB40).w
+		move.w	d1,(Level_Special_Effects).w
 		andi.w	#$F,d0
-		move.w	d0,($FFFFF8AC).w
+		move.w	d0,(Background_theme).w
 		move.w	#%1010101000,d1	; bitmask telling which theme uses
 		btst	d0,d1		; which BG format
-		sne	($FFFFFB48).w
+		sne	(Background_format).w
 		beq.s	loc_11BD2
-		move.w	#$40,($FFFFF8A6).w
+		move.w	#$40,(Background_width).w
 
 loc_11BD2:
 		tst.b	($FFFFFC29).w
@@ -24465,18 +24456,18 @@ loc_11BD2:
 ; ---------------------------------------------------------------------------
 
 loc_11BE4:
-		move.w	(a0)+,($FFFFFC2A).w	; player x position
-		move.w	(a0)+,($FFFFFC2C).w	; player y position
+		move.w	(a0)+,(PlayerStart_X_pos).w	; player x position
+		move.w	(a0)+,(PlayerStart_Y_pos).w	; player y position
 
 loc_11BEC:
-		move.w	(a0)+,($FFFFFC2E).w	; flag x position
-		move.w	(a0)+,($FFFFFC30).w	; flag y position
+		move.w	(a0)+,(Flag_X_pos).w	; flag x position
+		move.w	(a0)+,(Flag_Y_pos).w	; flag y position
 		move.l	(a0)+,a1	; tile layout address
 		movem.l	d7-a0/a6,-(sp)
 		move.l	a1,a0
 		move.w	(a0)+,d0
 		lea	(a0,d0.w),a1
-		lea	($FFFF52C2).l,a2
+		lea	(Level_terrain_layout).l,a2
 		moveq	#-1,d0
 		move.l	d0,a3
 		moveq	#0,d1
@@ -24487,8 +24478,8 @@ loc_11C10:
 		tst.w	d0
 		bne.s	loc_11C10
 		movem.l	(sp)+,d7-a0/a6
-		lea	($FFFF52C2).l,a2
-		lea	($FFFFA652).w,a3
+		lea	(Level_terrain_layout).l,a2
+		lea	(Level_Layout).w,a3
 		move.l	(LnkTo_ThemeCollision_Index).l,a4
 		move.l	(a4,d7.w),a4
 		moveq	#0,d0
@@ -24504,17 +24495,17 @@ loc_11C36:
 		move.b	d3,(a3)+
 		move.b	d2,(a3)+
 		addq.w	#1,d1
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bne.s	loc_11C36
 		addq.w	#1,d0
-		cmp.w	($FFFFF8A4).w,d0
+		cmp.w	(Level_height_pixels).w,d0
 		bne.s	loc_11C34
 		move.l	#$FFFF0280,($FFFFF8EC).w
 		move.w	#$FFFF,($FFFF0280).l
 		move.l	(a0)+,a1	; block	layout
 		lea	($FFFF3B24).l,a5
 		bsr.w	LoadBlockLayout	; into temp buffer at $FFFF77B2?
-		cmpi.w	#$21,($FFFFFC44).w
+		cmpi.w	#$21,(Current_LevelID).w
 		bne.s	loc_11C7E
 		move.w	#$E50B,($FFBCEA).l
 
@@ -24594,12 +24585,12 @@ loc_11D0C:
 		move.l	(a0)+,a1	; background tiles
 		bsr.w	sub_1280A
 		move.l	(LnkTo_ThemeMappings_Index).l,a1
-		move.l	(a1,d7.w),($FFFFF8AE).w
+		move.l	(a1,d7.w),(Addr_ThemeMappings).w
 		move.l	(a0)+,a1	; enemy	layout
 		move.l	(a1)+,($FFFFF8F6).w
 		move.l	a1,($FFFFF8F2).w
 		move.l	(LnkTo_unk_7B8DC).l,a1
-		lea	($FFFF503A).l,a2
+		lea	(Block_Mappings).l,a2
 		moveq	#0,d1
 		tst.b	($FFFFF896).w
 		beq.s	loc_11D42
@@ -24620,7 +24611,7 @@ loc_11D46:
 		addi.l	#MainAddr_Index,d0
 		move.l	d0,a1
 		move.l	(a1),a1
-		move.w	($FFFFFC44).w,d2
+		move.w	(Current_LevelID).w,d2
 		move.l	(LnkTo_MapOrder_Index).l,a2
 		move.b	(a2,d2.w),d2
 		cmpi.b	#3,d2
@@ -24665,13 +24656,13 @@ loc_11DB8:
 		dbf	d1,loc_11DB8
 		move.l	(LnkTo_ThemePal2_Index).l,a1
 		moveq	#0,d0
-		move.w	($FFFFF8AC).w,d0
+		move.w	(Background_theme).w,d0
 		add.w	d0,d0
 		move.w	(a1,d0.w),d0
 		addi.l	#MainAddr_Index,d0
 		move.l	d0,a1
 		move.l	(a1),a1
-		move.w	($FFFFFC44).w,d2
+		move.w	(Current_LevelID).w,d2
 		move.l	(LnkTo_MapOrder_Index).l,a2
 		move.b	(a2,d2.w),d2
 		cmpi.b	#3,d2
@@ -24701,7 +24692,7 @@ loc_11E12:
 		lea	Pal_12D54(pc),a1
 
 loc_11E16:
-		move.w	(a1)+,($FFFF4E58).l
+		move.w	(a1)+,(Palette_Buffer).l
 		lea	($FFFF4E8A).l,a2
 		moveq	#6,d1
 
@@ -24712,46 +24703,46 @@ loc_11E24:
 		move.l	(a0,d7.w),a0
 		move.w	#$1780,d0
 		lea	unk_1447A(pc),a3
-		cmpi.w	#$A,($FFFFF8AA).w
+		cmpi.w	#$A,(Foreground_theme).w
 		bne.s	loc_11E48
 		lea	unk_1444A(pc),a3
 
 loc_11E48:
-		cmpi.w	#9,($FFFFF8AA).w
+		cmpi.w	#9,(Foreground_theme).w
 		bne.s	loc_11E54
 		lea	unk_1445A(pc),a3
 
 loc_11E54:
-		cmpi.w	#7,($FFFFF8AA).w
+		cmpi.w	#7,(Foreground_theme).w
 		bne.s	loc_11E60
 		lea	unk_1449A(pc),a3
 
 loc_11E60:
 		bsr.w	SomeDecToRAM
 		move.l	(LnkTo_ThemeArtBack_Index).l,a0
-		move.w	($FFFFF8AC).w,d7
+		move.w	(Background_theme).w,d7
 		add.w	d7,d7
 		add.w	d7,d7
 		move.l	(a0,d7.w),a0
 		move.w	#$F000,d0
 		lea	unk_1447A(pc),a3
-		cmpi.w	#9,($FFFFF8AC).w
+		cmpi.w	#9,(Background_theme).w
 		bne.s	loc_11E8A
 		lea	unk_1448A(pc),a3
 
 loc_11E8A:
-		cmpi.w	#7,($FFFFF8AC).w
+		cmpi.w	#7,(Background_theme).w
 		bne.s	loc_11E96
 		lea	unk_144AA(pc),a3
 
 loc_11E96:
-		cmpi.w	#3,($FFFFF8AC).w
+		cmpi.w	#3,(Background_theme).w
 		bne.s	loc_11EA2
 		lea	unk_144BA(pc),a3
 
 loc_11EA2:
 		bsr.w	SomeDecToRAM
-		cmpi.w	#3,($FFFFF8AC).w
+		cmpi.w	#3,(Background_theme).w
 		bne.s	loc_11EC4
 		lea	unk_144CA(pc),a3
 		move.l	(LnkTo_ThemeArtBack_Index).l,a1
@@ -24760,14 +24751,14 @@ loc_11EA2:
 		bsr.w	SomeDecToRAM
 
 loc_11EC4:
-		cmpi.w	#7,($FFFFF8AC).w
+		cmpi.w	#7,(Background_theme).w
 		bne.s	loc_11EFA
 		lea	unk_1447A(pc),a3
 		move.l	(LnkTo_ThemeArtBack_Index).l,a1
 		move.l	$2C(a1),a0
-		cmpi.w	#2,($FFFFFB40).w
+		cmpi.w	#2,(Level_Special_Effects).w
 		beq.s	loc_11EEA
-		cmpi.w	#3,($FFFFFB40).w
+		cmpi.w	#3,(Level_Special_Effects).w
 		bne.s	loc_11EF2
 
 loc_11EEA:
@@ -24801,21 +24792,21 @@ loc_11EFA:
 loc_11F48:
 		move.w	#$780,(a6)
 		dbf	d0,loc_11F48
-		move.w	($FFFFFC2A).w,d1
+		move.w	(PlayerStart_X_pos).w,d1
 		divu.w	#$140,d1
 		moveq	#0,d0
 		mulu.w	#$140,d1
 		move.w	d1,d0
 		swap	d0
-		move.l	d0,($FFFFF81C).w
-		move.w	($FFFFFC2C).w,d1
+		move.l	d0,(Camera_X_pos).w
+		move.w	(PlayerStart_Y_pos).w,d1
 		divu.w	#$E0,d1
 		moveq	#0,d0
 		mulu.w	#$E0,d1
 		move.w	d1,d0
 		swap	d0
-		move.l	d0,($FFFFF820).w
-		cmpi.w	#7,($FFFFF8AA).w
+		move.l	d0,(Camera_Y_pos).w
+		cmpi.w	#7,(Foreground_theme).w
 		bne.s	loc_11F96
 		move.w	#$A000,a0
 		jsr	(sub_23C).w
@@ -24824,7 +24815,7 @@ loc_11F48:
 ; ---------------------------------------------------------------------------
 
 loc_11F96:
-		cmpi.w	#8,($FFFFF8AA).w
+		cmpi.w	#8,(Foreground_theme).w
 		bne.s	loc_11FB0
 		move.w	#$A000,a0
 		jsr	(sub_23C).w
@@ -24833,7 +24824,7 @@ loc_11F96:
 ; ---------------------------------------------------------------------------
 
 loc_11FB0:
-		cmpi.w	#4,($FFFFF8AC).w
+		cmpi.w	#4,(Background_theme).w
 		bne.s	loc_11FC8
 		move.w	#0,a0
 		jsr	(sub_23C).w
@@ -24841,7 +24832,7 @@ loc_11FB0:
 
 loc_11FC8:
 					; Load_InGame+5A0j ...
-		tst.b	($FFFFFAC1).w
+		tst.b	(MurderWall_flag).w
 		beq.s	loc_11FD2
 		bsr.w	sub_1409A
 
@@ -24853,7 +24844,7 @@ loc_11FD2:
 		bsr.w	sub_129AE
 		jsr	(sub_7172).w
 		bsr.w	sub_145B6
-		tst.b	($FFFFFAC1).w
+		tst.b	(MurderWall_flag).w
 		beq.s	loc_12004
 		move.w	#9,d0
 		jsr	(j_PlaySound).l
@@ -24861,7 +24852,7 @@ loc_11FD2:
 ; ---------------------------------------------------------------------------
 
 loc_12004:
-		move.w	($FFFFF8AA).w,d1
+		move.w	(Foreground_theme).w,d1
 		lea	unk_1201E(pc),a0
 		moveq	#0,d0
 		move.b	(a0,d1.w),d0
@@ -25035,7 +25026,7 @@ unk_12226:	dc.b $19
 loc_1222C:
 					; Load_InGame+598o
 		move.w	#5,d0
-		cmpi.w	#7,($FFFFF8AA).w
+		cmpi.w	#7,(Foreground_theme).w
 		beq.s	loc_1223A
 		addq.w	#3,d0
 
@@ -25147,7 +25138,7 @@ loc_12320:
 		clr.b	(a2)+
 
 loc_12332:
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_12318
 		bra.s	loc_122C0
 ; ---------------------------------------------------------------------------
@@ -25240,8 +25231,8 @@ loc_123BA:
 		clr.b	(a2)+
 
 loc_123CC:
-		add.w	($FFFFF89C).w,a4
-		add.w	($FFFFF89E).w,a3
+		add.w	(Level_width_tiles).w,a4
+		add.w	(Level_width_blocks).w,a3
 		dbf	d3,loc_123A4
 		bra.w	loc_1233E
 ; ---------------------------------------------------------------------------
@@ -25345,7 +25336,7 @@ loc_12480:
 		move.w	d2,(a5)+
 		move.w	d5,(a5)+
 		addq.w	#1,($FFFFF8D2).w
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_12454
 		bra.w	loc_123E6
 
@@ -25419,7 +25410,7 @@ loc_12520:
 
 loc_12526:
 		move.w	#$E304,(a4)
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_12526
 		lea	$10(a1),a1
 		bra.w	loc_124AA
@@ -25449,7 +25440,7 @@ loc_1255C:
 		move.l	a4,a2
 		move.w	#$B811,(a2)
 		move.w	#$B812,2(a2)
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 		move.w	#$B813,(a2)
 		move.w	#$B814,2(a2)
 		addq.w	#4,a4
@@ -25461,11 +25452,11 @@ loc_1257E:
 		move.l	a4,a2
 		move.w	#$B811,(a2)
 		move.w	#$B812,2(a2)
-		add.w	($FFFFF89C).w,a2
+		add.w	(Level_width_tiles).w,a2
 		move.w	#$B813,(a2)
 		move.w	#$B814,2(a2)
-		add.w	($FFFFF89C).w,a4
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_1257E
 		bra.s	loc_1253A
 ; ---------------------------------------------------------------------------
@@ -25551,7 +25542,7 @@ loc_1261E:
 		move.b	d5,(a2)+
 
 loc_12630:
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		dbf	d3,loc_12600
 		bra.w	loc_125A6
 ; ---------------------------------------------------------------------------
@@ -25691,7 +25682,7 @@ loc_12730:
 		addq.b	#1,d5
 		bsr.w	sub_127A8
 		move.b	d5,(a4)
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		addq.w	#1,d2
 		dbf	d3,loc_12730
 		bra.s	loc_126F2
@@ -25713,9 +25704,9 @@ sub_12752:
 		subq.w	#2,a4
 		subq.w	#1,d1
 		addq.w	#1,d2
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		bsr.s	sub_12792
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		subq.w	#1,d2
 		rts
 ; ---------------------------------------------------------------------------
@@ -25729,9 +25720,9 @@ loc_12772:
 		addq.w	#2,a4
 		addq.w	#1,d1
 		addq.w	#1,d2
-		add.w	($FFFFF89C).w,a4
+		add.w	(Level_width_tiles).w,a4
 		bsr.s	sub_12792
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		subq.w	#1,d2
 
 return_12790:
@@ -25743,9 +25734,9 @@ return_12790:
 
 
 sub_12792:
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bcc.s	return_127A6
-		cmp.w	($FFFFF8A4).w,d2
+		cmp.w	(Level_height_pixels).w,d2
 		bcc.s	return_127A6
 		tst.b	(a4)
 		bmi.s	return_127A6
@@ -25764,9 +25755,9 @@ sub_127A8:
 		move.b	#$20,(a4)
 		move.l	#$FF0000,d0
 		move.w	a4,d0
-		subi.w	#$A652,d0
+		subi.w	#Level_Layout&$FFFF,d0
 		lsr.w	#1,d0
-		addi.w	#$52C2,d0
+		addi.w	#Level_terrain_layout&$FFFF,d0
 		move.l	d0,a0
 		move.b	(a0),1(a4)
 		movem.l	(sp)+,d0/a0
@@ -25817,7 +25808,7 @@ loc_127F8:
 sub_1280A:
 ; FUNCTION CHUNK AT 000128BA SIZE 000000F4 BYTES
 
-		tst.b	($FFFFFB48).w
+		tst.b	(Background_format).w
 		bne.w	loc_128BA
 		cmpi.w	#$8000,(a1)
 		beq.w	loc_12824
@@ -25857,8 +25848,8 @@ loc_12842:
 		; d3 = y position
 		; d2 = x position
 		; d0 = which chunk of background (index into table)
-		; $FFFFF8AC = Background theme
-		; $FFFFF8A6 = background (buffer) width
+		; Background_theme = Background theme
+		; Background_width = background (buffer) width
 		; $FFFF87B2 = background tile buffer
 sub_12848:
 		movem.l	d5-d6,-(sp)
@@ -25866,12 +25857,12 @@ sub_12848:
 		move.w	d3,d6
 		lea	($FFFF4D5C).l,a2
 		move.l	(LnkTo_off_7B3E4).l,a3
-		move.w	($FFFFF8AC).w,d1
+		move.w	(Background_theme).w,d1
 		add.w	d1,d1
 		add.w	d1,d1
 		move.l	(a3,d1.w),a3
 		lea	($FFFF87B2).w,a2
-		muls.w	($FFFFF8A6).w,d3
+		muls.w	(Background_width).w,d3
 		add.w	d3,a2
 		add.w	d2,a2
 		add.w	d0,d0
@@ -25890,11 +25881,11 @@ loc_12884:
 loc_1288A:
 		tst.w	d5
 		bmi.s	loc_128A0
-		cmp.w	($FFFFF8A6).w,d5
+		cmp.w	(Background_width).w,d5
 		bge.s	loc_128A0
 		tst.w	d6
 		bmi.s	loc_128A0
-		cmp.w	($FFFFF8A8).w,d6
+		cmp.w	(Background_height).w,d6
 		bge.s	loc_128A0
 		move.b	(a3),(a4)
 
@@ -25903,7 +25894,7 @@ loc_128A0:
 		addq.w	#1,a4
 		addq.w	#1,d5
 		dbf	d4,loc_1288A
-		add.w	($FFFFF8A6).w,a2
+		add.w	(Background_width).w,a2
 		addq.w	#1,d6
 		dbf	d3,loc_12884
 		movem.l	(sp)+,d5-d6
@@ -25916,15 +25907,15 @@ loc_128A0:
 loc_128BA:
 		move.l	a0,-(sp)
 		move.l	(LnkTo_off_7B3E4).l,a3
-		move.w	($FFFFF8AC).w,d0
+		move.w	(Background_theme).w,d0
 		add.w	d0,d0
 		add.w	d0,d0
 		move.l	(a3,d0.w),a3
-		cmpi.w	#7,($FFFFF8AC).w	; mountain
+		cmpi.w	#7,(Background_theme).w	; mountain
 		beq.s	loc_12910
-		cmpi.w	#3,($FFFFF8AC).w	; hill
+		cmpi.w	#3,(Background_theme).w	; hill
 		beq.w	loc_1295E
-		cmpi.w	#5,($FFFFF8AC).w	; desert
+		cmpi.w	#5,(Background_theme).w	; desert
 		beq.w	loc_12988
 		;forest
 		move.w	#$780,d0
@@ -25952,9 +25943,9 @@ loc_12910:	; mountain
 		move.l	(a3)+,a0
 		lea	($FFFF95B2).w,a1
 		bsr.w	EniDec
-		cmpi.w	#2,($FFFFFB40).w	; stormy level?
+		cmpi.w	#2,(Level_Special_Effects).w	; stormy level?
 		beq.s	loc_1294A
-		cmpi.w	#3,($FFFFFB40).w	; stormy + hail level?
+		cmpi.w	#3,(Level_Special_Effects).w	; stormy + hail level?
 		beq.s	loc_1294A
 		move.w	#$7E5,d0
 		move.l	(a3)+,a0
@@ -26007,7 +25998,7 @@ loc_12988:	; desert
 
 
 sub_129AE:
-		cmpi.w	#9,($FFFFF8AC).w
+		cmpi.w	#9,(Background_theme).w
 		bne.s	return_129CC
 		move.w	($FFFF4E88).l,d0
 		move.w	($FFFF4E8C).l,($FFFF4E88).l
@@ -26123,7 +26114,7 @@ Load_SegaScreen:
 		lea	Pal_12EEC(pc),a2
 		moveq	#0,d7
 		move.b	(a2)+,d7
-		lea	($FFFF4E58).l,a3
+		lea	(Palette_Buffer).l,a3
 		add.w	d7,a3
 		move.b	(a2)+,d7
 
@@ -26166,14 +26157,14 @@ loc_12E48:
 ; ---------------------------------------------------------------------------
 
 loc_12E64:
-		clr.b	($FFFFF813).w
+		clr.b	(Ctrl_Pressed).w
 		move.w	#$A,d2
 
 loc_12E6C:
 		move.w	d2,-(sp)
 		jsr	(j_WaitForVint).w
 		jsr	(j_ReadJoypad).w
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		bne.w	loc_12EDE
 		jsr	(sub_2C8).w
 		jsr	(sub_218).w
@@ -26189,7 +26180,7 @@ loc_12E96:
 		jsr	(j_WaitForVint).w
 		jsr	(j_ReadJoypad).w
 		move.w	(sp)+,d1
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		bne.s	loc_12EDE
 		jsr	(sub_2C8).w
 		move.w	d1,-(sp)
@@ -26214,7 +26205,7 @@ loc_12ED8:
 		dbf	d2,loc_12E96
 
 loc_12EDE:
-		move.w	#4,($FFFFFBCA).w
+		move.w	#4,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
@@ -27555,14 +27546,14 @@ Pal_1408A:
 sub_1409A:
 		move.b	#1,($FFFFFAC0).w
 		move.b	#0,($FFFFFABF).w
-		move.l	#$20000,($FFFFFACC).w
-		cmpi.w	#8,($FFFFFC44).w
+		move.l	#$20000,(MurderWall_max_speed).w
+		cmpi.w	#8,(Current_LevelID).w
 		bne.s	loc_140BE
-		move.l	#$18000,($FFFFFACC).w
+		move.l	#$18000,(MurderWall_max_speed).w
 
 loc_140BE:
-		clr.l	($FFFFFAC8).w
-		move.w	($FFFFF81C).w,d0
+		clr.l	(MurderWall_speed).w
+		move.w	(Camera_X_pos).w,d0
 		beq.s	loc_140CE
 		addi.w	#$30,d0
 		bra.s	loc_140D2
@@ -27600,23 +27591,23 @@ sub_140F6:
 loc_140FE:
 		ext.w	d1
 		lea	($FFFF4A04).l,a0
-		move.w	($FFFFF8A4).w,d0
+		move.w	(Level_height_pixels).w,d0
 		sub.w	d1,d0
 		subq.w	#1,d0
 		add.w	d0,d0
 		move.w	(a0,d0.w),a0
 		move.l	a0,a1
-		move.w	($FFFFF89E).w,d2
+		move.w	(Level_width_blocks).w,d2
 		add.w	d2,d2
 		move.w	d2,d3
 		mulu.w	d1,d2
 		add.w	d2,a1
-		move.w	($FFFFF8A4).w,d0
+		move.w	(Level_height_pixels).w,d0
 		subq.w	#1,d0
 		sub.b	($FFFFFAD2).w,d0
 		move.l	a0,d7
 		move.l	a1,d6
-		move.w	($FFFFF89E).w,d1
+		move.w	(Level_width_blocks).w,d1
 		subq.w	#1,d1
 		move.w	d1,d2
 
@@ -27648,7 +27639,7 @@ loc_14158:
 		move.b	($FFFFFAD2).w,d1
 		ext.w	d1
 		lea	($FFFF4BB8).l,a0
-		move.w	($FFFFF8A4).w,d0
+		move.w	(Level_height_pixels).w,d0
 		sub.w	d1,d0
 		subq.w	#1,d0
 		add.w	d0,d0
@@ -27656,16 +27647,16 @@ loc_14158:
 		ori.l	#$FFFF0000,d7
 		move.l	d7,a0
 		move.l	a0,a1
-		move.w	($FFFFF89E).w,d2
+		move.w	(Level_width_blocks).w,d2
 		move.w	d2,d3
 		mulu.w	d1,d2
 		add.w	d2,a1
-		move.w	($FFFFF8A4).w,d0
+		move.w	(Level_height_pixels).w,d0
 		subq.w	#1,d0
 		sub.b	($FFFFFAD2).w,d0
 		move.l	a0,d7
 		move.l	a1,d6
-		move.w	($FFFFF89E).w,d1
+		move.w	(Level_width_blocks).w,d1
 		subq.w	#1,d1
 		move.w	d1,d2
 
@@ -27697,7 +27688,7 @@ loc_141CA:
 		move.b	($FFFFFAD2).w,d6
 		ext.w	d6
 		move.w	d6,d7
-		mulu.w	($FFFFF89C).w,d7
+		mulu.w	(Level_width_tiles).w,d7
 		move.l	($FFFFF8D4).w,a0
 		move.w	($FFFFF8D2).w,d0
 		bra.s	loc_141F6
@@ -27754,10 +27745,10 @@ loc_1423E:
 
 
 sub_14244:
-		move.w	#$FFFF,($FFFFFC18).w
-		move.w	#$FFFF,($FFFFFC1A).w
+		move.w	#$FFFF,(Number_Lives_prev).w
+		move.w	#$FFFF,(Number_Diamonds_prev).w
 		lea	unk_1427C(pc),a0
-		lea	($FFFF0000).l,a1
+		lea	(Sprite_Table).l,a1
 		moveq	#$13,d0
 
 loc_1425C:
@@ -27765,8 +27756,8 @@ loc_1425C:
 		dbf	d0,loc_1425C
 		move.l	#$FFFF0050,($FFFFF832).w
 		move.b	#$A,($FFFFF836).w
-		addq.w	#1,($FFFFFC1E).w
-		move.w	#1,($FFFFFC1C).w
+		addq.w	#1,(Time_Seconds_low_digit).w
+		move.w	#1,(Time_SubSeconds).w
 		rts
 ; End of function sub_14244
 
@@ -28224,7 +28215,7 @@ unk_144CA:	dc.b   6
 
 
 sub_144DA:
-		move.w	($FFFFF8AA).w,d0
+		move.w	(Foreground_theme).w,d0
 		moveq	#0,d1
 		lea	unk_14576(pc),a0
 		move.b	(a0,d0.w),d1
@@ -28334,7 +28325,7 @@ off_145A2:	dc.l loc_14C36	; 1: lava
 
 
 sub_145B6:
-		move.w	($FFFFFB40).w,d0
+		move.w	(Level_Special_Effects).w,d0
 		beq.s	return_145C8
 		subq.w	#1,d0
 		add.w	d0,d0
@@ -28737,14 +28728,14 @@ loc_147BA:
 		move.l	a2,a1
 
 loc_147D6:
-		move.w	($FFFFF81C).w,d7
+		move.w	(Camera_X_pos).w,d7
 		subi.w	#$20,d7
 		cmp.w	d7,d0
 		blt.w	loc_1482E
 		addi.w	#$180,d7
 		cmp.w	d7,d0
 		bgt.w	loc_1482E
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		subi.w	#$48,d7
 		cmp.w	d7,d1
 		blt.s	loc_1482E
@@ -28762,7 +28753,7 @@ loc_1480C:
 		move.l	a1,a2
 		bsr.w	sub_14BD8
 		subi.w	#$80,d7
-		add.w	($FFFFF820).w,d7
+		add.w	(Camera_Y_pos).w,d7
 		move.w	d7,$54(a5)
 		dbf	d2,loc_14804
 		addq.w	#2,a0
@@ -28809,7 +28800,7 @@ loc_1486C:
 loc_14874:
 		move.w	$44(a5),d0
 		subi.w	#$80,d0
-		move.w	($FFFFF81C).w,d7
+		move.w	(Camera_X_pos).w,d7
 		subi.w	#$20,d7
 		cmp.w	d7,d0
 		blt.w	loc_14940
@@ -28823,7 +28814,7 @@ loc_14874:
 		addq.w	#1,d7
 		lsl.w	#4,d7
 		sub.w	d7,d1
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		subi.w	#$28,d7
 		cmp.w	d7,d1
 		blt.s	loc_148E6
@@ -28844,7 +28835,7 @@ loc_148D4:
 		move.l	d7,a2
 		bsr.w	sub_14BD8
 		subi.w	#$80,d7
-		add.w	($FFFFF820).w,d7
+		add.w	(Camera_Y_pos).w,d7
 		move.w	d7,$54(a5)
 
 loc_148E6:
@@ -28856,7 +28847,7 @@ loc_148E6:
 		addi.w	#$10,d1
 
 loc_148F8:
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		subi.w	#$10,d7
 		cmp.w	d7,d1
 		blt.s	loc_14914
@@ -28874,7 +28865,7 @@ loc_14914:
 		moveq	#0,d7
 		move.l	#unk_14650,d7
 		move.l	d7,a2
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		subi.w	#$10,d7
 		cmp.w	d7,d1
 		blt.s	loc_14940
@@ -28957,14 +28948,14 @@ loc_149FC:
 		add.w	$52(a5),d1
 
 loc_14A0A:
-		move.w	($FFFFF81C).w,d7
+		move.w	(Camera_X_pos).w,d7
 		subi.w	#$10,d7
 		cmp.w	d7,d0
 		blt.w	loc_14A46
 		addi.w	#$160,d7
 		cmp.w	d7,d0
 		bgt.w	loc_14A46
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		subi.w	#$18,d7
 		cmp.w	d7,d1
 		blt.s	loc_14A46
@@ -28973,7 +28964,7 @@ loc_14A0A:
 		bgt.s	loc_14A46
 		bsr.w	sub_14BD8
 		subi.w	#$80,d7
-		add.w	($FFFFF820).w,d7
+		add.w	(Camera_Y_pos).w,d7
 		move.w	d7,$54(a5)
 
 loc_14A46:
@@ -29231,13 +29222,13 @@ unk_14BC4:	dc.b   0
 sub_14BD8:
 		move.l	($FFFFF832).w,a4
 		move.w	d1,d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		addi.w	#$80,d7
 		move.w	(a2)+,d4
 
 loc_14BE8:
 		move.w	$44(a5),d6
-		sub.w	($FFFFF81C).w,d6
+		sub.w	(Camera_X_pos).w,d6
 		add.w	(a2),d6
 		move.w	d6,6(a4)
 		sub.w	2(a2),d7
@@ -29263,7 +29254,7 @@ off_14C26:	dc.l unk_14B60	; Under Skull Mountain 2
 ; ---------------------------------------------------------------------------
 
 loc_14C36:
-		move.w	($FFFFFC44).w,d0
+		move.w	(Current_LevelID).w,d0
 		move.l	(LnkTo_MapOrder_Index).l,a0
 		move.b	(a0,d0.w),d0
 		clr.w	d1
@@ -29308,7 +29299,7 @@ loc_14C6A:
 ; ---------------------------------------------------------------------------
 
 loc_14CBA:
-		cmpi.w	#2,($FFFFF8AC).w
+		cmpi.w	#2,(Background_theme).w
 		beq.s	loc_14CCE
 		move.l	(LnkTo_ArtSom_99090_Rain).l,a0
 		move.w	#$7000,d0
@@ -29322,7 +29313,7 @@ loc_14CCE:
 loc_14CD8:
 		bsr.w	SomeDecToVRAM	; a0 - source address
 					; d0 - offset in VRAM (destination)
-		cmpi.w	#2,($FFFFF8AC).w
+		cmpi.w	#2,(Background_theme).w
 		beq.s	loc_14CEC
 		move.l	(LnkTo_Pal_7B8BC).l,a0
 		bra.s	loc_14CF2
@@ -29337,7 +29328,7 @@ loc_14CF2:
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
-		cmpi.w	#2,($FFFFF8AC).w
+		cmpi.w	#2,(Background_theme).w
 		beq.s	loc_14D1E
 		move.w	#$380,d7
 		move.w	d7,d6
@@ -29386,7 +29377,7 @@ loc_14D40:
 		dbf	d1,loc_14D3E
 		move.l	a3,a0
 		dbf	d2,loc_14D3C
-		cmpi.w	#2,($FFFFFB40).w	; rain?
+		cmpi.w	#2,(Level_Special_Effects).w	; rain?
 		beq.s	loc_14D82
 		move.l	(LnkTo_Pal_7B85C).l,($FFFFFADE).w
 		bra.s	loc_14D8A
@@ -29571,7 +29562,7 @@ loc_19ABE:
 		move.w	d0,(a6)
 		move.w	d0,(a6)
 		jsr	(sub_20C).w
-		move.w	($FFFFFC44).w,d0
+		move.w	(Current_LevelID).w,d0
 		move.l	(LnkTo_MapOrder_Index).l,a0
 		move.b	(a0,d0.w),d0
 		ext.w	d0
@@ -29615,7 +29606,7 @@ loc_19B6A:
 		dbf	d0,loc_19B6A
 		lea	TitleCardPalettes_Index(pc),a0
 		move.l	(a0,d7.w),a0
-		lea	($FFFF4E58).l,a1
+		lea	(Palette_Buffer).l,a1
 		moveq	#$F,d0
 
 loc_19B80:
@@ -29728,7 +29719,7 @@ loc_1AB26:
 loc_1AB40:
 		move.w	(a0)+,(a1)+
 		dbf	d0,loc_1AB40
-		move.w	($FFFFFC44).w,d7
+		move.w	(Current_LevelID).w,d7
 		cmpi.w	#FirstElsewhere_LevelID,d7
 		blt.s	loc_1AB52
 		moveq	#FirstElsewhere_LevelID,d7
@@ -29817,7 +29808,7 @@ loc_1ABF4:
 		move.l	a3,$46(a0)
 
 loc_1AC10:
-		tst.b	($FFFFFC38).w
+		tst.b	(Two_player_flag).w
 		beq.s	loc_1AC26
 		move.w	#$A000,a0
 		jsr	(sub_23C).w
@@ -30027,9 +30018,9 @@ loc_1AE20:
 loc_1AE2E:
 
 		jsr	(sub_24C).w
-		bclr	#7,($FFFFF813).w
+		bclr	#7,(Ctrl_Pressed).w
 		beq.s	loc_1AE2E
-		move.w	#$C,($FFFFFBCA).w
+		move.w	#$C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
@@ -30243,10 +30234,10 @@ Load_IntroSequence2:
 		jsr	(j_SomeDecToVRAM).l
 		move.w	#$1780,d0
 		lea	(byte_243D5).l,a0
-		lea	($FFFFA652).w,a1
+		lea	(Level_Layout).w,a1
 		lea	(unk_1C336).l,a3
 		bsr.w	SomDecToVRAM_Special
-		lea	($FFFFA652).w,a1
+		lea	(Level_Layout).w,a1
 		lea	($FFFFB152).w,a2
 		move.w	#$2BF,d0
 
@@ -30372,7 +30363,7 @@ loc_1B1A4:
 		moveq	#$12,d6
 		moveq	#$14,d7
 		bsr.w	sub_1C5D0
-		move.l	#$FFB80000,($FFFFA652).w
+		move.l	#$FFB80000,(Level_Layout).w
 		move.l	#$FFD00000,($FFFFA656).w
 		cmpi.b	#2,($FFFFFC82).w
 		bne.s	loc_1B1E8
@@ -30396,12 +30387,12 @@ loc_1B1E8:
 
 
 sub_1B222:
-		move.w	($FFFFA656).w,($FFFFF820).w
+		move.w	($FFFFA656).w,(Camera_Y_pos).w
 		move.w	#$DF,d4
 		moveq	#0,d5
-		move.w	($FFFFA652).w,d5
+		move.w	(Level_Layout).w,d5
 		swap	d5
-		lea	($FFFF7432).l,a4
+		lea	(Horiz_Scroll_Buffer).l,a4
 
 loc_1B23A:
 		move.l	d5,(a4)+
@@ -30650,7 +30641,7 @@ loc_1B446:
 loc_1B45A:
 		move.w	#$39,-(sp)
 		jsr	(sub_248).w
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 		moveq	#$3F,d0
 
@@ -30662,7 +30653,7 @@ loc_1B470:
 		moveq	#7,d4
 		bsr.w	sub_1BF24
 		bsr.w	sub_1B532
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 		lea	($FFFF4ED8).l,a1
 		moveq	#$3F,d0
 
@@ -30735,7 +30726,7 @@ unk_1B4F4:	dc.b   0
 loc_1B504:
 		move.w	#$A,-(sp)
 		jsr	(sub_248).w
-		move.l	($FFFFA652).w,d0
+		move.l	(Level_Layout).w,d0
 		asr.l	#4,d0
 		move.l	($FFFFA656).w,d1
 		asr.l	#4,d1
@@ -30743,7 +30734,7 @@ loc_1B504:
 
 loc_1B51A:
 		jsr	(sub_24C).w
-		sub.l	d0,($FFFFA652).w
+		sub.l	d0,(Level_Layout).w
 		sub.l	d1,($FFFFA656).w
 		bsr.w	sub_1B222
 		dbf	d2,loc_1B51A
@@ -31206,7 +31197,7 @@ loc_1B924:
 		jsr	(sub_24C).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B924
-		move.w	#$18,($FFFFFBCA).w
+		move.w	#$18,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; End of function sub_1B8F4
@@ -31232,7 +31223,7 @@ loc_1B96E:
 		jsr	(sub_24C).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B96E
-		move.w	#$20,($FFFFFBCA).w
+		move.w	#$20,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; End of function sub_1B93E
@@ -31242,7 +31233,7 @@ loc_1B96E:
 
 
 sub_1B988:
-		move.w	#4,($FFFFF820).w
+		move.w	#4,(Camera_Y_pos).w
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
 		move.l	#loc_1C7A0,4(a0)
@@ -31257,7 +31248,7 @@ loc_1B9B6:
 		jsr	(sub_24C).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1B9B6
-		move.w	#$24,($FFFFFBCA).w
+		move.w	#$24,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; End of function sub_1B988
@@ -31285,7 +31276,7 @@ loc_1BA02:
 		bsr.w	sub_1C246
 		bsr.w	sub_1C180
 		dbf	d0,loc_1BA02
-		move.w	#$1C,($FFFFFBCA).w
+		move.w	#$1C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
@@ -31308,7 +31299,7 @@ loc_1BA60:
 		jsr	(sub_24C).w
 		bsr.w	sub_1C246
 		dbf	d0,loc_1BA60
-		move.w	#$28,($FFFFFBCA).w
+		move.w	#$28,(Game_Mode).w
 		sf	($FFFFFBCE).w
 		moveq	#$3F,d0
 		move.w	#$AAA,d1
@@ -31361,14 +31352,14 @@ loc_1BAEA:
 		move.w	#$280,d0
 
 loc_1BAEE:
-		clr.b	($FFFFF813).w
+		clr.b	(Ctrl_Pressed).w
 		jsr	(sub_24C).w
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		bne.s	loc_1BB52
 		dbf	d0,loc_1BAEE
 
 loc_1BB02:
-		move.w	#$10,($FFFFFBCA).w
+		move.w	#$10,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
@@ -31419,16 +31410,16 @@ loc_1BB52:
 		moveq	#0,d1
 
 Title_InputLoop:
-		clr.b	($FFFFF813).w
+		clr.b	(Ctrl_Pressed).w
 		jsr	(sub_24C).w
-		bclr	#7,($FFFFF80E).w ; start pressed at title screen
+		bclr	#7,(Ctrl_1_Pressed).w ; start pressed at title screen
 		beq.s	loc_1BBDE
-		move.w	#$14,($FFFFFBCA).w ; mode options
+		move.w	#$14,(Game_Mode).w ; mode options
 		cmpi.w	#2,d1
 		beq.s	loc_1BBD6
-		move.w	#8,($FFFFFBCA).w
+		move.w	#8,(Game_Mode).w
 		tst.w	d1
-		sne	($FFFFFC38).w
+		sne	(Two_player_flag).w
 		jsr	(j_StopMusic).l
 
 loc_1BBD6:
@@ -31441,7 +31432,7 @@ loc_1BBD6:
 ; ---------------------------------------------------------------------------
 
 loc_1BBDE:
-		bclr	#0,($FFFFF80E).w
+		bclr	#0,(Ctrl_1_Pressed).w
 		beq.s	loc_1BBF6
 		tst.w	d1
 		beq.s	loc_1BBF6
@@ -31452,7 +31443,7 @@ loc_1BBDE:
 ; ---------------------------------------------------------------------------
 
 loc_1BBF6:
-		bclr	#1,($FFFFF80E).w
+		bclr	#1,(Ctrl_1_Pressed).w
 		beq.s	loc_1BC0E
 		cmpi.w	#2,d1
 		beq.s	loc_1BC0E
@@ -31962,7 +31953,7 @@ sub_1C180:
 		move.l	#vdpComm($1780,VRAM,WRITE),4(a6)
 		move.w	#$2BF,d3
 		lea	($FFFFB152).w,a1
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 
 loc_1C194:
 		move.l	(a0)+,d4
@@ -31982,7 +31973,7 @@ sub_1C1A2:
 		bmi.s	return_1C1F2
 		cmpi.w	#$40,d1
 		bge.s	return_1C1F2
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 		moveq	#$57,d2
 		moveq	#0,d3
 		move.w	d1,d4
@@ -32083,20 +32074,20 @@ loc_1C240:
 
 
 sub_1C246:
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		bne.s	loc_1C250
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_1C250:
-		cmpi.w	#$24,($FFFFFBCA).w
+		cmpi.w	#$24,(Game_Mode).w
 		beq.s	loc_1C264
-		cmpi.w	#$28,($FFFFFBCA).w
+		cmpi.w	#$28,(Game_Mode).w
 		beq.s	loc_1C264
 		bsr.w	sub_1C278
 
 loc_1C264:
-		move.w	#$2C,($FFFFFBCA).w
+		move.w	#$2C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jsr	(j_StopMusic).l
 		jmp	(loc_204).w
@@ -32161,7 +32152,7 @@ Pal_1C48C:  binclude	"scenes/palette/title_juggernaut.bin"
 ; START	OF FUNCTION CHUNK FOR sub_1B2A4
 
 loc_1C4B2:
-		lea	($FFFF4E58).l,a1
+		lea	(Palette_Buffer).l,a1
 		lea	Pal_1C400(pc),a0
 		moveq	#$32,d0
 
@@ -32495,7 +32486,7 @@ sub_1C7F6:
 
 
 sub_1C820:
-		lea	($FFFF4E58).l,a1
+		lea	(Palette_Buffer).l,a1
 		lea	Pal_1C8AA(pc),a0
 		moveq	#$F,d0
 
@@ -32524,7 +32515,7 @@ loc_1C856:
 
 
 sub_1C85E:
-		lea	($FFFF4E58).l,a4
+		lea	(Palette_Buffer).l,a4
 		add.w	d7,a4
 		moveq	#$F,d7
 
@@ -32559,7 +32550,7 @@ loc_1C88A:
 
 
 sub_1C896:
-		lea	($FFFF4E58).l,a1
+		lea	(Palette_Buffer).l,a1
 		lea	Pal_1C97C(pc),a0
 		moveq	#$3F,d0
 
@@ -32641,8 +32632,8 @@ byte_1CA68:	dc.b 0
 		moveq	#$1F,d1
 		bsr.w	sub_1CDA8
 		bsr.w	sub_1C896
-		clr.w	($FFFFF81C).w
-		clr.w	($FFFFF820).w
+		clr.w	(Camera_X_pos).w
+		clr.w	(Camera_Y_pos).w
 		move.l	#$2000000,a1
 		jsr	(sub_264).w
 		st	$13(a1)
@@ -32663,19 +32654,19 @@ byte_1CA68:	dc.b 0
 		move.l	#loc_1CB2C,4(a0)
 		move.l	a2,$26(a0)
 		move.l	a1,$2A(a0)
-		sf	($FFFFF890).w
+		sf	(PaletteToDMA_Flag).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_1CB2C:
-		clr.w	($FFFFFDCC).w
+		clr.w	(Options_Selected_Option).w
 		move.w	#$30,$1A(a0)
 		move.w	#$48,$1E(a0)
 		move.w	#$110,$1A(a1)
 		move.w	#$48,$1E(a1)
 		sf	($FFFFFB5C).w
 		move.w	#$118,($FFFFFB5E).w
-		clr.w	($FFFFF820).w
+		clr.w	(Camera_Y_pos).w
 		moveq	#$1B,d0
 		moveq	#$1F,d1
 		bsr.w	sub_1CDA8
@@ -32691,7 +32682,7 @@ OptionScreen_IntroLoop:
 	else
 		beq.w	Chk_LevelSelect
 	endif
-		subq.w	#2,($FFFFF820).w
+		subq.w	#2,(Camera_Y_pos).w
 		subq.w	#2,d3
 		subq.w	#2,d2
 		bne.w	loc_1CB88
@@ -32702,7 +32693,7 @@ OptionScreen_IntroLoop:
 
 loc_1CB88:
 		bsr.w	sub_1CC88
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		beq.s	OptionScreen_IntroLoop
 		bra.w	Option_Exit
 ; ---------------------------------------------------------------------------
@@ -32717,13 +32708,13 @@ OptionScreen_Loop:
 		bsr.w	DrawOptText4
 		movem.l	(sp)+,d0-d3/a0-a3
 		bsr.w	OptionScreen_Input
-		bclr	#7,($FFFFF80E).w
+		bclr	#7,(Ctrl_1_Pressed).w
 		beq.s	OptionScreen_Loop
 ; START	OF FUNCTION CHUNK FOR OptionScreen_Input
 
 Option_Exit:
 					; OptionScreen_Input+50j ...
-		move.w	#$2C,($FFFFFBCA).w
+		move.w	#$2C,(Game_Mode).w
 		st	($FFFFFBCE).w
 		jsr	(j_StopMusic).l
 		jmp	(loc_204).w
@@ -32736,27 +32727,27 @@ OptionScreen_Input:
 
 ; FUNCTION CHUNK AT 0001CBC4 SIZE 00000014 BYTES
 
-		bclr	#0,($FFFFF813).w
+		bclr	#0,(Ctrl_Pressed).w
 		beq.w	loc_1CBF2
-		tst.w	($FFFFFDCC).w
+		tst.w	(Options_Selected_Option).w
 		beq.w	loc_1CBF2
 		bsr.w	sub_1BC26
-		subq.w	#1,($FFFFFDCC).w
+		subq.w	#1,(Options_Selected_Option).w
 
 loc_1CBF2:
 					; OptionScreen_Input+Ej
-		bclr	#1,($FFFFF813).w
+		bclr	#1,(Ctrl_Pressed).w
 		beq.w	loc_1CC0E
-		cmpi.w	#3,($FFFFFDCC).w
+		cmpi.w	#3,(Options_Selected_Option).w
 		beq.w	loc_1CC0E
 		bsr.w	sub_1BC26
-		addq.w	#1,($FFFFFDCC).w
+		addq.w	#1,(Options_Selected_Option).w
 
 loc_1CC0E:
 					; OptionScreen_Input+2Aj
-		bclr	#2,($FFFFF813).w
+		bclr	#2,(Ctrl_Pressed).w
 		beq.w	loc_1CC2A
-		move.w	($FFFFFDCC).w,d7
+		move.w	(Options_Selected_Option).w,d7
 		add.w	d7,d7
 		jmp	loc_1CC22(pc,d7.w)
 
@@ -32771,9 +32762,9 @@ loc_1CC22:
 ; ---------------------------------------------------------------------------
 
 loc_1CC2A:
-		bclr	#3,($FFFFF813).w
+		bclr	#3,(Ctrl_Pressed).w
 		beq.w	return_1CC86
-		move.w	($FFFFFDCC).w,d7
+		move.w	(Options_Selected_Option).w,d7
 		add.w	d7,d7
 		jmp	loc_1CC3E(pc,d7.w)
 
@@ -32790,30 +32781,30 @@ loc_1CC3E:
 Option_2PInput:
 					; OptionScreen_Input:loc_1CC3Ej
 		bsr.w	sub_1BC26
-		not.b	($FFFFFDC8).w
+		not.b	(Options_Suboption_2PController).w
 		bra.w	return_1CC86
 ; ---------------------------------------------------------------------------
 
 Option_SpeedButton:
 					; OptionScreen_Input+6Aj
 		bsr.w	sub_1BC26
-		not.b	($FFFFFDC9).w
+		not.b	(Options_Suboption_Speed).w
 		bra.w	return_1CC86
 ; ---------------------------------------------------------------------------
 
 Option_Controls_Left:
-		tst.w	($FFFFFDCA).w
+		tst.w	(Options_Suboption_Controls).w
 		beq.w	return_1CC86
 		bsr.w	sub_1BC26
-		subq.w	#1,($FFFFFDCA).w
+		subq.w	#1,(Options_Suboption_Controls).w
 		bra.w	return_1CC86
 ; ---------------------------------------------------------------------------
 
 Option_Controls_Right:
-		cmpi.w	#5,($FFFFFDCA).w
+		cmpi.w	#5,(Options_Suboption_Controls).w
 		beq.w	return_1CC86
 		bsr.w	sub_1BC26
-		addq.w	#1,($FFFFFDCA).w
+		addq.w	#1,(Options_Suboption_Controls).w
 
 return_1CC86:
 					; OptionScreen_Input+78j ...
@@ -32850,7 +32841,7 @@ loc_1CCAA:
 sub_1CCAE:
 		move.w	4(a6),d0
 		move.l	#vdpComm($5580,VRAM,READ),4(a6)
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 		move.w	#$45F,d0
 
 loc_1CCC2:
@@ -32858,7 +32849,7 @@ loc_1CCC2:
 		bsr.w	sub_1CD32
 		dbf	d0,loc_1CCC2
 		move.l	#vdpComm($7880,VRAM,WRITE),4(a6)
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 		move.w	#$117F,d0
 
 loc_1CCDE:
@@ -32869,7 +32860,7 @@ loc_1CCDE:
 loc_1CCE8:
 		dbf	d0,loc_1CCE8
 		move.l	#vdpComm($5580,VRAM,READ),4(a6)
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 		move.w	#$45F,d0
 
 loc_1CCFC:
@@ -32877,7 +32868,7 @@ loc_1CCFC:
 		bsr.w	sub_1CD20
 		dbf	d0,loc_1CCFC
 		move.l	#vdpComm($5580,VRAM,WRITE),4(a6)
-		lea	($FFFFA652).w,a0
+		lea	(Level_Layout).w,a0
 		move.w	#$117F,d0
 
 loc_1CD18:
@@ -33046,7 +33037,7 @@ word_1CE2C:	dc.w $A
 
 DrawOptText1:
 		moveq	#0,d3
-		tst.w	($FFFFFDCC).w
+		tst.w	(Options_Selected_Option).w
 		bne.w	loc_1CE3A
 		moveq	#1,d3
 
@@ -33056,7 +33047,7 @@ loc_1CE3A:
 		bsr.w	DrawTextLine_Offset
 		moveq	#1,d4
 		lea	OptText2(pc),a4
-		tst.b	($FFFFFDC8).w
+		tst.b	(Options_Suboption_2PController).w
 		beq.w	loc_1CE56
 		lea	OptText3(pc),a4
 
@@ -33144,7 +33135,7 @@ OptText4:	dc.b   0
 
 DrawOptText2:
 		moveq	#0,d3
-		cmpi.w	#1,($FFFFFDCC).w
+		cmpi.w	#1,(Options_Selected_Option).w
 		bne.w	loc_1CEB2
 		moveq	#1,d3
 
@@ -33163,13 +33154,13 @@ loc_1CEB2:
 
 loc_1CED6:
 		add.w	d6,d7
-		move.w	($FFFFFDCA).w,d5
+		move.w	(Options_Suboption_Controls).w,d5
 		addi.w	#$1B,d5
 		add.w	d7,d5
 		move.w	d5,(a6)
 		move.w	word_1CE2C(pc),d1
 		addq.w	#5,d1
-		move.w	($FFFFFDCA).w,d5
+		move.w	(Options_Suboption_Controls).w,d5
 		add.w	d5,d5
 		add.w	d5,d5
 		lea	unk_1CF28(pc,d5.w),a3
@@ -33266,7 +33257,7 @@ OptText6:	dc.b   5
 
 DrawOptText3:
 		moveq	#0,d3
-		cmpi.w	#2,($FFFFFDCC).w
+		cmpi.w	#2,(Options_Selected_Option).w
 		bne.w	loc_1CF78
 		moveq	#1,d3
 
@@ -33276,7 +33267,7 @@ loc_1CF78:
 		bsr.w	DrawTextLine_Offset
 		moveq	#1,d4
 		lea	OptText8(pc),a4
-		tst.b	($FFFFFDC9).w
+		tst.b	(Options_Suboption_Speed).w
 		beq.w	loc_1CF94
 		lea	OptText9(pc),a4
 
@@ -33375,7 +33366,7 @@ OptText9:	dc.b  $E
 
 DrawOptText4:
 		moveq	#0,d3
-		cmpi.w	#3,($FFFFFDCC).w
+		cmpi.w	#3,(Options_Selected_Option).w
 		bne.w	loc_1CFFE
 		moveq	#1,d3
 
@@ -33545,8 +33536,8 @@ unk_1D118:	dc.b   8
 ; ---------------------------------------------------------------------------
 
 Load_EndSequence:
-		clr.w	($FFFFF81C).w
-		clr.w	($FFFFF820).w
+		clr.w	(Camera_X_pos).w
+		clr.w	(Camera_Y_pos).w
 		bsr.w	sub_1DA24
 		bsr.w	sub_1DA72
 		move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
@@ -33620,8 +33611,8 @@ loc_1D1EC:
 		bsr.w	sub_1D944
 		move.w	#$8005,d0
 		bsr.w	sub_1D944
-		clr.w	($FFFFF81C).w
-		clr.w	($FFFFF820).w
+		clr.w	(Camera_X_pos).w
+		clr.w	(Camera_Y_pos).w
 		bsr.w	sub_1DA24
 		lea	word_1D83A(pc),a4
 		moveq	#2,d0
@@ -33713,7 +33704,7 @@ loc_1D306:
 		move.w	#$110,$1A(a1)
 		move.w	#$48,$1E(a1)
 		move.w	#$E000,($FFFFFB60).w
-		clr.w	($FFFFF820).w
+		clr.w	(Camera_Y_pos).w
 		moveq	#$1B,d0
 		moveq	#$1F,d1
 		bsr.w	sub_1CDA8
@@ -33727,7 +33718,7 @@ loc_1D3A0:
 		jsr	(sub_24C).w
 		tst.w	d3
 		beq.w	loc_1D3CA
-		subq.w	#2,($FFFFF820).w
+		subq.w	#2,(Camera_Y_pos).w
 		subq.w	#2,d3
 		subq.w	#2,d2
 		bne.w	loc_1D3C4
@@ -33805,7 +33796,7 @@ loc_1D450:
 		jsr	(sub_24C).w
 		dbf	d0,loc_1D450
 		moveq	#$3F,d0
-		lea	($FFFF4E58).l,a0
+		lea	(Palette_Buffer).l,a0
 
 loc_1D464:
 		clr.w	(a0)+
@@ -33815,7 +33806,7 @@ loc_1D464:
 		jsr	(sub_218).w
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
-		clr.w	($FFFFFBCA).w
+		clr.w	(Game_Mode).w
 		clr.w	(Number_Lives).w
 		move.l	(off_7192).w,a0
 		jmp	(a0)
@@ -34692,17 +34683,17 @@ word_1D83A:	dc.w   $AF
 
 sub_1D846:
 		jsr	(sub_220).w
-		move.b	($FFFFF806).w,d5
+		move.b	(V_Int_counter).w,d5
 		bclr	#7,d5
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#5,d7
-		move.w	d7,($FFFFF81C).w
+		move.w	d7,(Camera_X_pos).w
 		jsr	(sub_220).w
 		eor.b	d5,d7
 		ext.w	d7
 		asr.w	#5,d7
-		move.w	d7,($FFFFF820).w
+		move.w	d7,(Camera_Y_pos).w
 		rts
 ; End of function sub_1D846
 
@@ -34712,7 +34703,7 @@ sub_1D846:
 
 sub_1D86C:
 		jsr	(sub_220).w
-		move.b	($FFFFF806).w,d5
+		move.b	(V_Int_counter).w,d5
 		bclr	#7,d5
 		eor.b	d5,d7
 		ext.w	d7
@@ -34747,7 +34738,7 @@ sub_1D8B4:
 		move.w	$46(a5),$1E(a3)
 		move.w	$48(a5),$22(a3)
 		jsr	(sub_220).w
-		move.b	($FFFFF806).w,d0
+		move.b	(V_Int_counter).w,d0
 		eor.b	d0,d7
 		andi.w	#$FF,d7
 		lsr.w	#1,d7
@@ -34781,7 +34772,7 @@ loc_1D8FA:
 		dc.b $E0 ; à
 	else
 Chk_LevelSelect:
-	tst.b	($FFFFFDC7).w
+	tst.b	(LevelSelect_Flag).w
 	beq.w	OptionScreen_Loop
 	jmp	LevelSelect_Loop
 	endif
@@ -34915,13 +34906,13 @@ stru_1DA0E:	anim_frame	  1,   3, LnkTo_unk_E10D6-Data_Index
 sub_1DA24:
 		movem.l	d6-d7,-(sp)
 		jsr	(sub_208).w
-		move.w	($FFFFF820).w,d7
+		move.w	(Camera_Y_pos).w,d7
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d7,(a6)
 		moveq	#0,d7
 		move.w	d7,(a6)
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
-		move.w	($FFFFF81C).w,d7
+		move.w	(Camera_X_pos).w,d7
 		neg.w	d7
 		move.w	#$DF,d6
 
@@ -35204,17 +35195,17 @@ loc_2FFE4:
 ; ---------------------------------------------------------------------------
 
 loc_2FFE8:
-		move.w	($FFFFF81C).w,($FFFFF82C).w
-		move.w	($FFFFF820).w,d7
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_X_pos).w,($FFFFF82C).w
+		move.w	(Camera_Y_pos).w,d7
+		move.w	(Camera_Y_pos).w,d0
 		subi.w	#$E0,d0
-		move.w	d0,($FFFFF820).w
+		move.w	d0,(Camera_Y_pos).w
 		subq.w	#8,d0
 		move.w	d0,($FFFFF82E).w
 		move.l	d7,-(sp)
 		moveq	#$1C,d6
 		addi.w	#$E0,d7
-		cmp.w	($FFFFF8A0).w,d7
+		cmp.w	(Level_height_blocks).w,d7
 		blt.s	loc_30014
 		subq.w	#1,d6
 
@@ -35227,11 +35218,11 @@ loc_30016:
 
 loc_3001E:
 		movem.l	(sp)+,d6-d7
-		addq.w	#8,($FFFFF820).w
+		addq.w	#8,(Camera_Y_pos).w
 		dbf	d6,loc_30016
 		move.w	d7,d0
 		subi.w	#$380,d0
-		move.w	d0,($FFFFF820).w
+		move.w	d0,(Camera_Y_pos).w
 		subi.w	#$20,d0
 		move.w	d0,($FFFFFAA8).w
 		move.l	d7,-(sp)
@@ -35240,20 +35231,20 @@ loc_3001E:
 		move.l	d7,-(sp)
 		moveq	#$1C,d6
 		addi.w	#$E0,d7
-		cmp.w	($FFFFF8A0).w,d7
+		cmp.w	(Level_height_blocks).w,d7
 		blt.s	loc_30054
 		subq.w	#1,d6
 
 loc_30054:
 		move.l	(sp)+,d7
-		cmpi.w	#$FC80,($FFFFF820).w
+		cmpi.w	#$FC80,(Camera_Y_pos).w
 		beq.s	loc_30066
-		subi.w	#$40,($FFFFF820).w
+		subi.w	#$40,(Camera_Y_pos).w
 		addq.w	#2,d6
 
 loc_30066:
 		movem.l	d6-d7,-(sp)
-		tst.b	($FFFFFB48).w
+		tst.b	(Background_format).w
 		bne.s	loc_30076
 		bsr.w	sub_307D8
 		bra.s	loc_3007A
@@ -35264,20 +35255,20 @@ loc_30076:
 
 loc_3007A:
 		movem.l	(sp)+,d6-d7
-		addi.w	#$20,($FFFFF820).w
+		addi.w	#$20,(Camera_Y_pos).w
 		dbf	d6,loc_30066
 		tst.w	d7
 		bne.s	loc_30090
 		clr.w	($FFFFFAA8).w
 
 loc_30090:
-		move.w	d7,($FFFFF820).w
+		move.w	d7,(Camera_Y_pos).w
 		move.w	d7,($FFFFF82E).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_3009A:
-		move.w	($FFFFFB40).w,d0
+		move.w	(Level_Special_Effects).w,d0
 		subq.w	#1,d0
 		ble.s	loc_300BA
 		cmpi.w	#2,d0
@@ -35288,7 +35279,7 @@ loc_3009A:
 		jsr	(sub_208).w
 
 loc_300BA:
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_Y_pos).w,d0
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		lsr.w	#2,d0
@@ -35299,7 +35290,7 @@ loc_300BA:
 loc_300D2:
 		move.w	d0,(a6)
 		jsr	(j_Stop_z80).l
-		dma68kToVDP	$FFFF7432,$1400,$380,VRAM
+		dma68kToVDP	Horiz_Scroll_Buffer,$1400,$380,VRAM
 		jsr	(j_Start_z80).l
 		jsr	(sub_20C).w
 		rts
@@ -35310,7 +35301,7 @@ loc_30110:
 		move.w	#$8403,4(a6)
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		move.w	($FFFFFAD8).w,d2
 		neg.w	d0
 
@@ -35318,7 +35309,7 @@ loc_30130:
 		move.w	d0,(a6)
 		move.w	d2,(a6)
 		dbf	d1,loc_30130
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_Y_pos).w,d0
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 		move.w	d0,(a6)
 		move.w	d2,(a6)
@@ -35332,7 +35323,7 @@ loc_30158:
 		jsr	(sub_208).w
 		move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 		move.w	#$DF,d1
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		move.w	($FFFFFAD8).w,d2
 		neg.w	d0
 
@@ -35340,7 +35331,7 @@ loc_30172:
 		move.w	d2,(a6)
 		move.w	d0,(a6)
 		dbf	d1,loc_30172
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_Y_pos).w,d0
 
 loc_3017E:
 		move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
@@ -35357,9 +35348,9 @@ loc_3017E:
 
 sub_30194:
 
-		move.w	($FFFFF81C).w,d7
+		move.w	(Camera_X_pos).w,d7
 		lsr.w	#3,d7
-		move.w	($FFFFF820).w,d5
+		move.w	(Camera_Y_pos).w,d5
 		asr.w	#3,d5
 		lea	($FFFF4A04).l,a0
 		move.w	#$FF,d4
@@ -35368,11 +35359,11 @@ sub_30194:
 		move.w	d5,d6
 		cmp.w	d0,d5
 		beq.w	loc_3023C
-		move.l	($FFFFF8AE).w,a1
-		lea	($FFFF503A).l,a2
+		move.l	(Addr_ThemeMappings).w,a1
+		lea	(Block_Mappings).l,a2
 		blt.s	loc_301CE
 		addi.w	#$1C,d6
-		cmp.w	($FFFFF8A2).w,d6
+		cmp.w	(Level_height_tiles).w,d6
 		bcc.s	loc_3023C
 
 loc_301CE:
@@ -35435,11 +35426,11 @@ loc_3023C:
 		move.w	d7,d6
 		cmp.w	d0,d7
 		beq.w	loc_302E8
-		move.l	($FFFFF8AE).w,a1
-		lea	($FFFF503A).l,a2
+		move.l	(Addr_ThemeMappings).w,a1
+		lea	(Block_Mappings).l,a2
 		blt.s	loc_30262
 		addi.w	#$28,d6
-		cmp.w	($FFFFF89C).w,d6
+		cmp.w	(Level_width_tiles).w,d6
 		bcc.w	loc_302E8
 
 loc_30262:
@@ -35485,7 +35476,7 @@ loc_30296:
 		move.w	#0,d0
 		move.w	#$8F80,4(a6)
 		move.l	d0,4(a6)
-		move.w	($FFFFF89C).w,a4
+		move.w	(Level_width_tiles).w,a4
 		move.l	d0,-(sp)
 		swap	d2
 		bsr.w	sub_302F6
@@ -35501,8 +35492,8 @@ loc_302E2:
 		move.w	#$8F02,4(a6)
 
 loc_302E8:
-		move.w	($FFFFF81C).w,($FFFFF82C).w
-		move.w	($FFFFF820).w,($FFFFF82E).w
+		move.w	(Camera_X_pos).w,($FFFFF82C).w
+		move.w	(Camera_Y_pos).w,($FFFFF82E).w
 		rts
 ; End of function sub_30194
 
@@ -35594,9 +35585,9 @@ loc_3037C:
 ; START	OF FUNCTION CHUNK FOR sub_2FFDC
 
 loc_3038A:
-		cmpi.w	#4,($FFFFFB40).w
+		cmpi.w	#4,(Level_Special_Effects).w
 		beq.s	return_303B8
-		move.w	($FFFFFBCA).w,d0
+		move.w	(Game_Mode).w,d0
 		beq.s	loc_3039C
 		addq.w	#1,($FFFFFC24).w
 
@@ -35605,7 +35596,7 @@ loc_3039C:
 		bsr.w	sub_304E8
 		tst.b	($FFFFFB49).w
 		bne.s	return_303B8
-		tst.b	($FFFFFB48).w
+		tst.b	(Background_format).w
 		bne.s	sub_303BA
 		bsr.w	sub_30744
 		bsr.w	sub_307D8
@@ -35618,7 +35609,7 @@ return_303B8:
 
 
 sub_303BA:
-		move.w	($FFFFF820).w,d0
+		move.w	(Camera_Y_pos).w,d0
 		asr.w	#5,d0
 		move.w	($FFFFFAA8).w,d1
 		move.w	d0,($FFFFFAA8).w
@@ -35629,9 +35620,9 @@ sub_303BA:
 
 loc_303D4:
 		move.w	4(a0),d3
-		move.l	($FFFFFBD4).w,a0
+		move.l	(Addr_MapHeader).w,a0
 		move.l	$14(a0),a0
-		cmpi.w	#5,($FFFFF8AC).w
+		cmpi.w	#5,(Background_theme).w
 		bne.s	loc_303EA
 		addq.w	#1,a0
 
@@ -35681,9 +35672,9 @@ return_3043A:
 
 
 sub_3043C:
-		lea	($FFFF7392).l,a0
-		move.w	($FFFFF8A6).w,d6
-		move.w	($FFFFF81C).w,d4
+		lea	(Horiz_Scroll_Data).l,a0
+		move.w	(Background_width).w,d6
+		move.w	(Camera_X_pos).w,d4
 		move.w	($FFFFFC24).w,d0
 		add.w	d0,d0
 		moveq	#1,d3
@@ -35785,11 +35776,11 @@ loc_304E0:
 sub_304E8:
 		tst.b	($FFFFFB4A).w
 		beq.s	loc_3050A
-		move.w	($FFFFF81C).w,d2
+		move.w	(Camera_X_pos).w,d2
 		neg.w	d2
 		swap	d2
 		clr.w	d2
-		lea	($FFFF7432).l,a3
+		lea	(Horiz_Scroll_Buffer).l,a3
 		move.w	#$DF,d0
 
 loc_30502:
@@ -35799,25 +35790,25 @@ loc_30502:
 ; ---------------------------------------------------------------------------
 
 loc_3050A:
-		lea	($FFFF7432).l,a3
+		lea	(Horiz_Scroll_Buffer).l,a3
 		moveq	#7,d5
 		move.l	(LnkTo_off_7B1EC).l,a2
 		move.l	(LnkTo_MapOrder_Index).l,a1
-		move.w	($FFFFFC44).w,d7
+		move.w	(Current_LevelID).w,d7
 		move.b	(a1,d7.w),d7
 		ext.w	d7
 		add.w	d7,d7
 		add.w	d7,d7
 		move.l	(a2,d7.w),a2
-		lea	($FFFF7392).l,a1
-		move.w	($FFFFF820).w,d2
+		lea	(Horiz_Scroll_Data).l,a1
+		move.w	(Camera_Y_pos).w,d2
 		move.w	d2,d3
 		lsr.w	#5,d2
 		add.w	d2,a2
 		moveq	#$1B,d0
 		moveq	#-1,d4
 		clr.w	d1
-		move.w	($FFFFF81C).w,d2
+		move.w	(Camera_X_pos).w,d2
 		neg.w	d2
 		swap	d2
 		lsr.w	#2,d3
@@ -35859,7 +35850,7 @@ loc_30592:
 		dbf	d4,loc_30592
 
 loc_30598:
-		move.w	($FFFFF8AC).w,d0
+		move.w	(Background_theme).w,d0
 		cmpi.w	#9,d0
 		beq.s	loc_305AC
 		cmpi.w	#5,d0
@@ -35868,9 +35859,9 @@ loc_30598:
 ; ---------------------------------------------------------------------------
 
 loc_305AC:
-		move.w	($FFFFF820).w,d1
+		move.w	(Camera_Y_pos).w,d1
 		lsr.w	#2,d1
-		move.l	($FFFFFBD4).w,a0
+		move.l	(Addr_MapHeader).w,a0
 		move.l	$14(a0),a0
 		moveq	#0,d0
 		move.b	(a0),d0
@@ -35896,7 +35887,7 @@ loc_305D4:
 		moveq	#$40,d1
 
 loc_305E6:
-		lea	($FFFF7432).l,a0
+		lea	(Horiz_Scroll_Buffer).l,a0
 		add.w	d0,d0
 		add.w	d0,d0
 		lea	2(a0,d0.w),a0
@@ -36051,9 +36042,9 @@ unk_3061A:	dc.b   0
 ; ---------------------------------------------------------------------------
 
 loc_3069A:
-		move.w	($FFFFF820).w,d6
+		move.w	(Camera_Y_pos).w,d6
 		lsr.w	#2,d6
-		move.l	($FFFFFBD4).w,a0
+		move.l	(Addr_MapHeader).w,a0
 		move.l	$14(a0),a2
 		moveq	#0,d0
 		move.b	(a2)+,d0
@@ -36079,7 +36070,7 @@ loc_306C2:
 		moveq	#$10,d1
 
 loc_306D4:
-		lea	($FFFF7432).l,a0
+		lea	(Horiz_Scroll_Buffer).l,a0
 		add.w	d0,d0
 		add.w	d0,d0
 		lea	2(a0,d0.w),a0
@@ -36177,19 +36168,19 @@ sub_30744:
 		lea	4(a6),a5
 		move.l	(LnkTo_off_7B1EC).l,a2
 		move.l	(LnkTo_MapOrder_Index).l,a1
-		move.w	($FFFFFC44).w,d7
+		move.w	(Current_LevelID).w,d7
 		move.b	(a1,d7.w),d7
 		ext.w	d7
 		add.w	d7,d7
 		add.w	d7,d7
 		move.l	(a2,d7.w),a2
-		lea	($FFFF7392).l,a1
-		move.w	($FFFFF820).w,d7
+		lea	(Horiz_Scroll_Data).l,a1
+		move.w	(Camera_Y_pos).w,d7
 		asr.w	#5,d7
 		add.w	d7,a2
 		add.w	d7,d7
 		move.w	(a0,d7.w),a0
-		move.w	($FFFFF8A6).w,d0
+		move.w	(Background_width).w,d0
 		move.w	#$80,d1
 		lsl.w	#6,d7
 		move.w	d7,d2
@@ -36234,17 +36225,17 @@ loc_307B2:
 
 
 sub_307D8:
-		move.w	($FFFFF8A6).w,a4
+		move.w	(Background_width).w,a4
 		move.l	(LnkTo_off_7B1EC).l,a2
 		move.l	(LnkTo_MapOrder_Index).l,a1
-		move.w	($FFFFFC44).w,d7
+		move.w	(Current_LevelID).w,d7
 		move.b	(a1,d7.w),d7
 		ext.w	d7
 		add.w	d7,d7
 		add.w	d7,d7
 		move.l	(a2,d7.w),a2
-		lea	($FFFF7392).l,a1
-		move.w	($FFFFF820).w,d0
+		lea	(Horiz_Scroll_Data).l,a1
+		move.w	(Camera_Y_pos).w,d0
 		asr.w	#5,d0
 		move.w	($FFFFFAA8).w,d1
 		move.w	d0,($FFFFFAA8).w
@@ -36267,7 +36258,7 @@ loc_3081A:
 loc_30836:
 		cmp.w	d0,a4
 		bgt.s	loc_30840
-		sub.w	($FFFFF8A6).w,d0
+		sub.w	(Background_width).w,d0
 		bra.s	loc_30836
 ; ---------------------------------------------------------------------------
 
@@ -36283,7 +36274,7 @@ loc_30840:
 		addi.w	#$28,d7
 		cmp.w	d7,a4
 		bgt.s	loc_3086A
-		sub.w	($FFFFF8A6).w,d7
+		sub.w	(Background_width).w,d7
 		moveq	#1,d1
 
 loc_3086A:
@@ -36338,7 +36329,7 @@ loc_308C4:
 		add.w	d6,d6
 		move.w	(a3,d6.w),(a6)
 		dbf	d1,loc_308C4
-		suba.w	($FFFFF8A6).w,a0
+		suba.w	(Background_width).w,a0
 		move.w	d4,d1
 		dbf	d2,loc_308C4
 		rts
@@ -36382,7 +36373,7 @@ loc_30916:
 		dbf	d1,loc_30916
 		move.w	d3,(a5)
 		move.w	#3,(a5)
-		suba.w	($FFFFF8A6).w,a0
+		suba.w	(Background_width).w,a0
 		move.w	d4,d1
 		dbf	d2,loc_30916
 		rts
@@ -36402,7 +36393,7 @@ loc_30942:
 		add.w	d6,d6
 		move.w	(a3,d6.w),(a6)
 		dbf	d4,loc_30942
-		suba.w	($FFFFF8A6).w,a0
+		suba.w	(Background_width).w,a0
 
 loc_30954:
 		clr.w	d6
@@ -36448,7 +36439,7 @@ loc_3099E:
 		move.w	(a3,d6.w),(a6)
 		dbf	d1,loc_3099E
 		move.w	d5,d1
-		suba.w	($FFFFF8A6).w,a0
+		suba.w	(Background_width).w,a0
 		dbf	d2,loc_3099E
 		rts
 ; End of function sub_307D8
@@ -40630,11 +40621,11 @@ loc_31F9A:
 		move.l	#0,($FFFFF942).w
 		move.l	($FFFFF8F2).w,a0
 		move.l	($FFFFF8F6).w,a1
-		move.w	($FFFFF81C).w,d1
+		move.w	(Camera_X_pos).w,d1
 		move.b	#0,($FFFFF93F).w
 		move.w	(a0)+,d0
 		beq.s	loc_31FCE
-		move.w	($FFFFF820).w,d1
+		move.w	(Camera_Y_pos).w,d1
 		move.b	#1,($FFFFF93F).w
 
 loc_31FCE:
@@ -40701,13 +40692,13 @@ loc_32054:
 		cmpi.w	#$14,($FFFFF84A).w
 		ble.s	loc_320B8
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_32086
 		cmpi.w	#$244,d7
 		bgt.s	loc_32086
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_32086
 		cmpi.w	#$1E4,d7
@@ -40740,7 +40731,7 @@ loc_320B4:
 
 loc_320B8:
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 
 loc_320C0:
 		cmpi.w	#$FE5C,d7
@@ -40748,7 +40739,7 @@ loc_320C0:
 		cmpi.w	#$2E4,d7
 		bgt.s	loc_32086
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FE5C,d7
 
 loc_320D8:
@@ -40762,7 +40753,7 @@ loc_320E2:
 		cmpi.w	#$14,($FFFFF84A).w
 		ble.s	loc_3211A
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_32116
 		cmpi.w	#$244,d7
@@ -40770,7 +40761,7 @@ loc_320E2:
 		move.w	$1E(a3),d7
 
 loc_32102:
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_32116
 		cmpi.w	#$1E4,d7
@@ -40786,7 +40777,7 @@ loc_32116:
 
 loc_3211A:
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 
 loc_32122:
 		cmpi.w	#$FE5C,d7
@@ -40794,7 +40785,7 @@ loc_32122:
 		cmpi.w	#$2E4,d7
 		bgt.s	loc_32116
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FE5C,d7
 		blt.s	loc_32116
 		cmpi.w	#$284,d7
@@ -41192,29 +41183,29 @@ loc_324F8:
 		jsr	(sub_23C).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$10000,$44(a0)
-		move.l	#$FFFF0000,$48(a0)
+		move.l	#-$10000,$48(a0)
 		move.w	#$8000,a0
 		jsr	(sub_23C).w
 		move.l	#loc_325E6,4(a0)
 
 loc_32534:
-		move.l	#$FFFF0000,$44(a0)
-		move.l	#$FFFF0000,$48(a0)
+		move.l	#-$10000,$44(a0)
+		move.l	#-$10000,$48(a0)
 		move.w	#$8000,a0
 		jsr	(sub_23C).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$8000,$44(a0)
-		move.l	#$FFFE0000,$48(a0)
+		move.l	#-$20000,$48(a0)
 		move.w	#$8000,a0
 		jsr	(sub_23C).w
 		move.l	#loc_325E6,4(a0)
-		move.l	#$FFFF8000,$44(a0)
-		move.l	#$FFFE0000,$48(a0)
+		move.l	#-$8000,$44(a0)
+		move.l	#-$20000,$48(a0)
 		move.w	#$8000,a0
 		jsr	(sub_23C).w
 		move.l	#loc_325E6,4(a0)
 		move.l	#$2000,$44(a0)
-		move.l	#$FFFE4000,$48(a0)
+		move.l	#-$1C000,$48(a0)
 		jsr	(sub_24C).w
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -41928,7 +41919,7 @@ loc_32C8E:
 
 loc_32CC2:
 		jsr	(sub_220).w
-		move.b	($FFFFF81C).w,d6
+		move.b	(Camera_X_pos).w,d6
 		eor.b	d6,d7
 		ext.w	d7
 		asl.w	#7,d7
@@ -42507,9 +42498,9 @@ loc_331F6:
 		add.w	d7,d7
 		add.w	d7,a4
 		move.w	(a4),d5
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		move.w	(a4),d6
-		suba.w	($FFFFF89C).w,a4
+		suba.w	(Level_width_tiles).w,a4
 		move.w	(a4),d7
 		move.w	(sp)+,d4
 		cmpi.w	#$3E7,d4
@@ -42829,7 +42820,7 @@ loc_33588:
 		tst.l	$26(a3)
 		bmi.w	loc_335AA
 		addq.w	#8,d5
-		cmp.w	($FFFFF89A).w,d5
+		cmp.w	(Level_width_pixels).w,d5
 		bge.w	loc_335D4
 		bra.w	loc_335B0
 ; ---------------------------------------------------------------------------
@@ -42843,7 +42834,7 @@ loc_335B0:
 		tst.l	$2A(a3)
 		bmi.w	loc_335CA
 		addq.w	#8,d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		bge.w	loc_335D4
 		bra.w	loc_335D0
 ; ---------------------------------------------------------------------------
@@ -44169,7 +44160,7 @@ loc_33FDA:
 		st	$3D(a1)
 		jsr	(sub_220).w
 		andi.w	#$FF,d7
-		move.b	($FFFFF81C).w,d6
+		move.b	(Camera_X_pos).w,d6
 		eor.b	d6,d7
 		move.w	d7,-(sp)
 		jsr	(sub_248).w
@@ -45928,7 +45919,7 @@ return_350A8:
 
 loc_350AA:
 		bsr.w	loc_350F2
-		move.l	#$FFFF0000,d7
+		move.l	#-$10000,d7
 		move.l	d7,$26(a3)
 		move.l	d7,$2A(a3)
 		move.l	#$800,d7
@@ -46827,8 +46818,8 @@ loc_3581E:
 ; ---------------------------------------------------------------------------
 
 loc_35838:
-		move.l	#$FFFF0000,$26(a3)
-		move.l	#$FFFF0000,$2A(a3)
+		move.l	#-$10000,$26(a3)
+		move.l	#-$10000,$2A(a3)
 		rts
 ; ---------------------------------------------------------------------------
 		move.l	$26(a3),d7
@@ -46844,7 +46835,7 @@ loc_35838:
 
 loc_35864:
 		move.l	#$10000,$26(a3)
-		move.l	#$FFFF0000,$2A(a3)
+		move.l	#-$10000,$2A(a3)
 		rts
 ; ---------------------------------------------------------------------------
 		move.l	$26(a3),d7
@@ -48080,7 +48071,7 @@ loc_3639E:
 		sub.w	d7,d4
 		bmi.w	loc_363FA
 		add.w	d7,d6
-		cmp.w	($FFFFF89A).w,d6
+		cmp.w	(Level_width_pixels).w,d6
 		bge.w	loc_363FA
 		asr.w	#4,d4
 		asr.w	#4,d6
@@ -48097,7 +48088,7 @@ loc_363E0:
 		andi.w	#$4000,d4
 		bne.w	loc_363FA
 		dbf	d7,loc_363E0
-		add.w	($FFFFF89C).w,a0
+		add.w	(Level_width_tiles).w,a0
 		dbf	d5,loc_363DC
 		moveq	#0,d7
 		rts
@@ -48220,7 +48211,7 @@ loc_36540:
 
 loc_3656C:
 		move.w	$1E(a3),d4
-		cmp.w	($FFFFF8A0).w,d4
+		cmp.w	(Level_height_blocks).w,d4
 		blt.w	return_3657C
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -48482,9 +48473,9 @@ unk_3680C:	dc.b   0
 loc_36814:
 		tst.b	($FFFFFB6A).w
 		bne.s	return_3682A
-		cmpi.w	#$10,($FFFFFBCA).w
+		cmpi.w	#$10,(Game_Mode).w
 		bne.s	loc_3682C
-		cmpi.w	#$15,($FFFFFC44).w
+		cmpi.w	#$15,(Current_LevelID).w
 		beq.s	loc_3682C
 
 return_3682A:
@@ -48547,13 +48538,13 @@ loc_368A6:
 
 loc_368A8:
 		move.w	4(a1),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		move.w	6(a1),d1
 		clr.w	d5
 		move.b	($FFFFFAD2).w,d5
 		lsl.w	#3,d5
 		add.w	d5,d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		cmpi.w	#$FF80,d0
 		blt.w	loc_36962
 		cmpi.w	#$1C0,d0
@@ -48653,9 +48644,9 @@ sub_36972:
 		add.w	d0,d0
 		lea	(a0,d0.w),a1
 		moveq	#0,d7
-		move.w	($FFFFF89C).w,d4
+		move.w	(Level_width_tiles).w,d4
 		addq.w	#1,d1
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		blt.s	loc_369C4
 		addq.w	#3,d7
 		bra.s	loc_369F6
@@ -48778,7 +48769,7 @@ sub_36A58:
 		add.w	d0,d0
 		lea	(a0,d0.w),a1
 		moveq	#0,d7
-		move.w	($FFFFF89C).w,d4
+		move.w	(Level_width_tiles).w,d4
 		tst.w	d0
 		bne.s	loc_36AA6
 		moveq	#3,d7
@@ -48886,9 +48877,9 @@ sub_36B3C:
 		subq.w	#1,d1
 		lsr.w	#4,d0
 		lsr.w	#4,d1
-		cmp.w	($FFFFF8A4).w,d1
+		cmp.w	(Level_height_pixels).w,d1
 		bcs.s	loc_36B5A
-		move.w	($FFFFF8A4).w,d1
+		move.w	(Level_height_pixels).w,d1
 		subq.w	#1,d1
 
 loc_36B5A:
@@ -48911,17 +48902,17 @@ loc_36B5A:
 		moveq	#0,d5
 		moveq	#0,d6
 		addq.w	#1,d1
-		move.w	($FFFFF89C).w,d4
+		move.w	(Level_width_tiles).w,d4
 		tst.w	d2
 		bpl.s	loc_36BA0
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		seq	d6
 		move.l	(sp)+,a0
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_36BA0:
-		cmp.w	($FFFFF89E).w,d1
+		cmp.w	(Level_width_blocks).w,d1
 		bne.s	loc_36BAA
 		moveq	#1,d6
 		bra.s	loc_36BBE
@@ -48964,9 +48955,9 @@ sub_36BD6:
 		subi.w	#1,d1
 		lsr.w	#4,d0
 		lsr.w	#4,d1
-		cmp.w	($FFFFF8A4).w,d1
+		cmp.w	(Level_height_pixels).w,d1
 		bcs.s	loc_36BF6
-		move.w	($FFFFF8A4).w,d1
+		move.w	(Level_height_pixels).w,d1
 		subq.w	#1,d1
 
 loc_36BF6:
@@ -48988,7 +48979,7 @@ loc_36BF6:
 		lea	(a0,d0.w),a1
 		moveq	#0,d5
 		moveq	#0,d6
-		move.w	($FFFFF89C).w,d4
+		move.w	(Level_width_tiles).w,d4
 		tst.w	d2
 		bpl.s	loc_36C38
 		tst.w	d1
@@ -49038,7 +49029,7 @@ sub_36C6A:
 		subq.w	#1,d4
 		lsr.w	#4,d4
 		addq.w	#1,d4
-		cmp.w	($FFFFF8A4).w,d4
+		cmp.w	(Level_height_pixels).w,d4
 		bcs.s	loc_36C82
 		moveq	#0,d6
 		move.l	(sp)+,a0
@@ -49085,7 +49076,7 @@ sub_36CB8:
 ; ---------------------------------------------------------------------------
 
 loc_36CCC:
-		cmp.w	($FFFFF8A4).w,d4
+		cmp.w	(Level_height_pixels).w,d4
 		bcs.s	loc_36CD8
 		moveq	#0,d6
 		move.l	(sp)+,a0
@@ -49226,7 +49217,7 @@ loc_36DFC:
 		movem.l	d7/a1,-(sp)
 		tst.w	d7
 		bne.s	loc_36E2C
-		cmpi.w	#9,($FFFFF8AC).w
+		cmpi.w	#9,(Background_theme).w
 		bne.s	loc_36E2C
 		lea	unk_36E54(pc),a3
 		cmpi.w	#5,d4
@@ -49745,7 +49736,7 @@ loc_3739C:
 		bsr.w	sub_37AF0
 		move.w	d6,$22(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_373BE
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -50647,7 +50638,7 @@ stru_37B98:	anim_frame	  1, $2D, LnkTo_unk_C8458-Data_Index
 		anim_frame	1, $F, LnkTo_unk_C8448-Data_Index
 		dc.b   0
 		dc.b   0
-stru_37BC0:	anim_frame	1, $A, LnkTo_unk_C8458-Data_Index ; DATA	XREF: sub_373C0:loc_37630o
+stru_37BC0:	anim_frame	1, $A, LnkTo_unk_C8458-Data_Index
 		dc.b   2
 		dc.b $13
 stru_37BC6:	anim_frame	  1,  $A, LnkTo_unk_C8478-Data_Index
@@ -51235,7 +51226,7 @@ loc_384F6:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38510
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51276,7 +51267,7 @@ loc_38574:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3858E
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51317,7 +51308,7 @@ loc_385F2:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3860C
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51358,7 +51349,7 @@ loc_38670:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_3868A
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51399,7 +51390,7 @@ loc_386EE:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38708
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51440,7 +51431,7 @@ loc_3876C:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38786
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51481,7 +51472,7 @@ loc_387EA:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38804
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51522,7 +51513,7 @@ loc_38868:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38882
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51563,7 +51554,7 @@ loc_388E6:
 		jsr	(sub_24C).w
 		addi.l	#$1B58,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38900
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51611,7 +51602,7 @@ loc_38976:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38998
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51659,7 +51650,7 @@ loc_38A0E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38A30
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51707,7 +51698,7 @@ loc_38AA6:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38AC8
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51755,7 +51746,7 @@ loc_38B3E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38B60
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51803,7 +51794,7 @@ loc_38BD6:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38BF8
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51851,7 +51842,7 @@ loc_38C6E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38C90
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51899,7 +51890,7 @@ loc_38D06:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38D28
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51947,7 +51938,7 @@ loc_38D9E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38DC0
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -51995,7 +51986,7 @@ loc_38E36:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38E58
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52043,7 +52034,7 @@ loc_38ECE:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38EF0
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52091,7 +52082,7 @@ loc_38F66:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_38F88
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52139,7 +52130,7 @@ loc_38FFE:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39020
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52187,7 +52178,7 @@ loc_39096:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_390B8
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52235,7 +52226,7 @@ loc_3912E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39150
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52283,7 +52274,7 @@ loc_391C6:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_391E8
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52331,7 +52322,7 @@ loc_3925E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39280
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52379,7 +52370,7 @@ loc_392F6:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_39318
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -52427,7 +52418,7 @@ loc_3938E:
 		move.w	d6,$22(a3)
 		addi.l	#$7D0,$2A(a3)
 		move.w	$1E(a3),d5
-		cmp.w	($FFFFF8A0).w,d5
+		cmp.w	(Level_height_blocks).w,d5
 		ble.s	loc_393B0
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -54851,7 +54842,7 @@ loc_3A270:
 
 loc_3A27C:
 		move.w	$1A(a3),d5
-		cmp.w	($FFFFF89A).w,d5
+		cmp.w	(Level_width_pixels).w,d5
 		ble.s	loc_3A28A
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
@@ -55658,13 +55649,13 @@ loc_3AC48:
 		clr.w	$38(a3)
 		jsr	(sub_24C).w
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FF80,d0
 		blt.s	loc_3AC7E
 		cmpi.w	#$1C0,d0
 		bgt.s	loc_3AC7E
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FF80,d0
 		blt.s	loc_3AC7E
 		cmpi.w	#$1C0,d0
@@ -56604,13 +56595,13 @@ loc_3B77E:
 loc_3B7BA:
 		jsr	(sub_24C).w
 		move.w	$1A(a3),d4
-		sub.w	($FFFFF81C).w,d4
+		sub.w	(Camera_X_pos).w,d4
 		cmpi.w	#$FF80,d4
 		blt.s	loc_3B7EC
 		cmpi.w	#$1C0,d4
 		bgt.s	loc_3B7EC
 		move.w	$1E(a3),d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		cmpi.w	#$FF80,d4
 		blt.s	loc_3B7EC
 		cmpi.w	#$1C0,d4
@@ -56778,13 +56769,13 @@ loc_3B9B0:
 loc_3BA00:
 		jsr	(sub_24C).w
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_3BA5C
 		cmpi.w	#$244,d7
 		bgt.s	loc_3BA5C
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FEFC,d7
 		blt.s	loc_3BA5C
 		cmpi.w	#$1E4,d7
@@ -56879,7 +56870,7 @@ loc_3BB1C:
 		move.l	#$38000,$26(a3)
 
 loc_3BB24:
-		move.l	#$FFFF0000,$2A(a3)
+		move.l	#-$10000,$2A(a3)
 
 loc_3BB2C:
 		jsr	(sub_24C).w
@@ -57720,11 +57711,11 @@ sub_3C3CE:
 		ble.s	loc_3C436
 		cmpi.w	#$FFE0,$1E(a3)
 		ble.s	loc_3C436
-		move.w	($FFFFF89A).w,d7
+		move.w	(Level_width_pixels).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1A(a3),d7
 		blt.s	loc_3C436
-		move.w	($FFFFF8A0).w,d7
+		move.w	(Level_height_blocks).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1E(a3),d7
 		blt.s	loc_3C436
@@ -57733,13 +57724,13 @@ sub_3C3CE:
 		cmpi.w	#$14,($FFFFF84A).w
 		ble.s	loc_3C43A
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FEFC,d0
 		blt.s	loc_3C436
 		cmpi.w	#$244,d0
 		bgt.s	loc_3C436
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FEFC,d0
 		blt.s	loc_3C436
 		cmpi.w	#$1E4,d0
@@ -57755,13 +57746,13 @@ loc_3C436:
 
 loc_3C43A:
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3C436
 		cmpi.w	#$2E4,d0
 		bgt.s	loc_3C436
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3C436
 		cmpi.w	#$284,d0
@@ -60281,13 +60272,13 @@ sub_3E2CE:
 		cmp.b	$71(a0),d6
 		bne.s	loc_3E314
 		move.w	$1A(a3),d7
-		sub.w	($FFFFF81C).w,d7
+		sub.w	(Camera_X_pos).w,d7
 		cmpi.w	#$FFC0,d7
 		blt.w	loc_3E30E
 		cmpi.w	#$180,d7
 		bgt.w	loc_3E30E
 		move.w	$1E(a3),d7
-		sub.w	($FFFFF820).w,d7
+		sub.w	(Camera_Y_pos).w,d7
 		cmpi.w	#$FFC0,d7
 		blt.w	loc_3E30E
 		cmpi.w	#$120,d7
@@ -60848,11 +60839,11 @@ sub_3E8BA:
 		ble.s	loc_3E920
 		cmpi.w	#$FFE0,$1E(a3)
 		ble.s	loc_3E920
-		move.w	($FFFFF89A).w,d7
+		move.w	(Level_width_pixels).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1A(a3),d7
 		blt.s	loc_3E920
-		move.w	($FFFFF8A0).w,d7
+		move.w	(Level_height_blocks).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1E(a3),d7
 		blt.s	loc_3E920
@@ -60861,13 +60852,13 @@ sub_3E8BA:
 		cmpi.w	#$14,($FFFFF84A).w
 		ble.s	loc_3E924
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FEFC,d0
 		blt.s	loc_3E920
 		cmpi.w	#$244,d0
 		bgt.s	loc_3E920
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FEFC,d0
 		blt.s	loc_3E920
 		cmpi.w	#$1E4,d0
@@ -60883,13 +60874,13 @@ loc_3E920:
 
 loc_3E924:
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3E920
 		cmpi.w	#$2E4,d0
 		bgt.s	loc_3E920
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3E920
 		cmpi.w	#$284,d0
@@ -61733,11 +61724,11 @@ sub_3F29A:
 		ble.s	loc_3F300
 		cmpi.w	#$FFE0,$1E(a3)
 		ble.s	loc_3F300
-		move.w	($FFFFF89A).w,d7
+		move.w	(Level_width_pixels).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1A(a3),d7
 		blt.s	loc_3F300
-		move.w	($FFFFF8A0).w,d7
+		move.w	(Level_height_blocks).w,d7
 		addi.w	#$20,d7
 		cmp.w	$1E(a3),d7
 		blt.s	loc_3F300
@@ -61746,13 +61737,13 @@ sub_3F29A:
 		cmpi.w	#$14,($FFFFF84A).w
 		ble.s	loc_3F304
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FFC0,d0
 		blt.s	loc_3F300
 		cmpi.w	#$180,d0
 		bgt.s	loc_3F300
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FFC0,d0
 		blt.s	loc_3F300
 		cmpi.w	#$120,d0
@@ -61768,13 +61759,13 @@ loc_3F300:
 
 loc_3F304:
 		move.w	$1A(a3),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3F300
 		cmpi.w	#$2E4,d0
 		bgt.s	loc_3F300
 		move.w	$1E(a3),d0
-		sub.w	($FFFFF820).w,d0
+		sub.w	(Camera_Y_pos).w,d0
 		cmpi.w	#$FE5C,d0
 		blt.s	loc_3F300
 		cmpi.w	#$284,d0
@@ -62046,7 +62037,7 @@ power_start:
 ; ---------------------------------------------------------------------------
 
 +
-		move.b	($FFFFF812).w,d1
+		move.b	(Ctrl_Held).w,d1
 		andi.b	#$C0,d1
 		cmpi.b	#$C0,d1
 		bne.s	power_fail
@@ -62189,9 +62180,9 @@ loc_3F7E6:
 loc_3F7FE:
 		move.l	($FFFFF85E).w,a3
 		move.w	#$7F,d3
-		sub.w	($FFFFF81C).w,d3
+		sub.w	(Camera_X_pos).w,d3
 		move.w	#$7F,d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_3F81A
 		rts
@@ -62290,7 +62281,7 @@ loc_3F8D0:
 		moveq	#$10,d4
 		move.w	#$480,d5
 		lea	unk_3F8E2(pc),a2
-		move.w	#$4B0,($FFFFF5BE).w
+		move.w	#$4B0,(Diamond_power_timer).w
 		bra.s	loc_3F91C
 ; ---------------------------------------------------------------------------
 unk_3F8E2:	dc.b   0
@@ -62311,7 +62302,7 @@ loc_3F8EE:
 		moveq	#6,d4
 		move.w	#$300,d5
 		lea	unk_3F900(pc),a2
-		move.w	#$1E0,($FFFFF5BE).w
+		move.w	#$1E0,(Diamond_power_timer).w
 		bra.s	loc_3F91C
 ; ---------------------------------------------------------------------------
 unk_3F900:	dc.b   0
@@ -62330,7 +62321,7 @@ unk_3F900:	dc.b   0
 
 loc_3F90C:
 
-		move.w	#$4B0,($FFFFF5BE).w
+		move.w	#$4B0,(Diamond_power_timer).w
 		lea	unk_3F968(pc),a2
 		moveq	#6,d4
 		move.w	#$400,d5
@@ -62398,12 +62389,12 @@ loc_3F978:
 ; ---------------------------------------------------------------------------
 
 loc_3F9A2:
-		subq.w	#1,($FFFFF5BE).w
+		subq.w	#1,(Diamond_power_timer).w
 		move.l	($FFFFF5B4).w,a0
 		move.w	$1A(a0),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		move.w	$1E(a0),d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		moveq	#-1,d3
 		move.l	($FFFFF86A).w,d6
 		beq.s	loc_3FA0C
@@ -62413,12 +62404,12 @@ loc_3F9C2:
 		move.w	$1A(a1),d4
 		move.w	$1E(a1),d5
 		subi.w	#$10,d5
-		sub.w	($FFFFF81C).w,d4
+		sub.w	(Camera_X_pos).w,d4
 		cmpi.w	#$FFF8,d4
 		blt.s	loc_3FA06
 		cmpi.w	#$148,d4
 		bge.s	loc_3FA06
-		sub.w	($FFFFF820).w,d5
+		sub.w	(Camera_Y_pos).w,d5
 		cmpi.w	#$10,d5
 		blt.s	loc_3FA06
 		cmpi.w	#$F0,d5
@@ -62564,9 +62555,9 @@ loc_3FAD4:
 		asr.l	#1,d3
 		add.l	d3,$1E(a0)
 		move.w	#$7F,d3
-		sub.w	($FFFFF81C).w,d3
+		sub.w	(Camera_X_pos).w,d3
 		move.w	#$7F,d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_3FB20
 		rts
@@ -62574,7 +62565,7 @@ loc_3FAD4:
 
 loc_3FB20:
 		move.l	d0,a0
-		tst.w	($FFFFF5BE).w
+		tst.w	(Diamond_power_timer).w
 		bge.s	loc_3FB3E
 		move.w	($FFFFFC24).w,d1
 		andi.w	#$F,d1
@@ -62640,17 +62631,17 @@ loc_3FB9A:
 		move.w	d2,$24(a0)
 		move.w	#0,$22(a0)
 		dbf	d1,loc_3FB9A
-		clr.w	($FFFFF5BE).w
+		clr.w	(Diamond_power_timer).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_3FBC4:
-		addq.w	#1,($FFFFF5BE).w
+		addq.w	#1,(Diamond_power_timer).w
 		move.l	($FFFFF85E).w,a3
 		move.w	#$7F,d3
-		sub.w	($FFFFF81C).w,d3
+		sub.w	(Camera_X_pos).w,d3
 		move.w	#$7F,d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_3FBE4
 		rts
@@ -62676,7 +62667,7 @@ loc_3FBE4:
 		subi.w	#$10,d1
 		add.w	d4,d1
 		move.w	$24(a0),d6
-		cmpi.w	#$40,($FFFFF5BE).w
+		cmpi.w	#$40,(Diamond_power_timer).w
 		bge.s	loc_3FC2A
 		addq.w	#2,$3E(a0)
 		subq.w	#2,$42(a0)
@@ -62689,10 +62680,10 @@ loc_3FC2A:
 		bge.s	loc_3FC56
 		cmpi.w	#7,$24(a0)
 		beq.s	loc_3FC4E
-		cmpi.w	#4,($FFFFFC4A).w
+		cmpi.w	#4,(Extra_hitpoint_slots).w
 		bge.s	loc_3FC4C
-		addq.w	#1,($FFFFFC4A).w
-		addq.w	#1,($FFFFFC40).w
+		addq.w	#1,(Extra_hitpoint_slots).w
+		addq.w	#1,(Number_Hitpoints).w
 
 loc_3FC4C:
 		bra.s	loc_3FC52
@@ -62749,7 +62740,7 @@ loc_3FC8C:
 		move.w	d3,$48(a0)
 		move.w	#0,$22(a0)
 		dbf	d1,loc_3FC8C
-		move.w	#$1E0,($FFFFF5BE).w
+		move.w	#$1E0,(Diamond_power_timer).w
 		rts
 ; ---------------------------------------------------------------------------
 unk_3FCC4:	dc.b  $C
@@ -62835,8 +62826,8 @@ unk_3FCEC:	dc.b  $C
 ; ---------------------------------------------------------------------------
 
 loc_3FD14:
-		subq.w	#1,($FFFFF5BE).w
-		move.w	($FFFFF5BE).w,d7
+		subq.w	#1,(Diamond_power_timer).w
+		move.w	(Diamond_power_timer).w,d7
 		cmpi.w	#$FFE5,d7
 		bge.s	loc_3FD28
 		bsr.w	sub_3F63C
@@ -62852,9 +62843,9 @@ loc_3FD2E:
 		lsr.w	#2,d7
 		move.l	($FFFFF85E).w,a3
 		move.w	#$7F,d3
-		sub.w	($FFFFF81C).w,d3
+		sub.w	(Camera_X_pos).w,d3
 		move.w	#$7F,d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_3FD4C
 		rts
@@ -62942,13 +62933,13 @@ byte_3FDDC:	dc.b 1
 
 loc_3FDE8:
 		st	($FFFFF5B9).w
-		move.w	#$708,($FFFFF5BE).w
+		move.w	#$708,(Diamond_power_timer).w
 		bra.s	loc_3FDFE
 ; ---------------------------------------------------------------------------
 
 loc_3FDF4:
 		sf	($FFFFF5B9).w
-		move.w	#$2D0,($FFFFF5BE).w
+		move.w	#$2D0,(Diamond_power_timer).w
 
 loc_3FDFE:
 		clr.w	($FFFFF5C0).w
@@ -62956,7 +62947,7 @@ loc_3FDFE:
 ; ---------------------------------------------------------------------------
 
 loc_3FE04:
-		subq.w	#1,($FFFFF5BE).w
+		subq.w	#1,(Diamond_power_timer).w
 		bmi.w	loc_3FE62
 		moveq	#6,d0
 		cmp.w	($FFFFF5C0).w,d0
@@ -62970,11 +62961,11 @@ loc_3FE04:
 		divu.w	#$140,d7
 		swap	d7
 		jsr	sub_3F5BC(pc)
-		move.w	($FFFFF81C).w,d0
+		move.w	(Camera_X_pos).w,d0
 		add.w	d7,d0
 		move.w	d0,$1A(a0)
 		clr.w	$1C(a0)
-		move.w	($FFFFF820).w,d1
+		move.w	(Camera_Y_pos).w,d1
 		subq.w	#8,d1
 		move.w	d1,$1E(a0)
 		move.w	#0,$3E(a0)
@@ -62984,9 +62975,9 @@ loc_3FE04:
 
 loc_3FE62:
 		move.w	#$7F,d3
-		sub.w	($FFFFF81C).w,d3
+		sub.w	(Camera_X_pos).w,d3
 		move.w	#$7F,d4
-		sub.w	($FFFFF820).w,d4
+		sub.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF85E).w,a3
 		move.l	$26(a3),a5
 		move.l	a5,d6
@@ -63024,9 +63015,9 @@ loc_3FEBC:
 		tst.b	($FFFFF5B9).w
 		beq.w	loc_3FF6E
 		move.w	$1A(a0),d0
-		sub.w	($FFFFF81C).w,d0
+		sub.w	(Camera_X_pos).w,d0
 		move.w	$1E(a0),d1
-		sub.w	($FFFFF820).w,d1
+		sub.w	(Camera_Y_pos).w,d1
 		moveq	#-1,d7
 		move.l	($FFFFF86A).w,d6
 		beq.s	loc_3FF2C
@@ -63036,12 +63027,12 @@ loc_3FEE2:
 		move.w	$1A(a1),d5
 		move.w	$1E(a1),d6
 		subi.w	#8,d6
-		sub.w	($FFFFF81C).w,d5
+		sub.w	(Camera_X_pos).w,d5
 		cmpi.w	#$FFF8,d5
 		blt.s	loc_3FF26
 		cmpi.w	#$148,d5
 		bge.s	loc_3FF26
-		sub.w	($FFFFF820).w,d6
+		sub.w	(Camera_Y_pos).w,d6
 		cmpi.w	#$10,d6
 		blt.s	loc_3FF26
 		cmpi.w	#$F0,d6
@@ -63164,14 +63155,14 @@ loc_40002:
 
 loc_40006:
 		dbf	d1,loc_3FFEA
-		move.w	#$4B0,($FFFFF5BE).w
+		move.w	#$4B0,(Diamond_power_timer).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_40012:
-		subq.w	#1,($FFFFF5BE).w
-		move.w	($FFFFF81C).w,d3
-		move.w	($FFFFF820).w,d4
+		subq.w	#1,(Diamond_power_timer).w
+		move.w	(Camera_X_pos).w,d3
+		move.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_40026
 		rts
@@ -63189,9 +63180,9 @@ loc_40026:
 		st	$42(a0)
 
 loc_40044:
-		tst.w	($FFFFF5BE).w
+		tst.w	(Diamond_power_timer).w
 		bpl.s	loc_40060
-		move.w	($FFFFF5BE).w,d7
+		move.w	(Diamond_power_timer).w,d7
 		andi.w	#7,d7
 		bne.s	loc_40060
 		subq.w	#1,$24(a0)
@@ -63254,10 +63245,10 @@ five_way_shot:
 
 loc_400DE:
 		move.w	$1A(a3),d2
-		sub.w	($FFFFF81C).w,d2
+		sub.w	(Camera_X_pos).w,d2
 		add.w	d4,d2
 		move.w	$1E(a3),d3
-		sub.w	($FFFFF820).w,d3
+		sub.w	(Camera_Y_pos).w,d3
 		lea	word_40124(pc),a5
 
 loc_400F4:
@@ -63274,7 +63265,7 @@ loc_40110:
 		move.w	d4,$26(a0)
 		move.w	(a5)+,$2A(a0)
 		dbf	d1,loc_400F4
-		move.w	#$50,($FFFFF5BE).w
+		move.w	#$50,(Diamond_power_timer).w
 		rts
 ; End of function power_start
 
@@ -63292,9 +63283,9 @@ word_40124:	dc.w 6
 ; ---------------------------------------------------------------------------
 
 loc_40138:
-		subq.w	#1,($FFFFF5BE).w
-		move.w	($FFFFF81C).w,d3
-		move.w	($FFFFF820).w,d4
+		subq.w	#1,(Diamond_power_timer).w
+		move.w	(Camera_X_pos).w,d3
+		move.w	(Camera_Y_pos).w,d4
 		move.l	($FFFFF5A4).w,d0
 		bne.s	loc_4014C
 		rts
@@ -63334,9 +63325,9 @@ loc_4018A:
 
 loc_4019A:
 		move.w	d1,$40(a0)
-		tst.w	($FFFFF5BE).w
+		tst.w	(Diamond_power_timer).w
 		bpl.s	loc_401BA
-		move.w	($FFFFF5BE).w,d7
+		move.w	(Diamond_power_timer).w,d7
 		andi.w	#7,d7
 		bne.s	loc_401BA
 		subq.w	#1,$24(a0)

@@ -1,6 +1,6 @@
 LevelSelect_ChkKey:
-	btst	#6,($FFFFF80D).w   ;Ctrl_1_Held
-	sne	($FFFFFDC7).w
+	btst	#6,(Ctrl_1_Held).w   ;Ctrl_1_Held
+	sne	(LevelSelect_Flag).w
 	jmp	(loc_204).w
 
 LevelSelect_Loop:
@@ -11,21 +11,21 @@ LevelSelect_Loop:
 	movem.l	(sp)+,d0-d3/a0-a3
 	move.w	#$69,d6
 	bsr.s	LevelSelect_Input
-	bclr	#7,($FFFFF80E).w
+	bclr	#7,(Ctrl_1_Pressed).w
 	beq.s	LevelSelect_Loop
 
 ;LevelSelect_Exit:
-	move.w	($FFFFFDCC).w,($FFFFFC44).w
+	move.w	(Options_Selected_Option).w,(Current_LevelID).w
 	bra.w	CostumeSelect
 ; ---------------------------------------------------------------------------
 ; d6 = max number of options
 LevelSelect_Input:
-	move.w	($FFFFFDCC).w,d7
-	bclr	#0,($FFFFF813).w
+	move.w	(Options_Selected_Option).w,d7
+	bclr	#0,(Ctrl_Pressed).w
 	beq.s	++	; UP pressed?
 	jsr	(sub_1BC26).l	; play selection sound
 	subq.w	#1,d7
-	btst	#6,($FFFFF812).w
+	btst	#6,(Ctrl_Held).w
 	beq.s	+	; A held?
 	subq.w	#6,d7
 +
@@ -33,11 +33,11 @@ LevelSelect_Input:
 	bpl.s	+
 	clr.w	d7
 +
-	bclr	#1,($FFFFF813).w
+	bclr	#1,(Ctrl_Pressed).w
 	beq.s	++	; DOWN pressed?
 	jsr	(sub_1BC26).l	; play selection sound
 	addq.w	#1,d7
-	btst	#6,($FFFFF812).w
+	btst	#6,(Ctrl_Held).w
 	beq.s	+	; A held?
 	addq.w	#6,d7
 +
@@ -45,17 +45,17 @@ LevelSelect_Input:
 	ble.s	+
 	move.w	d6,d7
 +
-	move.w	d7,($FFFFFDCC).w
+	move.w	d7,(Options_Selected_Option).w
 	rts
 
 ; ---------------------------------------------------------------------------
 LevelSelect_DrawText:
-	move.w	($FFFFFDCC).w,d6
+	move.w	(Options_Selected_Option).w,d6
 	subq.w	#3,d6
 	lea	(AddrTbl_LevelNames).l,a3
 	move.w	#$C,d4		; y_pos
 LevelSelect_DrawText_loop:
-	clr.b	($FFFFFDC6).w
+	clr.b	(LevelSelect_ActNumber).w
 	lea	LevelSelect_spec_char_tbl_junk(pc),a4	; dirty fix: points to 0, $FF
 	tst.w	d6
 	bmi.s	LevelSelect_DrawText_Do
@@ -65,16 +65,16 @@ LevelSelect_DrawText_loop:
 	move.w	d6,d7
 	cmpi.w	#FirstElsewhere_LevelID,d7
 	blt.s	+
-	move.b	d6,($FFFFFDC6).w
-	subi.b	#FirstElsewhere_LevelID-1,($FFFFFDC6).w
+	move.b	d6,(LevelSelect_ActNumber).w
+	subi.b	#FirstElsewhere_LevelID-1,(LevelSelect_ActNumber).w
 	move.w	#FirstElsewhere_LevelID,d7
 +
 	mulu.w	#$A,d7
 	move.l	(a3,d7.w),a4	; address of level name
-	tst.b	($FFFFFDC6).w
+	tst.b	(LevelSelect_ActNumber).w
 	bne.s	LevelSelect_DrawText_Do
 	move.w	8(a3,d7.w),d2	; act number
-	move.b	d2,($FFFFFDC6).w
+	move.b	d2,(LevelSelect_ActNumber).w
 LevelSelect_DrawText_Do:
 	bsr.s	LevelSelect_DrawTextLine
 	addq.w	#1,d6
@@ -137,7 +137,7 @@ LevelSelect_DrawTextLine_cmd:
 
 LevelSelect_DrawTextLine_number:	
 	moveq	#0,d2
-	move.b	($FFFFFDC6).w,d2
+	move.b	(LevelSelect_ActNumber).w,d2
 	tst.w	d2
 	beq.s	LevelSelect_DrawTextLine_Clear
 	move.w	#0,(a6)
@@ -200,7 +200,7 @@ LevelSelect_spec_char_tbl_junk:
 	dc.b	$87,   0
 ; ---------------------------------------------------------------------------
 CostumeSelect:
-	clr.w	($FFFFFDCC).w
+	clr.w	(Options_Selected_Option).w
 	move.w	#$A,d4
 	
 CostumeSelect_loop3:
@@ -215,7 +215,7 @@ CostumeSelect_loop3:
 	cmpi.w	#$1E,d4
 	blt.s	CostumeSelect_loop3
 
-	bclr	#7,($FFFFF813).w
+	bclr	#7,(Ctrl_Pressed).w
 	
 CostumeSelect_Loop:
 	jsr	(sub_24C).w
@@ -225,39 +225,39 @@ CostumeSelect_Loop:
 	movem.l	(sp)+,d0-d3/a0-a3
 	move.w	#9,d6
 	bsr.w	LevelSelect_Input
-	bclr	#7,($FFFFF80E).w
+	bclr	#7,(Ctrl_1_Pressed).w
 	beq.s	CostumeSelect_Loop
 
 ;CostumeSelect_Exit:
-	move.w	($FFFFFDCC).w,d7
-	move.w	d7,($FFFFFC46).w
+	move.w	(Options_Selected_Option).w,d7
+	move.w	d7,(Current_Helmet).w
 	lea	(unk_7EC2).w,a4	; helmet hitpoints
 	move.b	(a4,d7.w),d7
-	move.w	d7,($FFFFFC40).w
-	;move.w	d7,($FFFFFC4A).w
+	move.w	d7,(Number_Hitpoints).w
+	;move.w	d7,(Extra_hitpoint_slots).w
 	;add soundtest: jsr	($E1328).l
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFBCE).w
 	st	($FFFFFC36).w
 
 	jsr	(sub_2C4).w
-	move.w	#8,($FFFFFBCA).w
+	move.w	#8,(Game_Mode).w
 	jsr	(j_StopMusic).l
 	jmp	(loc_204).w
 ; ---------------------------------------------------------------------------
 CostumeSelect_DrawText:
-	move.b	#9,($FFFFFDC6).w
+	move.b	#9,(LevelSelect_ActNumber).w
 
 -
 	moveq	#0,d5
-	move.b	($FFFFFDC6).w,d5
-	cmp.w	($FFFFFDCC).w,d5
+	move.b	(LevelSelect_ActNumber).w,d5
+	cmp.w	(Options_Selected_Option).w,d5
 	seq	d3
 	lea	CostumeTextOffsets(pc),a4
 	add.w	d5,d5
 	add.w	(a4,d5.w),a4
 	jsr	(DrawTextLine_Offset).l
-	sub.b	#1,($FFFFFDC6).w
+	sub.b	#1,(LevelSelect_ActNumber).w
 	bge.s	-
 	rts
 	

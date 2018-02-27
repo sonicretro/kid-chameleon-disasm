@@ -1,0 +1,29 @@
+Addresses are in tiles. Each tile is $20 bytes, so
+to get the actual VRAM addresses multiply by $20.
+
+000-080: foreground plane map
+080-094: sprite table
+094-0A0: platforms
+0A0-0BC: horizontal scrolling data
+0BC-220: FG art
+220-22d: P/breakable block
+22D-231: hitpoints
+231-23D: ankh, clock, coin (4 each)
+23D-2C5: other kinds of blocks
+2C5-2CF: numbers
+2CF-2F3: ?
+2F3-2FB: rubber block
+2FB-...: enemies
+625-...: kid
+66E-676: juggernaut skull
+676-68E: eyeclops beam; pause menu when paused
+68E-696: eyeclops diamond power beam
+606-6AE: flag
+6AE-6BA: platform
+6BA-6C6: numbers, :, x
+6D6-6EA: ?
+6EA-6FA: animated diamond
+6FA-6FE: unused star thingie?
+6FE-700: ?
+700-7B0: background plane map
+7B0-800: BG tiles

@@ -37,6 +37,15 @@ Boss2_LevelID = $1E
 Boss3_LevelID = $2A
 Boss4_LevelID = $33
 
+; Variable names for RAM locations
+Button_Input = $FFFFF80D		; The current buttons being pressed: SACBRLDU
+Number_Lives = $FFFFFC3E		; The current internal number of lives
+Number_Diamonds = $FFFFFC42		; The current internal number of diamonds
+Current_Helmet = $FFFFFC46		; The ID of the worn helmet
+								;	0		1		2		3		4		5		6		7		8		9
+								;	Kid		Skycut	Cyclone	Stealth	Eyeclop	Jugger	Knight	Berzerk	Maniaxe	Micromax
+Number_Continues = $FFFFFC48	; The current internal number of continues
+
 ; Default Options that are selected 
 ; $00xxxxxx / $FFxxxxxx: 1st/2nd controller for second player
 ; $xx00xxxx / $xxFFxxxx: slow/fast action, press speed button for fast/slow
@@ -1274,7 +1283,7 @@ sub_8A4:
 
 loc_8B4:
 		moveq	#$A,d0
-		lea	($FFFFFC3E).w,a1
+		lea	(Number_Lives).w,a1
 
 loc_8BA:
 		move.w	(a0)+,(a1)+
@@ -1294,7 +1303,7 @@ sub_8C2:
 
 loc_8D2:
 		moveq	#$A,d0
-		lea	($FFFFFC3E).w,a1
+		lea	(Number_Lives).w,a1
 
 loc_8D8:
 		move.w	(a1)+,(a0)+
@@ -1655,14 +1664,14 @@ ReadJoypad:
 
 loc_B8C:
 					; ReadJoypad+Cj
-		move.b	($FFFFF812).w,($FFFFF80D).w
+		move.b	($FFFFF812).w,(Button_Input).w
 		move.b	($FFFFF813).w,($FFFFF80E).w
 
 loc_B98:
 		tst.w	(word_7190).w
 		beq.s	loc_BB6
 		tst.b	($FFFFFB49).w
-		cmpi.b	#$C0,($FFFFF80D).w
+		cmpi.b	#$C0,(Button_Input).w
 		bne.s	loc_BB6
 		cmpi.b	#$10,($FFFFF810).w
 		bne.s	loc_BB6
@@ -1722,11 +1731,11 @@ loc_C22:
 loc_C4E:
 					; ReadJoypad+D4j
 		move.b	($FFFFF80C).w,d0 ; held	keys new
-		move.b	($FFFFF80D).w,d1 ; held	keys old
+		move.b	(Button_Input).w,d1 ; held	keys old
 		eor.b	d1,d0		; keys held _either_ old or new
 		and.b	($FFFFF80C).w,d0 ; newly pressed keys
 		or.b	d0,($FFFFF80E).w
-		move.b	($FFFFF80C).w,($FFFFF80D).w
+		move.b	($FFFFF80C).w,(Button_Input).w
 		move.b	($FFFFF80F).w,d0
 		move.b	($FFFFF810).w,d1
 		eor.b	d1,d0
@@ -1744,7 +1753,7 @@ loc_C4E:
 
 loc_C9C:
 					; ReadJoypad+11Ej
-		move.b	($FFFFF80D).w,($FFFFF812).w
+		move.b	(Button_Input).w,($FFFFF812).w
 		move.b	($FFFFF80E).w,($FFFFF813).w
 		rts
 ; End of function ReadJoypad
@@ -5585,10 +5594,10 @@ loc_40EE:
 		beq.s	loc_40EE
 		cmp.w	a3,d7
 		bne.s	loc_40EE
-		cmpi.w	#6,($FFFFFC46).w
+		cmpi.w	#6,(Current_Helmet).w
 		beq.w	loc_4124
 		asr.l	#1,d1
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.w	loc_4124
 		asr.l	#1,d1
 
@@ -7259,7 +7268,7 @@ loc_69D2:
 		bgt.s	loc_69EC
 		moveq	#8,d1
 		moveq	#-1,d2
-		bra.s	loc_69FA
+		bra.s	restart_text
 ; ---------------------------------------------------------------------------
 
 loc_69EC:
@@ -7271,19 +7280,19 @@ loc_69EC:
 		move.w	d1,d2
 		swap	d2
 
-loc_69FA:
+restart_text:							; Restart Round dialog
 		move.w	($FFFFF820).w,d7
 		addi.w	#$40,d7
-		cmpi.w	#1,($FFFFFC3E).w
-		bgt.s	loc_6A12
-		lea	(unk_6CE4).l,a1
-		bra.s	loc_6A18
+		cmpi.w	#1,(Number_Lives).w		; Check if lives > 1
+		bgt.s	+							; Branch to set text to "Restart Round"
+		lea	(unk_6CE4).l,a1				; Sets text to "Give Up"
+		bra.s	++							; Branch to done
 ; ---------------------------------------------------------------------------
 
-loc_6A12:
-		lea	(unk_6D84).l,a1
++
+		lea	(unk_6D84).l,a1				; Sets text to "Restart Round"
 
-loc_6A18:
++
 		moveq	#4,d5
 		add.w	d0,d0
 		move.w	d0,d6
@@ -7371,22 +7380,22 @@ Game_Paused_Loop:
 		beq.s	loc_6B0E
 		; up pressed
 		tst.b	($FFFFFAD1).w
-		beq.s	loc_6B32
+		beq.s	Game_Paused_ChkStart
 		; move cursor up
 		move.l	d0,4(a6)
 		move.w	#$867C,(a6)
 		move.l	d1,4(a6)
 		move.w	#$8678,(a6)
 		subi.b	#1,($FFFFFAD1).w
-		bra.s	loc_6B32
+		bra.s	Game_Paused_ChkStart
 ; ---------------------------------------------------------------------------
 
 loc_6B0E:
 		bclr	#1,($FFFFF813).w
-		beq.s	loc_6B32
+		beq.s	Game_Paused_ChkStart
 		; down pressed
 		tst.b	($FFFFFAD1).w
-		bne.s	loc_6B32
+		bne.s	Game_Paused_ChkStart
 		; move cursor down
 		move.l	d0,4(a6)
 		move.w	#$8678,(a6)
@@ -7394,18 +7403,18 @@ loc_6B0E:
 		move.w	#$867C,(a6)
 		addi.b	#1,($FFFFFAD1).w
 
-loc_6B32:
+Game_Paused_ChkStart:
 		bclr	#7,($FFFFF813).w
 		beq.s	Game_Paused_Loop
 		; start pressed
 		tst.b	($FFFFFAD1).w
 		beq.s	loc_6B68
 		; restart level/give up
-		subi.w	#1,($FFFFFC3E).w
+		subi.w	#1,(Number_Lives).w
 		beq.s	loc_6B62
 		; lives left --> restart level
 		clr.w	($FFFFFC4A).w
-		clr.w	($FFFFFC46).w
+		clr.w	(Current_Helmet).w
 		move.w	#2,($FFFFFC40).w
 		st	($FFFFFC36).w
 		jsr	(sub_2C4).w
@@ -7501,7 +7510,7 @@ loc_6C0A:
 		move.l	($FFFFF85E).w,a4
 		move.w	#4,$38(a4)
 		move.w	#$30,$3A(a4)
-		move.w	#1,($FFFFFC3E).w
+		move.w	#1,(Number_Lives).w
 		sf	($FFFFFAD0).w
 		rts
 ; ---------------------------------------------------------------------------
@@ -8263,13 +8272,13 @@ loc_7420:
 
 
 sub_7428:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.w	return_7450
 		btst	#7,($FFFFF812).w
 		beq.s	return_7450
 		btst	#6,($FFFFF812).w
 		beq.w	return_7450
-		cmpi.w	#5,($FFFFFC42).w
+		cmpi.w	#5,(Number_Diamonds).w
 		blt.s	return_7450
 		st	($FFFFFA29).w
 
@@ -8346,7 +8355,7 @@ loc_74E0:
 ; ---------------------------------------------------------------------------
 
 loc_7508:
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		add.w	d0,d0
 		lea	(Data_Index).l,a0
 		lea	off_80F2(pc),a1
@@ -8395,7 +8404,7 @@ loc_757E:
 
 loc_75C0:
 		bsr.w	sub_7B30
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.w	loc_75D4
 		move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a1)
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
@@ -8409,13 +8418,13 @@ loc_75D4:
 		move.w	$1A(a3),($FFFFFA2C).w
 		move.w	$1E(a3),($FFFFFA2E).w
 		bsr.w	sub_7ACC
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		cmpi.w	#1,d0
 		beq.w	loc_8C12
 
 loc_7606:
 		bsr.w	sub_7428
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_7650
 		move.b	($FFFFF812).w,d0
 		andi.b	#$C0,d0
@@ -8423,7 +8432,7 @@ loc_7606:
 		bne.s	loc_7650
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_7650
-		cmpi.w	#2,($FFFFFC42).w
+		cmpi.w	#2,(Number_Diamonds).w
 		blt.s	loc_7650
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
@@ -8446,7 +8455,7 @@ loc_7664:
 		bne.w	loc_A426
 		bclr	#5,($FFFFF813).w
 		beq.w	loc_7772
-		cmpi.w	#6,($FFFFFC46).w
+		cmpi.w	#6,(Current_Helmet).w
 		bne.w	loc_76B0
 		move.w	$1A(a3),d7
 		move.w	($FFFFFA78).w,d6
@@ -8466,7 +8475,7 @@ loc_7696:
 ; ---------------------------------------------------------------------------
 
 loc_76B0:
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_76E4
 		tst.b	($FFFFFA6F).w
 		bne.w	loc_76E4
@@ -8480,7 +8489,7 @@ loc_76B0:
 ; ---------------------------------------------------------------------------
 
 loc_76E4:
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		bne.w	loc_7718
 		tst.b	($FFFFFA65).w
 		bne.w	loc_7772
@@ -8494,7 +8503,7 @@ loc_76E4:
 ; ---------------------------------------------------------------------------
 
 loc_7718:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.s	loc_7742
 		tst.b	$15(a3)
 		bne.s	loc_7772
@@ -8509,7 +8518,7 @@ loc_7738:
 ; ---------------------------------------------------------------------------
 
 loc_7742:
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_7772
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_7772
@@ -8528,9 +8537,9 @@ loc_7772:
 		tst.b	($FFFFFA28).w
 		bne.w	loc_779C
 		addq.w	#1,($FFFFFB58).w
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.s	loc_779C
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.s	loc_779C
 		bsr.w	sub_7A10
 		beq.w	loc_83BC
@@ -8551,7 +8560,7 @@ loc_779C:
 ; ---------------------------------------------------------------------------
 
 loc_77C2:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		move.w	#%1011000101,d6
 		btst	d7,d6
 		bne.w	loc_7820
@@ -8576,7 +8585,7 @@ loc_77E6:
 ; ---------------------------------------------------------------------------
 
 loc_77FC:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		move.w	#%1011000101,d6
 		btst	d7,d6
 		bne.w	loc_7820
@@ -8668,7 +8677,7 @@ loc_78C6:
 
 sub_78E8:
 		move.l	($FFFFF862).w,a2
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		cmpi.w	#5,d0
 		beq.w	loc_7988
 		cmpi.w	#9,d0
@@ -8907,7 +8916,7 @@ loc_7B12:
 ; ---------------------------------------------------------------------------
 
 loc_7B1A:
-		tst.w	($FFFFFC46).w
+		tst.w	(Current_Helmet).w
 		beq.w	loc_7B28
 		moveq	#0,d7
 		bra.w	loc_B79C
@@ -9080,7 +9089,7 @@ sub_7C40:
 		bsr.w	sub_7EB2
 
 loc_7C76:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		beq.w	loc_7CD0
 		cmp.w	($FFFFFBD0).w,d7
 		bne.w	loc_7C96
@@ -9119,9 +9128,9 @@ loc_7CBE:
 ; ---------------------------------------------------------------------------
 
 loc_7CD0:
-		move.w	($FFFFFBD0).w,($FFFFFC46).w
+		move.w	($FFFFFBD0).w,(Current_Helmet).w
 		beq.w	loc_7E14
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		tst.b	($FFFFFBC9).w
 		bne.s	loc_7CFE
 		jsr	(sub_E1334).l
@@ -9165,7 +9174,7 @@ loc_7D44:
 		move.l	($FFFFF862).w,a4
 		sf	$13(a4)
 		move.w	d7,$22(a3)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		bsr.w	sub_8106
 		rts
 ; ---------------------------------------------------------------------------
@@ -9173,12 +9182,12 @@ loc_7D44:
 loc_7D5A:
 		move.l	($FFFFF862).w,a4
 		sf	$13(a4)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		add.w	d7,d7
 		lea	off_79B2(pc),a4
 		add.w	d7,a4
 		move.w	(a4),$22(a3)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		bsr.w	sub_80D0
 		rts
 ; ---------------------------------------------------------------------------
@@ -9199,7 +9208,7 @@ loc_7D80:
 		sf	$15(a4)
 		sf	$14(a4)
 		move.b	$16(a3),$16(a4)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		cmpi.w	#3,d7
 		beq.w	loc_7DD6
 		cmpi.w	#6,d7
@@ -9214,7 +9223,7 @@ loc_7DD6:
 
 loc_7DDA:
 		move.b	$11(a3),$11(a4)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		add.w	d7,d7
 		lea	off_8176(pc),a2
 		move.w	(a2,d7.w),$22(a4)
@@ -9260,7 +9269,7 @@ loc_7E26:
 		move.b	(a4,d0.w),d0
 		jsr	(sub_E1330).l
 		jsr	(sub_E1338).l
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		bne.s	loc_7E48
 		move.l	d0,-(sp)
 		moveq	#$68,d0
@@ -9280,9 +9289,9 @@ loc_7E48:
 		clr.w	$22(a4)
 		sf	$17(a4)
 		sf	$13(a4)
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.s	loc_7E8C
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.s	loc_7E90
 		move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 
@@ -9570,7 +9579,7 @@ off_8128:	dc.w LnkTo_Pal_A1C72-Data_Index
 
 sub_813C:
 		move.l	a2,-(sp)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		add.w	d7,d7
 		move.w	off_8162(pc,d7.w),d7
 		lea	(Data_Index).l,a4
@@ -9680,7 +9689,7 @@ loc_8218:
 		move.w	$1E(a3),($FFFFFA2E).w
 		bsr.w	sub_7ACC
 		beq.s	loc_825C
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		cmpi.w	#9,d0
 		beq.s	loc_8252
 		cmpi.w	#5,d0
@@ -9704,7 +9713,7 @@ loc_8270:
 		moveq	#-$11,d7
 		bsr.w	sub_B43A
 		beq.w	loc_8298
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.w	loc_82D8
 		bsr.w	sub_81B4
 		bne.w	loc_82D8
@@ -9716,7 +9725,7 @@ loc_8298:
 
 loc_829C:
 		bclr	#4,($FFFFF813).w
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_82BA
 		move.w	#2,($FFFFFA56).w
 		bsr.w	sub_942A
@@ -9805,7 +9814,7 @@ loc_8382:
 		moveq	#$F,d1
 		bsr.w	sub_8600
 		move.l	$26(a3),d0
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_83B4
 		bsr.w	sub_9A0A
 		move.l	d0,$26(a3)
@@ -9879,7 +9888,7 @@ loc_8442:
 
 
 sub_8446:
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_8456
 		bsr.w	sub_98F2
 		rts
@@ -9901,7 +9910,7 @@ loc_8460:
 
 loc_8470:
 		move.w	d2,($FFFFF8F0).w
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		lsl.w	#2,d0
 		lea	off_84A2(pc),a0
 		move.l	(a0,d0.w),a0
@@ -10719,7 +10728,7 @@ loc_8C12:
 
 loc_8C26:
 		bsr.w	sub_7428
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_8C70
 		move.b	($FFFFF812).w,d0
 		andi.b	#$C0,d0
@@ -10727,7 +10736,7 @@ loc_8C26:
 		bne.s	loc_8C70
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_8C70
-		cmpi.w	#2,($FFFFFC42).w
+		cmpi.w	#2,(Number_Diamonds).w
 		blt.s	loc_8C70
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
@@ -10746,7 +10755,7 @@ loc_8C70:
 		tst.b	($FFFFFA28).w
 		bne.w	loc_8CB6
 		addq.w	#1,($FFFFFB58).w
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		cmpi.w	#9,d0
 		beq.s	loc_8CB6
 		cmpi.w	#5,d0
@@ -10762,7 +10771,7 @@ loc_8C70:
 loc_8CB6:
 		bclr	#5,($FFFFF813).w
 		beq.w	loc_8D72
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		bne.w	loc_8CF8
 		tst.b	($FFFFFA65).w
 		bne.w	loc_8D72
@@ -10777,7 +10786,7 @@ loc_8CB6:
 ; ---------------------------------------------------------------------------
 
 loc_8CF8:
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_8D2C
 		tst.b	($FFFFFA6F).w
 		bne.w	loc_8D72
@@ -10791,7 +10800,7 @@ loc_8CF8:
 ; ---------------------------------------------------------------------------
 
 loc_8D2C:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.w	loc_8D58
 		tst.b	$15(a3)
 		bne.w	loc_8D72
@@ -10802,7 +10811,7 @@ loc_8D2C:
 		move.l	#sub_86FA,4(a0)
 
 loc_8D58:
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_8D72
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_8D72
@@ -10875,7 +10884,7 @@ loc_8E16:
 		bsr.w	sub_9A0A
 		move.l	d0,$26(a3)
 		bne.w	loc_8E3E
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.w	loc_8E3E
 		move.w	#0,($FFFFFA56).w
 		bra.w	loc_7606
@@ -10895,7 +10904,7 @@ loc_8E4E:
 
 loc_8E5A:
 		bmi.w	loc_8E74
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.s	loc_8E4E
 		move.w	#0,($FFFFFA56).w
 		bsr.w	sub_78E8
@@ -10910,7 +10919,7 @@ loc_8E74:
 
 loc_8E80:
 		bmi.w	loc_8E98
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		cmpi.w	#1,d7
 		beq.s	loc_8E4E
 		cmpi.w	#5,d7
@@ -10919,7 +10928,7 @@ loc_8E80:
 ; ---------------------------------------------------------------------------
 
 loc_8E98:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		move.w	#$2C5,d6
 		btst	d7,d6
 		bne.w	loc_9D22
@@ -10950,7 +10959,7 @@ sub_8ED0:
 		cmpi.w	#1,($FFFFFA56).w
 		bne.w	loc_8EFA
 		moveq	#7,d6
-		cmpi.w	#0,($FFFFFC46).w
+		cmpi.w	#0,(Current_Helmet).w
 		bne.w	loc_8EFA
 		moveq	#5,d6
 
@@ -11145,9 +11154,9 @@ loc_908C:
 		subi.w	#$F,d7
 		cmpi.w	#1,($FFFFFA56).w
 		beq.w	loc_90C0
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_90C0
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_90C0
 		subi.w	#$10,d7
 
@@ -11344,9 +11353,9 @@ sub_922C:
 		subi.w	#$F,d7
 		cmpi.w	#1,($FFFFFA56).w
 		beq.w	loc_9288
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_9288
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_9288
 		cmpi.w	#(LnkTo_unk_A94AC-Data_Index),$22(a3)
 		beq.w	loc_9288
@@ -11538,7 +11547,7 @@ loc_9426:
 sub_942A:
 		move.l	($FFFFF862).w,a2
 		sf	$3C(a2)
-		move.w	($FFFFFC46).w,d1
+		move.w	(Current_Helmet).w,d1
 		move.w	($FFFFF8F0).w,d2
 		cmpi.w	#8,d1
 		bne.w	loc_9454
@@ -12235,7 +12244,7 @@ sub_9A0A:
 ; ---------------------------------------------------------------------------
 
 loc_9A14:
-		move.w	($FFFFFC46).w,d3
+		move.w	(Current_Helmet).w,d3
 		cmpi.w	#1,d3
 		bne.w	loc_9AE0
 ; End of function sub_9A0A
@@ -12342,12 +12351,12 @@ loc_9AF2:
 		lea	unk_9CCE(pc),a0
 
 loc_9AFC:
-		cmpi.w	#9,($FFFFFC46).w	; micromax
+		cmpi.w	#9,(Current_Helmet).w	; micromax
 		bne.s	loc_9B08
 		lea	$1C(a0),a0
 
 loc_9B08:
-		cmpi.w	#5,($FFFFFC46).w	; juggernaut
+		cmpi.w	#5,(Current_Helmet).w	; juggernaut
 		bne.s	loc_9B14
 		lea	$38(a0),a0
 
@@ -12594,14 +12603,14 @@ loc_9D2E:
 		move.w	$1E(a3),($FFFFFA2E).w
 
 loc_9D58:
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		beq.w	loc_9E6C
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		beq.w	loc_9E6C
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		beq.w	loc_9E6C
 		lea	unk_9EB0(pc),a0
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.s	loc_9D86
 		lea	unk_9EE4(pc),a0
 
@@ -12933,7 +12942,7 @@ loc_9FE4:
 		move.w	$1A(a3),d0
 		andi.w	#$F,d0
 		moveq	#8,d1
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.s	loc_9FFE
 		moveq	#$A,d1
 
@@ -13025,7 +13034,7 @@ loc_A0DC:
 		move.w	$1A(a3),d0
 		andi.w	#$F,d0
 		moveq	#8,d1
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.s	loc_A0F6
 		moveq	#6,d1
 
@@ -13057,7 +13066,7 @@ loc_A128:
 		bsr.w	sub_A254
 
 loc_A13A:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		asl.w	#2,d7
 		move.l	off_A190(pc,d7.w),a0
 		move.l	$26(a3),d0
@@ -13419,7 +13428,7 @@ loc_A426:
 
 sub_A432:
 		move.w	#$2000,($FFFFFA76).w
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		add.w	d0,d0
 		move.w	unk_A49E(pc,d0.w),d0
 		move.l	$26(a3),d1
@@ -13529,9 +13538,9 @@ loc_A532:
 ; ---------------------------------------------------------------------------
 
 loc_A53C:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_A556
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.w	loc_A556
 		addq.w	#4,sp
 		bra.w	loc_B9A2
@@ -13558,9 +13567,9 @@ loc_A556:
 ; ---------------------------------------------------------------------------
 
 loc_A594:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_A5AE
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.w	loc_A5AE
 		addq.w	#4,sp
 		bra.w	loc_BA5A
@@ -13685,7 +13694,7 @@ loc_A6F8:
 		bne.w	loc_A9AA
 		move.w	($FFFFFA96).w,d7
 		beq.w	loc_A73A
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_A5EA
 		clr.w	($FFFFFA96).w
 
@@ -13710,7 +13719,7 @@ loc_A762:
 
 loc_A76A:
 		bsr.w	sub_7428
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_A7B4
 		move.b	($FFFFF812).w,d0
 		andi.b	#$C0,d0
@@ -13718,7 +13727,7 @@ loc_A76A:
 		bne.s	loc_A7B4
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_A7B4
-		cmpi.w	#2,($FFFFFC42).w
+		cmpi.w	#2,(Number_Diamonds).w
 		blt.s	loc_A7B4
 		move.w	#$8001,($FFFFFAB8).w
 		move.b	$16(a3),($FFFFFABE).w
@@ -13730,7 +13739,7 @@ loc_A76A:
 		move.l	(sp)+,d0
 
 loc_A7B4:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		bclr	#4,($FFFFF813).w
 		beq.w	loc_A7F8
 		tst.b	($FFFFFA6A).w
@@ -13797,7 +13806,7 @@ loc_A864:
 ; ---------------------------------------------------------------------------
 
 loc_A87A:
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		bne.w	loc_A8A6
 		tst.b	$15(a3)
 		bne.w	loc_A8D6
@@ -13808,7 +13817,7 @@ loc_A87A:
 		move.l	#sub_86FA,4(a0)
 
 loc_A8A6:
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.s	loc_A8D6
 		tst.w	($FFFFFAB8).w
 		bne.s	loc_A8D6
@@ -13878,7 +13887,7 @@ loc_A94E:
 		bsr.w	sub_DB22
 		bclr	#4,($FFFFF813).w
 		bclr	#5,($FFFFF813).w
-		cmpi.w	#6,($FFFFFC46).w
+		cmpi.w	#6,(Current_Helmet).w
 		bne.w	loc_A984
 		move.l	d0,-(sp)
 		moveq	#$4C,d0
@@ -13886,7 +13895,7 @@ loc_A94E:
 		move.l	(sp)+,d0
 
 loc_A984:
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		beq.w	loc_A99E
 		tst.l	$26(a3)
 		bne.w	loc_A99E
@@ -13922,7 +13931,7 @@ loc_A9BE:
 
 loc_A9E4:
 		bsr.w	sub_B270
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.w	loc_AA22
 		move.l	d0,-(sp)
 		moveq	#$22,d0
@@ -13951,7 +13960,7 @@ loc_AA22:
 		move.w	$1E(a3),($FFFFFA2E).w
 		bsr.w	sub_B168
 		bsr.w	sub_A4EE
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.w	loc_AA8E
 		tst.b	($FFFFFA66).w
 		bne.w	loc_AA8E
@@ -13974,7 +13983,7 @@ loc_AA9C:
 		tst.b	($FFFFF818).w
 		bne.w	loc_AD34
 		tst.b	($FFFFF817).w
-		beq.w	loc_AB62
+		beq.w	kid_flip
 		bra.w	loc_AAC8
 ; ---------------------------------------------------------------------------
 
@@ -13982,19 +13991,19 @@ loc_AAB8:
 		tst.b	($FFFFF817).w
 		bne.w	loc_AD34
 		tst.b	($FFFFF818).w
-		beq.w	loc_AB62
+		beq.w	kid_flip
 
 loc_AAC8:
 		tst.l	$2A(a3)
 		bmi.w	loc_AB22
 		bsr.w	sub_ADB8
-		bne.w	loc_AB62
+		bne.w	kid_flip
 		move.w	($FFFFFB5C).w,d7
 		andi.w	#$FFF0,d7
 		moveq	#$F,d6
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_AAF8
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AAF8
 		moveq	#$1F,d6
 
@@ -14017,7 +14026,7 @@ loc_AB0A:
 
 loc_AB22:
 		bsr.w	sub_AE6E
-		bne.w	loc_AB62
+		bne.w	kid_flip
 		move.w	$1E(a3),d7
 		andi.w	#$FFF0,d7
 		addi.w	#$F,d7
@@ -14037,13 +14046,13 @@ loc_AB4A:
 		bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
 
-loc_AB62:
+kid_flip:
 		bsr.w	sub_7428
 		bsr.w	sub_AF10
 		beq.w	loc_AD34
 		bclr	#4,($FFFFF813).w
 		beq.w	loc_ACB0
-		cmpi.w	#0,($FFFFFC46).w
+		cmpi.w	#0,(Current_Helmet).w
 		bne.w	loc_AC42
 		tst.b	($FFFFFA28).w
 		bne.w	loc_AC42
@@ -14109,7 +14118,7 @@ loc_ABF0:
 ; ---------------------------------------------------------------------------
 
 loc_AC42:
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		bne.w	loc_AC88
 		move.l	#$FFFC0000,$2A(a3)
 		move.l	#$FFFE0000,d7
@@ -14147,14 +14156,14 @@ loc_ACA4:
 loc_ACB0:
 		bclr	#5,($FFFFF813).w
 		beq.w	loc_AD2C
-		cmpi.w	#2,($FFFFFC46).w
+		cmpi.w	#2,(Current_Helmet).w
 		bne.w	loc_ACCC
 		st	($FFFFFA68).w
 		bra.w	loc_AD2C
 ; ---------------------------------------------------------------------------
 
 loc_ACCC:
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		bne.w	loc_AD00
 		tst.b	($FFFFFA65).w
 		bne.w	loc_AD2C
@@ -14168,7 +14177,7 @@ loc_ACCC:
 ; ---------------------------------------------------------------------------
 
 loc_AD00:
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_AD2C
 		tst.b	($FFFFFA6A).w
 		beq.w	loc_AD26
@@ -14248,9 +14257,9 @@ sub_ADB8:
 		move.w	d7,d6
 		sub.w	($FFFFFB5C).w,d6
 		moveq	#$F,d5
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_ADDA
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_ADDA
 		moveq	#$1F,d5
 
@@ -14293,9 +14302,9 @@ loc_AE0E:
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
 		blt.s	loc_ADEC
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_AE5A
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AE5A
 		add.w	($FFFFF89C).w,a4
 		move.w	(a4),d7
@@ -14360,9 +14369,9 @@ loc_AEAE:
 		andi.w	#$7000,d7
 		cmpi.w	#$6000,d7
 		blt.s	loc_AE88
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_AEFA
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AEFA
 		suba.w	($FFFFF89C).w,a4
 		move.w	(a4),d7
@@ -14388,9 +14397,9 @@ sub_AF10:
 		move.w	$1E(a3),d7
 		move.w	d7,d6
 		moveq	#$F,d5
-		cmpi.w	#9,($FFFFFC46).w
+		cmpi.w	#9,(Current_Helmet).w
 		beq.w	loc_AF2E
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_AF2E
 		moveq	#$1F,d5
 
@@ -14435,7 +14444,7 @@ loc_AF76:
 
 
 sub_AF7A:
-		cmpi.w	#6,($FFFFFC46).w
+		cmpi.w	#6,(Current_Helmet).w
 		bne.w	loc_AFD0
 		tst.b	($FFFFFA6B).w
 		bne.w	loc_AF96
@@ -14498,7 +14507,7 @@ loc_AFF0:
 
 
 sub_B000:
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_B080
 		tst.b	($FFFFFA6F).w
 		beq.w	loc_B080
@@ -14554,8 +14563,8 @@ loc_B080:
 
 
 sub_B084:
-		move.w	($FFFFFC46).w,d0
-		cmpi.w	#1,($FFFFFC46).w
+		move.w	(Current_Helmet).w,d0
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_B09E
 		move.l	$26(a3),d0
 		bsr.w	sub_9A20
@@ -14667,7 +14676,7 @@ sub_B168:
 ; ---------------------------------------------------------------------------
 
 loc_B18A:
-		cmpi.w	#2,($FFFFFC46).w
+		cmpi.w	#2,(Current_Helmet).w
 		bne.w	loc_B19C
 		tst.b	($FFFFFA68).w
 		bne.w	loc_B214
@@ -14762,7 +14771,7 @@ loc_B26C:
 
 
 sub_B270:
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		bne.w	loc_B284
 		tst.b	$15(a3)
 		beq.w	loc_B304
@@ -14810,7 +14819,7 @@ return_B2DC:
 ; ---------------------------------------------------------------------------
 
 loc_B2DE:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		cmpi.w	#5,d7
 		bne.w	loc_B304
 		move.l	($FFFFF862).w,a4
@@ -14822,13 +14831,13 @@ loc_B2DE:
 		sf	$15(a3)
 
 loc_B304:
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		cmpi.w	#1,d7
 		beq.w	loc_B3B2
 		lsl.w	#3,d7
 		lea	off_B3B8(pc),a4
 		add.w	d7,a4
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		bne.w	loc_B334
 		tst.b	($FFFFFA65).w
 		beq.w	loc_B334
@@ -14854,7 +14863,7 @@ loc_B350:
 		cmp.l	d7,d6
 		ble.s	loc_B3A8
 		addq.w	#2,a4
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_B3A8
 		tst.b	($FFFFF815).w
 		beq.w	loc_B3A8
@@ -14961,7 +14970,7 @@ unk_B408:	dc.b   5
 
 sub_B41C:
 		movem.l	d7/a4,-(sp)
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		add.w	d7,d7
 		lea	unk_B408(pc),a4
 		add.w	d7,a4
@@ -14996,14 +15005,14 @@ sub_B43A:
 
 loc_B482:
 		moveq	#7,d1
-		cmpi.w	#0,($FFFFFC46).w
+		cmpi.w	#0,(Current_Helmet).w
 		bne.w	loc_B494
 		moveq	#5,d1
 		bra.w	loc_B4A0
 ; ---------------------------------------------------------------------------
 
 loc_B494:
-		cmpi.w	#1,($FFFFFC46).w
+		cmpi.w	#1,(Current_Helmet).w
 		bne.w	loc_B4A0
 		moveq	#$A,d1
 
@@ -15274,7 +15283,7 @@ loc_B700:
 		move.l	a0,-(sp)
 		moveq	#0,d7
 		lea	unk_BDB6(pc),a0
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		move.b	(a0,d7.w),d7
 		add.w	($FFFFFC4A).w,d7
 		move.l	(sp)+,a0
@@ -15333,7 +15342,7 @@ loc_B778:
 
 loc_B786:
 		moveq	#0,d7
-		tst.w	($FFFFFC46).w
+		tst.w	(Current_Helmet).w
 		beq.w	loc_B79C
 		st	($FFFFFBCF).w
 		clr.w	($FFFFFBD0).w
@@ -15365,11 +15374,11 @@ loc_B7CA:
 		movem.l	(sp)+,d0-a5
 		tst.b	$19(a3)
 		beq.s	loc_B7CA
-		bra.w	loc_B830
+		bra.w	lose_life
 ; ---------------------------------------------------------------------------
 
 loc_B7EA:
-		tst.w	($FFFFFC46).w
+		tst.w	(Current_Helmet).w
 		beq.w	loc_B7FA
 		clr.w	($FFFFFBD0).w
 		bsr.w	sub_7C40
@@ -15384,17 +15393,17 @@ loc_B80C:
 		jsr	(sub_2AC).w
 		movem.l	(sp)+,d0-a5
 		tst.b	$19(a3)
-		bne.w	loc_B830
+		bne.w	lose_life
 		addi.l	#$3000,d1
 		add.l	d0,$1A(a3)
 		add.l	d1,$1E(a3)
 		bra.s	loc_B80C
 ; ---------------------------------------------------------------------------
 
-loc_B830:
+lose_life:							; Death management
 		clr.w	($FFFFFC4A).w
-		clr.w	($FFFFFC46).w
-		subq.w	#1,($FFFFFC3E).w
+		clr.w	(Current_Helmet).w		; Clears current helmet
+		subq.w	#1,(Number_Lives).w		; Subtracts 1 from Number_Lives
 		beq.w	loc_D052
 		move.w	#2,($FFFFFC40).w
 		clr.w	($FFFFFBCC).w
@@ -15404,22 +15413,22 @@ loc_B84E:
 		sf	($FFFFFB56).w
 		jsr	(sub_E1334).l
 		cmpi.w	#$FFFB,d6
-		bne.s	loc_B86A
+		bne.s	+
 		move.l	d0,-(sp)
 		moveq	#$76,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 
-loc_B86A:
++
 		st	($FFFFFBCE).w
 		jsr	(sub_2C4).w
 		tst.b	($FFFFFC38).w
 		bne.w	loc_B894
 		tst.b	($FFFFFC29).w
-		bne.w	loc_B888
+		bne.w	+
 		move.w	#8,($FFFFFBCA).w
 
-loc_B888:
++
 		tst.w	($FFFFFC54).w
 		beq.w	loc_B8E2
 		bra.w	loc_B8DE
@@ -15530,7 +15539,7 @@ sub_B956:
 
 loc_B95C:
 		st	($FFFFFC3C).w
-		addq.w	#1,($FFFFFC48).w
+		addq.w	#1,(Number_Continues).w
 		move.l	d0,-(sp)
 		moveq	#$2C,d0
 		jsr	(j_PlaySound).l
@@ -15565,7 +15574,7 @@ loc_B9A2:
 		clr.w	$38(a3)
 		clr.w	$1C(a3)
 		clr.w	$20(a3)
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_BB08
 		bclr	#4,($FFFFF813).w
 		bclr	#5,($FFFFF813).w
@@ -15622,7 +15631,7 @@ loc_BA5A:
 		clr.w	$38(a3)
 		clr.w	$1C(a3)
 		clr.w	$20(a3)
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_BB30
 		bclr	#4,($FFFFF813).w
 		bclr	#5,($FFFFF813).w
@@ -15830,7 +15839,7 @@ loc_BC56:
 loc_BC5C:
 		jsr	(sub_24C).w
 		dbf	d2,loc_BC5C
-		move.w	($FFFFFC46).w,d7
+		move.w	(Current_Helmet).w,d7
 		bsr.w	sub_80D0
 		moveq	#3,d2
 
@@ -15974,7 +15983,7 @@ unk_BD8E:	dc.b   0
 ; ---------------------------------------------------------------------------
 
 loc_BD9E:
-		move.w	($FFFFFBD0).w,($FFFFFC46).w
+		move.w	($FFFFFBD0).w,(Current_Helmet).w
 		rts
 ; ---------------------------------------------------------------------------
 		dc.b   1
@@ -16013,7 +16022,7 @@ sub_BDC0:
 		move.l	#$FFFF0050,a2
 		move.b	#$A,d4
 		move.w	($FFFFFC40).w,d0
-		move.w	($FFFFFC46).w,d2
+		move.w	(Current_Helmet).w,d2
 		tst.b	($FFFFFA6D).w
 		bne.w	loc_BE82
 		moveq	#0,d1
@@ -16147,36 +16156,36 @@ loc_BF12:
 		bsr.w	sub_BD0A
 
 loc_BF2A:
-		move.w	($FFFFFC3E).w,d0
+		move.w	(Number_Lives).w,d0
 		cmpi.w	#$64,d0
-		blt.s	loc_BF3A
+		blt.s	life_display
 		moveq	#$63,d0
-		move.w	d0,($FFFFFC3E).w
+		move.w	d0,(Number_Lives).w
 
-loc_BF3A:
+life_display							; Lives display
 		cmp.w	($FFFFFC18).w,d0
-		beq.s	loc_BF5A
+		beq.s	diamond_display
 		swap	d0
 		clr.w	d0
 		swap	d0
-		move.w	($FFFFFC3E).w,($FFFFFC18).w
-		bsr.w	sub_BF82
+		move.w	(Number_Lives).w,($FFFFFC18).w
+		bsr.w	calc_display_number
 		move.w	d1,$C(a0)
 		swap	d1
 		move.w	d1,$14(a0)
 
-loc_BF5A:
-		move.w	($FFFFFC42).w,d0
+diamond_display:
+		move.w	(Number_Diamonds).w,d0
 		cmp.w	($FFFFFC1A).w,d0
 		beq.w	return_BF80
 		swap	d0
 		clr.w	d0
 		swap	d0
-		move.w	($FFFFFC42).w,($FFFFFC1A).w
-		bsr.w	sub_BF82
-		move.w	d1,$44(a0)
-		swap	d1
-		move.w	d1,$4C(a0)
+		move.w	(Number_Diamonds).w,($FFFFFC1A).w
+		bsr.w	calc_display_number			; Create diamond number in d1
+		move.w	d1,$44(a0)					; Put d1.w at $44(a0)
+		swap	d1							; Flip d1
+		move.w	d1,$4C(a0)					; Put d1.w at $4C(a0)
 
 return_BF80:
 		rts
@@ -16186,25 +16195,25 @@ return_BF80:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_BF82:
-		move.w	#$86BA,d6
-		move.w	d6,d1
-		swap	d1
-		move.w	d6,d1
-		cmpi.w	#$A,d0
-		bge.s	loc_BF9E
-		add.w	d0,d1
-		swap	d1
-		addi.w	#$B,d1
-		swap	d1
-		rts
+calc_display_number:
+		move.w	#$86BA,d6			; Moves something to d6
+		move.w	d6,d1				; Moves what's in d6 to d1
+		swap	d1					; 
+		move.w	d6,d1				; By here d1 contains $86BA86BA
+		cmpi.w	#$A,d0				; Compares the number of diamonds (d0) to 10
+		bge.s	split_double_digit	; If >= 10 diamonds, go to split_double_digit
+		add.w	d0,d1				; Add d0 to d1
+		swap	d1					; Flip d1 again
+		addi.w	#$B,d1				; Add 11 to d1
+		swap	d1					; Flip d1 again
+		rts							; return
 ; ---------------------------------------------------------------------------
 
-loc_BF9E:
-		divu.w	#$A,d0
-		add.l	d0,d1
-		rts
-; End of function sub_BF82
+split_double_digit:
+		divu.w	#$A,d0		; Divides d0 by 10
+		add.l	d0,d1		; Adds the divided d0 to d1
+		rts					; Return
+; End of function calc_display_number
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -17109,7 +17118,7 @@ loc_D17E:
 		move.w	#$FD8,$44(a0)
 
 loc_D25E:
-		tst.w	($FFFFFC48).w
+		tst.w	(Number_Continues).w
 		bne.w	loc_D2E0
 		move.w	#$FFFF,a0
 		jsr	(sub_23C).w
@@ -17159,7 +17168,7 @@ loc_D2E0:
 		move.w	#$80,$68(a0)
 		move.w	#$FFF8,$6C(a0)
 		move.l	a0,$50(a5)
-		move.w	($FFFFFC48).w,$62(a0)
+		move.w	(Number_Continues).w,$62(a0)
 		move.w	#$1C,-(sp)
 		jsr	(sub_248).w
 		move.w	#$123,d0
@@ -17167,7 +17176,7 @@ loc_D2E0:
 loc_D350:
 		jsr	(sub_24C).w
 		tst.b	($FFFFF812).w
-		bmi.s	loc_D3BC
+		bmi.s	lose_continue
 		dbf	d0,loc_D350
 		move.l	$44(a5),d0
 		beq.s	loc_D372
@@ -17194,20 +17203,20 @@ loc_D386:
 loc_D3AA:
 		jsr	(sub_24C).w
 		tst.b	($FFFFF812).w
-		bmi.s	loc_D3BC
+		bmi.s	lose_continue
 		dbf	d0,loc_D3AA
 		bra.w	loc_D3F0
 ; ---------------------------------------------------------------------------
 
-loc_D3BC:
-		subq.w	#1,($FFFFFC48).w
+lose_continue:							; Losing a Continue
+		subq.w	#1,(Number_Continues).w
 		sf	($FFFFFBCF).w
 		sf	($FFFFFC29).w
 		clr.w	($FFFFFBCC).w
-		move.w	#3,($FFFFFC3E).w
-		clr.w	($FFFFFC46).w
+		move.w	#3,(Number_Lives).w
+		clr.w	(Current_Helmet).w
 		clr.w	($FFFFFBCC).w
-		clr.w	($FFFFFC42).w
+		clr.w	(Number_Diamonds).w
 		clr.w	($FFFFFC4A).w
 		move.w	#2,($FFFFFC40).w
 		st	($FFFFFC36).w
@@ -17312,7 +17321,7 @@ loc_D4CE:
 		move.w	d7,$68(a0)
 		move.w	#8,$6C(a0)
 		moveq	#0,d0
-		move.w	($FFFFFC48).w,d0
+		move.w	(Number_Continues).w,d0
 		move.l	d0,$60(a0)
 		move.l	a0,(a2)+
 		move.w	#$B4,d7
@@ -17513,7 +17522,7 @@ loc_D79E:
 		divu.w	#$C350,d6
 		cmp.w	d5,d6
 		beq.s	loc_D7CE
-		addq.w	#1,($FFFFFC3E).w
+		addq.w	#1,(Number_Lives).w
 		move.l	d0,-(sp)
 		moveq	#$29,d0
 		jsr	(j_PlaySound).l
@@ -17722,7 +17731,7 @@ loc_DA4A:
 		move.w	#$20,($FFFFFC2A).w
 		move.w	#$48F,($FFFFFC2C).w
 		move.w	#HundredKTripDest_LevelID,($FFFFFC44).w
-		clr.w	($FFFFFC46).w
+		clr.w	(Current_Helmet).w
 		st	($FFFFFC29).w
 		bra.w	loc_B84E
 ; ---------------------------------------------------------------------------
@@ -17748,14 +17757,14 @@ loc_DA7A:
 sub_DAA6:
 		movem.l	d0-d3/a0-a2,-(sp)
 		lea	($FFFFFA8E).w,a2
-		move.w	($FFFFFC46).w,d6
+		move.w	(Current_Helmet).w,d6
 		add.w	d6,d6
 		lea	unk_B408(pc),a0
 		add.w	d6,a0
 		moveq	#0,d7
 		move.b	(a0),d7
 		moveq	#$F,d5
-		move.w	($FFFFFC46).w,d6
+		move.w	(Current_Helmet).w,d6
 		cmpi.w	#9,d6
 		beq.w	loc_DAD6
 		cmpi.w	#5,d6
@@ -18012,7 +18021,7 @@ sub_DFB0:
 		move.w	d6,($FFFFFAB6).w
 		cmpi.w	#3,($FFFFFA56).w
 		bne.w	loc_EAE4
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0
 		lea	unk_E246(pc),a5
 		add.w	d0,d0
 		move.w	d0,d1
@@ -18334,7 +18343,7 @@ loc_E1FE:
 		move.w	d2,($FFFFFA80).w
 		move.w	d2,$1E(a3)
 		subi.w	#$F,d2
-		move.w	($FFFFFC46).w,d3
+		move.w	(Current_Helmet).w,d3
 		cmpi.w	#9,d3
 		beq.w	loc_E236
 		cmpi.w	#5,d3
@@ -18689,7 +18698,7 @@ loc_E48E:
 sub_E49A:
 		move.w	($FFFFFAB8).w,d7
 		beq.w	loc_E99C
-		cmpi.w	#4,($FFFFFC46).w
+		cmpi.w	#4,(Current_Helmet).w
 		beq.s	loc_E4B2
 		clr.w	($FFFFFAB8).w
 		bra.w	loc_E99C
@@ -19182,7 +19191,7 @@ loc_E7AC:
 		move.l	a1,($FFFFFABA).w
 		move.l	a0,$C(a1)
 		movem.l	(sp)+,d0-d2/a0
-		subq.w	#2,($FFFFFC42).w
+		subq.w	#2,(Number_Diamonds).w
 
 loc_E7E0:
 		tst.w	d7
@@ -21769,13 +21778,13 @@ stru_FD4C:	anim_frame	1, 8, LnkTo_unk_E0ECE-Data_Index
 		dc.b 0
 ; ---------------------------------------------------------------------------
 
-loc_FD52:
+diamond_pickup:
 		tst.b	$19(a3)
-		bne.s	loc_FD60
+		bne.s	+
 		moveq	#$2D,d0
 		jsr	(j_PlaySound).l
 
-loc_FD60:
++
 		move.l	#$1010002,a3
 		jsr	(sub_260).w
 		move.b	#1,$10(a3)
@@ -21789,23 +21798,23 @@ loc_FD60:
 		jsr	(sub_26C).w
 		move.l	#stru_10D6E,d7
 		jsr	(sub_274).w
-		cmpi.w	#$63,($FFFFFC42).w
-		bne.w	loc_FDDA
+		cmpi.w	#$63,(Number_Diamonds).w		; Check if more than max diamonds
+		bne.w	diamond_increment
 		sf	$3C(a3)
 		st	$3D(a3)
 		move.l	($FFFFF85E).w,a4
 		move.l	$26(a4),$26(a3)
 		move.l	#$FFFD0000,$2A(a3)
 
-loc_FDC4:
+-
 		jsr	(sub_24C).w
 		addi.l	#$6000,$2A(a3)
 		tst.b	$19(a3)
-		beq.s	loc_FDC4
+		beq.s	-
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
 
-loc_FDDA:
+diamond_increment:
 		move.l	$1A(a3),d0
 		sub.l	($FFFFF81C).w,d0
 		move.l	d0,$3E(a3)
@@ -21820,7 +21829,7 @@ loc_FDDA:
 		asr.l	#5,d1
 		move.w	#$1F,d2
 
-loc_FE0E:
+-
 		jsr	(sub_24C).w
 		add.l	d0,$3E(a3)
 		add.l	d1,$42(a3)
@@ -21830,29 +21839,29 @@ loc_FE0E:
 		move.w	$42(a3),d4
 		add.w	($FFFFF820).w,d4
 		move.w	d4,$1E(a3)
-		dbf	d2,loc_FE0E
-		addq.w	#1,($FFFFFC42).w
-		cmpi.w	#$14,($FFFFFC42).w
-		bne.w	loc_FE50
+		dbf	d2,-
+		addq.w	#1,(Number_Diamonds).w
+		cmpi.w	#$14,(Number_Diamonds).w
+		bne.w	+
 		move.l	d0,-(sp)
 		moveq	#$28,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 
-loc_FE50:
-		cmpi.w	#$32,($FFFFFC42).w
-		bne.w	loc_FE66
++
+		cmpi.w	#$32,(Number_Diamonds).w
+		bne.w	+
 		move.l	d0,-(sp)
 		moveq	#$28,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 
-loc_FE66:
-		cmpi.w	#$63,($FFFFFC42).w
-		ble.w	loc_FE76
-		move.w	#$63,($FFFFFC42).w
++
+		cmpi.w	#$63,(Number_Diamonds).w
+		ble.w	+
+		move.w	#$63,(Number_Diamonds).w
 
-loc_FE76:
++
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
 
@@ -21897,7 +21906,7 @@ loc_FEFE:
 		add.w	($FFFFF820).w,d4
 		move.w	d4,$1E(a3)
 		dbf	d2,loc_FEEE
-		addq.w	#1,($FFFFFC3E).w
+		addq.w	#1,(Number_Lives).w
 		jmp	(sub_258).w
 ; ---------------------------------------------------------------------------
 
@@ -22336,7 +22345,7 @@ loc_10404:
 		beq.s	loc_10396
 		move.w	#$6000,a0
 		jsr	(sub_23C).w
-		move.l	#loc_FD52,4(a0)
+		move.l	#diamond_pickup,4(a0)
 		move.w	$1A(a3),$44(a0)
 		move.w	$1E(a3),$46(a0)
 
@@ -22904,31 +22913,31 @@ loc_109C0:
 		add.w	($FFFFF820).w,d0
 		move.w	d0,$1E(a1)
 
-loc_109E8:
+loc_109E8:										; Could be 10-diamond pickup increment
 		subq.w	#1,$46(a1)
 		bne.s	loc_10A3A
-		addq.w	#1,($FFFFFC42).w
-		cmpi.w	#$14,($FFFFFC42).w
-		bne.w	loc_10A08
+		addq.w	#1,(Number_Diamonds).w
+		cmpi.w	#$14,(Number_Diamonds).w
+		bne.w	+
 		move.l	d0,-(sp)
 		moveq	#$28,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 
-loc_10A08:
-		cmpi.w	#$32,($FFFFFC42).w
-		bne.w	loc_10A1E
++
+		cmpi.w	#$32,(Number_Diamonds).w
+		bne.w	+
 		move.l	d0,-(sp)
 		moveq	#$28,d0
 		jsr	(j_PlaySound).l
 		move.l	(sp)+,d0
 
-loc_10A1E:
-		cmpi.w	#$63,($FFFFFC42).w
-		ble.w	loc_10A2E
-		move.w	#$63,($FFFFFC42).w
++
+		cmpi.w	#$63,(Number_Diamonds).w
+		ble.w	+
+		move.w	#$63,(Number_Diamonds).w
 
-loc_10A2E:
++
 		exg	a1,a3
 		jsr	(sub_27C).w
 		clr.l	$44(a5,d2.w)
@@ -23022,7 +23031,7 @@ loc_10AAE:
 		divu.w	#$C350,d1
 		cmp.w	d0,d1
 		beq.s	loc_10AC2
-		addq.w	#1,($FFFFFC3E).w
+		addq.w	#1,(Number_Lives).w
 
 loc_10AC2:
 		cmpi.l	#$186A0,($FFFFFC4C).w
@@ -33807,7 +33816,7 @@ loc_1D464:
 		st	($FFFFFBCE).w
 		clr.w	($FFFFFBCC).w
 		clr.w	($FFFFFBCA).w
-		clr.w	($FFFFFC3E).w
+		clr.w	(Number_Lives).w
 		move.l	(off_7192).w,a0
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
@@ -41557,7 +41566,7 @@ loc_32906:
 
 loc_3292E:
 		jsr	(sub_24C).w
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	loc_32970
 		move.w	$1A(a2),d7
 		addq.w	#2,d7
@@ -41692,7 +41701,7 @@ loc_32A70:
 loc_32A86:
 		cmpi.w	#1,($FFFFFA56).w
 		beq.s	return_32A10
-		cmpi.w	#5,($FFFFFC46).w
+		cmpi.w	#5,(Current_Helmet).w
 		beq.w	return_32A10
 		tst.b	($FFFFFA28).w
 		beq.w	loc_32906
@@ -59283,7 +59292,7 @@ loc_3D6DA:
 		tst.b	$4C(a5)
 		beq.s	loc_3D706
 		bpl.w	loc_3D79C
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		bne.w	loc_3D79C
 		move.l	($FFFFF85E).w,a4
 		move.w	$1E(a4),d7
@@ -59325,13 +59334,13 @@ loc_3D734:
 		sub.w	$1E(a3),d5
 		cmpi.w	#$FFFC,d5
 		blt.s	loc_3D776
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		beq.w	loc_3D826
 
 loc_3D776:
 		move.l	($FFFFF866).w,d4
 		beq.s	loc_3D79C
-		cmpi.w	#8,($FFFFFC46).w
+		cmpi.w	#8,(Current_Helmet).w
 		bne.s	loc_3D79C
 		move.l	d4,a4
 		move.w	$1A(a4),d4
@@ -59354,7 +59363,7 @@ loc_3D79C:
 		blt.s	loc_3D7CA
 		cmpi.w	#$30,d4
 		bgt.s	loc_3D7CA
-		cmpi.w	#3,($FFFFFC46).w
+		cmpi.w	#3,(Current_Helmet).w
 		beq.s	loc_3D7EE
 
 loc_3D7CA:
@@ -59435,7 +59444,7 @@ loc_3D89C:
 ; ---------------------------------------------------------------------------
 
 loc_3D8A8:
-		cmpi.w	#7,($FFFFFC46).w
+		cmpi.w	#7,(Current_Helmet).w
 		bne.s	loc_3D89C
 		move.l	($FFFFF85E).w,a4
 		cmpi.w	#(LnkTo_unk_ADFC8-Data_Index),$22(a4)
@@ -61896,7 +61905,7 @@ sub_3F57A:
 ; Attributes: thunk
 
 sub_3F57E:
-		jmp	sub_3F656(pc)
+		jmp	power_start(pc)
 ; End of function sub_3F57E
 
 
@@ -62024,41 +62033,41 @@ sub_3F63C:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_3F656:
+power_start:
 		move.l	#$FFFFF5C2,($FFFFF5B0).w
 		tst.b	($FFFFF5B8).w
 		bne.w	loc_3F71E
-		move.w	($FFFFFC46).w,d0
+		move.w	(Current_Helmet).w,d0		; Check if helmet ID is Juggernaut
 		cmpi.w	#5,d0
-		bne.s	loc_3F67A
+		bne.s	+
 		tst.b	($FFFFFA29).w
-		bne.w	loc_400BA
-		bra.s	return_3F68E
+		bne.w	five_way_shot
+		bra.s	power_fail
 ; ---------------------------------------------------------------------------
 
-loc_3F67A:
++
 		move.b	($FFFFF812).w,d1
 		andi.b	#$C0,d1
 		cmpi.b	#$C0,d1
-		bne.s	return_3F68E
-		cmpi.w	#4,d0
-		bne.s	loc_3F690
+		bne.s	power_fail
+		cmpi.w	#4,d0						; Check if Helmet ID is Eyeclops
+		bne.s	power_check
 
-return_3F68E:
+power_fail:									; Basic return statement
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_3F690:
-		cmpi.w	#$14,($FFFFFC42).w
-		blt.s	return_3F68E
-		subi.w	#$14,($FFFFFC42).w
-		move.w	($FFFFFC46).w,d0
-		cmpi.w	#$1E,($FFFFFC42).w
-		blt.s	loc_3F6B4
-		subi.w	#$1E,($FFFFFC42).w
-		addi.w	#$A,d0
+power_check:									; Checks performed when a Diamond Power is input
+		cmpi.w	#$14,(Number_Diamonds).w		; Compare diamonds to 20
+		blt.s	power_fail						; If <, return
+		subi.w	#$14,(Number_Diamonds).w		; Subtract 20 from diamonds
+		move.w	(Current_Helmet).w,d0			; Helmet ID -> d0
+		cmpi.w	#$1E,(Number_Diamonds).w		; Compare diamonds to 30
+		blt.s	+									; If <, execute diamond power
+		subi.w	#$1E,(Number_Diamonds).w		; Subtract 30 from diamonds
+		addi.w	#$A,d0							; Add 10 to d0
 
-loc_3F6B4:
++												; Carry out Diamond Power
 		move.w	d0,($FFFFF5BA).w
 		add.w	d0,d0
 		add.w	d0,d0
@@ -62069,12 +62078,12 @@ loc_3F6B4:
 		move.l	(sp)+,a0
 		jmp	(a0)
 ; ---------------------------------------------------------------------------
-off_3F6CE:	dc.l loc_3F7D0
+off_3F6CE:	dc.l loc_3F7D0						; Looks like pointers to definitions of each diamond power
 		dc.l loc_3FC78
 		dc.l loc_3FDF4
 		dc.l loc_3FC82
 		dc.l 0
-		dc.l loc_400BA
+		dc.l five_way_shot
 		dc.l loc_3F7D0
 		dc.l loc_3FC78
 		dc.l loc_3F7D0
@@ -62084,7 +62093,7 @@ off_3F6CE:	dc.l loc_3F7D0
 		dc.l loc_3FDE8
 		dc.l loc_3F90C
 		dc.l 0
-		dc.l loc_400BA
+		dc.l five_way_shot
 		dc.l loc_3FB90
 		dc.l loc_3FFE4
 		dc.l loc_3FB94
@@ -62690,7 +62699,7 @@ loc_3FC4C:
 ; ---------------------------------------------------------------------------
 
 loc_3FC4E:
-		addq.w	#1,($FFFFFC3E).w
+		addq.w	#1,(Number_Lives).w
 
 loc_3FC52:
 		bra.w	sub_3F63C
@@ -63230,10 +63239,10 @@ loc_400B0:
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_400BA:
+five_way_shot:
 
 		st	($FFFFF5B8).w
-		subq.w	#5,($FFFFFC42).w
+		subq.w	#5,(Number_Diamonds).w
 		bsr.w	sub_3F596
 		move.w	#5,($FFFFF5BA).w
 		moveq	#4,d1
@@ -63267,7 +63276,7 @@ loc_40110:
 		dbf	d1,loc_400F4
 		move.w	#$50,($FFFFF5BE).w
 		rts
-; End of function sub_3F656
+; End of function power_start
 
 ; ---------------------------------------------------------------------------
 word_40124:	dc.w 6

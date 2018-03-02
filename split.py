@@ -380,18 +380,28 @@ for lev in range(Number_Levels):
         linfo.write("background/{:02X}_layered.bin ".format(backgroundlayered_addrs[background]))
     else:
         if background not in background_addrs:
-            linfo.write("background/{:02X}.bin ".format(lev))
             btype = btoi(background, 1)
             if btype == 0x80:
                 w1 = btoi(background, 2)
                 l2 = btoi(background+2, 4)
                 ref_addr = btoi(background+6, 4)
                 background_addrs[background] = (w1, l2, ref_addr)
+                if ref_addr in background_addrs:
+                    ref = background_addrs[ref_addr][0]
+                    linfo.write("background/{:02X}.bin ".format(ref))
+                else: # this is a bit dirty, need to find the level whose background is shared somehow
+                    for l in range(Number_Levels):
+                        a = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
+                        bg = btoi(a+20, 4)
+                        if bg == ref_addr:
+                            linfo.write("background/{:02X}.bin ".format(l))
+                            break;
             else:
                 l = length_bglayout(background)
                 background_addrs[background] = (lev,)
                 with open("level/background/{:02X}.bin".format(lev), "wb") as out:
                     out.write(b[background:background+l])
+                linfo.write("background/{:02X}.bin ".format(lev))
 
 linfo.close()
 

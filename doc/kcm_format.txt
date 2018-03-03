@@ -1,0 +1,117 @@
+From http://forums.sonicretro.org/index.php?showtopic=20210&st=0&p=438244&#entry438244
+
+CODE
+------------------------------------------------------------------------------
+READING THE MAP HEADER
+------------------------------------------------------------------------------
+
+  byte id[4] = { 'K', 'M', 'A', 'P' }
+
+This identifies the file as an authentic KCM file.
+
+  byte compatability = 0x80
+  byte map_version
+
+If compatability is less than 0x80, then the compatability and map_version
+bytes don't actually exist and the file read position should be changed back
+to 4. Bits 0-6 are reserved in the compatability byte and should remain 0. The
+map_version byte is used to help keep compatability with outdated versions of
+the KCM file format. At this time, this byte should be 0.
+
+  byte map_size_x
+  byte map_size_y
+
+Map size is measured in screens (that's 20 blocks per single X screen, and 14
+blocks per single Y screen.) The upper 2 bits of map_size_y are used to add
+additional rows to the Y size. These are added in sets of 2, so you can extend
+the Y size by 2, 4, or 6 rows.
+
+  word map_theme
+
+The map_theme defines the theme to be used by the map. The lower nybble of
+each byte is used to do this. Both nybbles should match. Theme 0 is unused,
+but 0x1 through 0xA can be used. These themes are labeled as follows: sky,
+ice, hill, isle, desert, swamp, mtn, under, forest, and urban. The map_flags
+is used to define any special "features" in the map.
+
+The other nybbles are used as flags to put special "features" in the map. The
+nybble of the first byte (big-endian order) makes the map a chase scene if the
+nybble is 8. The other nybble can have the following effects for values from 1
+to 3: storm with hail, storm without hail, and lava shooting up.
+
+  word player_x
+  word player_y
+  word flag_x
+  word flag_y
+
+These words are used to define the X and Y positions of the player and the
+end-of-level flag. Maps with no flag have the flag moved outside the map area.
+
+  word ptr_tiles_front
+  word ptr_blocks
+  word ptr_tiles_back
+  word ptr_enemies
+  word ptr_platforms
+  word ptr_lava
+
+These are pointers to various data types in the KCM file. The value of the
+ptr_tiles_front will determine how many of these pointers (and subsequently,
+how many data types) exist in the KCM file. If ptr_tiles_front points to the
+location after it, then pointers from ptr_blocks through ptr_lava don't exist.
+Pointers are absolute (e.g. based on offset 0 in the KCM file) and should be
+read as little-endian. The size of each data type is based on the value of the
+pointer for the next data type. Wherever the data begins for a data type is
+where the previous data type is cut off. The last data type runs to the end of
+the file.
+
+
+Now the tile layout is a simple uncompressed, byte-for-byte store. The block layout however is condensed. For block layout, a byte of 0x80 of higher is a block. When a block is defined, there's four bytes that follow that contain the parameters for that block. If the byte is less than 0x80, that tells how many empty block spaces there are. Enemy layout is identical to that of the ROM, except the header in that only contains 7 bytes (3 words for defining the enemy art to be loaded, and 1 byte to define how many enemies there are.) Background layout too is stored exactly as it is in the ROM.
+
+Platform and lava layout information should be ignored for now since I haven't figured out how I want to store the format yet.
+
+The problem you may run into is that block layout must be condensed, but in the format KC uses. Trying to go around it and use data that is bloated will result in a memory overflow on some levels. You'd have to write some code to condense the block layout. 
+
+
+
+Details of the block layout courtesy of van0014
+-----------------------------------------------
+
+I'll explain the block layout a little. The offset in the header is at $14. It is a word, in little endian, if I remember right. The layout has no header. It can begin with either a block or empty space marker. 1 byte of $7F or less denotes blank space of that many places: 128 blocks or less. 00 == 1 space, 01 == 2 spaces.
+Blocks and/or spaces must fill the entire map area in the block data section 
+(if there is only one block in the level, the rest of the data must be for example 7F7F7F...7F24, until all space is filled. 24 is just my example. To show it won't always be 7F, especially the last space. It could be anything needed to get the right number of spaces.)
+
+Block data. If a block is listed, it will be followed by 4 bytes for data. 
+
+$8x = visible
+$Ax = hidden
+
+$80: Rock block.    (00 00 00 00)
+$81: Prize block.    aa 00 00 00; aa: contents.
+$82: Ice block. 
+$83: ghost block.    aa bb cc dd; aa = delay, bb cc = time shown, dd = time hidden 
+$84: telepad.        aa bb cc dd; aa = map, bb = y coord (in blocks? 16 pixels), cc dd = x coord in pixels
+$85: iron block. 
+$86: rubber block. 
+$87: shifting block. 
+$89: mushroom block. 
+$8A: vanishing block. aa; (bits) 0001 = shoot up, 0010 = right, 0100 = down, 1000 = left. Can combine
+$8B: lift
+$8C: drill block      aa; (bits) 0001 = shoot up, 0010 = right, 0100 = down, 1000 = left. Can combine
+$90: collision block  aa; 1 = solid, 2 = up slope, 3 = down slope.
+
+Prize block data.
+0: Diamond
+1: 10,000 points
+2: Skycutter
+3: Cyclone
+4: Red Stealth
+5: Eyeclops
+6: Juggernaught
+7: Iron Knight
+8: Berzerker
+9: Maniaxe
+A: Micromax
+B: 1up
+C: Time
+D: Continue
+E: 10 Diamonds

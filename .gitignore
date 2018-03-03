@@ -20,3 +20,4 @@ ingame/*/*.bin
 sound/*.bin
 planeed_prj/*.dll
 planeed_prj/*.exe
+*.kcm

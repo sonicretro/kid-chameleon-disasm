@@ -5,3 +5,10 @@ Relevant resources:
 https://forums.sonicretro.org/index.php?showtopic=18892&st=0&p=766022&#entry766022
 
 http://hiddenpalace.org/News/I%27m_not_dead!
+
+
+https://github.com/TheRetroSnake/GEMS2ASM
+https://github.com/ValleyBell/MidiConverters/blob/master/gems2mid.c
+https://github.com/realmonster/GEMS
+
+http://www.deflemask.com/forum/cafe/(smd)-gems-sound-driver-editor/

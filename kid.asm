@@ -868,7 +868,7 @@ Mode_Standard:
 	bsr.w	Do_Nothing
 	bsr.w	Palette_to_VRAM
 	bsr.w	sub_A5C
-	jsr	(sub_2FFDC).l
+	jsr	(j_loc_3009A).l
 	bsr.w	sub_1596
 	bsr.w	sub_E12
 	bsr.w	sub_1444
@@ -891,12 +891,12 @@ Mode_Options_End:
 ; ---------------------------------------------------------------------------
 
 Mode_Level:
-	bsr.w	sub_A5C
+	bsr.w	sub_A5C	; DMA sprites and uncompressed Kid art to VRAM
 	bsr.w	Palette_to_VRAM
-	jsr	(sub_2FFDC).l
+	jsr	(j_loc_3009A).l	; DMA scrolling data, plane B address for storm
 	bsr.w	sub_1596
 	bsr.w	sub_6874
-	jsr	(sub_7176).w
+	jsr	(j_sub_BDC0).w
 	bsr.w	sub_E12
 	bsr.w	sub_21F8
 	tst.b	($FFFFFB49).w
@@ -948,8 +948,8 @@ loc_83E:
 	bsr.w	sub_2444
 
 loc_892:
-	jsr	(loc_2FFE0).l
-	jsr	(loc_2FFE4).l
+	jsr	(j_sub_30194).l
+	jsr	(j_loc_3038A).l
 	bsr.w	sub_14C0
 	rts
 
@@ -1007,9 +1007,9 @@ sub_8E0:
 	move.b	#4,($FFFFFAD6).w
 
 loc_8FE:
-	jsr	(sub_2FFDC).l
+	jsr	(j_loc_3009A).l
 	bsr.w	sub_1596
-	jsr	(sub_7176).w
+	jsr	(j_sub_BDC0).w
 	move.b	#1,($FFFFFAD6).w
 	rts
 ; End of function sub_8E0
@@ -1252,6 +1252,7 @@ loc_AC2:
 	lea	4(a6),a5
 	lea	($FFFF0500).l,a0
 	move.w	#$C4A0,d2	; d2 = DMA destination address
+				; This is the VRAM address of the Kid
 
 loc_AD4:
 	move.w	(a0)+,d0	; d0 = DMA length in tiles
@@ -1563,7 +1564,7 @@ return_D7C:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; initialize empty objects at FF0DA0
 sub_D7E:
 
 	lea	($FFFF0DA0).l,a0
@@ -1586,7 +1587,7 @@ loc_D8A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; allocate next empty object slot to new object
 sub_DAC:
 
 	movem.l	d4-d6/a1,-(sp)
@@ -7595,21 +7596,13 @@ LevelSelect_End:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_7172:
+;7172
+j_sub_7196:
 	jmp	sub_7196(pc)
-; End of function sub_7172
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_7176:
+; ---------------------------------------------------------------------------
+;7176
+j_sub_BDC0:
 	jmp	sub_BDC0(pc)
-; End of function sub_7176
-
 ; ---------------------------------------------------------------------------
 	jmp	sub_71E4(pc)
 ; ---------------------------------------------------------------------------
@@ -8551,7 +8544,7 @@ loc_7B0A:
 	bne.w	loc_7B1A
 
 loc_7B12:
-	bra.w	sub_7C40
+	bra.w	Kid_Transform
 ; ---------------------------------------------------------------------------
 	moveq	#1,d7
 	rts
@@ -8712,15 +8705,16 @@ loc_7C3A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_7C40:
+;7C40
+Kid_Transform:
 	move.l	($FFFFF862).w,a4
 	sf	$17(a4)
 	sf	$17(a3)
-	st	($FFFFFA6D).w
+	st	(Currently_Transforming).w
 	st	$13(a3)
 	move.l	(sp)+,$44(a5)
-	lea	($FFFF4ED2).l,a4
+	; save last 3 colors onto stack
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a4)+,-(sp)
 	move.w	(a4)+,-(sp)
 	move.w	(a4)+,-(sp)
@@ -8944,14 +8938,14 @@ loc_7E90:
 	sf	($FFFFFBCF).w
 	clr.l	$26(a3)
 	clr.l	$2A(a3)
-	sf	($FFFFFA6D).w
+	sf	(Currently_Transforming).w
 	lea	($FFFF4ED8).l,a4
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
 	move.l	$44(a5),-(sp)
 	rts
-; End of function sub_7C40
+; End of function Kid_Transform
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -9235,7 +9229,7 @@ sub_813C:
 	move.w	off_8162(pc,d7.w),d7
 	lea	(Data_Index).l,a4
 	move.l	(a4,d7.w),a4
-	lea	($FFFF4ED2).l,a2
+	lea	(Palette_Buffer+$7A).l,a2
 	move.w	(a4)+,(a2)+
 	move.w	(a4)+,(a2)+
 	move.w	(a4)+,(a2)+
@@ -15047,7 +15041,7 @@ loc_B7EA:
 	tst.w	(Current_Helmet).w
 	beq.w	loc_B7FA
 	clr.w	($FFFFFBD0).w
-	bsr.w	sub_7C40
+	bsr.w	Kid_Transform
 
 loc_B7FA:
 	move.l	#$8000,d0
@@ -15689,7 +15683,7 @@ sub_BDC0:
 	move.b	#$A,d4
 	move.w	(Number_Hitpoints).w,d0
 	move.w	(Current_Helmet).w,d2
-	tst.b	($FFFFFA6D).w
+	tst.b	(Currently_Transforming).w
 	bne.w	loc_BE82
 	moveq	#0,d1
 	move.b	unk_BDB6(pc,d2.w),d1
@@ -15775,7 +15769,7 @@ loc_BE74:
 loc_BE82:
 	move.b	d4,($FFFFF836).w
 	move.l	a2,($FFFFF832).w
-	tst.b	($FFFFFA6D).w
+	tst.b	(Currently_Transforming).w
 	bne.w	loc_BF12
 	tst.b	($FFFFFB4B).w
 	bne.w	loc_BF12
@@ -21888,24 +21882,26 @@ stru_102DE:
 	anim_frame	  1,   4, LnkTo_unk_E0F46-Data_Index
 	dc.b 0
 	dc.b 0
-off_102F0:	dc.l loc_10354
-	dc.l loc_10A90
-	dc.l loc_10436
-	dc.l loc_10480
-	dc.l loc_104CA
-	dc.l loc_10514
-	dc.l loc_1055E
-	dc.l loc_105A8
-	dc.l loc_105F2
-	dc.l loc_1063C
-	dc.l loc_10686
-	dc.l loc_10706
-	dc.l loc_1076C
-	dc.l loc_107F2
-	dc.l loc_108CA
-	dc.l loc_10354
+off_102F0:	; code to load prize object from prize block
+	dc.l loc_10354	; 0 - Diamond
+	dc.l loc_10A90	; 1 - 10000 points
+	dc.l loc_10436	; 2 - Helmet (skycutter)
+	dc.l loc_10480	; 3 - Helmet (cyclone)
+	dc.l loc_104CA	; 4 - Helmet (red stealth)
+	dc.l loc_10514	; 5 - Helmet (eyeclops)
+	dc.l loc_1055E	; 6 - Helmet (juggernaut)
+	dc.l loc_105A8	; 7 - Helmet (iron knight)
+	dc.l loc_105F2	; 8 - Helmet (berzerker)
+	dc.l loc_1063C	; 9 - Helmet (maniaxe)
+	dc.l loc_10686	; A - Helmet (micromax)
+	dc.l loc_10706	; B - 1-up
+	dc.l loc_1076C	; C - Time
+	dc.l loc_107F2	; D - Continue
+	dc.l loc_108CA	; E - 10 diamonds
+	dc.l loc_10354	; F - Same as 0
 ; ---------------------------------------------------------------------------
 
+; load prize object from prize block.
 loc_10330:
 	move.l	$36(a5),a3
 	clr.w	$3A(a3)
@@ -22017,7 +22013,7 @@ loc_10434:
 loc_10436:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D02).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22043,7 +22039,7 @@ loc_1047C:
 loc_10480:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E34).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22069,7 +22065,7 @@ loc_104C6:
 loc_104CA:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DBC).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22095,7 +22091,7 @@ loc_10510:
 loc_10514:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DF8).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22121,7 +22117,7 @@ loc_1055A:
 loc_1055E:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E70).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22147,7 +22143,7 @@ loc_105A4:
 loc_105A8:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1EAC).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22173,7 +22169,7 @@ loc_105EE:
 loc_105F2:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D80).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22199,7 +22195,7 @@ loc_10638:
 loc_1063C:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1CA2).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -22225,7 +22221,7 @@ loc_10682:
 loc_10686:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D44).l,a5
-	lea	($FFFF4ED2).l,a4
+	lea	(Palette_Buffer+$7A).l,a4
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
 	move.w	(a5)+,(a4)+
@@ -24522,10 +24518,10 @@ loc_11FC8:
 loc_11FD2:
 	bsr.w	sub_140F6
 	bsr.w	sub_144DA
-	jsr	(sub_2FFD8).l
+	jsr	(j_loc_2FFE8).l
 	jsr	(sub_31F86).l
 	bsr.w	sub_129AE
-	jsr	(sub_7172).w
+	jsr	(j_sub_7196).w
 	bsr.w	sub_145B6
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_12004
@@ -24728,7 +24724,8 @@ loc_1223C:
 	move.w	d1,($FFFF4E66).l
 	bra.s	loc_1223C
 ; ---------------------------------------------------------------------------
-AddrTbl_BlockTypes:dc.l	loc_122B8
+AddrTbl_BlockTypes:
+	dc.l loc_122B8
 	dc.l loc_123DC
 	dc.l loc_122B8
 	dc.l loc_124A6
@@ -24757,7 +24754,8 @@ loc_122C0:
 	bpl.s	loc_122DA
 	rts
 ; ---------------------------------------------------------------------------
-word_122C6:	dc.w $E001
+word_122C6:
+	dc.w $E001
 	dc.w 0
 	dc.w $E203
 	dc.w 0
@@ -34168,29 +34166,20 @@ unk_2FDE0:  binclude    "scenes/mapeni/intro1_wildside.bin"
 
 	align	2
 ; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_2FFD8:
+;2FFDA
+j_loc_2FFE8:
 	jmp	loc_2FFE8(pc)
-; End of function sub_2FFD8
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_2FFDC:
-
-; FUNCTION CHUNK AT 0003038A SIZE 00000030 BYTES
-
+; ---------------------------------------------------------------------------
+;2FFDC
+j_loc_3009A:
 	jmp	loc_3009A(pc)
 ; ---------------------------------------------------------------------------
-
-loc_2FFE0:
+;2FFE0
+j_sub_30194:
 	jmp	sub_30194(pc)
 ; ---------------------------------------------------------------------------
-
-loc_2FFE4:
+;2FFE4
+j_loc_3038A:
 	jmp	loc_3038A(pc)
 ; ---------------------------------------------------------------------------
 
@@ -34275,7 +34264,7 @@ loc_3009A:
 	bgt.w	loc_30158
 	subq.b	#1,($FFFFFAD6).w
 	beq.s	loc_30110
-	move.w	#$8407,4(a6)
+	move.w	#$8407,4(a6)	; normal background plane address
 	jsr	(j_sub_914).w
 
 loc_300BA:
@@ -34298,7 +34287,7 @@ loc_300D2:
 
 loc_30110:
 	jsr	(j_sub_914).w
-	move.w	#$8403,4(a6)
+	move.w	#$8403,4(a6)	; storm background plane address
 	move.l	#vdpComm($1400,VRAM,WRITE),4(a6)
 	move.w	#$DF,d1
 	move.w	(Camera_X_pos).w,d0
@@ -34340,7 +34329,7 @@ loc_3017E:
 	subq.w	#8,($FFFFFAD8).w
 	jsr	(j_sub_924).w
 	rts
-; End of function sub_2FFDC
+; End of function j_loc_3009A
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -34582,7 +34571,7 @@ loc_3037C:
 ; End of function sub_3034A
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_2FFDC
+; START	OF FUNCTION CHUNK FOR j_loc_3009A
 
 loc_3038A:
 	cmpi.w	#4,(Level_Special_Effects).w
@@ -34603,7 +34592,7 @@ loc_3039C:
 
 return_303B8:
 	rts
-; END OF FUNCTION CHUNK	FOR sub_2FFDC
+; END OF FUNCTION CHUNK	FOR j_loc_3009A
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -40808,7 +40797,8 @@ stru_32B78:
 	anim_frame	  1,   6, LnkTo_unk_C7A16-Data_Index
 	dc.b 0
 	dc.b 0
-unk_32BA6:	dc.b   0
+unk_32BA6:
+	dc.b   0
 	dc.b   0
 	dc.b $10
 	dc.b   0
@@ -48398,40 +48388,40 @@ loc_36EA6:
 
 ; ---------------------------------------------------------------------------
 EnemyLoad_Index:
-	enemyloaddata	LnkTo_Pal_A1F4E-Data_Index, LnkTo_unk_CBC1C-Data_Index, loc_3A392	;00 - Walking fire guy
+	enemyloaddata	LnkTo_Pal_A1F4E-Data_Index, LnkTo_unk_CBC1C-Data_Index, loc_3A392	;00 - Fire demon
 	enemyloaddata	LnkTo_Pal_A22D4-Data_Index, LnkTo_unk_DB2BC-Data_Index, loc_3ACDA	;01 - Enemy diamond
 	enemyloaddata	0, 0, 0
 	enemyloaddata	LnkTo1_Pal_A2328-Data_Index, LnkTo_unk_DBA4D-Data_Index, loc_3A770	;03 - Alien robot
-	enemyloaddata	LnkTo_Pal_A1F08-Data_Index, LnkTo_unk_CAD8E-Data_Index, loc_3C6DC	;04 - ? He charges at you
-	enemyloaddata	LnkTo_Pal_A1FB0-Data_Index, LnkTo_unk_CCD87-Data_Index, loc_321C0	;05 - Oil monster
-	enemyloaddata	LnkTo_Pal_A22AA-Data_Index, LnkTo_unk_DB03A-Data_Index, loc_35EF2	;06 - NOTHING
-	enemyloaddata	LnkTo_Pal_A22FE-Data_Index, LnkTo_unk_D744D-Data_Index, loc_33FDA	;07 - Cupid
-	enemyloaddata	LnkTo_Pal_A1EFA-Data_Index, LnkTo_unk_CA1ED-Data_Index, loc_3D158	;08 - ? He charges at you jumping in air
-	enemyloaddata	LnkTo_Pal_A20AC-Data_Index, LnkTo_unk_D03E2-Data_Index, loc_3AF96	;09 - ? He walks towards you when you're looking the other way
-	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B2A8	;0A - Robot skull
-	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B530	;0B - Robot skull (shoots)
+	enemyloaddata	LnkTo_Pal_A1F08-Data_Index, LnkTo_unk_CAD8E-Data_Index, loc_3C6DC	;04 - Armadillo
+	enemyloaddata	LnkTo_Pal_A1FB0-Data_Index, LnkTo_unk_CCD87-Data_Index, loc_321C0	;05 - Tar monster
+	enemyloaddata	LnkTo_Pal_A22AA-Data_Index, LnkTo_unk_DB03A-Data_Index, loc_35EF2	;06 - Sphere
+	enemyloaddata	LnkTo_Pal_A22FE-Data_Index, LnkTo_unk_D744D-Data_Index, loc_33FDA	;07 - Archer
+	enemyloaddata	LnkTo_Pal_A1EFA-Data_Index, LnkTo_unk_CA1ED-Data_Index, loc_3D158	;08 - Orca
+	enemyloaddata	LnkTo_Pal_A20AC-Data_Index, LnkTo_unk_D03E2-Data_Index, loc_3AF96	;09 - Crab
+	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B2A8	;0A - Rock Tank
+	enemyloaddata	LnkTo_Pal_A21D8-Data_Index, LnkTo_unk_D8176-Data_Index, loc_3B530	;0B - Rock Tank (shoots)
 	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_34664	;0C - Flying dragon
 	enemyloaddata	LnkTo_Pal_A1ED0-Data_Index, LnkTo_unk_C8800-Data_Index, loc_3CD46	;0D - Walking dragon
-	enemyloaddata	LnkTo_Pal_A2004-Data_Index, LnkTo_unk_CDAB8-Data_Index, loc_35B44	;0E - Stormy cloud
-	enemyloaddata	LnkTo2_Pal_A2328-Data_Index, LnkTo_unk_DC579-Data_Index, loc_34D54	;0F - Alien
-	enemyloaddata	LnkTo_Pal_A20D6-Data_Index, LnkTo_unk_D0B79-Data_Index, loc_3C9F8	;10 - Bull-type guy thing
-	enemyloaddata	LnkTo_Pal_A212A-Data_Index, LnkTo_unk_D3151-Data_Index, loc_3D518	;11 - ? Slow walking, can jump in the air
+	enemyloaddata	LnkTo_Pal_A2004-Data_Index, LnkTo_unk_CDAB8-Data_Index, loc_35B44	;0E - Cloud
+	enemyloaddata	LnkTo2_Pal_A2328-Data_Index, LnkTo_unk_DC579-Data_Index, loc_34D54	;0F - UFO
+	enemyloaddata	LnkTo_Pal_A20D6-Data_Index, LnkTo_unk_D0B79-Data_Index, loc_3C9F8	;10 - Goat
+	enemyloaddata	LnkTo_Pal_A212A-Data_Index, LnkTo_unk_D3151-Data_Index, loc_3D518	;11 - Ninja
 	enemyloaddata	LnkTo_Pal_A217E-Data_Index, LnkTo_unk_D4ED3-Data_Index, loc_3DF56	;12 - Lion
-	enemyloaddata	LnkTo_Pal_A2154-Data_Index, LnkTo_unk_D3D94-Data_Index, loc_3DB9C	;13 - ? Fast moving
-	enemyloaddata	LnkTo_Pal_A2100-Data_Index, LnkTo_unk_D1ED8-Data_Index, loc_3B84A	;14
+	enemyloaddata	LnkTo_Pal_A2154-Data_Index, LnkTo_unk_D3D94-Data_Index, loc_3DB9C	;13 - Scorpion
+	enemyloaddata	LnkTo_Pal_A2100-Data_Index, LnkTo_unk_D1ED8-Data_Index, loc_3B84A	;14 - Spinning Twins
 	enemyloaddata	0, 0, 0
-	enemyloaddata	LnkTo_Pal_A2082-Data_Index, LnkTo_unk_CF71D-Data_Index, loc_3333E	;16
-	enemyloaddata	LnkTo_Pal_A2058-Data_Index, LnkTo_unk_CF02F-Data_Index, loc_32782	;17
-	enemyloaddata	LnkTo_Pal_A1FDA-Data_Index, LnkTo_unk_CC7E0-Data_Index, loc_35898	;18
-	enemyloaddata	LnkTo_Pal_A202E-Data_Index, LnkTo_unk_CE944-Data_Index, loc_32BBE	;19 - Bouncing flame
-	enemyloaddata	LnkTo_Pal_A2280-Data_Index, LnkTo_unk_DACAB-Data_Index, loc_3BCF0	;1A
-	enemyloaddata	LnkTo_Pal_A2202-Data_Index, LnkTo_unk_D88E7-Data_Index, loc_361AE	;1B
-	enemyloaddata	LnkTo_Pal_A2256-Data_Index, LnkTo_unk_DA75D-Data_Index, loc_3E9C8	;1C
-	enemyloaddata	LnkTo_Pal_A222C-Data_Index, LnkTo_unk_D985D-Data_Index, loc_364A0	;1D
+	enemyloaddata	LnkTo_Pal_A2082-Data_Index, LnkTo_unk_CF71D-Data_Index, loc_3333E	;16 - Drip
+	enemyloaddata	LnkTo_Pal_A2058-Data_Index, LnkTo_unk_CF02F-Data_Index, loc_32782	;17 - Hand
+	enemyloaddata	LnkTo_Pal_A1FDA-Data_Index, LnkTo_unk_CC7E0-Data_Index, loc_35898	;18 - Tornado
+	enemyloaddata	LnkTo_Pal_A202E-Data_Index, LnkTo_unk_CE944-Data_Index, loc_32BBE	;19 - Fireball
+	enemyloaddata	LnkTo_Pal_A2280-Data_Index, LnkTo_unk_DACAB-Data_Index, loc_3BCF0	;1A - Driller
+	enemyloaddata	LnkTo_Pal_A2202-Data_Index, LnkTo_unk_D88E7-Data_Index, loc_361AE	;1B - Emo Rock
+	enemyloaddata	LnkTo_Pal_A2256-Data_Index, LnkTo_unk_DA75D-Data_Index, loc_3E9C8	;1C - Mini hopping skull
+	enemyloaddata	LnkTo_Pal_A222C-Data_Index, LnkTo_unk_D985D-Data_Index, loc_364A0	;1D - Big hopping skull
 	enemyloaddata	0, 0, 0
 	enemyloaddata	0, 0, 0
 	enemyloaddata	LnkTo_Pal_A2382-Data_Index, LnkTo_unk_DD8BB-Data_Index, sub_373C0	;20 - Heady Metal (final boss)
-	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332	;21 - NOTHING
+	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332	;21 - ?
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_381D6	;22 - Shiskaboss (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37DB4	;23 - Boomerang bosses (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, loc_37C14	;24 - Bagel Brothers (one head)

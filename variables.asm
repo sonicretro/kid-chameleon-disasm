@@ -42,6 +42,7 @@ Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Currently_Transforming = $FFFFFA6D	; byte
 Telepad_timer = 	$FFFFFA70	; word
 MurderWall_flag = 	$FFFFFAC1	; byte:   -1 = Murder wall, 0 = None
 MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphdr are set

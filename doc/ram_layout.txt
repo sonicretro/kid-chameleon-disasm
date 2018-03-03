@@ -1,12 +1,21 @@
 # This list is highly incomplete, and primarily included to
 # have all known RAM addresses in one place.
 
+# byte = 1 byte
+# word = 2 bytes
+# long = 4 bytes
+
 FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
-FF0280 FF0DA0	?
-FF0DA0 ?		Object RAM: $72 bytes per object, $31 slots.
+FF0280 FF0500
+FF0500 ?        DMA queue?
+?      FF0DA0	?
+FF0DA0 ?		Object RAM: $72 bytes per object, $31 slots. 2372 
 ?      FF2448
 FF2448 FF3AD8	Object RAM: $1690 bytes, $4C bytes per object ($4C objects)
-FF3AD8 FF4E58	?
+FF3AD8 FF3B22
+FF3B24 ?        Block list.
+?      FF4A00   ?
+FF4A00 FF4E58	?
 FF4E58 FF4ED8	Palette_Buffer: $80 bytes
 FF4ED8 FF4FD8	more palette buffers?
 FF4FD8 FF503A	?
@@ -14,9 +23,17 @@ FF503A FF52C2	Block_Mappings: $288 bytes
 FF52C2 FF7392	Level foreground layout: $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
 FF7392 FF7432	Horizontal scrolling related data
 FF7432 FF77B2	Horizontal Scroll Buffer: $380 bytes. a.k.a. deformation array
-FF77B2 FFA652	?
+FF77B2 FF87B2   uncompressed art buffer?
+FF87B2 FF9CB2   background buffer
+FF9CB2 FFA652
 FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
-FFE7F2 ?		?
+FFE7F2 ?		Object RAM?: ($13 objects), $E bytes per object
+FFE90A ?        Object RAM?: ($13 objects), $C bytes per object
+FFE9FA ?        Object RAM?: ($27 objects), $C bytes per object
+FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
+FFEDBA ?        Object RAM?: ($11 objects), $22 bytes per object
+FFF01E ?        
+FFF2B0 ?        Object RAM?
 ?      FFFFFF	Misc variables
 
 # To be merged with the above table:
@@ -61,6 +78,8 @@ FFF8AC	word	Theme background
 FFF8AE	long	Address of theme mappings
 FFF8BA	word	maximal camera X position (width in pixels - $140)
 FFF8BC	word	maximal camera Y position (height in pixels - $E0)
+FFF8D4  long    pointer to block list?
+FFFA6D  byte    flag whether kid is currently transforming
 FFFA70	word	Telepad timer
 FFFAC1	byte	Murder wall flag:	-1 = Murder wall, 0 = None
 FFFAC2	byte	Murder wall flag if both bits of the 3rd entry of maphdr are set?
@@ -68,6 +87,7 @@ FFFAC8	long	Murder wall speed
 FFFACC	long	Murder wall terminal speed
 FFFAD1	byte	selected option in Pause menu: 0=continue, 1=restart/give up
 FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
+FFFAD6  word    timer for storm background (counts down from 4, and if 0, display rain background)
 FFFB40	word	Level Special Effects: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 FFFB48	byte	background format (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
 FFFBC4	word	Pointer to current Keypress in Demo
@@ -246,3 +266,25 @@ Object format at FF0DA0:
  4: (long) pointer to object code
 44: (word) x pos?
 46: (word) y pos?
+
+
+
+
+Block List
+----------
+
+Starts at FF3B24
+
+One entry per block. 3 words header, plus data dependent on block type.
+Header:
+0  pointer to corresponding block in Level_Layout RAM
+2  ?
+4  block type
+6  data dependent on block type
+
+type dependent data:
+Prize block: 
+1 word:  prize ID
+
+Ghost block:
+5 words:  ?, ?, ?, ?, ?

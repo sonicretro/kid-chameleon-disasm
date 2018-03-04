@@ -18,6 +18,8 @@
 
 using namespace std;
 
+static const int BUFFER_SIZE = 0x1000;
+
 typedef struct byteinfo {
     unsigned int position;
     unsigned short length;
@@ -34,11 +36,18 @@ int compress(unsigned char* data, int size, const char* outfilename) {
      * (for the longest previous re-appearance of the pattern) */
     byteinfo* infoarray = (byteinfo*) calloc(size, sizeof(byteinfo));
     
+    // Question: linear time version of this?
     for(int i=0; i<size; i++) {
         for(int j=max(0, i-0x7FF); j<i; j++) {
             unsigned short length = 0;
             /* while characters match at both positions: increase pattern length */
-            while(data[j+length] == data[i+length] && i+length < size && length < 0xFF) length++;
+            while(data[j+length] == data[i+length] && i+length < size && length < 0xFF) {
+                length++;
+                // we need to make sure we don't match patterns that cross buffer boundaries
+                if ((i+length) % (BUFFER_SIZE/2) == 0 && (i+length >= BUFFER_SIZE)) {
+                    break;
+                }
+            }
             /* if new found pattern longer than previous one, and in case of long-ref not of length 2 */
             if(length >= infoarray[i].length && !(length == 2 && i-j > 0xFF)) {
                 infoarray[i].position = j;
@@ -95,6 +104,16 @@ int compress(unsigned char* data, int size, const char* outfilename) {
         
         /* go back by the length of the found pattern */
         position -= temp.length;
+
+        // if we cross a buffer boundary, add buffer flush sequence
+        if (position % (BUFFER_SIZE/2) == 0 && (position >= BUFFER_SIZE)) {
+            byteinfo temp;
+            temp.position = 0;
+            temp.length = 0;    // buffer flush marker
+            compinfo.push_front(temp);
+            bitcount += 7;
+            bytecount += 2;
+        }
     }
     
     /* terminating sequence */
@@ -123,7 +142,18 @@ int compress(unsigned char* data, int size, const char* outfilename) {
         
         unsigned short offset = position - it->position;
         
-        if(it->length == 1) {
+        if(it->length == 0) {
+            /* buffer flush */
+            #ifdef DEBUG
+            printf("bf\n");
+            #endif
+            cmdarray[bitcount>>3] |= (0x23<<1) >> (bitcount&0x07);
+            cmdarray[(bitcount>>3) + 1] |= ((0x23<<9) >> (bitcount&0x07)) & 0xFF;
+            inputarray[bytecount] = 0x00;
+            inputarray[bytecount+1] = 0x01;
+            bitcount += 7;
+            bytecount += 2;
+        } else if(it->length == 1) {
             /* direct copy */
             #ifdef DEBUG
             printf("dr 01\n");

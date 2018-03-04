@@ -4,6 +4,8 @@
 
 using namespace std;
 
+static const int BUFFER_SIZE = 0x1000;
+
 typedef struct byteinfo {
     unsigned int position;
     unsigned short length;
@@ -39,11 +41,18 @@ int main(int argc, char* argv[]) {
      * (for the longest previous re-appearance of the pattern) */
     byteinfo* infoarray = (byteinfo*) calloc(size, sizeof(byteinfo));
     
+    // Question: linear time version of this?
     for(int i=0; i<size; i++) {
         for(int j=max(0, i-0x7FF); j<i; j++) {
             unsigned short length = 0;
             /* while characters match at both positions: increase pattern length */
-            while(data[j+length] == data[i+length] && i+length < size && length < 0xFF) length++;
+            while(data[j+length] == data[i+length] && i+length < size && length < 0xFF) {
+                length++;
+                // we need to make sure we don't match patterns that cross buffer boundaries
+                if ((i+length) % (BUFFER_SIZE/2) == 0 && (i+length >= BUFFER_SIZE)) {
+                    break;
+                }
+            }
             /* if new found pattern longer than previous one, and in case of long-ref not of length 2 */
             if(length >= infoarray[i].length && !(length == 2 && i-j > 0xFF)) {
                 infoarray[i].position = j;
@@ -60,11 +69,12 @@ int main(int argc, char* argv[]) {
     /* current position, initialised as last byte of the file */
     int position = size;
     /* number of bits the compression header will take */
-    unsigned short bitcount = 0;
+    unsigned int bitcount = 0;
     /* number of bytes the compression data will take */
-    unsigned short bytecount = 0;
+    unsigned int bytecount = 0;
 
-    /* go through from back to beginning finding encodings */
+    /* go through from back to beginning finding encodings.
+     * This algorithm is greedy and not neccessarily optimal. */
     while(position > 0) {
         byteinfo temp;
         /* in case no match will be found, use direct copy */
@@ -100,6 +110,17 @@ int main(int argc, char* argv[]) {
         
         /* go back by the length of the found pattern */
         position -= temp.length;
+
+        // if we cross a buffer boundary, add buffer flush sequence
+        if (position % (BUFFER_SIZE/2) == 0 && (position >= BUFFER_SIZE)) {
+            byteinfo temp;
+            temp.position = 0;
+            temp.length = 0;    // buffer flush marker
+            compinfo.push_front(temp);
+            bitcount += 7;
+            bytecount += 2;
+        }
+
     }
     
     /* terminating sequence */
@@ -128,7 +149,18 @@ int main(int argc, char* argv[]) {
         
         unsigned short offset = position - it->position;
         
-        if(it->length == 1) {
+        if(it->length == 0) {
+            /* buffer flush */
+            #ifdef DEBUG
+            printf("bf\n");
+            #endif
+            cmdarray[bitcount>>3] |= (0x23<<1) >> (bitcount&0x07);
+            cmdarray[(bitcount>>3) + 1] |= ((0x23<<9) >> (bitcount&0x07)) & 0xFF;
+            inputarray[bytecount] = 0x00;
+            inputarray[bytecount+1] = 0x01;
+            bitcount += 7;
+            bytecount += 2;
+        } else if(it->length == 1) {
             /* direct copy */
             #ifdef DEBUG
             printf("dr 01\n");

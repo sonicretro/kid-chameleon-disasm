@@ -23,7 +23,7 @@ FF503A FF52C2	Block_Mappings: $288 bytes
 FF52C2 FF7392	Level foreground layout: $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
 FF7392 FF7432	Horizontal scrolling related data
 FF7432 FF77B2	Horizontal Scroll Buffer: $380 bytes. a.k.a. deformation array
-FF77B2 FF87B2   uncompressed art buffer?
+FF77B2 FF87B2   buffer for decompressing art?
 FF87B2 FF9CB2   background buffer
 FF9CB2 FFA652
 FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)

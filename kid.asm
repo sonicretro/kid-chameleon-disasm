@@ -24453,6 +24453,7 @@ loc_11EFA:
 	move.w	#$4400,d0
 	bsr.w	SomeDecToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
+
 	move.w	#$D740,d0
 	move.l	(LnkTo_ArtSom_99F34_IngameNumbers).l,a0
 	bsr.w	SomeDecToVRAM	; a0 - source address
@@ -26595,14 +26596,16 @@ SomDec_BP0_DrcCpy:
 
 loc_13736:
 	add.b	d1,d1
-	bcs.s	loc_137AE
+	bcs.s	loc_137AE	; top bit = 1 --> direct copy
 	move.l	a2,a6
 	add.b	d1,d1
-	bcs.s	loc_13756
+	bcs.s	loc_13756	; top bits 01 --> long ref
+	; top bits 00 --> short ref 00:A
 	move.b	(a1)+,d5
 	suba.l	d5,a6
 	add.b	d1,d1
-	bcc.s	loc_1374A
+	bcc.s	loc_1374A	; A = 0 --> copy 2 tiles
+	; A = 1 --> copy 3 tiles
 	move.b	(a6)+,(a2)+
 
 loc_1374A:
@@ -26613,29 +26616,30 @@ loc_1374A:
 	bra.w	loc_138AA
 ; ---------------------------------------------------------------------------
 
-loc_13756:
-	lsl.w	#3,d1
+loc_13756:	; long ref 01:BBB:AA
+	lsl.w	#3,d1	; skip 3 bits, put the into upper byte of word
 	move.w	d1,d6
-	and.w	d4,d6
-	move.b	(a1)+,d6
-	suba.l	d6,a6
+	and.w	d4,d6	; d4 = $7FF? is that always true?
+	move.b	(a1)+,d6	; d6 = BBB*256 + BYTE1
+	suba.l	d6,a6	; address to copy from
 	add.b	d1,d1
-	bcs.s	loc_1376A
+	bcs.s	loc_1376A	; first bit of AA is 1
 	add.b	d1,d1
-	bcs.s	loc_13780
-	bra.s	loc_13782
+	bcs.s	loc_13780	; AA = 01 --> copy 4 tiles
+	bra.s	loc_13782	; AA = 00 --> copy 3 tiles
 ; ---------------------------------------------------------------------------
 
 loc_1376A:
 	add.b	d1,d1
-	bcc.s	loc_1377E
+	bcc.s	loc_1377E	; AA = 10 --> copy 5 tiles
+	; AA = 11 --> copy 6 or more tiles
 	moveq	#0,d0
 	move.b	(a1)+,d0
-	beq.s	loc_13790
+	beq.s	loc_13790	; BYTE2 = 0 means: quit decompression
 	subq.w	#6,d0
-	bmi.s	loc_13796
+	bmi.s	loc_13796	; 0 < BYTE2 < 6 means: flush buffer
 
-loc_13778:
+loc_13778:	; copy BYTE2 tiles
 	move.b	(a6)+,(a2)+
 	dbf	d0,loc_13778
 
@@ -26654,12 +26658,12 @@ loc_13782:
 	bra.w	SomDec_BitPos0
 ; ---------------------------------------------------------------------------
 
-loc_13790:
+loc_13790:	; quit decompression
 	move.w	#0,d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_13796:
+loc_13796:	; flush decompression buffer
 	move.w	#$FFFF,d0
 	moveq	#0,d2
 	rts
@@ -27557,7 +27561,7 @@ SomeDecToVRAM:
 				; Load_InGame+504p ...
 	bsr.s	sub_142CC
 	moveq	#-1,d0
-	move.l	d0,a3
+	move.l	d0,a3	; end address beyond which to flush buffer
 
 loc_14300:
 	move.l	a2,a4		; a0 command array
@@ -27572,15 +27576,16 @@ loc_14300:
 	subq.w	#1,d3
 
 loc_14314:
-	move.w	(a4)+,(a6)	; transfer stuff from buffer to	VRAM
-	dbf	d3,loc_14314	; transfer stuff from buffer to	VRAM
-	tst.w	d0
+	move.w	(a4)+,(a6)	; transfer data from buffer to VRAM
+	dbf	d3,loc_14314
+	tst.w	d0	; finished decompression?
 	beq.s	return_14334
+	; have to continue decompression but buffer is full
 	lea	($FFFF77B2).l,a2
 	lea	$800(a2),a4
 	move.w	#$1FF,d3
 
-loc_1432C:
+loc_1432C:	; move second $800 bytes from buffer to first $800 bytes of buffer
 	move.l	(a4)+,(a2)+
 	dbf	d3,loc_1432C
 	bra.s	loc_14300	; a0 command array

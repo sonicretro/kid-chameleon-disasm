@@ -28,19 +28,28 @@ data to get the decompressed data.
     01:BBB:AA - long reference
 
     --1 FORMAT--
-    TILE = INPUT_BYTE
+    BYTE = INPUT_BYTE
 
     --00 FORMAT--
-    TILES = COPY A+2 TILES from POSITION - INPUT_BYTE
+    BYTES = COPY A+2 BYTES from POSITION - INPUT_BYTE
 
     --01 FORMAT--
     If AA is less than 11
-    TILES = COPY AA+3 TILES from POSITION - INPUT_BYTE - (BBB * 256)
-    If AA is equal to 11
-    TILES = COPY INPUT_BYTE2 TILES from POSITION - INPUT_BYTE1 - (BBB * 256)
+    BYTES = COPY AA+3 BYTES from POSITION - INPUT_BYTE - (BBB * 256)
+    If AA is equal to 11 and INPUT_BYTE2 >= 6
+    BYTES = COPY INPUT_BYTE2 BYTES from POSITION - INPUT_BYTE1 - (BBB * 256)
 
-If the process data bits are 0100011 and the input is 2 bytes of 0,
-the compression ends.
+If the process data bits are 0100011 and the input is 00 00, the compression ends.
+
+If the process data bits are 0100011 and the input is 00 0x where 0 < x < 6,
+the temporary buffer is flushed. This needs to be done after the first
+BUFFER_SIZE bytes of decompressed data, and then after every another
+BUFFER_SIZE/2 bytes. It seems that in all instances BUFFER_SIZE = 0x1000.
+
+The game decompresses into a buffer at $FF77B2 of size 0x1000, 
+and once the buffer is full, transfers the first 0x800 bytes to VRAM
+and moves the second 0x800 bytes back to $FF77B2.
+
 
 This compression format is used for ingame art and foreground tile layouts
 in levels.

@@ -6,13 +6,11 @@
 # long = 4 bytes
 
 FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
-FF0280 FF0500
+FF0280 FF0500   ?
 FF0500 ?        DMA queue?
 ?      FF0DA0	?
-FF0DA0 ?		Object RAM: $72 bytes per object, $31 slots. 2372 
-?      FF2448
-FF2448 FF3AD8	Object RAM: $1690 bytes, $4C bytes per object ($4C objects)
-FF3AD8 FF3B22
+FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
+FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
 FF3B24 ?        Block list.
 ?      FF4A00   ?
 FF4A00 FF4E58	?
@@ -23,17 +21,19 @@ FF503A FF52C2	Block_Mappings: $288 bytes
 FF52C2 FF7392	Level foreground layout: $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
 FF7392 FF7432	Horizontal scrolling related data
 FF7432 FF77B2	Horizontal Scroll Buffer: $380 bytes. a.k.a. deformation array
-FF77B2 FF87B2   buffer for decompressing art?
+FF77B2 FF87B2   decompression buffer
 FF87B2 FF9CB2   background buffer
-FF9CB2 FFA652
+FF9CB2 FFA652   ?
 FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
 FFE7F2 ?		Object RAM?: ($13 objects), $E bytes per object
 FFE90A ?        Object RAM?: ($13 objects), $C bytes per object
-FFE9FA ?        Object RAM?: ($27 objects), $C bytes per object
+FFE9FA ?        Object RAM?: ($27 objects), $C bytes per object -- for shooter block bullets
 FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
 FFEDBA ?        Object RAM?: ($11 objects), $22 bytes per object
 FFF01E ?        
 FFF2B0 ?        Object RAM?
+?      FFF8FE   Misc variables
+FFF8FE ?        Enemy status table, one word entry per enemy in enemy layout (whether it's loaded or something)
 ?      FFFFFF	Misc variables
 
 # To be merged with the above table:
@@ -60,8 +60,15 @@ FFF81C	long	X camera position (16.16 fixed point)
 FFF820	long	Y camera position (16.16 fixed point)
 FFF824	long	X camera background position? (16.16 fixed point)
 FFF828	long	Y camera background position? (16.16 fixed point)
-FFF83E  long    Address of next available slot in $FF0DA0
-FFF854  long    Address of next available slot in $FF2448
+FFF832  long    Address of next available slot in Sprite_Table
+FFF836  byte    Number of sprites in Sprite_Table
+FFF83E  long    Address of next available Object slot
+FFF842  long    Address of first Object in Object_RAM
+FFF846  long    Address of currently executed Object
+FFF84A  word    Number of Objects
+FFF854  long    Address of next available GfxObject slot
+FFF858  long    Address of first GfxObject in GfxObject_RAM
+FFF85C  word    Number of GfxObjects
 FFF890	byte	flag indicating palette has changed
 FFF89E	word	width in 16x16 blocks
 FFF89C	word	width in 8x8 tiles
@@ -174,6 +181,7 @@ FF0DBD    main menu option  ; byte
 FF0DC1    main menu option * 2  ; byte
 FF2596    main menu option selector Y position  ; word
 ?FFFAD2    flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?  ; byte
+    and in fact seems to be added to any kind of object
 
 
 
@@ -201,73 +209,110 @@ hitpoint display, then kid sprites, then other objects.
 Object RAM
 ----------
 
-There are various sections of object RAM, allowing for differently
-sized objects:
+Objects and GfxObjects are organized in a linked list. There are
+a few more RAM sections organized like linked lists, e.g. for the
+bullets shot from shooter blocks.
 
-Starting at FF0DA0:
-$74 bytes per object, $31 slots.
-sub_D7E writes pointers to next object slot in each object.
-sub_DAC allocates a slot for a new object
-FFF83E = Address of next available slot
+Each object entry starts with a pointer to its successor, or a NULL
+pointer in case it's the last object in the list. For both the
+Object and GfxObject list, there are RAM addresses containing
+(1) pointer to the first element in the list
+(2) pointer to the next empty object slot in RAM
+(3) the current number of objects in the list
 
-Starting at FF2448:
-$4C bytes per object, $4C slots.
-sub_F26 writes pointers to next object slot in each object.
-sub_F6E allocates a slot for a new object
-FFF854 = Address of next available slot
+For both object lists, there are functions for
+(1) initializing the list
+(2) allocating a slot for use and returning its address
+(3) deleting an element from the list
 
-The object data seems to work like a linked list, with
-objects pointing to their successor. In particular, they
-can also point at different regions of the RAM that work
-in a similar vein, just with different object sizes, e.g. $FFFF0DA0.
+The Object RAM at FF0DA0 consists of $32 slots, $74 bytes per object.
+Each object has a pointer to its code at offset 4. Once per frame,
+the game goes through the list of objects and for each object executes
+that code. Before executing the code, the values stored at offsets 
+$16 to $36 are unpacked into the registers d0-d3 and a0-a3 (in that
+order). Executing of object code stops when the object deletes itself,
+or hibernates. Upon hibernation, the objects stores the register values
+d0-d3 and a0-a3 at offset $16 to $36 again, and will resume at the
+position in the code after the call to the hibernation function in the
+next frame (or after a larger amount of frames if a hibernation duration
+was provided). There is also a RAM address with a pointer of to the
+object that is currently being executed.
 
-Note: it's is not entirely clear if the first 4 bytes
-belong to the object as described below, or to the previous
-object (or in fact where the object boundaries are).
-
-
-Object format at FF2448:
-
-FFFF PPPP .... .... .... DD.. .... XXXX 
-XXXX YYYY YYYY AABB .... .... .... .... 
-.... QQQQ QQQQ CCCC .... .... .... ....
-.... .... .... .... .... .... .... ....
-.... .... .... .... .... ....
-
-X - X position
-Y - Y position
-A - Object
-B - Type
-D - direction: FF right, 00 left
-Q - pointer at current animation frame definition in ROM
-C - some counter (for dragon, anyway)
-P - pointer to next object
-
-
-Object, Type (not certain if these are really object types):
-00 (50) - Kid Chameleon
-05 (60-78) - Dragon
-11 (2C) - Flag exit pole (active)
-11 (40) - Waving flag
-12 - End stage
-10/FD/79: diamonds/helmets falling/landing/on ground
+Most or all object also have one or multiple GfxObjects associated
+to them. The GfxObject RAM at FF2448 consists of $4D slots, $4C bytes per 
+object. These contain data such as position/velocity of the object and 
+animation data. Each frame, the game goes through all GfxObjects and
+adds velocity to position, computes the animation, computes collision
+with the level and the kid and possibly more stuff. The game also
+compiles each GfxObject into a Sprite_Table entry which are then transferred
+to VRAM to be displayed. There are also RAM addresses
+FFF866
+FFF86A
+FFF86E
+FFF872
+whose purpose is currently unknown.
 
 
-The Kid is part of the object RAM and starts at $24EC.
-In particular, we have the following RAM addresses:
-FF24FA	long	Kid X position (16.16 fixed point)
-FF24FE	long	Kid Y position (16.16 fixed point)
-FF2506	long	Kid X speed
-FF250A	long	Kid Y speed
-
-
-Object format at FF0DA0:
-
+Object format for objects from Object RAM at FF0DA0:
+ 0: (long) pointer to next object in list (0 if it's the last object)
  4: (long) pointer to object code
-44: (word) x pos?
-46: (word) y pos?
+ 8: (word) object hibernation counter
+ A: (long) pointer to some GfxObject?
+ E: ?
+10: (byte) flag
+11: ?
+12: (long)
+16: (8*long) values unpacked into d0-d3 and a0-a3
+36: (long) pointer to GfxObject in FF2448
+3A: (long) pointer to subobject in FF2448?
+3E: (long) pointer to subobject in FF2448?
+42: (byte) lower 6 bits: index in Enemy status table; bits 6&7: unknown flags.
+43: ?
+44: (long) (for enemies) address in enemy layout
+44-74: ?
 
 
+Object format for GfxObject from GfxObject RAM at FF2448:
+ 0: (long) pointer to next objectData
+ 4: (long) ???address to some kind of gfxobject slot
+ 8: (word) ???lower word from value of a3 at allocation call; related to FFF866 etc
+ A: (word) ?upper word from value of a3 at allocation call
+ C: (long) address of corresponding object (a5)
+10: (byte)
+11: (byte)
+12: (byte)
+13: (byte) flag
+14: (byte) flag: whether to move object (i.e. add vel to pos)
+15: (byte) flag: whether to animate object
+16: (byte) flag: horizontal direction
+17: (byte)
+18: (byte) flag
+19: (byte) flag
+1A: (long) X position (16.16 fixed point)
+1E: (long) Y position (16.16 fixed point)
+22: (word) offset from DataIndex to current sprite (to be displayed)
+24: (word)
+26: (long) X velocity (16.16 fixed point)
+2A: (long) Y velocity (16.16 fixed point)
+2E: (long) pointer to current anim_frame
+32: (word) animation frame duration countdown?
+34: ?
+38: (word) level collision event ID
+3A: (word)
+3C: (byte) flag: whether to execute level collision?
+3D: (byte) flag
+3E: (long) some x position relative to camera?
+42: (long) some y position relative to camera?
+46: ?
+48: (word)
+4A: (word)
+
+The Kid is part of the GfxObject RAM and starts at $FF24E0.
+In particular, we have the following RAM addresses:
+FF24FA  long    Kid X position (16.16 fixed point)
+FF24FE  long    Kid Y position (16.16 fixed point)
+FF2506  long    Kid X speed
+FF250A  long    Kid Y speed
 
 
 Block List

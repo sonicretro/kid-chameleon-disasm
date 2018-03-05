@@ -17,9 +17,9 @@ maphdr		macro	fnamehdr, fgtile, block, bgtile, enemy
 		endm
 ; ---------------------------------------------------------------------------
 
-anim_frame	macro	duration, unk2, spriteframe
+anim_frame	macro	mode, duration, spriteframe
+		dc.b	mode
 		dc.b	duration
-		dc.b	unk2
 		dc.w	spriteframe
 		endm
 
@@ -47,6 +47,13 @@ sprite_frame_vram	macro	spriteindex, xcenter, ycenter, width, height
 		dc.w	width, height
 		endm
 
+; ---------------------------------------------------------------------------
+sprite_attr	macro	xpos, ypos, xsize, ysize, pattern, lnk
+		dc.w	ypos
+		dc.w	(xsize<<10) | (ysize<<8) | lnk
+		dc.w	pattern
+		dc.w	xpos
+		endm
 ; ---------------------------------------------------------------------------
 ptfm_move	macro	duration, xvel, yvel
 		dc.w	duration

@@ -52,6 +52,7 @@ Boss4_LevelID = $33
 	; 5: Special/Jump/Speed
 Default_Options = $00000000
 ; ===========================================================================
+	include "constants.asm"
 	include "macros.asm"
 ; ===========================================================================
 StartOfROM:
@@ -6237,8 +6238,8 @@ return_6046:
 
 
 sub_6048:
-	move.w	($FFFFF808).w,d6
-	cmpi.w	#$4B0,d6
+	move.w	(Frame_Counter).w,d6
+	cmpi.w	#$4B0,d6 ; Timer: 0x04B0, decimal 1200/60=20 seconds (triggers storm theme) 
 	bls.w	loc_61C2
 	move.w	($FFFFFADA).w,($FFFFF876).w
 	beq.w	loc_60EE
@@ -6261,7 +6262,7 @@ loc_6090:
 	move.l	($FFFFFADE).w,a0
 	lea	($FFFF4F8A).l,a1
 	moveq	#6,d0
-	cmpi.w	#7,(Foreground_theme).w
+	cmpi.w	#Mountain,(Foreground_theme).w
 	beq.s	loc_60C0
 
 loc_60AA:
@@ -6291,11 +6292,11 @@ loc_60E0:
 ; ---------------------------------------------------------------------------
 
 loc_60EE:
-	cmpi.w	#3,(Level_Special_Effects).w
+	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
 	bgt.s	loc_6172
-	cmpi.w	#7,(Background_theme).w
+	cmpi.w	#Mountain,(Background_theme).w
 	bne.s	loc_6172
-	cmpi.w	#$5DC,d6
+	cmpi.w	#$5DC,d6 ; Timer: 0x05DC, decimal 1500/60=25 seconds (triggers thunder storm)
 	bls.w	loc_61C2
 	subi.w	#1,($FFFFFADC).w
 	bmi.s	loc_613E
@@ -6333,11 +6334,11 @@ loc_616C:
 	dbf	d0,loc_616C
 
 loc_6172:
-	cmpi.w	#$834,d6
+	cmpi.w	#$834,d6 ; Timer: 0x0834, decimal 2100/60=35 seconds (triggers snow)
 	bls.s	loc_61C2
-	cmpi.w	#3,(Level_Special_Effects).w
+	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	return_61C0
-	cmpi.w	#$873,($FFFFF808).w
+	cmpi.w	#$873,(Frame_Counter).w ; Timer: 0x0873, decimal 2163/60=36 seconds (triggers ice balls)
 	bls.s	return_61C0
 	subi.w	#1,($FFFFFB52).w
 	bne.s	loc_61A8
@@ -24469,7 +24470,7 @@ loc_11F48:
 	bne.s	loc_11F96
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1222C,4(a0)
+	move.l	#Animation_Lava_Water,4(a0)
 	bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
 
@@ -24478,7 +24479,7 @@ loc_11F96:
 	bne.s	loc_11FB0
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1222C,4(a0)
+	move.l	#Animation_Lava_Water,4(a0)
 	bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
 
@@ -24493,7 +24494,7 @@ loc_11FC8:
 				; Load_InGame+5A0j ...
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_11FD2
-	bsr.w	sub_1409A
+	bsr.w	Murderwall
 
 loc_11FD2:
 	bsr.w	sub_140F6
@@ -24502,7 +24503,7 @@ loc_11FD2:
 	jsr	(sub_31F86).l
 	bsr.w	sub_129AE
 	jsr	(j_sub_7196).w
-	bsr.w	sub_145B6
+	bsr.w	Init_SpecialEffects
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_12004
 	move.w	#9,d0
@@ -24682,7 +24683,7 @@ unk_12226:	dc.b $19
 	dc.b  $A
 ; ---------------------------------------------------------------------------
 
-loc_1222C:
+Animation_Lava_Water:
 				; Load_InGame+598o
 	move.w	#5,d0
 	cmpi.w	#7,(Foreground_theme).w
@@ -27206,13 +27207,13 @@ Pal_1408A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_1409A:
+Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
-	move.l	#$20000,(MurderWall_max_speed).w
-	cmpi.w	#8,(Current_LevelID).w
+	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entery
+	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_140BE
-	move.l	#$18000,(MurderWall_max_speed).w
+	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1
 
 loc_140BE:
 	clr.l	(MurderWall_speed).w
@@ -27239,7 +27240,7 @@ loc_140EE:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_140EE
 	rts
-; End of function sub_1409A
+; End of function Murderwall
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -27909,29 +27910,28 @@ loc_1459A:
 ; End of function sub_14582
 
 ; ---------------------------------------------------------------------------
-off_145A2:
-	dc.l loc_14C36	; 1: lava
-	dc.l loc_14CBA	; 2: storm
-	dc.l loc_14CBA	; 3: storm+hail
-	dc.l loc_14DE4	; 4: ?
-	dc.l return_14E6C	; 5: nothing
-
+;Init_SpecialEffect_Index
+Init_SpecialEffect_Index:
+	dc.l Init_SpecialEffect_Lava	; 1: lava
+	dc.l Init_SpecialEffect_Storm	; 2: storm
+	dc.l Init_SpecialEffect_Storm	; 3: storm+hail
+	dc.l Init_SpecialEffect_Unknown	; 4: ?
+	dc.l Init_SpecialEffect_Nothing	; 5: nothing
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_145B6:
+Init_SpecialEffects:
 	move.w	(Level_Special_Effects).w,d0
 	beq.s	return_145C8
 	subq.w	#1,d0
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	off_145A2(pc,d0.w),a0
+	move.l	Init_SpecialEffect_Index(pc,d0.w),a0
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
 
 return_145C8:
 	rts
-; End of function sub_145B6
+; End of function Init_SpecialEffects
 
 ; ---------------------------------------------------------------------------
 unk_145CA:	dc.b   0
@@ -28263,7 +28263,7 @@ word_14710:	dc.w	 0
 	dc.w   $96
 ; ---------------------------------------------------------------------------
 
-loc_14730:
+Lava_Geyser:
 	move.w	$16(a5),d0
 	move.w	$18(a5),d1
 	move.w	$1A(a5),d2
@@ -28670,7 +28670,7 @@ loc_14B22:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_14B28:
+Animation_Geyser:
 	moveq	#5,d0
 
 loc_14B2A:
@@ -28684,7 +28684,7 @@ loc_14B2A:
 	move.w	($FFFF4E80).l,($FFFF4E82).l
 	move.w	d5,($FFFF4E80).l
 	bra.s	loc_14B2A
-; End of function sub_14B28
+; End of function Animation_Geyser
 
 ; ---------------------------------------------------------------------------
 ; lava fountain positions.
@@ -28751,18 +28751,18 @@ off_14C26:
 	dc.l unk_14BC4	; everything else
 ; ---------------------------------------------------------------------------
 
-loc_14C36:
+Init_SpecialEffect_Lava:
 	move.w	(Current_LevelID).w,d0
 	move.l	(LnkTo_MapOrder_Index).l,a0
 	move.b	(a0,d0.w),d0
 	clr.w	d1
-	cmpi.b	#0,d0	; Under Skull Mountain 2
+	cmpi.b	#M_Under_Skull_Mountain_2,d0
 	beq.s	loc_14C5E
 	addq.w	#1,d1
-	cmpi.w	#2,d0	; Under Skull Mountain 3
+	cmpi.w	#M_Under_Skull_Mountain_3,d0
 	beq.s	loc_14C5E
 	addq.w	#1,d1
-	cmpi.w	#4,d0	; The Black Pit
+	cmpi.w	#M_The_Black_Pit,d0
 	beq.s	loc_14C5E
 	addq.w	#1,d1
 
@@ -28776,7 +28776,7 @@ loc_14C5E:
 loc_14C6A:
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_14730,4(a0)
+	move.l	#Lava_Geyser,4(a0)
 	move.l	(a4)+,$16(a0)
 	move.w	(a4)+,$1A(a0)
 	dbf	d0,loc_14C6A
@@ -28792,12 +28792,12 @@ loc_14C6A:
 	move.l	(a0)+,(a1)+
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_14B28,4(a0)
+	move.l	#Animation_Geyser,4(a0)
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_14CBA:
-	cmpi.w	#2,(Background_theme).w
+Init_SpecialEffect_Storm:
+	cmpi.w	#Ice,(Background_theme).w
 	beq.s	loc_14CCE
 	move.l	(LnkTo_ArtComp_99090_Rain).l,a0
 	move.w	#$7000,d0
@@ -28811,7 +28811,7 @@ loc_14CCE:
 loc_14CD8:
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
-	cmpi.w	#2,(Background_theme).w
+	cmpi.w	#Ice,(Background_theme).w
 	beq.s	loc_14CEC
 	move.l	(LnkTo_Pal_7B8BC).l,a0
 	bra.s	loc_14CF2
@@ -28826,7 +28826,7 @@ loc_14CF2:
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
-	cmpi.w	#2,(Background_theme).w
+	cmpi.w	#Ice,(Background_theme).w
 	beq.s	loc_14D1E
 	move.w	#$380,d7
 	move.w	d7,d6
@@ -28912,7 +28912,8 @@ loc_14DAC:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_14DE4:
+;loc_14DE4:
+Init_SpecialEffect_Unknown:
 	move.l	(LnkTo_unk_9AA50).l,a0
 	move.l	#vdpComm($7000,VRAM,WRITE),4(a6)
 	move.w	(a0)+,d0
@@ -28965,7 +28966,7 @@ loc_14E46:
 	rts
 ; ---------------------------------------------------------------------------
 
-return_14E6C:
+Init_SpecialEffect_Nothing:
 	rts
 ; ---------------------------------------------------------------------------
 Pal_14E6E:  binclude    "theme/titlecard/palette/sky.bin"
@@ -49120,7 +49121,7 @@ loc_3785A:
 	move.l	#$927C0,d7
 
 loc_37866:
-	move.w	($FFFFF808).w,d0
+	move.w	(Frame_Counter).w,d0
 	andi.w	#2,d0
 	bne.s	loc_37876
 	bsr.w	sub_3787C

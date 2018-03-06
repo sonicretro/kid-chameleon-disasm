@@ -12,6 +12,7 @@ EnemyStatus_Table = 	$FFFFF8FE	; ? bytes. 2 bytes per entry
 
 Diamond_power_timer = 	$FFFFF5BE	; word
 V_Int_counter = 	$FFFFF806	; word: number of frames since start of game
+Frame_Counter = 	$FFFFF808	; word: frame counter (adds 1 every frame)
 V_Int_Done = 		$FFFFF80A	; byte: Indicator that V-Int has occurred
 Ctrl_1 = 		$FFFFF80C	; byte. Bitmask for controller buttons: SACBRLDU
 Ctrl_1_Held = 		$FFFFF80D	; byte: buttons currently held down

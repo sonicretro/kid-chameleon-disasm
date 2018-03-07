@@ -20,7 +20,7 @@ Maniaxe = 8
 Micromax = 9
 
 ; Themes
-Unknown = 0
+Theme_Unknown = 0
 Sky = 1
 Ice = 2
 Hills = 3

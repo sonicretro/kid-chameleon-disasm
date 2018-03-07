@@ -24470,7 +24470,7 @@ loc_11F48:
 	bne.s	loc_11F96
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Animation_Lava_Water,4(a0)
+	move.l	#RotatePalette_Lava_Water,4(a0)
 	bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
 
@@ -24479,7 +24479,7 @@ loc_11F96:
 	bne.s	loc_11FB0
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Animation_Lava_Water,4(a0)
+	move.l	#RotatePalette_Lava_Water,4(a0)
 	bra.s	loc_11FC8
 ; ---------------------------------------------------------------------------
 
@@ -24683,10 +24683,9 @@ unk_12226:	dc.b $19
 	dc.b  $A
 ; ---------------------------------------------------------------------------
 
-Animation_Lava_Water:
-				; Load_InGame+598o
+RotatePalette_Lava_Water:
 	move.w	#5,d0
-	cmpi.w	#7,(Foreground_theme).w
+	cmpi.w	#Mountain,(Foreground_theme).w
 	beq.s	loc_1223A
 	addq.w	#3,d0
 
@@ -24698,11 +24697,11 @@ loc_1223C:
 	subi.w	#1,d0
 	bne.s	loc_1223C
 	move.w	d2,d0
-	move.w	($FFFF4E6C).l,d1
-	move.w	($FFFF4E6A).l,($FFFF4E6C).l
-	move.w	($FFFF4E68).l,($FFFF4E6A).l
-	move.w	($FFFF4E66).l,($FFFF4E68).l
-	move.w	d1,($FFFF4E66).l
+	move.w	(Palette_Buffer+$14).l,d1
+	move.w	(Palette_Buffer+$12).l,(Palette_Buffer+$14).l
+	move.w	(Palette_Buffer+$10).l,(Palette_Buffer+$12).l
+	move.w	(Palette_Buffer+$E).l,(Palette_Buffer+$10).l
+	move.w	d1,(Palette_Buffer+$E).l
 	bra.s	loc_1223C
 ; ---------------------------------------------------------------------------
 AddrTbl_BlockTypes:

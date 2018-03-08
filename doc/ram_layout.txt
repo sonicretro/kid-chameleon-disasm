@@ -27,9 +27,9 @@ FF9CB2 FFA652   ?
 FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
 FFE7F2 ?		Object RAM?: ($13 objects), $E bytes per object
 FFE90A ?        Object RAM?: ($13 objects), $C bytes per object
-FFE9FA ?        Object RAM?: ($27 objects), $C bytes per object -- for shooter block bullets
+FFE9FA ?        Shooter Block Bullet RAM: ($27 objects), $C bytes per object
 FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
-FFEDBA ?        Object RAM?: ($11 objects), $22 bytes per object
+FFEDBA ?        Platform RAM?: ($11 objects), $22 bytes per object
 FFF01E ?        
 FFF2B0 ?        Object RAM?
 ?      FFF8FE   Misc variables
@@ -69,25 +69,37 @@ FFF84A  word    Number of Objects
 FFF854  long    Address of next available GfxObject slot
 FFF858  long    Address of first GfxObject in GfxObject_RAM
 FFF85C  word    Number of GfxObjects
-FFF890	byte	flag indicating palette has changed
-FFF89E	word	width in 16x16 blocks
-FFF89C	word	width in 8x8 tiles
-FFF89A	word	width in pixels
-FFF8A0	word	height in pixels
-FFF8A2	word	height in 8x8 tiles
-FFF8A4	word	height in 16x16 blocks
-FFF8A6	word	background width
-FFF8A8	word	background height
-FFF8AA	word	Foreground theme
-FFF8AA	word	Theme music
-FFF8AC	word	Background theme
-FFF8AC	word	Theme background
-FFF8AE	long	Address of theme mappings
-FFF8BA	word	maximal camera X position (width in pixels - $140)
-FFF8BC	word	maximal camera Y position (height in pixels - $E0)
+FFF85E  long    Pointer to GfxObject that belongs to the kid
+FFF890  byte    flag indicating palette has changed
+FFF89E  word    width in 16x16 blocks
+FFF89C  word    width in 8x8 tiles
+FFF89A  word    width in pixels
+FFF8A0  word    height in pixels
+FFF8A2  word    height in 8x8 tiles
+FFF8A4  word    height in 16x16 blocks
+FFF8A6  word    background width
+FFF8A8  word    background height
+FFF8AA  word    Foreground theme
+FFF8AA  word    Theme music
+FFF8AC  word    Background theme
+FFF8AC  word    Theme background
+FFF8AE  long    Address of theme mappings
+FFF8BA  word    maximal camera X position (width in pixels - $140)
+FFF8BC  word    maximal camera Y position (height in pixels - $E0)
 FFF8D4  long    pointer to block list?
 FFFA6D  byte    flag whether kid is currently transforming
-FFFA70	word	Telepad timer
+FFFA70  word    Telepad timer
+FFFA7A  word    Kid hitbox left
+FFFA7C  word    Kid hitbox right
+FFFA7E  word    Kid hitbox top
+FFFA80  word    Kid hitbox bottom
+FFFA88  long    Pointer to current platform layout
+FFFA8C  word    Offset to platform in current platform layout
+FFFA8E  word    Pointer to first element in platform list
+FFFA90  word    Pointer to next free slot in platform list
+FFFA92  word    Number of platforms currently loaded
+FFFA8C  word    Offset in current platform layout that the platform loading manager will process next
+FFFA94  word    Pointer to platform kid is currently on
 FFFAC1	byte	Murder wall flag:	-1 = Murder wall, 0 = None
 FFFAC2	byte	Murder wall flag if both bits of the 3rd entry of maphdr are set?
 FFFAC8	long	Murder wall speed
@@ -184,7 +196,6 @@ FF2596    main menu option selector Y position  ; word
     and in fact seems to be added to any kind of object
 
 
-
 Palette_Buffer ($FFFF4E58):
 - is transferred to CRAM via DMA
 
@@ -210,8 +221,8 @@ Object RAM
 ----------
 
 Objects and GfxObjects are organized in a linked list. There are
-a few more RAM sections organized like linked lists, e.g. for the
-bullets shot from shooter blocks.
+a few more RAM sections organized like linked lists, e.g. for 
+platforms or bullets shot from shooter blocks.
 
 Each object entry starts with a pointer to its successor, or a NULL
 pointer in case it's the last object in the list. For both the
@@ -268,7 +279,7 @@ Object format for objects from Object RAM at FF0DA0:
 3E: (long) pointer to subobject in FF2448?
 42: (byte) lower 6 bits: index in Enemy status table; bits 6&7: unknown flags.
 43: ?
-44: (long) (for enemies) address in enemy layout
+44: (long) (for enemies) address in enemy layout. (for platforms) corresponding platform object
 44-74: ?
 
 
@@ -276,7 +287,7 @@ Object format for GfxObject from GfxObject RAM at FF2448:
  0: (long) pointer to next objectData
  4: (long) ???address to some kind of gfxobject slot
  8: (word) ???lower word from value of a3 at allocation call; related to FFF866 etc
- A: (word) ?upper word from value of a3 at allocation call
+ A: (word) ?upper word from value of a3 at allocation call -- priority?
  C: (long) address of corresponding object (a5)
 10: (byte)
 11: (byte)
@@ -313,6 +324,22 @@ FF24FA  long    Kid X position (16.16 fixed point)
 FF24FE  long    Kid Y position (16.16 fixed point)
 FF2506  long    Kid X speed
 FF250A  long    Kid Y speed
+
+
+Object format for Platform Objects from Platform RAM at FFEDBA:
+ 0: (word) pointer to next in list
+ 2: (long) x position
+ 6: (long) y position
+ A: (long) x velocity
+ E: (long) y velocity
+12: (long) scripted: address of current position in platform preset; special: (byte/flag) whether to delete?
+16: (word) scripted: duration countdown; special: word from word_282E depending on s bits
+18: (word) art address in VRAM
+1A: (word) horizontal size in pixels
+1C: (word) vertical size in pixels
+1E: ?
+1F: (byte) 8ths byte from platform layout definition (ts bits)
+20: (word) Offset to platform in current platform layout
 
 
 Block List

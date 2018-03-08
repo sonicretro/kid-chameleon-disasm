@@ -247,11 +247,11 @@ j_sub_16F0: ;290
 ; ---------------------------------------------------------------------------
 	jmp	sub_219C(pc)
 ; ===========================================================================
-j_sub_238E: ;29C
-	jmp	sub_238E(pc)
+j_Allocate_PlatformSlot: ;29C
+	jmp	Allocate_PlatformSlot(pc)
 ; ===========================================================================
-j_sub_23B4: ;2A0
-	jmp	sub_23B4(pc)
+j_Deallocate_PlatformSlot: ;2A0
+	jmp	Deallocate_PlatformSlot(pc)
 ; ===========================================================================
 j_sub_292E: ;2A4
 	jmp	sub_292E(pc)
@@ -261,8 +261,8 @@ j_sub_292E: ;2A4
 j_sub_8E0: ;2AC
 	jmp	sub_8E0(pc)
 ; ===========================================================================
-j_sub_231C: ;2B0
-	jmp	sub_231C(pc)
+j_Initialize_Platforms: ;2B0
+	jmp	Initialize_Platforms(pc)
 ; ===========================================================================
 j_sub_28FC: ;2B4
 	jmp	sub_28FC(pc)
@@ -914,13 +914,13 @@ loc_806:
 
 loc_80C:
 	bsr.w	sub_44DC
-	jsr	(sub_31F8A).l
+	jsr	(j_Manage_EnemyLoading).l
 	bsr.w	GfxObjects_MoveAndAnimate
 	jsr	(j_ReadJoypad).w
 	bsr.w	sub_5E02
-	bsr.w	sub_2744
-	bsr.w	sub_23EA
-	bsr.w	sub_2574
+	bsr.w	Manage_PlatformLoading
+	bsr.w	Execute_ScriptedPlatforms
+	bsr.w	Platforms_CheckCollision
 	lea	($FFFFF86A).w,a2
 	bsr.w	sub_16F0	; GfxObjects Collision?
 	lea	($FFFFF866).w,a2
@@ -946,7 +946,7 @@ loc_83E:
 	tst.b	($FFFFFB49).w
 	bne.s	loc_892
 	jsr	(sub_3F582).l
-	bsr.w	sub_2444
+	bsr.w	Make_SpritesFromPlatforms
 
 loc_892:
 	jsr	(j_sub_30194).l
@@ -1001,7 +1001,7 @@ loc_8D8:
 sub_8E0:
 	bsr.w	sub_5E02
 	bsr.w	Make_SpritesFromGfxObjects
-	bsr.w	sub_2444
+	bsr.w	Make_SpritesFromPlatforms
 	bsr.w	WaitForVint
 	bsr.w	Transfer_SpriteAndKidToVRAM
 	bsr.w	Palette_to_VRAM
@@ -2245,7 +2245,7 @@ loc_124A:
 	tst.b	$17(a3)
 	beq.w	loc_1292
 	bset	#4,($FFFFF830).w
-	cmp.l	($FFFFF85E).w,a3
+	cmp.l	(Addr_GfxObject_Kid).w,a3
 	bne.w	loc_1286
 	move.w	$22(a3),d1
 	subi.w	#$13C,d1
@@ -3116,7 +3116,7 @@ loc_1966:
 ; ---------------------------------------------------------------------------
 
 loc_197E:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
 	move.w	#4,$38(a2)
@@ -3149,7 +3149,7 @@ loc_19BA:
 ; ---------------------------------------------------------------------------
 
 loc_19D2:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
 	move.w	#8,$38(a2)
@@ -3192,7 +3192,7 @@ loc_1A30:
 ; ---------------------------------------------------------------------------
 
 loc_1A44:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
 	move.w	#$C,$38(a2)
@@ -3207,7 +3207,7 @@ loc_1A44:
 ; ---------------------------------------------------------------------------
 
 loc_1A6C:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
 	move.w	#$10,$38(a2)
@@ -3257,7 +3257,7 @@ loc_1ADA:
 ; ---------------------------------------------------------------------------
 
 loc_1AEA:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
 	move.w	$1A(a2),d7
@@ -3269,7 +3269,7 @@ loc_1AEA:
 ; ---------------------------------------------------------------------------
 
 loc_1B0A:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
 	sub.w	$1A(a2),d1
@@ -3283,7 +3283,7 @@ loc_1B0A:
 ; ---------------------------------------------------------------------------
 
 loc_1B30:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
 	move.w	$1E(a2),d7
@@ -3295,7 +3295,7 @@ loc_1B30:
 ; ---------------------------------------------------------------------------
 
 loc_1B50:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
 	sub.w	$1E(a2),d1
@@ -3316,11 +3316,11 @@ sub_1B76:
 	tst.b	($FFFFFA64).w
 	beq.w	*+4
 	subq.w	#2,sp
-	move.l	($FFFFF85E).w,a0
-	move.w	($FFFFFA7A).w,d0
-	move.w	($FFFFFA7C).w,d1
-	move.w	($FFFFFA7E).w,d2
-	move.w	($FFFFFA80).w,d3
+	move.l	(Addr_GfxObject_Kid).w,a0
+	move.w	(Kid_hitbox_left).w,d0
+	move.w	(Kid_hitbox_right).w,d1
+	move.w	(Kid_hitbox_top).w,d2
+	move.w	(Kid_hitbox_bottom).w,d3
 
 loc_1B94:
 	move.l	4(a2),d4
@@ -3740,18 +3740,18 @@ loc_1F56:
 	addq.w	#8,a0
 	move.w	(a0),d0
 	beq.w	return_1F8C
-	cmp.w	($FFFFFA7C).w,d0
+	cmp.w	(Kid_hitbox_right).w,d0
 	bgt.s	loc_1F56
 	move.w	2(a0),d0
-	cmp.w	($FFFFFA7A).w,d0
+	cmp.w	(Kid_hitbox_left).w,d0
 	blt.s	loc_1F56
 	move.w	4(a0),d0
-	cmp.w	($FFFFFA80).w,d0
+	cmp.w	(Kid_hitbox_bottom).w,d0
 	bgt.s	loc_1F56
 	move.w	6(a0),d0
-	cmp.w	($FFFFFA7E).w,d0
+	cmp.w	(Kid_hitbox_top).w,d0
 	blt.s	loc_1F56
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	#$28,$38(a0)
 
 return_1F8C:
@@ -3779,25 +3779,25 @@ sub_1F8E:
 
 sub_1FA2:
 	sf	($FFFFFAA6).w
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1A(a0),-(sp)
 	move.w	$1E(a0),-(sp)
 
 loc_1FB2:
 	tst.b	($FFFFFA64).w
 	bne.w	loc_200C
-	tst.l	($FFFFF85E).w
+	tst.l	(Addr_GfxObject_Kid).w
 	beq.w	loc_200C
-	move.w	($FFFFFA7E).w,d0
-	move.w	($FFFFFA80).w,d1
+	move.w	(Kid_hitbox_top).w,d0
+	move.w	(Kid_hitbox_bottom).w,d1
 	asr.w	#4,d0
 	asr.w	#4,d1
 	sub.w	d0,d1
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	($FFFFFA7A).w,d0
-	move.w	($FFFFFA7C).w,d2
+	move.w	(Kid_hitbox_left).w,d0
+	move.w	(Kid_hitbox_right).w,d2
 	asr.w	#4,d0
 	asr.w	#4,d2
 	sub.w	d0,d2
@@ -3875,7 +3875,7 @@ loc_2074:
 	move.w	(a1),d0
 	bsr.w	j_Palette_to_VRAM0
 	beq.s	loc_2074
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	d2,d7
 	sub.w	d1,d7
 	swap	d1
@@ -3887,14 +3887,14 @@ loc_2074:
 	st	($FFFFFAA6).w
 	swap	d1
 	swap	d2
-	sub.w	($FFFFFA7E).w,d2
-	move.w	($FFFFFA80).w,d3
+	sub.w	(Kid_hitbox_top).w,d2
+	move.w	(Kid_hitbox_bottom).w,d3
 	sub.w	d1,d3
 	cmp.w	d2,d3
 	ble.w	loc_20C6
 	addq.w	#1,d2
-	add.w	d2,($FFFFFA7E).w
-	add.w	d2,($FFFFFA80).w
+	add.w	d2,(Kid_hitbox_top).w
+	add.w	d2,(Kid_hitbox_bottom).w
 	add.w	d2,$1E(a0)
 	clr.w	$20(a0)
 	bra.w	loc_1FB2
@@ -3902,8 +3902,8 @@ loc_2074:
 
 loc_20C6:
 	addq.w	#1,d3
-	sub.w	d3,($FFFFFA7E).w
-	sub.w	d3,($FFFFFA80).w
+	sub.w	d3,(Kid_hitbox_top).w
+	sub.w	d3,(Kid_hitbox_bottom).w
 	sub.w	d3,$1E(a0)
 	clr.w	$20(a0)
 	bra.w	loc_1FB2
@@ -3911,14 +3911,14 @@ loc_20C6:
 
 loc_20DC:
 	st	($FFFFFAA6).w
-	sub.w	($FFFFFA7A).w,d2
-	move.w	($FFFFFA7C).w,d3
+	sub.w	(Kid_hitbox_left).w,d2
+	move.w	(Kid_hitbox_right).w,d3
 	sub.w	d1,d3
 	cmp.w	d2,d3
 	ble.w	loc_2106
 	addq.w	#1,d2
-	add.w	d2,($FFFFFA7A).w
-	add.w	d2,($FFFFFA7C).w
+	add.w	d2,(Kid_hitbox_left).w
+	add.w	d2,(Kid_hitbox_right).w
 	add.w	d2,$1A(a0)
 	clr.w	$1C(a0)
 	bra.w	loc_1FB2
@@ -3926,8 +3926,8 @@ loc_20DC:
 
 loc_2106:
 	addq.w	#1,d3
-	sub.w	d3,($FFFFFA7A).w
-	sub.w	d3,($FFFFFA7C).w
+	sub.w	d3,(Kid_hitbox_left).w
+	sub.w	d3,(Kid_hitbox_right).w
 	sub.w	d3,$1A(a0)
 	clr.w	$1C(a0)
 	bra.w	loc_1FB2
@@ -3952,7 +3952,7 @@ loc_211C:
 	beq.w	loc_216A
 
 loc_2156:
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	#4,$38(a0)
 	move.w	(sp)+,$1E(a0)
 	move.w	(sp)+,$1A(a0)
@@ -3993,11 +3993,11 @@ loc_2198:
 sub_219C:
 
 	movem.l	d0-d4/a0-a4,-(sp)
-	move.l	($FFFFF85E).w,a0
-	move.w	($FFFFFA7A).w,d0
-	move.w	($FFFFFA7C).w,d1
-	move.w	($FFFFFA7E).w,d2
-	move.w	($FFFFFA80).w,d3
+	move.l	(Addr_GfxObject_Kid).w,a0
+	move.w	(Kid_hitbox_left).w,d0
+	move.w	(Kid_hitbox_right).w,d1
+	move.w	(Kid_hitbox_top).w,d2
+	move.w	(Kid_hitbox_bottom).w,d3
 	lea	($FFFFF8C0).w,a2
 
 loc_21B8:
@@ -4030,7 +4030,7 @@ loc_21F2:
 
 
 sub_21F8:
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$22(a0),d0
 	beq.w	loc_2252
 	lea	(off_30BF4).l,a4
@@ -4058,10 +4058,10 @@ loc_2232:
 	add.w	$1E(a0),d2
 	move.w	d2,d3
 	add.w	(a1)+,d3
-	move.w	d0,($FFFFFA7A).w
-	move.w	d1,($FFFFFA7C).w
-	move.w	d2,($FFFFFA7E).w
-	move.w	d3,($FFFFFA80).w
+	move.w	d0,(Kid_hitbox_left).w
+	move.w	d1,(Kid_hitbox_right).w
+	move.w	d2,(Kid_hitbox_top).w
+	move.w	d3,(Kid_hitbox_bottom).w
 
 loc_224C:
 	move.l	a1,($FFFFFA82).w
@@ -4069,10 +4069,10 @@ loc_224C:
 ; ---------------------------------------------------------------------------
 
 loc_2252:
-	move.w	$1A(a0),($FFFFFA7A).w
-	move.w	($FFFFFA7A).w,($FFFFFA7C).w
-	move.w	$1E(a0),($FFFFFA7E).w
-	move.w	($FFFFFA7E).w,($FFFFFA80).w
+	move.w	$1A(a0),(Kid_hitbox_left).w
+	move.w	(Kid_hitbox_left).w,(Kid_hitbox_right).w
+	move.w	$1E(a0),(Kid_hitbox_top).w
+	move.w	(Kid_hitbox_top).w,(Kid_hitbox_bottom).w
 ; End of function sub_21F8
 
 
@@ -4158,22 +4158,21 @@ return_231A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_231C:
+;sub_231C
+Initialize_Platforms:
 	lea	($FFFFEDBA).w,a0
-	move.w	a0,($FFFFFA90).w
+	move.w	a0,(Addr_NextFreePlatformSlot).w
 	moveq	#$10,d0
-
-loc_2326:
+-
 	lea	$22(a0),a1
 	_move.w	a1,0(a0)
 	move.w	a1,a0
-	dbf	d0,loc_2326
+	dbf	d0,-
 	_clr.w	0(a0)
-	clr.w	($FFFFFA8E).w
-	clr.w	($FFFFFA92).w
-	clr.w	($FFFFFA8C).w
-	bsr.w	sub_2366
+	clr.w	(Addr_FirstPlatformSlot).w
+	clr.w	(Number_Platforms).w
+	clr.w	(PlatformLoader_Offset).w
+	bsr.w	Get_PlatformLayoutAddress
 	move.w	#$1280,d0
 	lea	ArtComp_5B92(pc),a0
 	jsr	(j_DecompressToVRAM).l
@@ -4181,13 +4180,13 @@ loc_2326:
 	lea	ArtComp_5C83(pc),a0
 	jsr	(j_DecompressToVRAM).l
 	rts
-; End of function sub_231C
+; End of function Initialize_Platforms
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_2366:
+;sub_2366
+Get_PlatformLayoutAddress:
 	move.w	(Current_LevelID).w,d7
 	move.l	(LnkTo_MapOrder_Index).l,a4
 	move.b	(a4,d7.w),d7
@@ -4197,39 +4196,38 @@ sub_2366:
 	move.w	(a4,d7.w),d7
 	ext.l	d7
 	addi.l	#unk_2BB6,d7
-	move.l	d7,($FFFFFA88).w
+	move.l	d7,(Addr_PlatformLayout).w
 	rts
-; End of function sub_2366
+; End of function Get_PlatformLayoutAddress
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_238E:
-
-	move.w	($FFFFFA90).w,d7
+; load a platform to the front of list
+;sub_238E
+Allocate_PlatformSlot:
+	move.w	(Addr_NextFreePlatformSlot).w,d7
 	beq.w	loc_23AE
 	move.w	d7,a3
-	_move.w	0(a3),($FFFFFA90).w
-	_move.w	($FFFFFA8E).w,0(a3)
-	move.w	a3,($FFFFFA8E).w
-	addq.w	#1,($FFFFFA92).w
+	_move.w	0(a3),(Addr_NextFreePlatformSlot).w
+	_move.w	(Addr_FirstPlatformSlot).w,0(a3)
+	move.w	a3,(Addr_FirstPlatformSlot).w
+	addq.w	#1,(Number_Platforms).w
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_23AE:
 	jmp	loc_6E2(pc)
-; End of function sub_238E
+; End of function Allocate_PlatformSlot
 
 ; ---------------------------------------------------------------------------
 	bra.s	loc_23AE
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_23B4:
+;sub_23B4
+Deallocate_PlatformSlot:
 	move.l	a4,-(sp)
-	lea	($FFFFFA8E).w,a4
+	lea	(Addr_FirstPlatformSlot).w,a4
 
 loc_23BA:
 	_move.w	0(a4),d7
@@ -4242,54 +4240,55 @@ loc_23BA:
 
 loc_23CC:
 	_move.w	0(a3),0(a4)
-	_move.w	($FFFFFA90).w,0(a3)
-	move.w	a3,($FFFFFA90).w
-	subq.w	#1,($FFFFFA92).w
+	_move.w	(Addr_NextFreePlatformSlot).w,0(a3)
+	move.w	a3,(Addr_NextFreePlatformSlot).w
+	subq.w	#1,(Number_Platforms).w
 	move.l	(sp)+,a4
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_23E4:
 	jmp	loc_6E2(pc)
-; End of function sub_23B4
+; End of function Deallocate_PlatformSlot
 
 ; ---------------------------------------------------------------------------
 	bra.s	loc_23E4
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_23EA:
+; process platforms that have a platform preset
+;sub_23EA
+Execute_ScriptedPlatforms:
 	tst.b	($FFFFFA64).w
 	bne.w	return_2442
 
 loc_23F2:
-	lea	($FFFFFA8E).w,a2
+	lea	(Addr_FirstPlatformSlot).w,a2
 
-loc_23F6:
-	_move.w	0(a2),d7
-	beq.w	return_2442
-	move.w	d7,a2
+Execute_ScriptedPlatforms_Loop:
+	_move.w	0(a2),d7	; next one in list
+	beq.w	return_2442	; quit if it was last one
+	move.w	d7,a2		; next one becomes current one
 	tst.b	$1F(a2)
-	bmi.s	loc_23F6
+	bmi.s	Execute_ScriptedPlatforms_Loop
 	move.l	$A(a2),d7
-	add.l	d7,2(a2)
+	add.l	d7,2(a2)	; Add x_vel to x_pos
 	move.l	$E(a2),d7
-	add.l	d7,6(a2)
-	subi.w	#1,$16(a2)
-	bne.s	loc_23F6
-	move.l	$12(a2),a4
+	add.l	d7,6(a2)	; Add y_vel to y_pos
+	subi.w	#1,$16(a2)	; count down (from duration)
+	bne.s	Execute_ScriptedPlatforms_Loop
+	move.l	$12(a2),a4	; address in platform preset
 
 loc_2422:
-	move.w	(a4)+,d3
-	bmi.w	loc_243E
-	move.w	d3,$16(a2)
+	move.w	(a4)+,d3	; read next entry of platform preset
+	bmi.w	loc_243E	; if FFFF, read address and save that as platform preset address
+	move.w	d3,$16(a2)	; duration
 	move.l	(a4)+,d3
-	move.l	d3,$A(a2)
+	move.l	d3,$A(a2)	; x vel
 	move.l	(a4)+,d3
-	move.l	d3,$E(a2)
+	move.l	d3,$E(a2)	; y vel
 	move.l	a4,$12(a2)
-	bra.s	loc_23F6
+	bra.s	Execute_ScriptedPlatforms_Loop
 ; ---------------------------------------------------------------------------
 
 loc_243E:
@@ -4299,14 +4298,14 @@ loc_243E:
 
 return_2442:
 	rts
-; End of function sub_23EA
+; End of function Execute_ScriptedPlatforms
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_2444:
-	lea	($FFFFFA8E).w,a2
+;2444
+Make_SpritesFromPlatforms:
+	lea	(Addr_FirstPlatformSlot).w,a2
 	move.l	(Addr_NextSpriteSlot).w,a0
 
 loc_244C:
@@ -4342,7 +4341,8 @@ loc_244C:
 	move.l	off_24AC(pc,d3.w),a3
 	jmp	(a3)
 ; ---------------------------------------------------------------------------
-off_24AC:	dc.l loc_24CC
+off_24AC:
+	dc.l loc_24CC
 	dc.l loc_24F0
 	dc.l loc_251C
 	dc.l loc_24D4
@@ -4434,14 +4434,13 @@ loc_2548:
 loc_256E:
 	move.l	a0,(Addr_NextSpriteSlot).w
 	rts
-; End of function sub_2444
+; End of function Make_SpritesFromPlatforms
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_2574:
-
+;sub_2574
+Platforms_CheckCollision:
 	tst.b	($FFFFFA64).w
 	beq.w	loc_257E
 	rts
@@ -4451,14 +4450,14 @@ loc_257E:
 	movem.l	d0-d4/a0-a4,-(sp)
 	subq.w	#8,sp
 	clr.l	($FFFFFAA2).w
-	lea	($FFFFFA8E).w,a2
-	move.l	($FFFFF85E).w,a0
+	lea	(Addr_FirstPlatformSlot).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a0
 
 loc_2590:
-	move.w	($FFFFFA7A).w,d0
-	move.w	($FFFFFA7C).w,d1
-	move.w	($FFFFFA7E).w,d2
-	move.w	($FFFFFA80).w,d3
+	move.w	(Kid_hitbox_left).w,d0
+	move.w	(Kid_hitbox_right).w,d1
+	move.w	(Kid_hitbox_top).w,d2
+	move.w	(Kid_hitbox_bottom).w,d3
 
 loc_25A0:
 	_move.w	0(a2),d4
@@ -4480,6 +4479,7 @@ loc_25A0:
 	cmp.w	d2,d4
 	blt.s	loc_25A0
 	move.w	d4,6(sp)
+	; left/right/top/bottom boundary of platform now on stack
 	_cmp.w	0(sp),d0
 	bgt.w	loc_25EE
 	_move.w	0(sp),d7
@@ -4559,8 +4559,8 @@ loc_2672:
 	move.w	a2,($FFFFFA96).w
 
 loc_2686:
-	add.w	d7,($FFFFFA7A).w
-	add.w	d7,($FFFFFA7C).w
+	add.w	d7,(Kid_hitbox_left).w
+	add.w	d7,(Kid_hitbox_right).w
 	add.w	d7,$1A(a0)
 	tst.w	d7
 	bmi.w	loc_26B6
@@ -4590,13 +4590,13 @@ loc_26C0:
 ; ---------------------------------------------------------------------------
 
 loc_26D4:
-	add.w	d6,($FFFFFA7E).w
-	add.w	d6,($FFFFFA80).w
+	add.w	d6,(Kid_hitbox_top).w
+	add.w	d6,(Kid_hitbox_bottom).w
 	add.w	d6,$1E(a0)
 	tst.w	d6
 	bpl.w	loc_26FE
 	clr.l	$2A(a3)
-	move.w	a2,($FFFFFA94).w
+	move.w	a2,(Addr_PlatformStandingOn).w
 	st	($FFFFFAA4).w
 	tst.b	($FFFFFAA5).w
 	bne.w	loc_271A
@@ -4618,14 +4618,14 @@ loc_2720:
 	addq.w	#8,sp
 	movem.l	(sp)+,d0-d4/a0-a4
 	rts
-; End of function sub_2574
+; End of function Platforms_CheckCollision
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_2728:
-	lea	($FFFFFA8E).w,a2
+	lea	(Addr_FirstPlatformSlot).w,a2
 
 loc_272C:
 	_move.w	0(a2),d7
@@ -4645,62 +4645,63 @@ loc_2740:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_2744:
-	move.l	($FFFFFA88).w,d5
+;sub_2744
+Manage_PlatformLoading:
+	move.l	(Addr_PlatformLayout).w,d5
 	beq.w	return_2874
-	move.l	d5,a4
-	move.w	($FFFFFA8C).w,d5
-	lea	(a4,d5.w),a4
+	move.l	d5,a4	; pointer to start of platform list
+	move.w	(PlatformLoader_Offset).w,d5
+	lea	(a4,d5.w),a4	; pointer to some platform in platform list
 	move.w	(a4),d7
 	bpl.w	loc_2762
-	clr.w	($FFFFFA8C).w
-	bra.s	sub_2744
+	; we're at the end of the platform list, go back to beginning.
+	clr.w	(PlatformLoader_Offset).w
+	bra.s	Manage_PlatformLoading
 ; ---------------------------------------------------------------------------
 
 loc_2762:
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 	beq.w	return_2874
 	move.l	d7,a1
-	move.w	$1A(a1),d6
+	move.w	$1A(a1),d6	; Kid X pos
 	moveq	#0,d7
-	move.b	4(a4),d7
-	asl.w	#5,d7
-	cmp.w	d6,d7
-	bgt.w	loc_2850
+	move.b	4(a4),d7	; Buffer absolute left edge (LL*2)
+	asl.w	#5,d7		; times $20
+	cmp.w	d6,d7		; compare to kid's X pos
+	bgt.w	loc_2850	; platform out of range (left)
 	moveq	#0,d7
 	move.b	5(a4),d7
 	asl.w	#5,d7
 	cmp.w	d6,d7
-	blt.w	loc_2850
-	move.w	$1E(a1),d6
+	blt.w	loc_2850	; platform out of range (right)
+	move.w	$1E(a1),d6	; Kid y pos
 	moveq	#0,d7
 	move.b	6(a4),d7
 	asl.w	#5,d7
 	cmp.w	d6,d7
-	bgt.w	loc_2850
+	bgt.w	loc_2850	; platform out of range (top)
 	moveq	#0,d7
 	move.b	7(a4),d7
 	asl.w	#5,d7
 	cmp.w	d6,d7
-	blt.w	loc_2850
+	blt.w	loc_2850	; platform out of range (bottom)
 	bsr.w	sub_2728
 	bne.w	loc_286E
-	bsr.w	sub_238E
-	move.w	($FFFFFA8C).w,$20(a3)
+	bsr.w	Allocate_PlatformSlot	; load platform to list
+	move.w	(PlatformLoader_Offset).w,$20(a3)	; --> a3
 	clr.l	$A(a3)
 	clr.l	$E(a3)
 	move.w	#1,$16(a3)
 	_move.w	0(a4),d7
 	asl.w	#4,d7
-	move.w	d7,2(a3)
+	move.w	d7,2(a3)	; load x pos from platform layout
 	clr.w	4(a3)
 	move.w	2(a4),d7
 	asl.w	#4,d7
-	move.w	d7,6(a3)
+	move.w	d7,6(a3)	; y pos
 	clr.w	8(a3)
 	moveq	#0,d7
-	move.b	9(a4),d7
+	move.b	9(a4),d7	; horizontal/vertical size in blocks
 	move.l	d7,d6
 	andi.w	#$F,d6
 	addq.w	#1,d6
@@ -4709,21 +4710,24 @@ loc_2762:
 	andi.w	#$F0,d7
 	addi.w	#$10,d7
 	subq.w	#1,d7
-	move.w	d7,$1A(a3)
-	move.w	d6,$1C(a3)
+	move.w	d7,$1A(a3)	; x size in pixels
+	move.w	d6,$1C(a3)	; y size in pixels
 	move.b	8(a4),d7
-	move.b	d7,$1F(a3)
+	move.b	d7,$1F(a3)	; t/s bits from platform layout
 	bclr	#7,d7
 	ext.w	d7
 	bne.w	loc_2822
 	subq.w	#2,$1C(a3)
 
 loc_2822:
-	move.w	word_282E(pc,d7.w),d7
+	move.w	PlatformArtAddr_Table(pc,d7.w),d7
 	move.w	d7,$18(a3)
 	bra.w	loc_2836
 ; ---------------------------------------------------------------------------
-word_282E:	dc.w $6AE
+; VRAM addresses for platform art for each type of special platform
+;word_282E
+PlatformArtAddr_Table:
+	dc.w $6AE
 	dc.w $94
 	dc.w $6AE
 	dc.w $25A
@@ -4732,6 +4736,7 @@ word_282E:	dc.w $6AE
 loc_2836:
 	tst.b	$1F(a3)
 	bmi.w	loc_2876
+	; scripted platform
 	move.l	#unk_3602,d7
 	add.w	$A(a4),d7
 	move.l	d7,$12(a3)
@@ -4749,26 +4754,26 @@ loc_2850:
 ; ---------------------------------------------------------------------------
 
 loc_286A:
-	bsr.w	sub_23B4
+	bsr.w	Deallocate_PlatformSlot
 
 loc_286E:
-	addi.w	#$C,($FFFFFA8C).w
+	addi.w	#$C,(PlatformLoader_Offset).w
 
 return_2874:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_2876:
+loc_2876:	; special platform
 	move.l	#off_40D2,a0
 	add.w	$A(a4),a0
-	move.l	(a0),d7
+	move.l	(a0),d7	; code address for special platform
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	d7,4(a0)
+	move.l	d7,4(a0)	; code for object
 	move.w	a3,$44(a0)
 	sf	$12(a3)
 	bra.s	loc_286E
-; End of function sub_2744
+; End of function Manage_PlatformLoading
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -5202,110 +5207,109 @@ unk_35C4:   binclude    "level/platform/10.bin"
 ;unk_3602:
 	include	"level/platform_presets.asm"
 
-off_40D2:	dc.l loc_40E2
-	dc.l loc_4182
-	dc.l sub_420A
-	dc.l sub_428C
+off_40D2:
+	dc.l SoftPlatform_Init	; soft platform
+	dc.l TrapPlatformDown_Init	; trap platform down
+	dc.l TrapPlatformUp_Init	; trap platform up
+	dc.l PlatformChain_Init	; chain, like in The Black Pit
 ; ---------------------------------------------------------------------------
+;loc_40E2
+SoftPlatform_Init:
+	move.w	$44(a5),a3	; get corresponding platform object
+	move.l	(Addr_GfxObject_Kid).w,a2	; Kid Gfx Object
+	move.w	6(a3),d0	; y pos of platform
 
-loc_40E2:
-	move.w	$44(a5),a3
-	move.l	($FFFFF85E).w,a2
-	move.w	6(a3),d0
-
-loc_40EE:
-	move.l	$2A(a2),d1
+SoftPlatform_WaitLoop:
+	move.l	$2A(a2),d1	; kid y velocity
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$12(a3)
-	bne.w	loc_417A
-	bsr.w	sub_4170
-	move.w	($FFFFFA94).w,d7
-	beq.s	loc_40EE
+	bne.w	SoftPlatform_Delete	; delete platform and object
+	bsr.w	SoftPlatform_Move	; add y vel to y pos
+	move.w	(Addr_PlatformStandingOn).w,d7
+	beq.s	SoftPlatform_WaitLoop
 	cmp.w	a3,d7
-	bne.s	loc_40EE
-	cmpi.w	#6,(Current_Helmet).w
-	beq.w	loc_4124
-	asr.l	#1,d1
-	cmpi.w	#9,(Current_Helmet).w
-	bne.w	loc_4124
-	asr.l	#1,d1
+	bne.s	SoftPlatform_WaitLoop
+	; Kid is currently standing on THIS platform
+	cmpi.w	#Iron_Knight,(Current_Helmet).w
+	beq.w	+
+	asr.l	#1,d1	; for everything but iron knight, divide by 2
+	cmpi.w	#Micromax,(Current_Helmet).w
+	bne.w	+
+	asr.l	#1,d1	; for micromax, divide by 4
++
+	move.l	d1,$E(a3)	; assign as platform's y vel
 
-loc_4124:
-	move.l	d1,$E(a3)
-
-loc_4128:
+SoftPlatform_BounceLoop:
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_4170
+	bsr.w	SoftPlatform_Move
 	move.l	$E(a3),d7
 	subi.l	#$7000,d7
 	cmpi.l	#$FFFE8000,d7
-	bgt.w	loc_414A
+	bgt.w	+
 	move.l	#$FFFE8000,d7
-
-loc_414A:
++
 	move.l	d7,$E(a3)
-	cmp.w	6(a3),d0
-	blt.s	loc_4128
-	move.w	d0,6(a3)
-	clr.w	8(a3)
-	clr.l	$E(a3)
+	cmp.w	6(a3),d0	;compare to original y pos
+	blt.s	SoftPlatform_BounceLoop
+	move.w	d0,6(a3)	; if higher up than that, set it to original y pos
+	clr.w	8(a3)		; clear subpixels
+	clr.l	$E(a3)		; clear speed
 
 loc_4160:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	($FFFFFA94).w,d7
-	beq.s	loc_40EE
+	move.w	(Addr_PlatformStandingOn).w,d7
+	beq.s	SoftPlatform_WaitLoop
 	cmp.w	a3,d7
-	bne.s	loc_40EE
+	bne.s	SoftPlatform_WaitLoop
 	bra.s	loc_4160
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_4170:
+SoftPlatform_Move:
 	move.l	$E(a3),d7
 	add.l	d7,6(a3)
 	rts
-; End of function sub_4170
+; End of function SoftPlatform_Move
 
 ; ---------------------------------------------------------------------------
 
-loc_417A:
-	bsr.w	sub_23B4
+SoftPlatform_Delete:
+	bsr.w	Deallocate_PlatformSlot
 	jmp	Delete_CurrentObject(pc)
 ; ---------------------------------------------------------------------------
+;loc_4182
+TrapPlatformDown_Init:
+	move.w	$44(a5),a3	; platform object
+	move.l	(Addr_GfxObject_Kid).w,a2	; kid gfxobject
 
-loc_4182:
-	move.w	$44(a5),a3
-	move.l	($FFFFF85E).w,a2
-
-loc_418A:
+TrapPlatformDown_WaitLoop:
 	move.l	$2A(a2),d1
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$12(a3)
-	bne.w	loc_41F8
-	bsr.w	sub_4200
-	move.w	($FFFFFA94).w,d7
-	beq.s	loc_418A
+	bne.w	TrapPlatformDown_Delete
+	bsr.w	TrapPlatformDown_Move
+	move.w	(Addr_PlatformStandingOn).w,d7
+	beq.s	TrapPlatformDown_WaitLoop
 	cmp.w	a3,d7
-	bne.s	loc_418A
+	bne.s	TrapPlatformDown_WaitLoop
+	; Kid is currently standing on THIS platform
 	asr.l	#2,d1
 	move.l	d1,$E(a3)
 
-loc_41AE:
+TrapPlatformDown_MoveLoop:
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_4200
+	bsr.w	TrapPlatformDown_Move
 	move.l	$E(a3),d7
 	addi.l	#$4000,d7
 	cmpi.l	#$40000,d7
-	blt.w	loc_41D0
+	blt.w	+
 	move.l	#$20000,d7
-
-loc_41D0:
++
 	move.l	d7,$E(a3)
 	move.w	6(a3),d7
 	sub.w	$1E(a2),d7
 	cmpi.w	#$E0,d7
-	blt.s	loc_41AE
+	blt.s	TrapPlatformDown_MoveLoop
 	clr.l	$E(a3)
 	move.l	#$800,2(a3)
 
@@ -5314,52 +5318,51 @@ loc_41EE:
 	tst.b	$12(a3)
 	beq.s	loc_41EE
 
-loc_41F8:
-	bsr.w	sub_23B4
+TrapPlatformDown_Delete:
+	bsr.w	Deallocate_PlatformSlot
 	jmp	Delete_CurrentObject(pc)
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_4200:
+TrapPlatformDown_Move:
 	move.l	$E(a3),d7
 	add.l	d7,6(a3)
 	rts
-; End of function sub_4200
+; End of function TrapPlatformDown_Move
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_420A:
+;sub_420A
+TrapPlatformUp_Init:
 	move.w	$44(a5),a3
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 
-loc_4212:
+TrapPlatformUp_Loop:
 	move.l	$2A(a2),d1
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$12(a3)
-	bne.w	loc_427A
-	bsr.w	sub_4282
-	move.w	($FFFFFA94).w,d7
-	beq.s	loc_4212
+	bne.w	TrapPlatformUp_Delete
+	bsr.w	TrapPlatformUp_Move
+	move.w	(Addr_PlatformStandingOn).w,d7
+	beq.s	TrapPlatformUp_Loop
 	cmp.w	a3,d7
-	bne.s	loc_4212
-
+	bne.s	TrapPlatformUp_Loop
+	; Kid is currently standing on THIS platform
 loc_4230:
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_4282
+	bsr.w	TrapPlatformUp_Move
 	move.l	$E(a3),d7
 	subi.l	#$4000,d7
-	cmpi.l	#$FFFC0000,d7
-	bgt.w	loc_4252
-	move.l	#$FFFC0000,d7
-
-loc_4252:
+	cmpi.l	#-$40000,d7
+	bgt.w	+
+	move.l	#-$40000,d7
++
 	move.l	d7,$E(a3)
 	move.w	6(a3),d7
 	sub.w	$1E(a2),d7
-	cmpi.w	#$FF20,d7
+	cmpi.w	#-$E0,d7
 	bgt.s	loc_4230
 	clr.l	$E(a3)
 	move.l	#$800,2(a3)
@@ -5369,111 +5372,107 @@ loc_4270:
 	tst.b	$12(a3)
 	beq.s	loc_4270
 
-loc_427A:
-	bsr.w	sub_23B4
+TrapPlatformUp_Delete:
+	bsr.w	Deallocate_PlatformSlot
 	jmp	Delete_CurrentObject(pc)
-; End of function sub_420A
+; End of function TrapPlatformUp_Init
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_4282:
+TrapPlatformUp_Move:
 	move.l	$E(a3),d7
 	add.l	d7,6(a3)
 	rts
-; End of function sub_4282
+; End of function TrapPlatformUp_Move
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_428C:
-	lea	$44(a5),a1
-	move.w	(a1)+,a0
-	move.w	$1A(a0),d6
+;sub_428C
+PlatformChain_Init:
+	lea	$44(a5),a1	; platform object
+	move.w	(a1)+,a0	; next platform object --> to be filled with pointers to the platforms in the chain
+	move.w	$1A(a0),d6	; horizontal size
 	addq.w	#1,d6
-	move.w	2(a0),d4
-	moveq	#5,d5
-
-loc_429E:
+	move.w	2(a0),d4	; x pos
+	moveq	#5,d5		; load 6 new platform objects
+-
 	add.w	d6,d4
-	bsr.w	sub_4328
-	dbf	d5,loc_429E
-	bsr.w	sub_42F8
+	bsr.w	PlatformChain_LoadPlatform
+	dbf	d5,-
+	bsr.w	PlatformChain_SetMoveDown
 	moveq	#$3C,d0
 
-loc_42AE:
+PlatformChain_DownLoop:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$12(a0)
-	bne.w	loc_42E4
-	bsr.w	sub_4358
-	dbf	d0,loc_42AE
-	bsr.w	sub_430E
+	bne.w	PlatformChain_Delete
+	bsr.w	PlatformChain_MovePlatforms
+	dbf	d0,PlatformChain_DownLoop
+	bsr.w	PlatformChain_SetMoveUp
 	moveq	#$78,d0
 
-loc_42C8:
+PlatformChain_UpLoop:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$12(a0)
-	bne.w	loc_42E4
-	bsr.w	sub_4358
-	dbf	d0,loc_42C8
-	bsr.w	sub_42F8
+	bne.w	PlatformChain_Delete
+	bsr.w	PlatformChain_MovePlatforms
+	dbf	d0,PlatformChain_UpLoop
+	bsr.w	PlatformChain_SetMoveDown
 	moveq	#$78,d0
-	bra.s	loc_42AE
+	bra.s	PlatformChain_DownLoop
 ; ---------------------------------------------------------------------------
-
-loc_42E4:
+; deallocate the 6 platform objects and delete object
+;loc_42E4
+PlatformChain_Delete:
 	lea	$44(a5),a4
 	moveq	#6,d6
-
-loc_42EA:
+-
 	move.w	(a4)+,a3
-	bsr.w	sub_23B4
-	dbf	d6,loc_42EA
+	bsr.w	Deallocate_PlatformSlot
+	dbf	d6,-
 	jmp	Delete_CurrentObject(pc)
-; End of function sub_428C
+; End of function PlatformChain_Init
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_42F8:
+; set Y vel of platforms to move down
+;sub_42F8
+PlatformChain_SetMoveDown:
 	lea	$44(a5),a4
-	lea	unk_436E(pc),a2
+	lea	PlatformChain_YVelocities(pc),a2
 	moveq	#6,d6
-
-loc_4302:
+-
 	move.w	(a4)+,a3
 	move.l	(a2)+,$E(a3)
-	dbf	d6,loc_4302
+	dbf	d6,-
 	rts
-; End of function sub_42F8
+; End of function PlatformChain_SetMoveDown
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_430E:
+; set Y vel of platforms to move up
+;sub_430E
+PlatformChain_SetMoveUp:
 	lea	$44(a5),a4
-	lea	unk_436E(pc),a2
+	lea	PlatformChain_YVelocities(pc),a2
 	moveq	#6,d6
-
-loc_4318:
+-
 	move.w	(a4)+,a3
 	move.l	(a2)+,d7
 	neg.l	d7
 	move.l	d7,$E(a3)
-	dbf	d6,loc_4318
+	dbf	d6,-
 	rts
-; End of function sub_430E
+; End of function PlatformChain_SetMoveUp
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_4328:
-	bsr.w	sub_238E
+;sub_4328
+PlatformChain_LoadPlatform:
+	bsr.w	Allocate_PlatformSlot
 	move.w	a3,(a1)+
 	move.b	$1F(a0),$1F(a3)
 	move.w	d4,2(a3)
@@ -5483,82 +5482,43 @@ sub_4328:
 	move.w	$1C(a0),$1C(a3)
 	move.w	$18(a0),$18(a3)
 	rts
-; End of function sub_4328
+; End of function PlatformChain_LoadPlatform
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_4358:
+;sub_4358
+PlatformChain_MovePlatforms:
 	lea	$44(a5),a4
 	moveq	#6,d6
-
-loc_435E:
+-
 	move.w	(a4)+,a3
 	move.l	$E(a3),d7
 	add.l	d7,6(a3)
-	dbf	d6,loc_435E
+	dbf	d6,-
 	rts
-; End of function sub_4358
+; End of function PlatformChain_MovePlatforms
 
 ; ---------------------------------------------------------------------------
-unk_436E:	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-MapPtfmLayout_Index:	dc.w unk_44A2-unk_2BB6
+;unk_436E
+PlatformChain_YVelocities:
+	dc.l	 $4000
+	dc.l	 $8000
+	dc.l	$10000
+	dc.l	$14000
+	dc.l	$10000
+	dc.l	 $8000
+	dc.l	 $4000
+	; from here on unused
+	dc.l	 $4000
+	dc.l	 $8000
+	dc.l	$10000
+	dc.l	$14000
+	dc.l	$10000
+	dc.l	 $8000
+	dc.l	 $4000
+MapPtfmLayout_Index:
+	dc.w unk_44A2-unk_2BB6
 	dc.w unk_44A2-unk_2BB6
 	dc.w unk_2BF6-unk_2BB6
 	dc.w unk_2CBA-unk_2BB6
@@ -6030,19 +5990,19 @@ unk_5DFA:	dc.b $A2 ; ¢
 sub_5E02:
 	tst.b	(MurderWall_flag).w
 	beq.w	return_5F68
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	($FFFFFAC4).w,d0
 	tst.b	(MurderWall_flag2).w
 	beq.s	loc_5E24
 	addi.w	#$110,d0
-	sub.w	($FFFFFA7C).w,d0
+	sub.w	(Kid_hitbox_right).w,d0
 	ble.s	loc_5E34
 	bra.s	loc_5E3A
 ; ---------------------------------------------------------------------------
 
 loc_5E24:
 	addi.w	#$30,d0
-	sub.w	($FFFFFA7A).w,d0
+	sub.w	(Kid_hitbox_left).w,d0
 	blt.s	loc_5E3A
 	move.w	#$30,$3A(a0)
 
@@ -6478,24 +6438,24 @@ loc_62C2:
 
 loc_62CE:
 	moveq	#4,d5
-	move.l	($FFFFF85E).w,a5
+	move.l	(Addr_GfxObject_Kid).w,a5
 	move.l	a1,a0
 
 loc_62D6:
 	move.w	(a0),d0
 	bmi.s	loc_630C
 	addi.w	#2,d0
-	cmp.w	($FFFFFA7E).w,d0
+	cmp.w	(Kid_hitbox_top).w,d0
 	blt.s	loc_630C
 	addi.w	#$C,d0
-	cmp.w	($FFFFFA80).w,d0
+	cmp.w	(Kid_hitbox_bottom).w,d0
 	bgt.s	loc_630C
 	move.w	2(a0),d0
 	addi.w	#2,d0
-	cmp.w	($FFFFFA7C).w,d0
+	cmp.w	(Kid_hitbox_right).w,d0
 	bgt.s	loc_630C
 	addi.w	#$C,d0
-	cmp.w	($FFFFFA7A).w,d0
+	cmp.w	(Kid_hitbox_left).w,d0
 	blt.s	loc_630C
 	move.w	#$28,$38(a5)
 
@@ -7136,7 +7096,7 @@ loc_6C0A:
 	moveq	#$68,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	#4,$38(a4)
 	move.w	#$30,$3A(a4)
 	move.w	#1,(Number_Lives).w
@@ -7631,7 +7591,7 @@ sub_7196:
 
 sub_71E4:
 	movem.l	d0-d3/a0-a3,-(sp)
-	move.l	($FFFFF85E).w,d7
+	move.l	(Addr_GfxObject_Kid).w,d7
 
 loc_71EC:
 	beq.w	loc_73C2
@@ -7992,7 +7952,7 @@ loc_7526:
 	move.l	a5,($FFFFF850).w
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	a3,($FFFFF85E).w
+	move.l	a3,(Addr_GfxObject_Kid).w
 	st	$13(a3)
 	move.b	#3,$11(a3)
 	move.b	#0,$10(a3)
@@ -8225,13 +8185,13 @@ loc_7820:
 ; ---------------------------------------------------------------------------
 
 loc_7828:
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_78C6
 	move.w	d7,a4
 	move.l	$A(a4),$26(a3)
 	move.w	4(a4),$1C(a3)
 	bsr.w	sub_8F26
-	move.w	($FFFFFA94).w,a4
+	move.w	(Addr_PlatformStandingOn).w,a4
 	move.l	$E(a4),$2A(a3)
 	move.l	6(a4),$1E(a3)
 	subq.w	#1,$1E(a3)
@@ -8240,7 +8200,7 @@ loc_7828:
 	bmi.w	loc_78A8
 	cmpi.w	#2,d7
 	beq.w	loc_78C0
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	tst.l	$26(a3)
 	beq.w	loc_787E
 	bsr.w	sub_942A
@@ -8267,10 +8227,10 @@ loc_789C:
 ; ---------------------------------------------------------------------------
 
 loc_78A8:
-	move.w	($FFFFFA94).w,a4
+	move.w	(Addr_PlatformStandingOn).w,a4
 	tst.l	$E(a4)
 	bmi.w	loc_78C0
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -8904,7 +8864,7 @@ loc_7E48:
 	bsr.w	sub_B41C
 	bsr.w	sub_DB22
 	clr.w	($FFFFFB70).w
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	clr.w	$22(a4)
 	sf	$17(a4)
 	move.l	($FFFFF862).w,a4
@@ -9378,7 +9338,7 @@ loc_82CA:
 
 loc_82D8:
 	addq.w	#1,($FFFFFB58).w
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_8382
 	move.w	d7,a4
 	move.l	($FFFFFA98).w,d0
@@ -9391,7 +9351,7 @@ loc_82D8:
 	clr.l	($FFFFFA98).w
 
 loc_8306:
-	move.w	($FFFFFA94).w,a4
+	move.w	(Addr_PlatformStandingOn).w,a4
 	move.l	$E(a4),$2A(a3)
 	move.l	6(a4),$1E(a3)
 	subq.w	#1,$1E(a3)
@@ -9399,7 +9359,7 @@ loc_8306:
 	beq.w	loc_833E
 	cmpi.w	#2,d7
 	beq.w	loc_837C
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	clr.l	$2A(a3)
 	move.l	($FFFFFA98).w,d0
 	bsr.w	sub_8446
@@ -9411,7 +9371,7 @@ loc_833E:
 	beq.w	loc_8370
 	bsr.w	sub_B43A
 	beq.w	loc_818A
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	move.l	$26(a3),d0
 	bsr.w	sub_8446
 	bra.w	loc_8218
@@ -9842,7 +9802,7 @@ sub_868E:
 	move.l	#$3000001,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.w	#(LnkTo1_NULL-Data_Index),$22(a3)
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1E(a0),d7
 	subi.w	#$A,d7
 	move.w	d7,$1E(a3)
@@ -9890,7 +9850,7 @@ sub_86FA:
 	move.b	#3,$11(a3)
 
 loc_8720:
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 	exg	a2,a3
 	move.l	#stru_8BD8,d7
 	jsr	(j_Init_Animation).w
@@ -10159,7 +10119,7 @@ sub_89D2:
 	moveq	#$20,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1A(a0),$1A(a3)
 	move.w	$1E(a0),d7
 	subi.w	#$10,d7
@@ -10463,7 +10423,7 @@ loc_8D58:
 	move.b	$16(a3),($FFFFFABE).w
 
 loc_8D72:
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_8E06
 	move.w	d7,a4
 	move.l	($FFFFFA98).w,d0
@@ -10477,7 +10437,7 @@ loc_8D72:
 	clr.l	($FFFFFA98).w
 
 loc_8DA0:
-	move.w	($FFFFFA94).w,a4
+	move.w	(Addr_PlatformStandingOn).w,a4
 	move.l	$E(a4),$2A(a3)
 	move.l	6(a4),$1E(a3)
 	subq.w	#1,$1E(a3)
@@ -10485,7 +10445,7 @@ loc_8DA0:
 	beq.w	loc_8DD4
 	cmpi.w	#2,d7
 	beq.w	loc_8DF6
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	clr.l	$2A(a3)
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
@@ -10595,7 +10555,7 @@ loc_8EC8:
 
 
 sub_8ED0:
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_8F1C
 	move.w	d7,a4
 	move.w	$1A(a3),d7
@@ -12870,10 +12830,10 @@ loc_A276:
 
 loc_A28A:
 	move.w	#4,($FFFFFA56).w
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	sub_B610
 	move.w	$1A(a3),($FFFFFA2C).w
@@ -13252,7 +13212,7 @@ loc_A5EA:
 loc_A606:
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	sub_B610
 	move.w	$1A(a3),($FFFFFA2C).w
@@ -13330,13 +13290,13 @@ loc_A6F4:
 loc_A6F8:
 	sf	($FFFFFA66).w
 	move.w	#3,($FFFFFA56).w
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
 	move.w	#$5A,(Telepad_timer).w
 	bsr.w	sub_71E4
 	sf	($FFFFFA6E).w
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	move.w	($FFFFFA96).w,d7
 	beq.w	loc_A73A
@@ -13559,7 +13519,7 @@ loc_A9AA:
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_A9BE
 	clr.l	$2A(a3)
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	bra.w	loc_A74E
 ; ---------------------------------------------------------------------------
 
@@ -13594,10 +13554,10 @@ loc_A9E4:
 
 loc_AA22:
 	move.w	#3,($FFFFFA56).w
-	clr.w	($FFFFFA94).w
+	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	($FFFFFA94).w,d7
+	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	sub_7ACC
 	bne.w	loc_A74E
@@ -15457,7 +15417,7 @@ loc_BC30:
 ; ---------------------------------------------------------------------------
 
 loc_BC34:
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.b	$11(a3),d1
 	move.b	d1,d0
 	addq.w	#2,d0
@@ -15583,7 +15543,7 @@ loc_BD38:
 ; ---------------------------------------------------------------------------
 
 loc_BD40:
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 	move.w	$1A(a2),d5
 	sub.w	(Camera_X_pos).w,d5
 	addi.w	#$80,d5
@@ -15774,7 +15734,7 @@ loc_BE82:
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 	clr.w	(Time_Minutes).w
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#4,$38(a3)
 	move.l	d0,-(sp)
 	moveq	#$51,d0
@@ -15958,7 +15918,7 @@ loc_C0B6:
 	move.l	d0,a3
 	_move.l	0(a3),d0
 	move.l	d0,-(sp)
-	cmp.l	($FFFFF85E).w,a3
+	cmp.l	(Addr_GfxObject_Kid).w,a3
 	beq.s	loc_C0C8
 	jsr	(j_loc_1078).w
 
@@ -16655,7 +16615,7 @@ loc_D0AA:
 	move.l	d0,a3
 	_move.l	0(a3),d0
 	move.l	d0,-(sp)
-	cmp.l	($FFFFF85E).w,a3
+	cmp.l	(Addr_GfxObject_Kid).w,a3
 	beq.s	loc_D0BC
 	jsr	(j_loc_1078).w
 
@@ -17331,7 +17291,7 @@ loc_D9D4:
 	move.l	d0,a3
 	_move.l	0(a3),d0
 	move.l	d0,-(sp)
-	cmp.l	($FFFFF85E).w,a3
+	cmp.l	(Addr_GfxObject_Kid).w,a3
 	beq.s	loc_D9E6
 	jsr	(j_loc_1078).w
 
@@ -17406,7 +17366,7 @@ loc_DA7A:
 
 sub_DAA6:
 	movem.l	d0-d3/a0-a2,-(sp)
-	lea	($FFFFFA8E).w,a2
+	lea	(Addr_FirstPlatformSlot).w,a2
 	move.w	(Current_Helmet).w,d6
 	add.w	d6,d6
 	lea	unk_B408(pc),a0
@@ -17639,7 +17599,7 @@ return_DFAE:
 
 sub_DFB0:
 	bsr.w	sub_E49A
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	$1E(a3),d6
 	move.w	($FFFFFAB6).w,d7
 	move.w	d6,($FFFFFAB6).w
@@ -17964,7 +17924,7 @@ loc_E1FE:
 	add.w	(a5),d2
 	clr.w	$20(a3)
 	subq.w	#1,d2
-	move.w	d2,($FFFFFA80).w
+	move.w	d2,(Kid_hitbox_bottom).w
 	move.w	d2,$1E(a3)
 	subi.w	#$F,d2
 	move.w	(Current_Helmet).w,d3
@@ -17975,7 +17935,7 @@ loc_E1FE:
 	subi.w	#$10,d2
 
 loc_E236:
-	move.w	d2,($FFFFFA7E).w
+	move.w	d2,(Kid_hitbox_top).w
 
 loc_E23A:
 	addq.w	#1,d0
@@ -18330,7 +18290,7 @@ sub_E49A:
 
 loc_E4B2:
 	subq.w	#1,d7
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	moveq	#$12,d0
 	moveq	#-$F,d1
 	tst.b	($FFFFFABE).w
@@ -19181,13 +19141,13 @@ loc_EADE:
 loc_EAE4:
 	tst.b	($FFFFFA64).w
 	bne.w	loc_EB6E
-	move.w	($FFFFFA7E).w,d0
+	move.w	(Kid_hitbox_top).w,d0
 	subq.w	#1,d0
 	bpl.w	loc_EAF8
 	moveq	#0,d0
 
 loc_EAF8:
-	move.w	($FFFFFA80).w,d1
+	move.w	(Kid_hitbox_bottom).w,d1
 	addq.w	#1,d1
 	cmp.w	(Level_height_blocks).w,d1
 	blt.w	loc_EB0C
@@ -19201,13 +19161,13 @@ loc_EB0C:
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	($FFFFFA7A).w,d0
+	move.w	(Kid_hitbox_left).w,d0
 	subq.w	#1,d0
 	bpl.w	loc_EB2A
 	moveq	#0,d0
 
 loc_EB2A:
-	move.w	($FFFFFA7C).w,d2
+	move.w	(Kid_hitbox_right).w,d2
 	addq.w	#1,d2
 	cmp.w	(Level_width_pixels).w,d2
 	blt.w	loc_EB3E
@@ -19936,7 +19896,7 @@ sub_F096:
 
 loc_F09E:
 	move.w	($FFFFF8BE).w,d3
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1A(a0),d0
 	lsr.w	#4,d0
 	move.w	d0,($FFFFF8BE).w
@@ -20478,7 +20438,7 @@ loc_F528:
 
 
 sub_F536:
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	$1A(a3),d0
 	lsr.w	#4,d0
 	subq.w	#4,d0
@@ -20507,25 +20467,25 @@ loc_F564:
 
 
 sub_F568:
-	move.w	($FFFFFA7A).w,d0
+	move.w	(Kid_hitbox_left).w,d0
 	asr.w	#4,d0
 	subq.w	#1,d0
 	bpl.s	loc_F574
 	moveq	#0,d0
 
 loc_F574:
-	move.w	($FFFFFA7E).w,d2
+	move.w	(Kid_hitbox_top).w,d2
 	asr.w	#4,d2
 	subq.w	#1,d2
 	bpl.s	loc_F580
 	moveq	#0,d2
 
 loc_F580:
-	move.w	($FFFFFA7C).w,d1
+	move.w	(Kid_hitbox_right).w,d1
 	addi.w	#$F,d1
 	lsr.w	#4,d1
 	addq.w	#1,d1
-	move.w	($FFFFFA80).w,d3
+	move.w	(Kid_hitbox_bottom).w,d3
 	addi.w	#$F,d3
 	lsr.w	#4,d3
 	addq.w	#1,d3
@@ -21301,7 +21261,7 @@ loc_FBDA:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_FCA6,4(a0)
-	jsr	(j_sub_238E).w
+	jsr	(j_Allocate_PlatformSlot).w
 	move.w	a3,$44(a0)
 	clr.l	$A(a3)
 	move.l	#$FFFF0000,$E(a3)
@@ -21357,7 +21317,7 @@ loc_FCEA:
 	move.w	6(a3),d4
 	cmp.w	(Level_height_blocks).w,d4
 	blt.w	loc_FCFE
-	jsr	(j_sub_23B4).w
+	jsr	(j_Deallocate_PlatformSlot).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -21429,7 +21389,7 @@ diamond_pickup:
 	bne.w	diamond_increment
 	sf	$3C(a3)
 	st	$3D(a3)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	$26(a4),$26(a3)
 	move.l	#$FFFD0000,$2A(a3)
 
@@ -23955,7 +23915,7 @@ loc_119D8:
 
 Load_InGame:
 
-	jsr	(j_sub_231C).w
+	jsr	(j_Initialize_Platforms).w
 	jsr	(j_sub_28FC).w
 	jsr	(j_sub_44B0).w
 	jsr	(j_sub_6526).w
@@ -24500,7 +24460,7 @@ loc_11FD2:
 	bsr.w	sub_140F6
 	bsr.w	sub_144DA
 	jsr	(j_loc_2FFE8).l
-	jsr	(sub_31F86).l
+	jsr	(j_loc_31F8E).l
 	bsr.w	sub_129AE
 	jsr	(j_sub_7196).w
 	bsr.w	Init_SpecialEffects
@@ -28576,25 +28536,25 @@ loc_14A4C:
 
 sub_14A58:
 	movem.l	d5/a0,-(sp)
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$44(a5),d7
 	subi.w	#$80,d7
 	addq.w	#3,d7
-	move.w	($FFFFFA7C).w,d5
+	move.w	(Kid_hitbox_right).w,d5
 	cmp.w	d7,d5
 	blt.s	loc_14AAA
 	addi.w	#$1A,d7
-	move.w	($FFFFFA7A).w,d5
+	move.w	(Kid_hitbox_left).w,d5
 	cmp.w	d7,d5
 	bgt.s	loc_14AAA
 	move.w	$46(a5),d7
 	subi.w	#$80,d7
-	move.w	($FFFFFA7E).w,d5
+	move.w	(Kid_hitbox_top).w,d5
 	cmp.w	d7,d5
 	bgt.s	loc_14AAA
 	move.w	$54(a5),d7
 	addi.w	#$10,d7
-	move.w	($FFFFFA80).w,d5
+	move.w	(Kid_hitbox_bottom).w,d5
 	cmp.w	d7,d5
 	blt.s	loc_14AAA
 	move.w	#$40,$3A(a0)
@@ -28612,16 +28572,16 @@ loc_14AAA:
 sub_14AB0:
 	move.w	d1,d7
 	movem.l	d5/a0,-(sp)
-	move.l	($FFFFF85E).w,a0
-	move.w	($FFFFFA80).w,d3
+	move.l	(Addr_GfxObject_Kid).w,a0
+	move.w	(Kid_hitbox_bottom).w,d3
 	move.w	$44(a5),d6
 	subi.w	#$80,d6
 	addq.w	#1,d6
-	move.w	($FFFFFA7C).w,d5
+	move.w	(Kid_hitbox_right).w,d5
 	cmp.w	d6,d5
 	blt.s	loc_14B22
 	addi.w	#6,d6
-	move.w	($FFFFFA7A).w,d5
+	move.w	(Kid_hitbox_left).w,d5
 	cmp.w	d6,d5
 	bgt.s	loc_14B22
 	move.w	$54(a5),d6
@@ -28651,10 +28611,10 @@ loc_14B04:
 	addq.w	#7,d7
 
 loc_14B06:
-	move.w	($FFFFFA7E).w,d5
+	move.w	(Kid_hitbox_top).w,d5
 	cmp.w	d7,d5
 	bgt.s	loc_14B22
-	move.w	($FFFFFA80).w,d5
+	move.w	(Kid_hitbox_bottom).w,d5
 	cmp.w	d6,d5
 	blt.s	loc_14B22
 	move.w	#$50,$3A(a0)
@@ -33245,7 +33205,7 @@ loc_1D3D0:
 	move.l	(sp)+,a1
 	dbf	d0,loc_1D3D0
 	lea	unk_1D75A(pc),a4
-	move.l	a4,($FFFFFA88).w
+	move.l	a4,(Addr_PlatformLayout).w
 	lea	EndText1(pc),a2
 
 loc_1D3F0:
@@ -33282,9 +33242,9 @@ loc_1D418:
 	bsr.w	sub_1CDE0
 	move.l	#$EEE0EC0,($FFFF4EBA).l
 	jsr	(j_Palette_to_VRAM).w
-	move.l	($FFFFFA88).w,a4
+	move.l	(Addr_PlatformLayout).w,a4
 	bsr.w	sub_1D7A8
-	move.l	a4,($FFFFFA88).w
+	move.l	a4,(Addr_PlatformLayout).w
 	bra.s	loc_1D3F0
 ; ---------------------------------------------------------------------------
 
@@ -39500,18 +39460,15 @@ unk_31E48:	dc.b   0
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_31F86:
+;sub_31F86
+j_loc_31F8E:
 	jmp	loc_31F8E(pc)
-; End of function sub_31F86
-
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_31F8A:
-	jmp	loc_36814(pc)
+;sub_31F8A
+j_Manage_EnemyLoading:
+	jmp	Manage_EnemyLoading(pc)
 ; ---------------------------------------------------------------------------
 
 loc_31F8E:
@@ -39979,7 +39936,7 @@ loc_32386:
 loc_323AA:
 	tst.b	($FFFFFA6E).w
 	beq.w	return_3243E
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	clr.l	$26(a4)
 	addq.w	#4,sp
 	bra.w	loc_323E6
@@ -40347,7 +40304,7 @@ loc_327B6:
 	move.w	d0,$3A(a3)
 	bsr.w	loc_32146
 	bsr.w	loc_32AEA
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 
 loc_327E4:
 	move.l	$48(a5),d7
@@ -40833,14 +40790,14 @@ loc_32C8E:
 ; ---------------------------------------------------------------------------
 	move.l	$26(a3),d7
 	neg.l	d7
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	add.l	$26(a0),d7
 	move.l	d7,$26(a3)
 	rts
 ; ---------------------------------------------------------------------------
 	move.l	$26(a3),d7
 	neg.l	d7
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	add.l	$26(a0),d7
 	move.l	d7,$26(a3)
 	rts
@@ -41611,7 +41568,7 @@ loc_3340E:
 	andi.w	#$FF,d7
 	asr.w	#2,d7
 	move.w	d7,d0
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d7
 	eor.b	d7,d0
 
@@ -43246,7 +43203,7 @@ loc_3414A:
 	st	$3D(a3)
 	move.l	#stru_33FC2,d7
 	jsr	(j_Init_Animation).w
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	#$FFFC0000,$2A(a4)
 	jsr	(j_sub_105E).w
 	moveq	#0,d0
@@ -43647,7 +43604,7 @@ unk_34404:	dc.b   0
 ; ---------------------------------------------------------------------------
 
 loc_34458:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d6
 	sub.w	$1A(a3),d6
 	move.w	$1E(a4),d7
@@ -44030,7 +43987,7 @@ off_3471E:	dc.l loc_34804
 ; ---------------------------------------------------------------------------
 
 loc_3473A:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d7
 	cmp.w	$1A(a4),d7
 	blt.w	loc_34758
@@ -44122,7 +44079,7 @@ loc_3482E:
 ; ---------------------------------------------------------------------------
 
 loc_34836:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d7
 	cmp.w	$1E(a3),d7
 	blt.w	return_3487C
@@ -44606,7 +44563,7 @@ Enemy0F_UFO_Init:
 	clr.l	$26(a3)
 	move.l	#stru_34C7E,d7
 	jsr	(j_Init_Animation).w
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 
 loc_34DD6:
 	bsr.w	loc_35326
@@ -45165,7 +45122,7 @@ return_35324:
 
 loc_35326:
 	jsr	(j_sub_9FE).w
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d6
 	eor.b	d6,d7
 	andi.w	#$F,d7
@@ -45725,7 +45682,7 @@ loc_35788:
 	bge.w	return_357C0
 	tst.b	($FFFFFA6E).w
 	beq.w	return_357C0
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	$26(a4),d7
 	asr.l	#1,d7
 	move.l	d7,$26(a3)
@@ -45923,7 +45880,7 @@ loc_35984:
 loc_35986:
 	tst.b	($FFFFFA68).w
 	beq.s	return_3597C
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	swap	d7
 	move.l	d7,$26(a4)
 	neg.l	d7
@@ -46420,7 +46377,7 @@ return_35CD6:
 loc_35CD8:
 	tst.b	$45(a5)
 	bne.w	loc_35DAE
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d7
 	sub.w	$1E(a3),d7
 	bmi.w	loc_35D40
@@ -46679,14 +46636,14 @@ loc_35FC4:
 ; ---------------------------------------------------------------------------
 	move.l	$26(a3),d7
 	neg.l	d7
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	add.l	$26(a0),d7
 	move.l	d7,$26(a3)
 	bra.w	Enemy06_Sphere_Loop
 ; ---------------------------------------------------------------------------
 	move.l	$26(a3),d7
 	neg.l	d7
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	add.l	$26(a0),d7
 	move.l	d7,$26(a3)
 	bra.w	Enemy06_Sphere_Loop
@@ -46894,7 +46851,7 @@ Enemy1B_EmoRock_Init:
 	move.w	#$1B,d0
 	move.w	d0,$3A(a3)
 	jsr	loc_32146(pc)
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 
 loc_361F4:
 	move.w	#$3C,d0
@@ -47155,7 +47112,7 @@ Enemy1D_BigHoppingSkull_Init:
 	move.w	#$1D,d0
 	move.w	d0,$3A(a3)
 	jsr	loc_32146(pc)
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 	move.w	#(LnkTo_unk_C7FC0-Data_Index),$22(a3)
 	move.w	2(a0),d0
 	cmpi.w	#0,d0
@@ -47463,8 +47420,9 @@ unk_3680C:	dc.b   0
 	dc.b   3
 	dc.b $C0 ; À
 ; ---------------------------------------------------------------------------
-
-loc_36814:
+; not 100% sure about this one
+;loc_36814
+Manage_EnemyLoading:
 	tst.b	($FFFFFB6A).w
 	bne.s	return_3682A
 	cmpi.w	#$10,(Game_Mode).w
@@ -47607,7 +47565,7 @@ loc_36968:
 	dbf	d7,loc_36840
 	st	($FFFFFB51).w
 	rts
-; End of function sub_31F8A
+; End of function j_Manage_EnemyLoading
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -48428,7 +48386,7 @@ loc_37054:
 ; ---------------------------------------------------------------------------
 
 loc_37078:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d6
@@ -48515,7 +48473,7 @@ loc_37148:
 ; ---------------------------------------------------------------------------
 
 loc_3716C:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d6
@@ -48588,7 +48546,7 @@ loc_3720A:
 	cmpi.w	#$FFFF,d7
 	beq.s	loc_371B6
 	clr.w	$38(a3)
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d6
@@ -48668,7 +48626,7 @@ loc_372F6:
 ; ---------------------------------------------------------------------------
 
 loc_37300:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	cmp.w	d5,d3
@@ -48712,7 +48670,7 @@ sub_37332:
 	addq.w	#2,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.w	#$FFFC,$2A(a3)
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	cmp.w	d5,d3
@@ -48843,7 +48801,7 @@ Enemy20_HeadyMetal_Init:
 
 loc_37582:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -49412,7 +49370,7 @@ return_37A3C:
 
 loc_37A3E:
 	movem.l	d2-d5/d7-a2,-(sp)
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	lea	off_37A02(pc),a2
 	move.w	$1A(a1),d5
 	move.w	$1E(a1),d7
@@ -49539,7 +49497,7 @@ return_37B0A:
 
 loc_37B0C:
 	movem.l	d2-d5/d7/a1,-(sp)
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	lea	off_37AE0(pc),a2
 	move.w	$1A(a1),d5
 	move.w	$1E(a1),d7
@@ -49850,7 +49808,7 @@ loc_37F80:
 ; ---------------------------------------------------------------------------
 
 loc_37F94:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -49933,7 +49891,7 @@ loc_38062:
 ; ---------------------------------------------------------------------------
 
 loc_38076:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -50016,7 +49974,7 @@ loc_38144:
 ; ---------------------------------------------------------------------------
 
 loc_38158:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -51596,7 +51554,7 @@ loc_394FA:
 ; ---------------------------------------------------------------------------
 
 loc_39506:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -51721,7 +51679,7 @@ loc_39620:
 ; ---------------------------------------------------------------------------
 
 loc_3962C:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -51846,7 +51804,7 @@ loc_39746:
 ; ---------------------------------------------------------------------------
 
 loc_39752:
-	move.l	($FFFFF85E).w,a1
+	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
 	move.w	$1A(a3),d3
 	move.w	$1E(a1),d7
@@ -52935,7 +52893,7 @@ Enemy00_FireDemon_Init:
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
 	addi.w	#1,($FFFFFA06).w
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3A3D2
@@ -53271,7 +53229,7 @@ Enemy03_Robot_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3A7AC
@@ -53694,7 +53652,7 @@ Enemy01_Diamond_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3AD16
@@ -53925,7 +53883,7 @@ Enemy09_Crab_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3AFD0
@@ -53972,7 +53930,7 @@ loc_3B048:
 	bne.s	loc_3B0BE
 	cmpi.w	#(LnkTo_unk_C7C4E-Data_Index),$22(a3)
 	beq.s	loc_3B0BE
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d7
 	sub.w	$1A(a4),d7
 	tst.w	d7
@@ -54006,7 +53964,7 @@ loc_3B0A6:
 
 loc_3B0BE:
 	clr.w	$38(a3)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d7
 	sub.w	$1A(a4),d7
 	tst.b	$6E(a5)
@@ -54064,7 +54022,7 @@ loc_3B142:
 	bgt.s	loc_3B174
 	cmpi.w	#$FFC0,d7
 	blt.s	loc_3B174
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	$26(a4),d6
 	tst.w	d7
 	bmi.s	loc_3B16C
@@ -54092,7 +54050,7 @@ loc_3B180:
 	st	$3C(a3)
 	st	$14(a3)
 	clr.w	$38(a3)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	$26(a4),d4
 	add.l	d4,d4
 	move.l	d4,$26(a3)
@@ -54212,7 +54170,7 @@ Enemy0A_RockTank_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3B2E4
@@ -54415,7 +54373,7 @@ Enemy0B_RockTank_shooting_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3B56C
@@ -55064,7 +55022,7 @@ Enemy1A_Driller_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3BD2A
@@ -55902,7 +55860,7 @@ loc_3C554:
 loc_3C56A:
 	cmpi.w	#1,$40(a3)
 	blt.s	loc_3C5EE
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 	move.w	$1A(a4),d7
 	sub.w	$1A(a2),d7
 	bmi.s	loc_3C588
@@ -55962,7 +55920,7 @@ off_3C5F6:	dc.w LnkTo_unk_C8338-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_3C5FC:
-	move.l	($FFFFF85E).w,a2
+	move.l	(Addr_GfxObject_Kid).w,a2
 	move.w	$1A(a3),d7
 	sub.w	$1A(a2),d7
 	bmi.s	loc_3C612
@@ -56058,7 +56016,7 @@ Enemy04_Armadillo_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3C718
@@ -56300,7 +56258,7 @@ Enemy10_Goat_Init:
 	move.w	2(a4),$40(a3)
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3CA30
@@ -56455,7 +56413,7 @@ loc_3CC0C:
 loc_3CC18:
 	tst.w	$42(a3)
 	bgt.s	loc_3CC52
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d7
 	sub.w	$1A(a4),d7
 	cmpi.w	#$20,d7
@@ -56569,7 +56527,7 @@ Enemy0D_Dragon_Init:
 	bsr.w	sub_36FF4
 
 loc_3CD70:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3CD82
@@ -56909,7 +56867,7 @@ Enemy08_Orca_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3D194
@@ -57016,7 +56974,7 @@ loc_3D2DE:
 	move.w	$6E(a5),$54(a5)
 
 loc_3D2F4:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d0
 	sub.w	$1A(a4),d0
 	cmpi.w	#$FFD0,d0
@@ -57204,7 +57162,7 @@ Enemy11_Ninja_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3D554
@@ -57330,7 +57288,7 @@ loc_3D6DA:
 	bpl.w	loc_3D79C
 	cmpi.w	#3,(Current_Helmet).w
 	bne.w	loc_3D79C
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d7
 	sub.w	$1E(a3),d7
 	cmpi.w	#$FFFC,d7
@@ -57339,7 +57297,7 @@ loc_3D6DA:
 ; ---------------------------------------------------------------------------
 
 loc_3D706:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d4
 	sub.w	$1E(a3),d4
 	cmpi.w	#$FFB0,d4
@@ -57392,7 +57350,7 @@ loc_3D79C:
 	bpl.s	loc_3D7FA
 	tst.l	($FFFFF866).w
 	bne.s	loc_3D7EE
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$FFD0,d4
@@ -57420,7 +57378,7 @@ loc_3D7EE:
 ; ---------------------------------------------------------------------------
 
 loc_3D7FA:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d4
 	sub.w	$1E(a3),d4
 	cmpi.w	#$FFA0,d4
@@ -57482,7 +57440,7 @@ loc_3D89C:
 loc_3D8A8:
 	cmpi.w	#7,(Current_Helmet).w
 	bne.s	loc_3D89C
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	cmpi.w	#(LnkTo_unk_ADFC8-Data_Index),$22(a4)
 	bgt.s	loc_3D89C
 
@@ -57517,7 +57475,7 @@ loc_3D8E6:
 ; ---------------------------------------------------------------------------
 
 loc_3D92A:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$80,d4
@@ -57743,7 +57701,7 @@ Enemy13_Scorpion_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3DBD8
@@ -57869,7 +57827,7 @@ loc_3DD72:
 ; ---------------------------------------------------------------------------
 
 loc_3DD7E:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d4
 	move.w	$1A(a4),d3
 	sub.w	d3,d4
@@ -57956,7 +57914,7 @@ loc_3DE6C:
 
 loc_3DE7E:
 	move.l	#$18000,$50(a5)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	tst.l	$26(a4)
 	beq.s	loc_3DE64
 	sf	$4E(a5)
@@ -58050,7 +58008,7 @@ Enemy12_Lion_Init:
 	move.w	4(a4),$1A(a3)
 	move.w	6(a4),$1E(a3)
 	bsr.w	sub_36FF4
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	cmp.w	$1A(a3),d4
 	blt.s	loc_3DF92
@@ -58100,7 +58058,7 @@ loc_3E030:
 ; ---------------------------------------------------------------------------
 
 loc_3E03C:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d4
 	sub.w	$1A(a4),d4
 	cmpi.w	#$40,d4
@@ -58148,7 +58106,7 @@ loc_3E09E:
 	clr.w	$38(a3)
 	cmpi.w	#(LnkTo_unk_C7E78-Data_Index),$22(a3)
 	bne.s	loc_3E09E
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d7
 	cmp.w	$1A(a3),d7
 	bgt.s	loc_3E0D6
@@ -58233,7 +58191,7 @@ loc_3E1B4:
 
 loc_3E1C2:
 	clr.w	$38(a3)
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d7
 	sub.w	$1A(a4),d7
 	bmi.s	loc_3E1F4
@@ -58471,7 +58429,7 @@ loc_3E434:
 ; ---------------------------------------------------------------------------
 
 loc_3E450:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$60,d4
@@ -58484,7 +58442,7 @@ loc_3E450:
 ; ---------------------------------------------------------------------------
 
 loc_3E476:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$70,d4
@@ -58616,7 +58574,7 @@ loc_3E5E8:
 ; ---------------------------------------------------------------------------
 
 loc_3E604:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$60,d4
@@ -58629,7 +58587,7 @@ loc_3E604:
 ; ---------------------------------------------------------------------------
 
 loc_3E62A:
-	move.l	($FFFFF85E).w,a4
+	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a4),d4
 	sub.w	$1A(a3),d4
 	cmpi.w	#$70,d4
@@ -59009,7 +58967,7 @@ stru_3E9C2:
 
 ;loc_3E9C8:
 Enemy1C_MiniHoppingSkull_Init:
-	move.l	($FFFFF85E).w,a0
+	move.l	(Addr_GfxObject_Kid).w,a0
 	move.l	$44(a5),a1
 
 loc_3E9D0:
@@ -60243,7 +60201,7 @@ loc_3F7E6:
 ; ---------------------------------------------------------------------------
 
 loc_3F7FE:
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
@@ -60392,7 +60350,7 @@ loc_3F90C:
 	move.w	#$400,d5
 
 loc_3F91C:
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	$1A(a3),d6
 	move.w	$1E(a3),d7
 	moveq	#5,d1
@@ -60502,7 +60460,7 @@ loc_3FA06:
 loc_3FA0C:
 	cmpi.w	#$FFFF,d3
 	bne.s	loc_3FA16
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 
 loc_3FA16:
 	move.w	$1A(a3),d0
@@ -60612,7 +60570,7 @@ loc_3FAD4:
 	muls.w	d5,d1
 	asr.l	#6,d1
 	sub.l	d1,$1E(a0)
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.l	$26(a3),d3
 	asr.l	#1,d3
 	add.l	d3,$1A(a0)
@@ -60702,7 +60660,7 @@ loc_3FB9A:
 
 loc_3FBC4:
 	addq.w	#1,(Diamond_power_timer).w
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
@@ -60906,7 +60864,7 @@ loc_3FD28:
 
 loc_3FD2E:
 	lsr.w	#2,d7
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
@@ -61043,7 +61001,7 @@ loc_3FE62:
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.l	$26(a3),a5
 	move.l	a5,d6
 	asr.l	#2,d6
@@ -61302,7 +61260,7 @@ five_way_shot:
 	bsr.w	sub_3F596
 	move.w	#5,($FFFFF5BA).w
 	moveq	#4,d1
-	move.l	($FFFFF85E).w,a3
+	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$20,d4
 	tst.b	$16(a3)
 	beq.s	loc_400DE

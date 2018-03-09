@@ -58,8 +58,12 @@ Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
+Cyclone_Flying =	$FFFFFA68 ; byte: flag
 Currently_Transforming = $FFFFFA6D	; byte (flag)
+Berzerker_Charging = $FFFFFA6E ; byte: flag
 Telepad_timer = 	$FFFFFA70	; word
+Just_received_damage = $FFFFFA73 ; byte: flag
 Kid_hitbox_left =	$FFFFFA7A	; word
 Kid_hitbox_right =	$FFFFFA7C	; word
 Kid_hitbox_top =	$FFFFFA7E	; word
@@ -93,6 +97,8 @@ Game_Mode = 		$FFFFFBCA	; word
 	;28 - IntroSequence6 ; is also TitleScreen if intro played completely
 	;2C - TitleScreen
 	;30 - EndSequence
+Check_Helmet_Change = $FFFFFBCF ; byte: flag
+Current_Helmet_Available = $FFFFFBD0 ; word
 Addr_MapHeader = 	$FFFFFBD4	; long
 Number_Lives_prev = 	$FFFFFC18	; word
 Number_Diamonds_prev = 	$FFFFFC1A	; word

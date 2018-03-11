@@ -489,7 +489,7 @@ for lev in range(74):
     addr2 = btoi(AddrTbl_LevelNames+10*lev+4, 4)
     number = btoi(AddrTbl_LevelNames+10*lev+8, 2)
     fnames.write("\tlevnamhdr\tunk_{:X}, unk_{:X}, {:d}\t; {:2X}\n".format(addr, addr2, number, lev))
-	fnames.close()
+fnames.close()
 
 
 # split off a lot of binary files with fixed start and end addresses

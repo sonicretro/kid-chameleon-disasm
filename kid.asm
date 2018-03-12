@@ -3471,7 +3471,7 @@ loc_1CDE:
 
 loc_1CE4:
 	move.w	#$2C,d7
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	bne.w	loc_1D4C
 
 loc_1CF2:
@@ -3962,7 +3962,7 @@ loc_2156:
 loc_216A:
 	cmpi.w	#6,($FFFFFA56).w
 	beq.w	loc_200C
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	beq.w	loc_200C
 	bra.s	loc_2156
 ; End of function sub_1FA2
@@ -4554,7 +4554,7 @@ loc_266A:
 loc_2672:
 	cmp.w	d5,d4
 	blt.w	loc_26D4
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	bne.w	loc_2686
 	move.w	a2,($FFFFFA96).w
 
@@ -4608,7 +4608,7 @@ loc_26FE:
 	addi.l	#$4000,d7
 	move.l	d7,$2A(a0)
 	st	($FFFFFAA5).w
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	beq.w	loc_2590
 
 loc_271A:
@@ -7991,7 +7991,7 @@ loc_75C0:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_75D4:
-	move.w	#Standingstill,(Character_movement).w
+	move.w	#Standingstill,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
@@ -8215,7 +8215,7 @@ loc_787E:
 loc_7886:
 	bsr.w	sub_8ED0
 	beq.w	loc_789C
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -9216,7 +9216,7 @@ loc_818A:
 loc_819A:
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
@@ -9271,7 +9271,7 @@ loc_81FA:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8218:
-	move.w	#Crawling,(Character_movement).w
+	move.w	#Crawling,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
@@ -9318,7 +9318,7 @@ loc_829C:
 	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_82BA
-	move.w	#Walking,(Character_movement).w
+	move.w	#Walking,(Character_Movement).w
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -9378,7 +9378,7 @@ loc_833E:
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10315,7 +10315,7 @@ stru_8BDE:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8BF0:
-	move.w	#Walking,(Character_movement).w
+	move.w	#Walking,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_B610
@@ -10367,7 +10367,7 @@ loc_8C70:
 	bsr.w	sub_7A10
 	bne.w	loc_8CB6
 	move.l	$26(a3),d0
-	move.w	#Crawling,(Character_movement).w
+	move.w	#Crawling,(Character_Movement).w
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; ---------------------------------------------------------------------------
@@ -10454,7 +10454,7 @@ loc_8DA0:
 loc_8DD4:
 	bsr.w	sub_8ED0
 	beq.w	loc_8DEA
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10471,7 +10471,7 @@ loc_8DF6:
 ; ---------------------------------------------------------------------------
 
 loc_8DFC:
-	move.w	#Standingstill,(Character_movement).w
+	move.w	#Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10490,7 +10490,7 @@ loc_8E16:
 	bne.w	loc_8E3E
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_8E3E
-	move.w	#Standingstill,(Character_movement).w
+	move.w	#Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10510,7 +10510,7 @@ loc_8E5A:
 	bmi.w	loc_8E74
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.s	loc_8E4E
-	move.w	#Standingstill,(Character_movement).w
+	move.w	#Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -10560,7 +10560,7 @@ sub_8ED0:
 	move.w	d7,a4
 	move.w	$1A(a3),d7
 	move.w	($FFFFFA78).w,d6
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	bne.w	loc_8EFA
 	moveq	#7,d6
 	cmpi.w	#The_Kid,(Current_Helmet).w
@@ -10756,7 +10756,7 @@ loc_908C:
 	sub.w	d7,d4
 	neg.w	d4
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	beq.w	loc_90C0
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_90C0
@@ -10955,7 +10955,7 @@ sub_922C:
 	add.w	d7,a4
 	move.w	$1E(a3),d7
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	beq.w	loc_9288
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_9288
@@ -11004,7 +11004,7 @@ loc_92BC:
 loc_92DE:
 	tst.b	(Berzerker_charging).w
 	beq.s	loc_92AA
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	beq.s	loc_92AA
 
 loc_92EC:
@@ -11599,14 +11599,14 @@ loc_97BE:
 ; ---------------------------------------------------------------------------
 
 loc_97D4:
-	cmpi.w	#Standingstill,(Character_movement).w
+	cmpi.w	#Standingstill,(Character_Movement).w
 	bne.w	loc_97E8
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 	bra.w	loc_97FE
 ; ---------------------------------------------------------------------------
 
 loc_97E8:
-	cmpi.w	#Walking,(Character_movement).w
+	cmpi.w	#Walking,(Character_Movement).w
 	bne.w	loc_97FE
 	lea	(off_9826).l,a0
 	add.w	d2,a0
@@ -11797,7 +11797,7 @@ loc_998A:
 	add.w	d6,d6
 	move.l	($FFFFF862).w,a2
 	move.w	off_99FE(pc,d6.w),d7
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	bne.w	loc_99A6
 	move.w	#(LnkTo_unk_A94AC-Data_Index),d7
 
@@ -12829,7 +12829,7 @@ loc_A276:
 	move.l	#$FFFFC000,$2A(a3)
 
 loc_A28A:
-	move.w	#Wall_Climbing,(Character_movement).w
+	move.w	#Wall_Climbing,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -13289,7 +13289,7 @@ loc_A6F4:
 
 loc_A6F8:
 	sf	($FFFFFA66).w
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
 	move.w	#$5A,(Telepad_timer).w
@@ -13553,7 +13553,7 @@ loc_A9E4:
 	bra.w	*+4
 
 loc_AA22:
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -13718,7 +13718,7 @@ loc_ABF0:
 	move.l	(sp)+,d0
 	jsr	(j_sub_105E).w
 	clr.l	$2A(a3)
-	move.w	#Standingstill,(Character_movement).w
+	move.w	#Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -14596,7 +14596,7 @@ sub_B43A:
 	swap	d4
 	move.w	$1E(a3),d4
 	move.w	($FFFFFA78).w,d1
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	bne.w	loc_B4A0
 	move.w	(Current_LevelID).w,d5
 	subq.w	#WarpCheatStart_LevelID,d5
@@ -14772,7 +14772,7 @@ loc_B5F6:
 	addq.w	#1,$1E(a3)
 	st	$3C(a3)
 	sf	(Cyclone_flying).w
-	move.w	#Jump,(Character_movement).w
+	move.w	#Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -14851,7 +14851,7 @@ loc_B69E:
 ; ---------------------------------------------------------------------------
 
 loc_B6A8:
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	bne.w	loc_B6F6
 	move.l	d0,-(sp)
 	moveq	#$4C,d0
@@ -17603,7 +17603,7 @@ sub_DFB0:
 	move.w	$1E(a3),d6
 	move.w	($FFFFFAB6).w,d7
 	move.w	d6,($FFFFFAB6).w
-	cmpi.w	#Jump,(Character_movement).w
+	cmpi.w	#Jump,(Character_Movement).w
 	bne.w	loc_EAE4
 	move.w	(Current_Helmet).w,d0
 	lea	unk_E246(pc),a5
@@ -40570,7 +40570,7 @@ loc_32A70:
 ; ---------------------------------------------------------------------------
 
 loc_32A86:
-	cmpi.w	#Crawling,(Character_movement).w
+	cmpi.w	#Crawling,(Character_Movement).w
 	beq.s	return_32A10
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	return_32A10

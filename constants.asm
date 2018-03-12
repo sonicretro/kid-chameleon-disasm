@@ -7,6 +7,24 @@ Lava = 1
 Storm = 2
 Storm_and_Hail = 3
 
+; Character movement
+Standingstill = 0
+Crawling = 1
+Walking = 2
+Jump = 3
+Wall_Climbing = 4
+Up_Down_Hill = 5
+
+; Kestrokes
+Up = 0
+Down = 1
+Right = 2
+Left = 3
+Button_A = 4 ; S (jump)
+Button_B = 5 ; D (special)
+Button_C = 6 ; A (run)
+Start = 7 ; Enter
+
 ; Characters
 The_Kid = 0
 Skycutter = 1

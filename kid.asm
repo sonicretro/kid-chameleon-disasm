@@ -788,7 +788,7 @@ loc_65C:
 	jsr	(j_sub_924).w
 	jsr	(j_sub_9AE).w
 	clr.w	(Game_Mode).w
-	sf	($FFFFFBCF).w
+	sf	(Check_Helmet_Change).w
 	sf	($FFFFFBCE).w
 	sf	($FFFFFC29).w
 	clr.w	($FFFFFBCC).w
@@ -927,7 +927,7 @@ loc_80C:
 	bsr.w	sub_16F0	; GfxObjects Collision?
 
 loc_83E:
-	move.b	($FFFFFA73).w,($FFFFFC28).w
+	move.b	(Just_received_damage).w,($FFFFFC28).w
 	move.b	($FFFFFA75).w,($FFFFFA74).w
 	sf	($FFFFFA75).w
 	lea	($FFFFF866).w,a2
@@ -3471,7 +3471,7 @@ loc_1CDE:
 
 loc_1CE4:
 	move.w	#$2C,d7
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	bne.w	loc_1D4C
 
 loc_1CF2:
@@ -3962,7 +3962,7 @@ loc_2156:
 loc_216A:
 	cmpi.w	#6,($FFFFFA56).w
 	beq.w	loc_200C
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	beq.w	loc_200C
 	bra.s	loc_2156
 ; End of function sub_1FA2
@@ -4554,7 +4554,7 @@ loc_266A:
 loc_2672:
 	cmp.w	d5,d4
 	blt.w	loc_26D4
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	bne.w	loc_2686
 	move.w	a2,($FFFFFA96).w
 
@@ -4608,7 +4608,7 @@ loc_26FE:
 	addi.l	#$4000,d7
 	move.l	d7,$2A(a0)
 	st	($FFFFFAA5).w
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	beq.w	loc_2590
 
 loc_271A:
@@ -6933,8 +6933,8 @@ loc_6A76:
 	dbf	d5,loc_6A1E
 
 loc_6A84:
-	bclr	#0,(Ctrl_Pressed).w
-	bclr	#1,(Ctrl_Pressed).w
+	bclr	#Up,(Ctrl_Pressed).w
+	bclr	#Down,(Ctrl_Pressed).w
 	move.b	#0,(Pause_Option).w
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$68,d0
@@ -6965,7 +6965,7 @@ loc_6A84:
 Game_Paused_Loop:
 	jsr	(j_WaitForVint).w
 	jsr	(j_ReadJoypad).w
-	bclr	#0,(Ctrl_Pressed).w
+	bclr	#Up,(Ctrl_Pressed).w
 	beq.s	loc_6B0E
 	; up pressed
 	tst.b	(Pause_Option).w
@@ -6980,7 +6980,7 @@ Game_Paused_Loop:
 ; ---------------------------------------------------------------------------
 
 loc_6B0E:
-	bclr	#1,(Ctrl_Pressed).w
+	bclr	#Down,(Ctrl_Pressed).w
 	beq.s	Game_Paused_ChkStart
 	; down pressed
 	tst.b	(Pause_Option).w
@@ -6993,7 +6993,7 @@ loc_6B0E:
 	addi.b	#1,(Pause_Option).w
 
 Game_Paused_ChkStart:
-	bclr	#7,(Ctrl_Pressed).w
+	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	Game_Paused_Loop
 	; start pressed
 	tst.b	(Pause_Option).w
@@ -7853,11 +7853,11 @@ loc_7420:
 
 
 sub_7428:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	return_7450
-	btst	#7,(Ctrl_Held).w
+	btst	#Start,(Ctrl_Held).w ; keyboard key (Enter) start
 	beq.s	return_7450
-	btst	#6,(Ctrl_Held).w
+	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	return_7450
 	cmpi.w	#5,(Number_Diamonds).w
 	blt.s	return_7450
@@ -7907,15 +7907,15 @@ loc_749C:
 	not.b	(Ctrl_A_Held).w
 
 loc_74B0:
-	bclr	#7,(Ctrl_Pressed).w
+	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_7452
 	tst.b	($FFFFFC37).w
 	beq.s	loc_74C8
-	btst	#5,(Ctrl_Held).w
+	btst	#Button_B,(Ctrl_Held).w ; keyboard key (D) special
 	bne.w	loc_74E0
 
 loc_74C8:
-	btst	#6,(Ctrl_Held).w
+	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
 	bne.s	loc_7452
 	tst.b	($FFFFFB56).w
 	beq.w	loc_7452
@@ -7924,7 +7924,7 @@ loc_74C8:
 ; ---------------------------------------------------------------------------
 
 loc_74E0:
-	btst	#6,(Ctrl_Held).w
+	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	loc_7452
 	addq.w	#1,(Current_LevelID).w
 	clr.w	($FFFFFBCC).w
@@ -7976,7 +7976,7 @@ loc_757E:
 	clr.w	($FFFFFB70).w
 	move.w	($FFFFFA78).w,d7
 	moveq	#$10,d6
-	move.w	($FFFFFBD0).w,d5
+	move.w	(Current_Helmet_Available).w,d5
 	cmpi.w	#9,d5
 	beq.w	loc_75C0
 	cmpi.w	#5,d5
@@ -7985,13 +7985,13 @@ loc_757E:
 
 loc_75C0:
 	bsr.w	sub_7B30
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	loc_75D4
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a1)
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_75D4:
-	move.w	#0,($FFFFFA56).w
+	move.w	#Standingstill,(Character_movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
@@ -8005,7 +8005,7 @@ loc_75D4:
 
 loc_7606:
 	bsr.w	sub_7428
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_7650
 	move.b	(Ctrl_Held).w,d0
 	andi.b	#$C0,d0
@@ -8032,11 +8032,11 @@ loc_7650:
 	move.w	#0,($FFFFFB58).w
 
 loc_7664:
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_7772
-	cmpi.w	#6,(Current_Helmet).w
+	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_76B0
 	move.w	$1A(a3),d7
 	move.w	($FFFFFA78).w,d6
@@ -8056,35 +8056,35 @@ loc_7696:
 ; ---------------------------------------------------------------------------
 
 loc_76B0:
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	bne.w	loc_76E4
-	tst.b	($FFFFFA6F).w
+	tst.b	(Red_Stealth_sword_swing).w
 	bne.w	loc_76E4
 	move.l	#stru_8B3C,d7
 	jsr	(j_Init_Animation).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_868E,4(a0)
-	st	($FFFFFA6F).w
+	st	(Red_Stealth_sword_swing).w
 	bra.w	loc_7772
 ; ---------------------------------------------------------------------------
 
 loc_76E4:
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_7718
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_7772
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_89D2,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
-	st	($FFFFFA65).w
+	st	(Maniaxe_throwing_axe).w
 	bra.w	loc_7772
 ; ---------------------------------------------------------------------------
 
 loc_7718:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.s	loc_7742
 	tst.b	$15(a3)
 	bne.s	loc_7772
@@ -8099,7 +8099,7 @@ loc_7738:
 ; ---------------------------------------------------------------------------
 
 loc_7742:
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_7772
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_7772
@@ -8118,15 +8118,15 @@ loc_7772:
 	tst.b	($FFFFFA28).w
 	bne.w	loc_779C
 	addq.w	#1,($FFFFFB58).w
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.s	loc_779C
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.s	loc_779C
 	bsr.w	sub_7A10
 	beq.w	loc_83BC
 
 loc_779C:
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_7828
 	move.w	($FFFFFA78).w,d0
 	move.w	$1A(a3),d7
@@ -8215,7 +8215,7 @@ loc_787E:
 loc_7886:
 	bsr.w	sub_8ED0
 	beq.w	loc_789C
-	move.w	#3,($FFFFFA56).w
+	move.w	#Jump,(Character_movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -8267,7 +8267,7 @@ sub_78E8:
 	beq.w	loc_79AC
 	cmpi.w	#8,d0
 	bne.w	loc_7920
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	beq.w	loc_794C
 	tst.b	$18(a3)
 	bne.w	loc_794C
@@ -8285,7 +8285,7 @@ loc_7920:
 loc_7932:
 	cmpi.w	#3,d0
 	bne.w	loc_794C
-	tst.b	($FFFFFA6F).w
+	tst.b	(Red_Stealth_sword_swing).w
 	beq.w	loc_794C
 	tst.b	$18(a3)
 	bne.w	loc_794C
@@ -8293,8 +8293,8 @@ loc_7932:
 ; ---------------------------------------------------------------------------
 
 loc_794C:
-	sf	($FFFFFA65).w
-	sf	($FFFFFA6F).w
+	sf	(Maniaxe_throwing_axe).w
+	sf	(Red_Stealth_sword_swing).w
 	add.w	d0,d0
 	lea	off_79B2(pc),a0
 	add.w	d0,a0
@@ -8462,7 +8462,7 @@ loc_7AC6:
 
 
 sub_7ACC:
-	tst.b	($FFFFFBCF).w
+	tst.b	(Check_Helmet_Change).w
 	bne.s	loc_7AD6
 	moveq	#0,d7
 	rts
@@ -8471,14 +8471,14 @@ sub_7ACC:
 loc_7AD6:
 	cmpi.w	#6,($FFFFFA56).w
 	beq.w	loc_7B12
-	move.w	($FFFFFBD0).w,d5
+	move.w	(Current_Helmet_Available).w,d5
 	add.w	d5,d5
 	lea	unk_B408(pc),a4
 	add.w	d5,a4
 	moveq	#0,d7
 	move.b	(a4)+,d7
 	moveq	#$10,d6
-	move.w	($FFFFFBD0).w,d5
+	move.w	(Current_Helmet_Available).w,d5
 	cmpi.w	#9,d5
 	beq.w	loc_7B0A
 	cmpi.w	#5,d5
@@ -8504,7 +8504,7 @@ loc_7B1A:
 ; ---------------------------------------------------------------------------
 
 loc_7B28:
-	sf	($FFFFFBCF).w
+	sf	(Check_Helmet_Change).w
 	moveq	#0,d7
 	rts
 ; End of function sub_7ACC
@@ -8656,7 +8656,7 @@ Kid_Transform:
 	move.l	($FFFFF862).w,a4
 	sf	$17(a4)
 	sf	$17(a3)
-	st	(Currently_Transforming).w
+	st	(Currently_transforming).w
 	st	$13(a3)
 	move.l	(sp)+,$44(a5)
 	; save last 3 colors onto stack
@@ -8667,13 +8667,13 @@ Kid_Transform:
 	bsr.s	sub_7C1C
 	tst.b	($FFFFFA64).w
 	bne.w	loc_7C76
-	move.w	($FFFFFBD0).w,d0
+	move.w	(Current_Helmet_Available).w,d0
 	bsr.w	sub_7EB2
 
 loc_7C76:
 	move.w	(Current_Helmet).w,d7
 	beq.w	loc_7CD0
-	cmp.w	($FFFFFBD0).w,d7
+	cmp.w	(Current_Helmet_Available).w,d7
 	bne.w	loc_7C96
 	move.l	d0,-(sp)
 	moveq	#$2A,d0
@@ -8710,7 +8710,7 @@ loc_7CBE:
 ; ---------------------------------------------------------------------------
 
 loc_7CD0:
-	move.w	($FFFFFBD0).w,(Current_Helmet).w
+	move.w	(Current_Helmet_Available).w,(Current_Helmet).w
 	beq.w	loc_7E14
 	move.w	(Current_Helmet).w,d7
 	tst.b	(Demo_Mode_flag).w
@@ -8871,9 +8871,9 @@ loc_7E48:
 	clr.w	$22(a4)
 	sf	$17(a4)
 	sf	$13(a4)
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.s	loc_7E8C
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.s	loc_7E90
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 
@@ -8881,10 +8881,10 @@ loc_7E8C:
 	st	$13(a4)
 
 loc_7E90:
-	sf	($FFFFFBCF).w
+	sf	(Check_Helmet_Change).w
 	clr.l	$26(a3)
 	clr.l	$2A(a3)
-	sf	(Currently_Transforming).w
+	sf	(Currently_transforming).w
 	lea	($FFFF4ED8).l,a4
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
@@ -9214,10 +9214,10 @@ loc_818A:
 	addi.w	#$10,$1E(a3)
 
 loc_819A:
-	sf	($FFFFFA68).w
+	sf	(Cyclone_flying).w
 	bsr.w	sub_B41C
-	move.w	#3,($FFFFFA56).w
-	sf	($FFFFFA68).w
+	move.w	#Jump,(Character_movement).w
+	sf	(Cyclone_flying).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -9271,7 +9271,7 @@ loc_81FA:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8218:
-	move.w	#1,($FFFFFA56).w
+	move.w	#Crawling,(Character_movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
@@ -9287,7 +9287,7 @@ loc_8218:
 	bne.s	loc_825C
 
 loc_8252:
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E16
 ; ---------------------------------------------------------------------------
 
@@ -9304,7 +9304,7 @@ loc_8270:
 	moveq	#-$11,d7
 	bsr.w	sub_B43A
 	beq.w	loc_8298
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_82D8
 	bsr.w	sub_81B4
 	bne.w	loc_82D8
@@ -9315,10 +9315,10 @@ loc_8298:
 	bsr.w	sub_B41C
 
 loc_829C:
-	bclr	#4,(Ctrl_Pressed).w
-	cmpi.w	#1,(Current_Helmet).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_82BA
-	move.w	#2,($FFFFFA56).w
+	move.w	#Walking,(Character_movement).w
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -9332,7 +9332,7 @@ loc_82BA:
 
 loc_82CA:
 	clr.w	($FFFFF8F0).w
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E3E
 ; ---------------------------------------------------------------------------
 
@@ -9378,7 +9378,7 @@ loc_833E:
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
 	bsr.w	sub_B41C
-	move.w	#3,($FFFFFA56).w
+	move.w	#Jump,(Character_movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -9405,7 +9405,7 @@ loc_8382:
 	moveq	#$F,d1
 	bsr.w	sub_8600
 	move.l	$26(a3),d0
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_83B4
 	bsr.w	sub_9A0A
 	move.l	d0,$26(a3)
@@ -9479,7 +9479,7 @@ loc_8442:
 
 
 sub_8446:
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_8456
 	bsr.w	sub_98F2
 	rts
@@ -10109,7 +10109,7 @@ sub_89D2:
 	move.w	($FFFFFA56).w,d0
 	move.w	#6,-(sp)
 	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	beq.w	loc_8ABC
 	move.l	#$3000001,a3
 	jsr	(j_Load_GfxObjectSlot).w
@@ -10315,7 +10315,7 @@ stru_8BDE:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8BF0:
-	move.w	#2,($FFFFFA56).w
+	move.w	#Walking,(Character_movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_B610
@@ -10332,7 +10332,7 @@ loc_8C12:
 
 loc_8C26:
 	bsr.w	sub_7428
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_8C70
 	move.b	(Ctrl_Held).w,d0
 	andi.b	#$C0,d0
@@ -10352,7 +10352,7 @@ loc_8C26:
 	move.l	(sp)+,d0
 
 loc_8C70:
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_8CB6
@@ -10367,17 +10367,17 @@ loc_8C70:
 	bsr.w	sub_7A10
 	bne.w	loc_8CB6
 	move.l	$26(a3),d0
-	move.w	#1,($FFFFFA56).w
+	move.w	#Crawling,(Character_movement).w
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; ---------------------------------------------------------------------------
 
 loc_8CB6:
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_8D72
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_8CF8
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_8D72
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -10385,26 +10385,26 @@ loc_8CB6:
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
 	clr.l	$26(a3)
-	st	($FFFFFA65).w
+	st	(Maniaxe_throwing_axe).w
 	bra.w	loc_8D72
 ; ---------------------------------------------------------------------------
 
 loc_8CF8:
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	bne.w	loc_8D2C
-	tst.b	($FFFFFA6F).w
+	tst.b	(Red_Stealth_sword_swing).w
 	bne.w	loc_8D72
 	move.l	#stru_8B3C,d7
 	jsr	(j_Init_Animation).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_868E,4(a0)
-	st	($FFFFFA6F).w
+	st	(Red_Stealth_sword_swing).w
 	bra.w	loc_8D72
 ; ---------------------------------------------------------------------------
 
 loc_8D2C:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	loc_8D58
 	tst.b	$15(a3)
 	bne.w	loc_8D72
@@ -10415,7 +10415,7 @@ loc_8D2C:
 	move.l	#sub_86FA,4(a0)
 
 loc_8D58:
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_8D72
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_8D72
@@ -10454,7 +10454,7 @@ loc_8DA0:
 loc_8DD4:
 	bsr.w	sub_8ED0
 	beq.w	loc_8DEA
-	move.w	#3,($FFFFFA56).w
+	move.w	#Jump,(Character_movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10471,7 +10471,7 @@ loc_8DF6:
 ; ---------------------------------------------------------------------------
 
 loc_8DFC:
-	move.w	#0,($FFFFFA56).w
+	move.w	#Standingstill,(Character_movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10488,9 +10488,9 @@ loc_8E16:
 	bsr.w	sub_9A0A
 	move.l	d0,$26(a3)
 	bne.w	loc_8E3E
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_8E3E
-	move.w	#0,($FFFFFA56).w
+	move.w	#Standingstill,(Character_movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10508,9 +10508,9 @@ loc_8E4E:
 
 loc_8E5A:
 	bmi.w	loc_8E74
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.s	loc_8E4E
-	move.w	#0,($FFFFFA56).w
+	move.w	#Standingstill,(Character_movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -10560,10 +10560,10 @@ sub_8ED0:
 	move.w	d7,a4
 	move.w	$1A(a3),d7
 	move.w	($FFFFFA78).w,d6
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	bne.w	loc_8EFA
 	moveq	#7,d6
-	cmpi.w	#0,(Current_Helmet).w
+	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_8EFA
 	moveq	#5,d6
 
@@ -10756,11 +10756,11 @@ loc_908C:
 	sub.w	d7,d4
 	neg.w	d4
 	subi.w	#$F,d7
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	beq.w	loc_90C0
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_90C0
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_90C0
 	subi.w	#$10,d7
 
@@ -10955,11 +10955,11 @@ sub_922C:
 	add.w	d7,a4
 	move.w	$1E(a3),d7
 	subi.w	#$F,d7
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	beq.w	loc_9288
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_9288
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_9288
 	cmpi.w	#(LnkTo_unk_A94AC-Data_Index),$22(a3)
 	beq.w	loc_9288
@@ -11002,9 +11002,9 @@ loc_92BC:
 ; ---------------------------------------------------------------------------
 
 loc_92DE:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_92AA
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	beq.s	loc_92AA
 
 loc_92EC:
@@ -11037,7 +11037,7 @@ loc_9318:
 loc_9326:
 	tst.b	1(sp)
 	beq.w	loc_9338
-	sf	($FFFFFA6E).w
+	sf	(Berzerker_charging).w
 	moveq	#1,d7
 	addq.w	#2,sp
 	rts
@@ -11155,7 +11155,7 @@ sub_942A:
 	move.w	($FFFFF8F0).w,d2
 	cmpi.w	#8,d1
 	bne.w	loc_9454
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	beq.w	loc_9454
 	tst.b	$18(a3)
 	bne.w	loc_9454
@@ -11163,10 +11163,10 @@ sub_942A:
 ; ---------------------------------------------------------------------------
 
 loc_9454:
-	sf	($FFFFFA65).w
+	sf	(Maniaxe_throwing_axe).w
 	cmpi.w	#3,d1
 	bne.w	loc_9472
-	tst.b	($FFFFFA6F).w
+	tst.b	(Red_Stealth_sword_swing).w
 	beq.w	loc_9472
 	tst.b	$18(a3)
 	bne.w	loc_9472
@@ -11174,7 +11174,7 @@ loc_9454:
 ; ---------------------------------------------------------------------------
 
 loc_9472:
-	sf	($FFFFFA6F).w
+	sf	(Red_Stealth_sword_swing).w
 	cmpi.w	#1,d1
 	bne.w	loc_9484
 	bsr.w	sub_98F2
@@ -11285,7 +11285,7 @@ loc_955A:
 
 loc_9564:
 	move.w	d2,($FFFFF8F0).w
-	st	($FFFFFA6E).w
+	st	(Berzerker_charging).w
 	lea	off_9688(pc),a0
 	lsr.w	#8,d2
 	add.w	d2,d2
@@ -11298,7 +11298,7 @@ loc_957C:
 	clr.b	($FFFFFA13).w
 
 loc_9580:
-	sf	($FFFFFA6E).w
+	sf	(Berzerker_charging).w
 	cmpi.w	#0,d1
 	bne.s	loc_95A4
 	tst.l	d0
@@ -11599,14 +11599,14 @@ loc_97BE:
 ; ---------------------------------------------------------------------------
 
 loc_97D4:
-	cmpi.w	#0,($FFFFFA56).w
+	cmpi.w	#Standingstill,(Character_movement).w
 	bne.w	loc_97E8
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 	bra.w	loc_97FE
 ; ---------------------------------------------------------------------------
 
 loc_97E8:
-	cmpi.w	#2,($FFFFFA56).w
+	cmpi.w	#Walking,(Character_movement).w
 	bne.w	loc_97FE
 	lea	(off_9826).l,a0
 	add.w	d2,a0
@@ -11797,7 +11797,7 @@ loc_998A:
 	add.w	d6,d6
 	move.l	($FFFFF862).w,a2
 	move.w	off_99FE(pc,d6.w),d7
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	bne.w	loc_99A6
 	move.w	#(LnkTo_unk_A94AC-Data_Index),d7
 
@@ -11844,7 +11844,7 @@ sub_9A0A:
 
 ; FUNCTION CHUNK AT 00009AE0 SIZE 0000012A BYTES
 
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	beq.w	loc_9A14
 	rts
 ; ---------------------------------------------------------------------------
@@ -11957,12 +11957,12 @@ loc_9AF2:
 	lea	unk_9CCE(pc),a0
 
 loc_9AFC:
-	cmpi.w	#9,(Current_Helmet).w	; micromax
+	cmpi.w	#Micromax,(Current_Helmet).w	; micromax
 	bne.s	loc_9B08
 	lea	$1C(a0),a0
 
 loc_9B08:
-	cmpi.w	#5,(Current_Helmet).w	; juggernaut
+	cmpi.w	#Juggernaut,(Current_Helmet).w	; juggernaut
 	bne.s	loc_9B14
 	lea	$38(a0),a0
 
@@ -12201,7 +12201,7 @@ loc_9D2E:
 	move.l	d0,$2A(a3)
 	move.w	#6,($FFFFFA56).w
 	bsr.w	sub_71E4
-	sf	($FFFFFA6E).w
+	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_7ACC
 	bsr.w	sub_B610
@@ -12209,14 +12209,14 @@ loc_9D2E:
 	move.w	$1E(a3),($FFFFFA2E).w
 
 loc_9D58:
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	beq.w	loc_9E6C
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	beq.w	loc_9E6C
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	beq.w	loc_9E6C
 	lea	unk_9EB0(pc),a0
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.s	loc_9D86
 	lea	unk_9EE4(pc),a0
 
@@ -12473,7 +12473,7 @@ unk_9EE4:	dc.b   0
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_9F18:
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_B580
 	move.l	#$40000,d1
 	move.l	$26(a3),d0
@@ -12548,7 +12548,7 @@ loc_9FE4:
 	move.w	$1A(a3),d0
 	andi.w	#$F,d0
 	moveq	#8,d1
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.s	loc_9FFE
 	moveq	#$A,d1
 
@@ -12640,7 +12640,7 @@ loc_A0DC:
 	move.w	$1A(a3),d0
 	andi.w	#$F,d0
 	moveq	#8,d1
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.s	loc_A0F6
 	moveq	#6,d1
 
@@ -12829,7 +12829,7 @@ loc_A276:
 	move.l	#$FFFFC000,$2A(a3)
 
 loc_A28A:
-	move.w	#4,($FFFFFA56).w
+	move.w	#Wall_Climbing,(Character_movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -12840,7 +12840,7 @@ loc_A28A:
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 	bne.w	loc_A6F8
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
 	tst.b	$16(a3)
 	beq.w	loc_A2E2
@@ -12890,7 +12890,7 @@ loc_A338:
 	cmpi.w	#2,d7
 	bge.s	loc_A330
 	bsr.w	sub_78E8
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_75D4
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
@@ -12901,7 +12901,7 @@ sub_A34C:
 	moveq	#0,d6
 	move.w	($FFFFFA76).w,d7
 	addi.w	#$80,d7
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A382
 	move.l	d0,-(sp)
 	moveq	#$1C,d0
@@ -13024,7 +13024,7 @@ off_A420:	dc.w LnkTo_unk_C1B92-Data_Index
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_A426:
-	sf	($FFFFFA68).w
+	sf	(Cyclone_flying).w
 	bsr.w	sub_A432
 	bra.w	loc_A75A
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -13144,9 +13144,9 @@ loc_A532:
 ; ---------------------------------------------------------------------------
 
 loc_A53C:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_A556
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_A556
 	addq.w	#4,sp
 	bra.w	loc_B9A2
@@ -13173,9 +13173,9 @@ loc_A556:
 ; ---------------------------------------------------------------------------
 
 loc_A594:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_A5AE
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_A5AE
 	addq.w	#4,sp
 	bra.w	loc_BA5A
@@ -13204,7 +13204,7 @@ loc_A5AE:
 loc_A5EA:
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	move.w	d7,a4
 	clr.l	($FFFFFA98).w
 	move.b	($FFFFFAA3).w,($FFFFFA72).w
@@ -13263,7 +13263,7 @@ loc_A69E:
 ; ---------------------------------------------------------------------------
 
 loc_A6AE:
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A6F4
 	move.l	#$FFFC0000,$2A(a3)
 	move.l	#$FFFE0000,d7
@@ -13289,18 +13289,18 @@ loc_A6F4:
 
 loc_A6F8:
 	sf	($FFFFFA66).w
-	move.w	#3,($FFFFFA56).w
+	move.w	#Jump,(Character_movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
 	move.w	#$5A,(Telepad_timer).w
 	bsr.w	sub_71E4
-	sf	($FFFFFA6E).w
+	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	move.w	($FFFFFA96).w,d7
 	beq.w	loc_A73A
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_A5EA
 	clr.w	($FFFFFA96).w
 
@@ -13325,7 +13325,7 @@ loc_A762:
 
 loc_A76A:
 	bsr.w	sub_7428
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_A7B4
 	move.b	(Ctrl_Held).w,d0
 	andi.b	#$C0,d0
@@ -13346,7 +13346,7 @@ loc_A76A:
 
 loc_A7B4:
 	move.w	(Current_Helmet).w,d7
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A7F8
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_A7F8
@@ -13370,13 +13370,13 @@ loc_A7E8:
 ; ---------------------------------------------------------------------------
 
 loc_A7F8:
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A8D6
 	cmpi.w	#8,d7
 	bne.w	loc_A830
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_A8D6
-	st	($FFFFFA65).w
+	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_89D2,4(a0)
@@ -13386,7 +13386,7 @@ loc_A7F8:
 loc_A830:
 	cmpi.w	#2,d7
 	bne.w	loc_A840
-	st	($FFFFFA68).w
+	st	(Cyclone_flying).w
 	bra.w	loc_A8D6
 ; ---------------------------------------------------------------------------
 
@@ -13412,7 +13412,7 @@ loc_A864:
 ; ---------------------------------------------------------------------------
 
 loc_A87A:
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	loc_A8A6
 	tst.b	$15(a3)
 	bne.w	loc_A8D6
@@ -13423,7 +13423,7 @@ loc_A87A:
 	move.l	#sub_86FA,4(a0)
 
 loc_A8A6:
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.s	loc_A8D6
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_A8D6
@@ -13452,7 +13452,7 @@ loc_A8DE:
 
 loc_A8F6:
 	bpl.w	loc_A912
-	sf	($FFFFFA65).w
+	sf	(Maniaxe_throwing_axe).w
 	sf	$15(a3)
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
@@ -13491,9 +13491,9 @@ loc_A94E:
 	bsr.w	sub_AF7A
 	bne.w	loc_A762
 	bsr.w	sub_DB22
-	bclr	#4,(Ctrl_Pressed).w
-	bclr	#5,(Ctrl_Pressed).w
-	cmpi.w	#6,(Current_Helmet).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_A984
 	move.l	d0,-(sp)
 	moveq	#$4C,d0
@@ -13501,7 +13501,7 @@ loc_A94E:
 	move.l	(sp)+,d0
 
 loc_A984:
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_A99E
 	tst.l	$26(a3)
 	bne.w	loc_A99E
@@ -13524,8 +13524,8 @@ loc_A9AA:
 ; ---------------------------------------------------------------------------
 
 loc_A9BE:
-	bclr	#4,(Ctrl_Pressed).w
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	bsr.w	sub_DB22
 	move.w	d7,a4
 	move.l	$26(a3),d7
@@ -13537,7 +13537,7 @@ loc_A9BE:
 
 loc_A9E4:
 	bsr.w	sub_B270
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AA22
 	move.l	d0,-(sp)
 	moveq	#$22,d0
@@ -13549,11 +13549,11 @@ loc_A9E4:
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	*+4
 
 loc_AA22:
-	move.w	#3,($FFFFFA56).w
+	move.w	#Jump,(Character_movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -13566,7 +13566,7 @@ loc_AA22:
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_B168
 	bsr.w	sub_A4EE
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AA8E
 	tst.b	($FFFFFA66).w
 	bne.w	loc_AA8E
@@ -13576,7 +13576,7 @@ loc_AA22:
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 
 loc_AA8E:
 	move.w	$1E(a3),($FFFFFB5C).w
@@ -13607,9 +13607,9 @@ loc_AAC8:
 	move.w	($FFFFFB5C).w,d7
 	andi.w	#$FFF0,d7
 	moveq	#$F,d6
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_AAF8
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_AAF8
 	moveq	#$1F,d6
 
@@ -13656,9 +13656,9 @@ kid_flip:
 	bsr.w	sub_7428
 	bsr.w	sub_AF10
 	beq.w	loc_AD34
-	bclr	#4,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_ACB0
-	cmpi.w	#0,(Current_Helmet).w
+	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_AC42
 	tst.b	($FFFFFA28).w
 	bne.w	loc_AC42
@@ -13718,13 +13718,13 @@ loc_ABF0:
 	move.l	(sp)+,d0
 	jsr	(j_sub_105E).w
 	clr.l	$2A(a3)
-	move.w	#0,($FFFFFA56).w
+	move.w	#Standingstill,(Character_movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
 
 loc_AC42:
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AC88
 	move.l	#$FFFC0000,$2A(a3)
 	move.l	#$FFFE0000,d7
@@ -13760,20 +13760,20 @@ loc_ACA4:
 ; ---------------------------------------------------------------------------
 
 loc_ACB0:
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_AD2C
-	cmpi.w	#2,(Current_Helmet).w
+	cmpi.w	#Cyclone,(Current_Helmet).w
 	bne.w	loc_ACCC
-	st	($FFFFFA68).w
+	st	(Cyclone_flying).w
 	bra.w	loc_AD2C
 ; ---------------------------------------------------------------------------
 
 loc_ACCC:
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_AD00
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_AD2C
-	st	($FFFFFA65).w
+	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_89D2,4(a0)
@@ -13783,7 +13783,7 @@ loc_ACCC:
 ; ---------------------------------------------------------------------------
 
 loc_AD00:
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_AD2C
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_AD26
@@ -13863,9 +13863,9 @@ sub_ADB8:
 	move.w	d7,d6
 	sub.w	($FFFFFB5C).w,d6
 	moveq	#$F,d5
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_ADDA
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_ADDA
 	moveq	#$1F,d5
 
@@ -13908,9 +13908,9 @@ loc_AE0E:
 	andi.w	#$7000,d7
 	cmpi.w	#$6000,d7
 	blt.s	loc_ADEC
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_AE5A
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_AE5A
 	add.w	(Level_width_tiles).w,a4
 	move.w	(a4),d7
@@ -13975,9 +13975,9 @@ loc_AEAE:
 	andi.w	#$7000,d7
 	cmpi.w	#$6000,d7
 	blt.s	loc_AE88
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_AEFA
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_AEFA
 	suba.w	(Level_width_tiles).w,a4
 	move.w	(a4),d7
@@ -14003,9 +14003,9 @@ sub_AF10:
 	move.w	$1E(a3),d7
 	move.w	d7,d6
 	moveq	#$F,d5
-	cmpi.w	#9,(Current_Helmet).w
+	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_AF2E
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_AF2E
 	moveq	#$1F,d5
 
@@ -14050,15 +14050,15 @@ loc_AF76:
 
 
 sub_AF7A:
-	cmpi.w	#6,(Current_Helmet).w
+	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_AFD0
-	tst.b	($FFFFFA6B).w
+	tst.b	(Iron_Knight_block_breaker).w
 	bne.w	loc_AF96
 	cmpi.l	#$48000,d6
 	blt.w	loc_AFD0
 
 loc_AF96:
-	st	($FFFFFA6B).w
+	st	(Iron_Knight_block_breaker).w
 	movem.w	d0-d3,-(sp)
 	move.l	a2,-(sp)
 	bsr.w	sub_BBE2
@@ -14113,9 +14113,9 @@ loc_AFF0:
 
 
 sub_B000:
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	bne.w	loc_B080
-	tst.b	($FFFFFA6F).w
+	tst.b	(Red_Stealth_sword_swing).w
 	beq.w	loc_B080
 	moveq	#0,d7
 	tst.b	$16(a3)
@@ -14170,7 +14170,7 @@ loc_B080:
 
 sub_B084:
 	move.w	(Current_Helmet).w,d0
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_B09E
 	move.l	$26(a3),d0
 	bsr.w	sub_9A20
@@ -14282,9 +14282,9 @@ sub_B168:
 ; ---------------------------------------------------------------------------
 
 loc_B18A:
-	cmpi.w	#2,(Current_Helmet).w
+	cmpi.w	#Cyclone,(Current_Helmet).w
 	bne.w	loc_B19C
-	tst.b	($FFFFFA68).w
+	tst.b	(Cyclone_flying).w
 	bne.w	loc_B214
 
 loc_B19C:
@@ -14341,7 +14341,7 @@ loc_B20E:
 loc_B214:
 	move.w	($FFFFFA76).w,d7
 	addi.w	#$400,d7
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_B23A
 	subi.w	#$3000,d7
 	cmpi.w	#$8001,d7
@@ -14377,7 +14377,7 @@ loc_B26C:
 
 
 sub_B270:
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.w	loc_B284
 	tst.b	$15(a3)
 	beq.w	loc_B304
@@ -14400,7 +14400,7 @@ loc_B28E:
 
 loc_B2A0:
 	sf	($FFFFFA67).w
-	tst.b	($FFFFFA68).w
+	tst.b	(Cyclone_flying).w
 	beq.w	loc_B2DE
 	move.w	($FFFFFA76).w,d7
 	neg.w	d7
@@ -14443,9 +14443,9 @@ loc_B304:
 	lsl.w	#3,d7
 	lea	off_B3B8(pc),a4
 	add.w	d7,a4
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_B334
-	tst.b	($FFFFFA65).w
+	tst.b	(Maniaxe_throwing_axe).w
 	beq.w	loc_B334
 	tst.b	$18(a3)
 	bne.w	loc_B334
@@ -14453,7 +14453,7 @@ loc_B304:
 ; ---------------------------------------------------------------------------
 
 loc_B334:
-	sf	($FFFFFA65).w
+	sf	(Maniaxe_throwing_axe).w
 	move.l	($FFFFFAAA).w,d7
 	move.l	$2A(a3),d6
 	lsl.l	#2,d6
@@ -14469,25 +14469,25 @@ loc_B350:
 	cmp.l	d7,d6
 	ble.s	loc_B3A8
 	addq.w	#2,a4
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	bne.w	loc_B3A8
 	tst.b	(Ctrl_C_Held).w
 	beq.w	loc_B3A8
 	moveq	#0,d7
-	move.b	($FFFFFA6F).w,d7
+	move.b	(Red_Stealth_sword_swing).w,d7
 	addi.w	#$10,d7
 	cmpi.w	#$7F,d7
 	ble.w	loc_B380
 	move.w	#$7F,d7
 
 loc_B380:
-	move.b	d7,($FFFFFA6F).w
+	move.b	d7,(Red_Stealth_sword_swing).w
 	asr.w	#5,d7
 	add.w	d7,d7
 	add.w	d7,d7
 	addi.w	#LnkTo_unk_B40DE-Data_Index,d7
 	move.w	d7,$22(a3)
-	cmpi.b	#$10,($FFFFFA6F).w
+	cmpi.b	#$10,(Red_Stealth_sword_swing).w
 	bne.s	return_B3A6
 	move.l	d0,-(sp)
 	moveq	#$13,d0
@@ -14499,7 +14499,7 @@ return_B3A6:
 ; ---------------------------------------------------------------------------
 
 loc_B3A8:
-	sf	($FFFFFA6F).w
+	sf	(Red_Stealth_sword_swing).w
 	move.w	(a4),$22(a3)
 	rts
 ; ---------------------------------------------------------------------------
@@ -14596,14 +14596,14 @@ sub_B43A:
 	swap	d4
 	move.w	$1E(a3),d4
 	move.w	($FFFFFA78).w,d1
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	bne.w	loc_B4A0
 	move.w	(Current_LevelID).w,d5
 	subq.w	#WarpCheatStart_LevelID,d5
 	bne.w	loc_B482
 	cmpi.l	#$9D3005F,d4
 	bne.w	loc_B482
-	btst	#4,(Ctrl_Held).w
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (S) jump
 	beq.w	loc_B482
 	move.w	#WarpCheatDest_LevelID,(Current_LevelID).w
 	move.w	#$28,$38(a3)
@@ -14611,14 +14611,14 @@ sub_B43A:
 
 loc_B482:
 	moveq	#7,d1
-	cmpi.w	#0,(Current_Helmet).w
+	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_B494
 	moveq	#5,d1
 	bra.w	loc_B4A0
 ; ---------------------------------------------------------------------------
 
 loc_B494:
-	cmpi.w	#1,(Current_Helmet).w
+	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_B4A0
 	moveq	#$A,d1
 
@@ -14771,8 +14771,8 @@ loc_B5CE:
 loc_B5F6:
 	addq.w	#1,$1E(a3)
 	st	$3C(a3)
-	sf	($FFFFFA68).w
-	move.w	#3,($FFFFFA56).w
+	sf	(Cyclone_flying).w
+	move.w	#Jump,(Character_movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -14828,7 +14828,7 @@ loc_B672:
 loc_B678:
 	cmpi.w	#$18,d5
 	beq.w	loc_B69E
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_B6F6
 	bclr	#$F,d6
 	bne.w	loc_B692
@@ -14845,13 +14845,13 @@ loc_B692:
 ; ---------------------------------------------------------------------------
 
 loc_B69E:
-	tst.b	($FFFFFA68).w
+	tst.b	(Cyclone_flying).w
 	bne.s	return_B690
 	bra.w	loc_B6F6
 ; ---------------------------------------------------------------------------
 
 loc_B6A8:
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	bne.w	loc_B6F6
 	move.l	d0,-(sp)
 	moveq	#$4C,d0
@@ -14876,7 +14876,7 @@ loc_B6DA:
 ; ---------------------------------------------------------------------------
 
 loc_B6F6:
-	tst.b	($FFFFFA73).w
+	tst.b	(Just_received_damage).w
 	beq.w	loc_B700
 	rts
 ; ---------------------------------------------------------------------------
@@ -14900,7 +14900,7 @@ loc_B722:
 
 loc_B72C:
 	st	(NoHit_Bonus_Flag).w
-	st	($FFFFFA73).w
+	st	(Just_received_damage).w
 	subq.w	#1,(Number_Hitpoints).w
 	beq.w	loc_B786
 
@@ -14946,8 +14946,8 @@ loc_B786:
 	moveq	#0,d7
 	tst.w	(Current_Helmet).w
 	beq.w	loc_B79C
-	st	($FFFFFBCF).w
-	clr.w	($FFFFFBD0).w
+	st	(Check_Helmet_Change).w
+	clr.w	(Current_Helmet_Available).w
 	bra.s	loc_B73C
 ; ---------------------------------------------------------------------------
 	rts
@@ -14982,7 +14982,7 @@ loc_B7CA:
 loc_B7EA:
 	tst.w	(Current_Helmet).w
 	beq.w	loc_B7FA
-	clr.w	($FFFFFBD0).w
+	clr.w	(Current_Helmet_Available).w
 	bsr.w	Kid_Transform
 
 loc_B7FA:
@@ -15098,8 +15098,8 @@ loc_B906:
 	move.w	d5,d7
 	subi.w	#$68,d7
 	asr.w	#1,d7
-	move.w	word_B8F0(pc,d7.w),($FFFFFBD0).w
-	st	($FFFFFBCF).w
+	move.w	word_B8F0(pc,d7.w),(Current_Helmet_Available).w
+	st	(Check_Helmet_Change).w
 	rts
 ; ---------------------------------------------------------------------------
 off_B926:	dc.l sub_B944
@@ -15176,10 +15176,10 @@ loc_B9A2:
 	clr.w	$38(a3)
 	clr.w	$1C(a3)
 	clr.w	$20(a3)
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB08
-	bclr	#4,(Ctrl_Pressed).w
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	$3C(a3)
 	sf	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
@@ -15233,10 +15233,10 @@ loc_BA5A:
 	clr.w	$38(a3)
 	clr.w	$1C(a3)
 	clr.w	$20(a3)
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB30
-	bclr	#4,(Ctrl_Pressed).w
-	bclr	#5,(Ctrl_Pressed).w
+	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	$3C(a3)
 	st	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
@@ -15426,7 +15426,7 @@ loc_BC40:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	($FFFFFA64).w
 	bne.s	loc_BC40
-	tst.b	($FFFFFA73).w
+	tst.b	(Just_received_damage).w
 	bne.w	loc_BC54
 	bra.s	loc_BC40
 ; ---------------------------------------------------------------------------
@@ -15449,7 +15449,7 @@ loc_BC6E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d2,loc_BC6E
 	dbf	d3,loc_BC56
-	sf	($FFFFFA73).w
+	sf	(Just_received_damage).w
 	bra.s	loc_BC40
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
@@ -15581,13 +15581,13 @@ unk_BD8E:
 	dc.b   0
 	dc.b $A5 ; ¥
 ; ---------------------------------------------------------------------------
-	tst.b	($FFFFFBCF).w
+	tst.b	(Check_Helmet_Change).w
 	bne.s	loc_BD9E
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_BD9E:
-	move.w	($FFFFFBD0).w,(Current_Helmet).w
+	move.w	(Current_Helmet_Available).w,(Current_Helmet).w
 	rts
 ; ---------------------------------------------------------------------------
 	dc.b   1
@@ -15630,7 +15630,7 @@ Make_SpriteAttr_HUD:
 	move.b	#$A,d4
 	move.w	(Number_Hitpoints).w,d0
 	move.w	(Current_Helmet).w,d2
-	tst.b	(Currently_Transforming).w
+	tst.b	(Currently_transforming).w
 	bne.w	loc_BE82
 	moveq	#0,d1
 	move.b	HelmetHitpoint_Table(pc,d2.w),d1
@@ -15716,7 +15716,7 @@ loc_BE74:
 loc_BE82:
 	move.b	d4,(Number_Sprites).w
 	move.l	a2,(Addr_NextSpriteSlot).w
-	tst.b	(Currently_Transforming).w
+	tst.b	(Currently_transforming).w
 	bne.w	loc_BF12
 	tst.b	($FFFFFB4B).w
 	bne.w	loc_BF12
@@ -16820,7 +16820,7 @@ loc_D3AA:
 
 lose_continue:							; Losing a Continue
 	subq.w	#1,(Number_Continues).w
-	sf	($FFFFFBCF).w
+	sf	(Check_Helmet_Change).w
 	sf	($FFFFFC29).w
 	clr.w	($FFFFFBCC).w
 	move.w	#3,(Number_Lives).w
@@ -17422,17 +17422,17 @@ loc_DB1A:
 
 
 sub_DB22:
-	sf	($FFFFFA68).w
+	sf	(Cyclone_flying).w
 	sf	($FFFFFA6A).w
 	sf	($FFFFFA69).w
-	sf	($FFFFFA6F).w
-	sf	($FFFFFA65).w
+	sf	(Red_Stealth_sword_swing).w
+	sf	(Maniaxe_throwing_axe).w
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
-	sf	($FFFFFA6E).w
+	sf	(Berzerker_charging).w
 	sf	$3C(a3)
 	sf	$15(a3)
-	sf	($FFFFFA6B).w
+	sf	(Iron_Knight_block_breaker).w
 	rts
 ; End of function sub_DB22
 
@@ -17603,7 +17603,7 @@ sub_DFB0:
 	move.w	$1E(a3),d6
 	move.w	($FFFFFAB6).w,d7
 	move.w	d6,($FFFFFAB6).w
-	cmpi.w	#3,($FFFFFA56).w
+	cmpi.w	#Jump,(Character_movement).w
 	bne.w	loc_EAE4
 	move.w	(Current_Helmet).w,d0
 	lea	unk_E246(pc),a5
@@ -18282,7 +18282,7 @@ loc_E48E:
 sub_E49A:
 	move.w	($FFFFFAB8).w,d7
 	beq.w	loc_E99C
-	cmpi.w	#4,(Current_Helmet).w
+	cmpi.w	#Eyeclops,(Current_Helmet).w
 	beq.s	loc_E4B2
 	clr.w	($FFFFFAB8).w
 	bra.w	loc_E99C
@@ -27169,7 +27169,7 @@ Pal_1408A:
 Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
-	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entery
+	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced keyboard key (Enter) starty
 	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_140BE
 	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1
@@ -29476,7 +29476,7 @@ loc_1AE20:
 loc_1AE2E:
 
 	jsr	(j_Hibernate_Object_1Frame).w
-	bclr	#7,(Ctrl_Pressed).w
+	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_1AE2E
 	move.w	#$C,(Game_Mode).w
 	st	($FFFFFBCE).w
@@ -32187,7 +32187,7 @@ OptionScreen_Input:
 
 ; FUNCTION CHUNK AT 0001CBC4 SIZE 00000014 BYTES
 
-	bclr	#0,(Ctrl_Pressed).w
+	bclr	#Up,(Ctrl_Pressed).w
 	beq.w	loc_1CBF2
 	tst.w	(Options_Selected_Option).w
 	beq.w	loc_1CBF2
@@ -32196,7 +32196,7 @@ OptionScreen_Input:
 
 loc_1CBF2:
 				; OptionScreen_Input+Ej
-	bclr	#1,(Ctrl_Pressed).w
+	bclr	#Down,(Ctrl_Pressed).w
 	beq.w	loc_1CC0E
 	cmpi.w	#3,(Options_Selected_Option).w
 	beq.w	loc_1CC0E
@@ -32205,7 +32205,7 @@ loc_1CBF2:
 
 loc_1CC0E:
 				; OptionScreen_Input+2Aj
-	bclr	#2,(Ctrl_Pressed).w
+	bclr	#Right,(Ctrl_Pressed).w
 	beq.w	loc_1CC2A
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -32222,7 +32222,7 @@ loc_1CC22:
 ; ---------------------------------------------------------------------------
 
 loc_1CC2A:
-	bclr	#3,(Ctrl_Pressed).w
+	bclr	#Left,(Ctrl_Pressed).w
 	beq.w	return_1CC86
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -39934,7 +39934,7 @@ loc_32386:
 	bne.w	return_3243E
 
 loc_323AA:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	return_3243E
 	move.l	(Addr_GfxObject_Kid).w,a4
 	clr.l	$26(a4)
@@ -40437,7 +40437,7 @@ loc_32906:
 
 loc_3292E:
 	jsr	(j_Hibernate_Object_1Frame).w
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_32970
 	move.w	$1A(a2),d7
 	addq.w	#2,d7
@@ -40570,9 +40570,9 @@ loc_32A70:
 ; ---------------------------------------------------------------------------
 
 loc_32A86:
-	cmpi.w	#1,($FFFFFA56).w
+	cmpi.w	#Crawling,(Character_movement).w
 	beq.s	return_32A10
-	cmpi.w	#5,(Current_Helmet).w
+	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	return_32A10
 	tst.b	($FFFFFA28).w
 	beq.w	loc_32906
@@ -41695,7 +41695,7 @@ loc_33576:
 	moveq	#1,d5
 	rts
 ; ---------------------------------------------------------------------------
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	bne.s	loc_33576
 
 loc_33584:
@@ -45680,7 +45680,7 @@ loc_35762:
 loc_35788:
 	cmpi.w	#$28,d7
 	bge.w	return_357C0
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	return_357C0
 	move.l	(Addr_GfxObject_Kid).w,a4
 	move.l	$26(a4),d7
@@ -45878,7 +45878,7 @@ loc_35984:
 	moveq	#-2,d7
 
 loc_35986:
-	tst.b	($FFFFFA68).w
+	tst.b	(Cyclone_flying).w
 	beq.s	return_3597C
 	move.l	(Addr_GfxObject_Kid).w,a4
 	swap	d7
@@ -46935,7 +46935,7 @@ loc_362B6:
 	bne.s	loc_362B6
 
 loc_362EE:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_362B6
 	st	$3D(a3)
 	sf	$3C(a3)
@@ -52790,7 +52790,7 @@ sub_3A292:
 	beq.s	loc_3A2C0
 	cmpi.w	#$2C,d7
 	beq.s	loc_3A2C0
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3A2E0
 	cmpi.w	#$20,d7
 	beq.s	loc_3A2C0
@@ -53089,7 +53089,7 @@ loc_3A5D4:
 ; ---------------------------------------------------------------------------
 
 loc_3A5E4:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3A5D4
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -53383,7 +53383,7 @@ loc_3A96C:
 ; ---------------------------------------------------------------------------
 
 loc_3A9CC:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3A958
 ; START	OF FUNCTION CHUNK FOR sub_3C4F8
 
@@ -53492,7 +53492,7 @@ loc_3AAD4:
 	bne.s	loc_3AA9E
 
 loc_3AAFA:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3AA9E
 	bra.w	loc_3A9D2
 ; ---------------------------------------------------------------------------
@@ -53780,7 +53780,7 @@ loc_3AE78:
 ; ---------------------------------------------------------------------------
 
 loc_3AE84:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_3ADA4
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -53833,7 +53833,7 @@ loc_3AF14:
 ; ---------------------------------------------------------------------------
 
 loc_3AF24:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3AF14
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -54045,7 +54045,7 @@ loc_3B174:
 ; ---------------------------------------------------------------------------
 
 loc_3B180:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_3B0BE
 	st	$3C(a3)
 	st	$14(a3)
@@ -54915,7 +54915,7 @@ loc_3BBE6:
 ; ---------------------------------------------------------------------------
 
 loc_3BBF6:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3BBE6
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -56129,7 +56129,7 @@ loc_3C886:
 ; ---------------------------------------------------------------------------
 
 loc_3C898:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_3C91A
 	tst.w	$42(a3)
 	bgt.s	loc_3C8DE
@@ -56356,7 +56356,7 @@ loc_3CB64:
 ; ---------------------------------------------------------------------------
 
 loc_3CB76:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3CBF6
 	tst.w	$42(a3)
 	bgt.s	loc_3CBBA
@@ -56658,7 +56658,7 @@ loc_3CEFC:
 ; ---------------------------------------------------------------------------
 
 loc_3CF0E:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3CF4C
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -56726,7 +56726,7 @@ loc_3CFAE:
 	bne.s	loc_3CFE4
 
 loc_3CFD4:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3CFE4
 
 loc_3CFDA:
@@ -56934,7 +56934,7 @@ loc_3D268:
 ; ---------------------------------------------------------------------------
 
 loc_3D27E:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3D2BC
 	sf	$3C(a3)
 	st	$3D(a3)
@@ -57127,7 +57127,7 @@ loc_3D4BC:
 ; ---------------------------------------------------------------------------
 
 loc_3D4DE:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_3D3B4
 	bra.w	loc_3D21E
 ; ---------------------------------------------------------------------------
@@ -57264,7 +57264,7 @@ loc_3D670:
 ; ---------------------------------------------------------------------------
 
 loc_3D698:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3D638
 	st	$3D(a3)
 	sf	$3C(a3)
@@ -57286,7 +57286,7 @@ loc_3D6DA:
 	tst.b	$4C(a5)
 	beq.s	loc_3D706
 	bpl.w	loc_3D79C
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	bne.w	loc_3D79C
 	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1E(a4),d7
@@ -57318,7 +57318,7 @@ loc_3D734:
 	blt.w	loc_3D776
 	cmpi.w	#$50,d4
 	bgt.s	loc_3D776
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	bne.w	loc_3D9A4
 	cmpi.w	#$FFD0,d4
 	blt.s	loc_3D776
@@ -57328,13 +57328,13 @@ loc_3D734:
 	sub.w	$1E(a3),d5
 	cmpi.w	#$FFFC,d5
 	blt.s	loc_3D776
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	beq.w	loc_3D826
 
 loc_3D776:
 	move.l	($FFFFF866).w,d4
 	beq.s	loc_3D79C
-	cmpi.w	#8,(Current_Helmet).w
+	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.s	loc_3D79C
 	move.l	d4,a4
 	move.w	$1A(a4),d4
@@ -57357,7 +57357,7 @@ loc_3D79C:
 	blt.s	loc_3D7CA
 	cmpi.w	#$30,d4
 	bgt.s	loc_3D7CA
-	cmpi.w	#3,(Current_Helmet).w
+	cmpi.w	#Red_Stealth,(Current_Helmet).w
 	beq.s	loc_3D7EE
 
 loc_3D7CA:
@@ -57438,7 +57438,7 @@ loc_3D89C:
 ; ---------------------------------------------------------------------------
 
 loc_3D8A8:
-	cmpi.w	#7,(Current_Helmet).w
+	cmpi.w	#Berzerker,(Current_Helmet).w
 	bne.s	loc_3D89C
 	move.l	(Addr_GfxObject_Kid).w,a4
 	cmpi.w	#(LnkTo_unk_ADFC8-Data_Index),$22(a4)
@@ -57640,7 +57640,7 @@ loc_3DABC:
 ; ---------------------------------------------------------------------------
 
 loc_3DB0A:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.w	loc_3D9DA
 	st	$3D(a3)
 	sf	$3C(a3)
@@ -57790,7 +57790,7 @@ loc_3DCF4:
 ; ---------------------------------------------------------------------------
 
 loc_3DD0E:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3DD5C
 	cmpi.w	#(LnkTo_unk_C7E0E-Data_Index),$22(a3)
 	bge.s	loc_3DD5C
@@ -59089,7 +59089,7 @@ loc_3EB40:
 ; ---------------------------------------------------------------------------
 
 loc_3EB56:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EB40
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59136,7 +59136,7 @@ loc_3EBC4:
 ; ---------------------------------------------------------------------------
 
 loc_3EBDA:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EBC4
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59197,7 +59197,7 @@ loc_3EC7A:
 ; ---------------------------------------------------------------------------
 
 loc_3EC90:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EC7A
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59244,7 +59244,7 @@ loc_3ECFE:
 ; ---------------------------------------------------------------------------
 
 loc_3ED14:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3ECFE
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59310,7 +59310,7 @@ loc_3EDC0:
 ; ---------------------------------------------------------------------------
 
 loc_3EDD6:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EDC0
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59357,7 +59357,7 @@ loc_3EE44:
 ; ---------------------------------------------------------------------------
 
 loc_3EE5A:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EE44
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59418,7 +59418,7 @@ loc_3EEFA:
 ; ---------------------------------------------------------------------------
 
 loc_3EF10:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EEFA
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59465,7 +59465,7 @@ loc_3EF7E:
 ; ---------------------------------------------------------------------------
 
 loc_3EF94:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3EF7E
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59530,7 +59530,7 @@ loc_3F03C:
 ; ---------------------------------------------------------------------------
 
 loc_3F052:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3F03C
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59591,7 +59591,7 @@ loc_3F0DA:
 ; ---------------------------------------------------------------------------
 
 loc_3F0F0:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	beq.s	loc_3F0DA
 	bra.w	loc_3F262
 ; ---------------------------------------------------------------------------
@@ -59712,7 +59712,7 @@ loc_3F238:
 ; ---------------------------------------------------------------------------
 
 loc_3F244:
-	tst.b	($FFFFFA6E).w
+	tst.b	(Berzerker_charging).w
 	bne.s	loc_3F262
 	exg	a0,a4
 	move.w	#$A000,a0

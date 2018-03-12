@@ -59,9 +59,12 @@ Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
 Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
-Cyclone_Flying =	$FFFFFA68 ; byte: flag
-Currently_Transforming = $FFFFFA6D	; byte (flag)
-Berzerker_Charging = $FFFFFA6E ; byte: flag
+Maniaxe_throwing_axe = $FFFFFA65 ; byte: flag
+Cyclone_flying =	$FFFFFA68 ; byte: flag
+Iron_Knight_block_breaker = $FFFFFA6B ; byte: flag
+Currently_transforming = $FFFFFA6D	; byte: flag
+Berzerker_charging = $FFFFFA6E ; byte: flag
+Red_Stealth_sword_swing = $FFFFFA6F ; byte: flag (FF = sideways, 7F strike downwards
 Telepad_timer = 	$FFFFFA70	; word
 Just_received_damage = $FFFFFA73 ; byte: flag
 Kid_hitbox_left =	$FFFFFA7A	; word

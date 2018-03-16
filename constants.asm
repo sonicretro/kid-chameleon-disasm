@@ -2,6 +2,103 @@
 ; Constants
 ; ---------------------------------------------------------------------------
 
+; Background music
+bgm_Mountain = 0
+bgm_Desert = 1
+bgm_Sky = 2
+bgm_Ice = 3
+bgm_Hills = 4
+bgm_Ending = 5
+bgm_Woods = 6
+bgm_Cave = 7
+bgm_Island = 8
+bgm_Murderwall = 9
+bgm_Swamp = $A
+bgm_City = $65
+bgm_Score_Board = $74
+
+; Sound effects
+sfx_Socre_counter = $C
+sfx_Block_hit = $D
+sfx_Clock_prize = $E
+sfx_Destroy_block = $11
+sfx_Prize_block = $11
+sfx_Reveal_Hidden_block = $12
+sfx_Metal_block = $12
+sfx_Evanescent_block = $14
+sfx_Shifting_block = $15
+sfx_Jump = $17
+sfx_Lava_Geyser_starting = $1E
+sfx_Lava_Geyser = $1E
+sfx_Elevator_block = $27
+sfx_Diamond_Power_available = $28
+sfx_Ankh_prize = $29
+sfx_Replenish_Health = $2A
+sfx_Coin_prize = $2C
+sfx_Diamond_prize = $2D
+sfx_Voice_no_time = $51
+sfx_Rubber_block = $56
+sfx_Voice_die = $60
+sfx_Voice_ouch = $61
+sfx_Voice_diamond = $62
+sfx_Voice_bummer = $68
+sfx_Voice_ouch_1 = $6B ; original recording
+sfx_Voice_ouch_2 = $6C ; slowed down
+sfx_Voice_ouch_3 = $6D ; slowed down
+sfx_Teleport = $76
+sfx_Thunderstorm = $77
+
+; Sound effects characters
+sfx_The_Kid_pullup = $64
+sfx_Iron_Knight_transform = $1A
+sfx_Iron_Knight_wall_climbing = $1C
+sfx_Maniaxe_transform = $1B
+sfx_Maniaxe_throw_axe = $20
+sfx_Maniaxe_hitting_enemy = $4B
+sfx_Red_Stealth_transform = $2E
+sfx_Red_Stealth_attack_down = $13
+sfx_Red_Stealth_sword_swinging = $23
+sfx_Red_Stealth_hitting_a_target = $5A
+sfx_Berzerker_transform = $2F
+sfx_Berzerker_moving_block = $10
+sfx_Skycutter_transform = $30
+sfx_Skycutter_flipboard = $17
+sfx_Eyeclops_transform = $31
+sfx_Eyeclops_normal_lightbeam = $35
+sfx_Eyeclops_hard_lightbeam = $3B
+sfx_Cyclone_transform = $32
+sfx_Micromax_transform = $33
+sfx_Micromax_sticking = $22
+sfx_Juggernaut_transform = $34
+sfx_Juggernaut_skull_explode = $24
+sfx_Juggernaut_shoot = $3E ; NO SOUND!
+
+; Sound effects enemies
+sfx_Drill_moving = $B
+sfx_Robot_walking = $F
+sfx_UFO_hovering = $19
+sfx_Tank_driving = $1F
+sfx_Emo_Rock_disappears = $25
+sfx_Robot_and_UFO_shoots = $3A
+sfx_Tank_mouth_open = $3C
+sfx_Mini_Hopping_Skull_screams = $3F
+sfx_Tank_shoots = $41
+sfx_Tank_mouth_closed = $42
+sfx_Dragon_flame_breath = $46 ; NO SOUND!
+sfx_Boss_eye_pops = $48
+sfx_Plethora_x = $4E ; NO SOUND!
+sfx_Tar_Monster_x = $50 ; NO SOUND?
+sfx_Ninja_blocking = $52
+sfx_Tar_Monster_disappears = $53
+sfx_Tar_Monster_appears = $54
+sfx_Boss_dies = $57
+sfx_Drips_dripping = $58
+sfx_Archer_shoots = $59
+sfx_Big_Hopping_Skull_groan = $5C
+sfx_Fireball_bouncing = $5D
+sfx_Tar_Monster_shoots = $5E
+sfx_Robot_jumping_on = $5F
+
 ; Weather
 Lava = 1
 Storm = 2
@@ -15,7 +112,7 @@ Jump = 3
 Wall_Climbing = 4
 Up_Down_Hill = 5
 
-; Kestrokes
+; Keystrokes
 Up = 0
 Down = 1
 Right = 2

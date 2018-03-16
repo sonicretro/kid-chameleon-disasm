@@ -8020,7 +8020,7 @@ loc_7606:
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$3B,d0
+	moveq	#sfx_Eyeclops_hard_lightbeam,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -8928,16 +8928,17 @@ unk_7ECC:	dc.b   0
 	dc.b $78 ; x
 	dc.b $68 ; h
 	dc.b $76 ; v
-unk_7ED8:	dc.b   0
-	dc.b $30 ; 0
-	dc.b $32 ; 2
-	dc.b $2E ; .
-	dc.b $31 ; 1
-	dc.b $34 ; 4
-	dc.b $1A
-	dc.b $2F ; /
-unk_7EE0:	dc.b $1B
-	dc.b $33 ; 3
+unk_7ED8:
+	dc.b   0
+	dc.b sfx_Skycutter_transform
+	dc.b sfx_Cyclone_transform
+	dc.b sfx_Red_Stealth_transform
+	dc.b sfx_Eyeclops_transform
+	dc.b sfx_Juggernaut_transform
+	dc.b sfx_Iron_Knight_transform
+	dc.b sfx_Berzerker_transform
+	dc.b sfx_Maniaxe_transform
+	dc.b sfx_Micromax_transform
 off_7EE2:	dc.w off_7EE2-off_7EE2
 	dc.w stru_7EFA-off_7EE2
 	dc.w stru_7F30-off_7EE2
@@ -9794,7 +9795,7 @@ loc_8688:
 
 sub_868E:
 	move.l	d0,-(sp)
-	moveq	#$23,d0
+	moveq	#sfx_Red_Stealth_sword_swinging,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	#8,-(sp)
@@ -9828,7 +9829,7 @@ loc_86E8:
 
 loc_86EC:
 	move.l	d0,-(sp)
-	moveq	#$5A,d0
+	moveq	#sfx_Red_Stealth_hitting_a_target,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bra.s	loc_86E8
@@ -9840,7 +9841,7 @@ loc_86EC:
 
 sub_86FA:
 	move.l	d0,-(sp)
-	moveq	#$3E,d0
+	moveq	#sfx_Juggernaut_shoot,d0 ; NO SOUND!
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$3000001,a3
@@ -10092,7 +10093,7 @@ loc_89A8:
 	clr.b	$12(a3)
 	clr.b	$11(a3)
 	move.l	d0,-(sp)
-	moveq	#$24,d0
+	moveq	#sfx_Juggernaut_skull_explode,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
@@ -10116,7 +10117,7 @@ sub_89D2:
 	move.l	#stru_8B86,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$20,d0
+	moveq	#sfx_Maniaxe_throw_axe,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	(Addr_GfxObject_Kid).w,a0
@@ -10147,7 +10148,7 @@ loc_8A52:
 	move.l	#stru_8B86,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$20,d0
+	moveq	#sfx_Maniaxe_throw_axe,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -10179,7 +10180,7 @@ loc_8A84:
 
 loc_8ABC:
 	move.l	d0,-(sp)
-	moveq	#$4B,d0
+	moveq	#sfx_Maniaxe_hitting_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	jmp	(j_Delete_CurrentObject).w
@@ -10190,7 +10191,7 @@ loc_8ACC:
 	clr.b	$12(a3)
 	clr.b	$11(a3)
 	move.l	d0,-(sp)
-	moveq	#$4B,d0
+	moveq	#sfx_Maniaxe_hitting_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
@@ -12904,7 +12905,7 @@ sub_A34C:
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A382
 	move.l	d0,-(sp)
-	moveq	#$1C,d0
+	moveq	#sfx_Iron_Knight_wall_climbing,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	moveq	#1,d6
@@ -13405,7 +13406,7 @@ loc_A840:
 loc_A864:
 	move.b	#1,($FFFFFA69).w
 	move.l	d0,-(sp)
-	moveq	#$17,d0
+	moveq	#sfx_Skycutter_flipboard,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bra.w	loc_A8D6
@@ -13432,7 +13433,7 @@ loc_A8A6:
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$35,d0
+	moveq	#sfx_Eyeclops_normal_lightbeam,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -13713,7 +13714,7 @@ loc_ABF0:
 	move.l	#stru_8BB4,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$64,d0
+	moveq	#sfx_The_Kid_pullup,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	jsr	(j_sub_105E).w
@@ -14490,7 +14491,7 @@ loc_B380:
 	cmpi.b	#$10,(Red_Stealth_sword_swing).w
 	bne.s	return_B3A6
 	move.l	d0,-(sp)
-	moveq	#$13,d0
+	moveq	#sfx_Red_Stealth_attack_down,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -16051,7 +16052,7 @@ loc_C238:
 	move.l	a0,($FFFFF8B2).w
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
-	move.l	#$74,d0
+	move.l	#bgm_Score_Board,d0
 	jsr	(j_PlaySound).l
 	bra.w	loc_D468
 ; End of function sub_C048
@@ -17179,7 +17180,7 @@ loc_D820:
 	jsr	(j_StopMusic).l
 	move.w	#$28,-(sp)
 	jsr	(j_Hibernate_Object).w
-	move.w	#5,d0
+	move.w	#bgm_Ending,d0
 	jsr	(j_PlaySound).l
 	move.w	#$C8,-(sp)
 	jsr	(j_Hibernate_Object).w
@@ -23513,7 +23514,7 @@ sub_1129C:
 	move.w	#(LnkTo_unk_E0E8E-Data_Index),$22(a3)
 	move.w	#3,d3
 	move.l	d0,-(sp)
-	moveq	#$10,d0
+	moveq	#sfx_Berzerker_moving_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -24466,7 +24467,7 @@ loc_11FD2:
 	bsr.w	Init_SpecialEffects
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_12004
-	move.w	#9,d0
+	move.w	#bgm_Murderwall,d0
 	jsr	(j_PlaySound).l
 	rts
 ; ---------------------------------------------------------------------------
@@ -24482,17 +24483,18 @@ loc_12004:
 ; End of function Load_InGame
 
 ; ---------------------------------------------------------------------------
-unk_1201E:	dc.b   0
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   8
-	dc.b   1
-	dc.b  $A
-	dc.b   0
-	dc.b   7
-	dc.b   6
-	dc.b $65 ; e
+unk_1201E:
+	dc.b   bgm_Mountain
+	dc.b   bgm_Sky
+	dc.b   bgm_Ice
+	dc.b   bgm_Hills
+	dc.b   bgm_Island
+	dc.b   bgm_Desert
+	dc.b   bgm_Swamp
+	dc.b   bgm_Mountain
+	dc.b   bgm_Cave
+	dc.b   bgm_Woods
+	dc.b   bgm_City
 	dc.b   0
 ; ---------------------------------------------------------------------------
 
@@ -29485,7 +29487,7 @@ loc_1AE2E:
 
 Load_IntroSequence1:
 	jsr	(j_StopMusic).l
-	move.w	#3,d0
+	move.w	#bgm_Ice,d0
 	jsr	(j_PlaySound).l
 	bsr.w	sub_1B850
 	move.w	#$FFFF,a0

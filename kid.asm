@@ -6262,7 +6262,7 @@ loc_60EE:
 	bmi.s	loc_613E
 	bne.s	loc_6172
 	move.l	d0,-(sp)
-	moveq	#$77,d0
+	moveq	#sfx_Thunderstorm,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	#0,($FFFFFADC).w
@@ -7093,7 +7093,7 @@ loc_6C0A:
 	cmpi.b	#3,($FFFFFAD0).w
 	bne.s	loc_6C3E
 	move.l	d0,-(sp)
-	moveq	#$68,d0
+	moveq	#sfx_Voice_bummer,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	(Addr_GfxObject_Kid).w,a4
@@ -8676,7 +8676,7 @@ loc_7C76:
 	cmp.w	(Current_Helmet_Available).w,d7
 	bne.w	loc_7C96
 	move.l	d0,-(sp)
-	moveq	#$2A,d0
+	moveq	#sfx_Replenish_Health,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bra.w	loc_7E14
@@ -8854,7 +8854,7 @@ loc_7E26:
 	move.w	(Current_Helmet).w,d7
 	bne.s	loc_7E48
 	move.l	d0,-(sp)
-	moveq	#$68,d0
+	moveq	#sfx_Voice_bummer,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -9849,8 +9849,6 @@ sub_86FA:
 	st	$13(a3)
 	move.b	#1,$12(a3)
 	move.b	#3,$11(a3)
-
-loc_8720:
 	move.l	(Addr_GfxObject_Kid).w,a2
 	exg	a2,a3
 	move.l	#stru_8BD8,d7
@@ -13071,7 +13069,7 @@ loc_A480:
 	add.l	d1,d0
 	move.l	d0,$26(a3)
 	move.l	d0,-(sp)
-	moveq	#$17,d0
+	moveq	#sfx_Jump,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -14909,7 +14907,7 @@ loc_B73C:
 	cmpi.w	#$50,d5
 	bne.s	loc_B750
 	move.l	d0,-(sp)
-	moveq	#$6B,d0
+	moveq	#sfx_Voice_ouch_1,d0 ; original recording
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -14919,7 +14917,7 @@ loc_B750:
 	cmpi.w	#$40,d5
 	bne.s	loc_B764
 	move.l	d0,-(sp)
-	moveq	#$6C,d0
+	moveq	#sfx_Voice_ouch_2,d0 ; slowed down
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -14929,7 +14927,7 @@ loc_B764:
 	cmpi.w	#$30,d5
 	bne.s	loc_B778
 	move.l	d0,-(sp)
-	moveq	#$6D,d0
+	moveq	#sfx_Voice_ouch_3,d0 ; slowed down
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -14937,7 +14935,7 @@ loc_B764:
 
 loc_B778:
 	move.l	d0,-(sp)
-	moveq	#$61,d0
+	moveq	#sfx_Voice_ouch,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -14956,7 +14954,7 @@ loc_B786:
 
 loc_B79C:
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	clr.w	(Extra_hitpoint_slots).w
@@ -15018,7 +15016,7 @@ loc_B84E:
 	cmpi.w	#$FFFB,d6
 	bne.s	+
 	move.l	d0,-(sp)
-	moveq	#$76,d0
+	moveq	#sfx_Teleport,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -15123,7 +15121,7 @@ loc_B93A:
 sub_B944:
 	st	(NoPrize_Bonus_Flag).w
 	move.l	d0,-(sp)
-	moveq	#$29,d0
+	moveq	#sfx_Ankh_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -15144,7 +15142,7 @@ loc_B95C:
 	st	(NoPrize_Bonus_Flag).w
 	addq.w	#1,(Number_Continues).w
 	move.l	d0,-(sp)
-	moveq	#$2C,d0
+	moveq	#sfx_Coin_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -15738,7 +15736,7 @@ loc_BE82:
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#4,$38(a3)
 	move.l	d0,-(sp)
-	moveq	#$51,d0
+	moveq	#sfx_Voice_no_time,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -17107,7 +17105,7 @@ loc_D734:
 	move.w	#$78,d1
 	moveq	#$28,d2
 	move.l	d0,-(sp)
-	moveq	#$C,d0
+	moveq	#sfx_Socre_counter,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -17123,19 +17121,19 @@ loc_D77E:
 	add.l	d4,(Score).w
 	move.l	d5,d6
 	add.l	d4,d6
-	cmpi.l	#$98967F,(Score).w
+	cmpi.l	#$98967F,(Score).w ; Score 99.999.99
 	blt.s	loc_D79E
-	move.l	#$98967F,d6
+	move.l	#$98967F,d6 ; Score 99.999.99
 	move.l	d6,(Score).w
 
 loc_D79E:
-	divu.w	#$C350,d5
-	divu.w	#$C350,d6
+	divu.w	#$C350,d5 ; Score 50.000
+	divu.w	#$C350,d6 ; Score 50.000
 	cmp.w	d5,d6
 	beq.s	loc_D7CE
 	addq.w	#1,(Number_Lives).w
 	move.l	d0,-(sp)
-	moveq	#$29,d0
+	moveq	#sfx_Ankh_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	#$FFFF,a0
@@ -17566,7 +17564,7 @@ loc_DF50:
 sub_DF68:
 
 	move.l	d0,-(sp)
-	moveq	#$14,d0
+	moveq	#sfx_Evanescent_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	swap	d1
@@ -17662,7 +17660,7 @@ loc_E03A:
 	bsr.w	sub_E37A
 	bsr.w	sub_E3C6
 	move.l	d0,-(sp)
-	moveq	#$12,d0
+	moveq	#sfx_Reveal_Hidden_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	moveq	#0,d4
@@ -21289,7 +21287,7 @@ loc_FBDA:
 
 sub_FCA6:
 	move.l	d0,-(sp)
-	moveq	#$27,d0
+	moveq	#sfx_Elevator_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	$44(a5),a3
@@ -21369,7 +21367,7 @@ stru_FD4C:
 diamond_pickup:
 	tst.b	$19(a3)
 	bne.s	+
-	moveq	#$2D,d0
+	moveq	#sfx_Diamond_prize,d0
 	jsr	(j_PlaySound).l
 
 +
@@ -21432,7 +21430,7 @@ diamond_increment:
 	cmpi.w	#$14,(Number_Diamonds).w
 	bne.w	+
 	move.l	d0,-(sp)
-	moveq	#$28,d0
+	moveq	#sfx_Diamond_Power_available,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -21440,7 +21438,7 @@ diamond_increment:
 	cmpi.w	#$32,(Number_Diamonds).w
 	bne.w	+
 	move.l	d0,-(sp)
-	moveq	#$28,d0
+	moveq	#sfx_Diamond_Power_available,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -21583,7 +21581,7 @@ loc_1001E:
 
 loc_1002E:
 	move.l	d0,-(sp)
-	moveq	#$D,d0
+	moveq	#sfx_Block_hit,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d4/a0-a1,-(sp)
@@ -22263,7 +22261,7 @@ loc_1076C:
 	tst.b	($FFFFFB55).w
 	bne.s	loc_10792
 	move.l	d0,-(sp)
-	moveq	#$E,d0
+	moveq	#sfx_Clock_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -22328,7 +22326,7 @@ loc_10824:
 
 loc_10838:
 	move.l	d0,-(sp)
-	moveq	#$6A,d0
+	moveq	#$6A,d0 ; picking up coin prize only no sound
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	jmp	(j_Delete_CurrentObject).w
@@ -22444,7 +22442,7 @@ loc_108EE:
 	move.l	#$FE0000,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	d0,-(sp)
-	moveq	#$2D,d0
+	moveq	#sfx_Diamond_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.b	#1,$10(a1)
@@ -22522,7 +22520,7 @@ loc_109E8:										; Could be 10-diamond pickup increment
 	cmpi.w	#$14,(Number_Diamonds).w
 	bne.w	+
 	move.l	d0,-(sp)
-	moveq	#$28,d0
+	moveq	#sfx_Diamond_Power_available,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -22530,7 +22528,7 @@ loc_109E8:										; Could be 10-diamond pickup increment
 	cmpi.w	#$32,(Number_Diamonds).w
 	bne.w	+
 	move.l	d0,-(sp)
-	moveq	#$28,d0
+	moveq	#sfx_Diamond_Power_available,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -22954,7 +22952,7 @@ return_10DA2:
 
 loc_10DA4:
 	move.l	d0,-(sp)
-	moveq	#$56,d0
+	moveq	#sfx_Rubber_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	cmpi.w	#$A,($FFFFFB5A).w
@@ -23038,7 +23036,7 @@ loc_10E0A:
 sub_10E86:
 
 	move.l	d0,-(sp)
-	moveq	#$11,d0
+	moveq	#sfx_Destroy_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d4/a0-a1,-(sp)
@@ -23116,7 +23114,7 @@ loc_10F2A:
 sub_10F44:
 
 	move.l	d0,-(sp)
-	moveq	#$11,d0
+	moveq	#sfx_Prize_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bsr.w	sub_11006
@@ -23315,7 +23313,7 @@ return_110CE:
 
 loc_110D0:
 	move.l	d0,-(sp)
-	moveq	#$12,d0
+	moveq	#sfx_Metal_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d4/a0-a1,-(sp)
@@ -23583,7 +23581,7 @@ loc_11358:
 
 loc_11364:
 	move.l	d0,-(sp)
-	moveq	#$15,d0
+	moveq	#sfx_Shifting_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d0/a0-a1,-(sp)
@@ -28247,7 +28245,7 @@ loc_14772:
 	dbf	d2,loc_14772
 	tst.b	$19(a3)
 	bne.s	loc_14788
-	moveq	#$1E,d0
+	moveq	#sfx_Lava_Geyser_starting,d0
 	jsr	(j_PlaySound).l
 
 loc_14788:
@@ -28258,7 +28256,7 @@ loc_14788:
 loc_1478E:
 	tst.b	$19(a3)
 	bne.s	loc_1479C
-	moveq	#$1E,d0
+	moveq	#sfx_Lava_Geyser,d0
 	jsr	(j_PlaySound).l
 
 loc_1479C:
@@ -30929,7 +30927,7 @@ word_1BC20:	dc.w $30
 
 sub_1BC26:
 	move.l	d0,-(sp)
-	move.w	#$2D,d0
+	move.w	#sfx_Navigate_jingle,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -39846,7 +39844,7 @@ loc_322AA:
 
 loc_322BC:
 	move.l	d0,-(sp)
-	moveq	#$54,d0
+	moveq	#sfx_Tar_Monster_appears,d0
 
 loc_322C0:
 	jsr	(j_PlaySound).l
@@ -39861,7 +39859,7 @@ loc_322C8:
 
 loc_322DA:
 	move.l	d0,-(sp)
-	moveq	#$53,d0
+	moveq	#sfx_Tar_Monster_disappears,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	sf	$13(a2)
@@ -40010,7 +40008,7 @@ loc_32454:
 
 loc_32468:
 	move.l	d0,-(sp)
-	moveq	#$5E,d0
+	moveq	#sfx_Tar_Monster_shoots,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$3000003,a3
@@ -40770,7 +40768,7 @@ loc_32C60:
 	tst.b	$19(a3)
 	bne.w	loc_32C86
 	move.l	d0,-(sp)
-	moveq	#$5D,d0
+	moveq	#sfx_Fireball_bouncing,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -41598,7 +41596,7 @@ loc_3345C:
 	tst.b	$19(a3)
 	bne.w	loc_33488
 	move.l	d0,-(sp)
-	moveq	#$58,d0
+	moveq	#sfx_Drips_dripping,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -43300,7 +43298,7 @@ loc_34248:
 
 loc_34266:
 	move.l	d0,-(sp)
-	moveq	#$59,d0
+	moveq	#sfx_Archer_shoots,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$3000003,a3
@@ -44703,7 +44701,7 @@ loc_34F18:
 	move.b	($FFFFFB66).w,d7
 	bne.w	loc_34F64
 	move.l	d0,-(sp)
-	moveq	#$19,d0
+	moveq	#sfx_UFO_hovering,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -44742,7 +44740,7 @@ loc_34F8E:
 	cmpi.w	#4,d7
 	bgt.w	return_34FFC
 	move.l	d0,-(sp)
-	moveq	#$3A,d0
+	moveq	#sfx_UFO_shoots,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	#4,$48(a5)
@@ -46955,7 +46953,7 @@ loc_3630A:
 loc_36320:
 	st	$3D(a3)
 	move.l	d0,-(sp)
-	moveq	#$25,d0
+	moveq	#sfx_Emo_Rock_disappears,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_36456,d7
@@ -47213,7 +47211,7 @@ loc_365F2:
 	cmpi.w	#6,$32(a3)
 	bne.s	loc_36616
 	move.l	d0,-(sp)
-	moveq	#$5C,d0
+	moveq	#sfx_Big_Hopping_Skull_groan,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -47223,7 +47221,7 @@ loc_36616:
 	cmpi.w	#$C,$32(a3)
 	bne.s	loc_36632
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -47240,7 +47238,7 @@ loc_36632:
 
 loc_3664E:
 	move.l	d0,-(sp)
-	moveq	#$26,d0
+	moveq	#sfx_Big_Hopping_Skull_dies,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_367FA,d7
@@ -48353,7 +48351,7 @@ sub_36FF4:
 
 sub_37002:
 	move.l	d0,-(sp)
-	moveq	#$48,d0
+	moveq	#sfx_Boss_eye_pops,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$1010002,a3
@@ -48522,7 +48520,7 @@ loc_371D4:
 	andi.b	#1,d7
 	beq.s	loc_371F4
 	move.l	d0,-(sp)
-	moveq	#$4E,d0
+	moveq	#sfx_Plethora_x,d0 ; NO SOUND!
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bra.s	loc_37200
@@ -48530,7 +48528,7 @@ loc_371D4:
 
 loc_371F4:
 	move.l	d0,-(sp)
-	moveq	#$57,d0
+	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -48991,7 +48989,7 @@ loc_3772A:
 	addq.w	#2,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.l	d0,-(sp)
-	moveq	#$48,d0
+	moveq	#sfx_Boss_eye_pops,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	bra.s	loc_377BC
@@ -49148,7 +49146,7 @@ loc_378D6:
 	addi.l	#$13880,$2A(a3)
 	move.w	#(LnkTo_unk_C8458-Data_Index),$22(a3)
 	move.l	d0,-(sp)
-	moveq	#$57,d0
+	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	($FFFFFBAE).w,a3
@@ -51396,7 +51394,7 @@ loc_393B0:
 
 sub_393B2:
 	move.l	d0,-(sp)
-	moveq	#$48,d0
+	moveq	#sfx_Boss_eye_pops,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	addq.w	#4,$A(a3)
@@ -52478,7 +52476,7 @@ loc_39EE2:
 	jsr	(j_Init_Animation).w
 	jsr	(j_sub_105E).w
 	move.l	d0,-(sp)
-	moveq	#$57,d0
+	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	#$A,d0
@@ -53339,7 +53337,7 @@ loc_3A90C:
 	beq.s	loc_3A96C
 	tst.b	$19(a3)
 	bne.s	loc_3A936
-	moveq	#$5F,d0
+	moveq	#sfx_Robot_jumping_on,d0
 	jsr	(j_PlaySound).l
 
 loc_3A936:
@@ -54252,7 +54250,7 @@ loc_3B372:
 	bne.s	loc_3B40A
 	tst.b	$19(a3)
 	bne.s	loc_3B40A
-	moveq	#$1F,d0
+	moveq	#sfx_Tank_driving,d0
 	jsr	(j_PlaySound).l
 
 loc_3B40A:
@@ -54272,7 +54270,7 @@ loc_3B41C:
 	bne.s	loc_3B446
 	tst.b	$19(a3)
 	bne.s	loc_3B444
-	moveq	#$3C,d0
+	moveq	#sfx_Tank_mouth_open,d0
 	jsr	(j_PlaySound).l
 
 loc_3B444:
@@ -54286,7 +54284,7 @@ loc_3B446:
 	bne.s	loc_3B464
 	tst.b	$19(a3)
 	bne.s	loc_3B464
-	moveq	#$42,d0
+	moveq	#sfx_Tank_mouth_closed,d0
 	jsr	(j_PlaySound).l
 
 loc_3B464:
@@ -54468,7 +54466,7 @@ loc_3B690:
 	bne.s	loc_3B6AE
 	tst.b	$19(a3)
 	bne.s	loc_3B6AE
-	moveq	#$1F,d0
+	moveq	#sfx_Tank_driving,d0
 	jsr	(j_PlaySound).l
 
 loc_3B6AE:
@@ -54551,7 +54549,7 @@ loc_3B77E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$19(a3)
 	bne.s	loc_3B7BA
-	moveq	#$41,d0
+	moveq	#sfx_Tank_shoots,d0
 	jsr	(j_PlaySound).l
 
 loc_3B7BA:
@@ -55097,7 +55095,7 @@ loc_3BD74:
 	bne.s	loc_3BE60
 	tst.b	$19(a3)
 	bne.s	loc_3BE60
-	moveq	#$B,d0
+	moveq	#sfx_Drill_moving,d0
 	jsr	(j_PlaySound).l
 
 loc_3BE60:
@@ -56701,7 +56699,7 @@ loc_3CF6E:
 	bne.w	loc_3D00C
 	tst.b	$19(a3)
 	bne.s	loc_3CF90
-	moveq	#$46,d0
+	moveq	#sfx_Dragon_flame_breath,d0  ; NO SOUND!
 	jsr	(j_PlaySound).l
 
 loc_3CF90:
@@ -57246,7 +57244,7 @@ loc_3D65A:
 	beq.s	loc_3D670
 	tst.b	$19(a3)
 	bne.s	loc_3D66E
-	moveq	#$52,d0
+	moveq	#sfx_Ninja_blocking,d0
 	jsr	(j_PlaySound).l
 
 loc_3D66E:
@@ -59001,7 +58999,7 @@ loc_3E9D0:
 	move.w	d7,$44(a3)
 	tst.b	$19(a3)
 	bne.s	loc_3EA48
-	moveq	#$3F,d0
+	moveq	#sfx_Mini_Hopping_Skull_screams,d0
 	jsr	(j_PlaySound).l
 
 loc_3EA48:

@@ -37,6 +37,7 @@ sfx_Replenish_Health = $2A
 sfx_Coin_prize = $2C
 sfx_Diamond_prize = $2D ; duplicate
 sfx_Navigate_jingle = $2D ; duplicate
+sfx_Jump_on_enemy = $4C
 sfx_Voice_no_time = $51
 sfx_Rubber_block = $56
 sfx_Voice_die = $60

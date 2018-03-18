@@ -558,7 +558,7 @@ unk_49C:	dc.b $14
 	dc.b   0
 	dc.b   0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_B610
+; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 EntryPoint:
 	tst.l	($A10008).l
@@ -631,7 +631,7 @@ loc_52A:
 
 loc_53C:
 	bra.s	loc_5AA
-; END OF FUNCTION CHUNK	FOR sub_B610
+; END OF FUNCTION CHUNK	FOR Character_CheckCollision
 ; ---------------------------------------------------------------------------
 SetupValues:	dc.w $8000
 	dc.w $3FFF
@@ -7561,7 +7561,7 @@ off_718A:	dc.w MapEni_CC0E-ArtComp_C65A_HoloBG
 	dc.w Pal_D00C-ArtComp_C65A_HoloBG
 off_718E:	dc.w ArtComp_CAB2_HoloBlocks-ArtComp_C65A_HoloBG
 word_7190:	dc.w 0
-off_7192:	dc.l loc_B84E
+off_7192:	dc.l Teleport
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -7581,7 +7581,7 @@ sub_7196:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_73D0,4(a0)
-	bsr.w	sub_BFA6
+	bsr.w	Flagpole_Boss
 	rts
 ; End of function sub_7196
 
@@ -7995,7 +7995,7 @@ loc_75D4:
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
@@ -8237,7 +8237,7 @@ loc_78A8:
 
 loc_78C0:
 	moveq	#0,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; ---------------------------------------------------------------------------
 
 loc_78C6:
@@ -8500,7 +8500,7 @@ loc_7B1A:
 	tst.w	(Current_Helmet).w
 	beq.w	loc_7B28
 	moveq	#0,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; ---------------------------------------------------------------------------
 
 loc_7B28:
@@ -9276,7 +9276,7 @@ loc_8218:
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
@@ -9393,7 +9393,7 @@ loc_8370:
 
 loc_837C:
 	moveq	#0,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; ---------------------------------------------------------------------------
 
 loc_8382:
@@ -10317,7 +10317,7 @@ loc_8BF0:
 	move.w	#Walking,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
@@ -10466,7 +10466,7 @@ loc_8DEA:
 
 loc_8DF6:
 	moveq	#0,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; ---------------------------------------------------------------------------
 
 loc_8DFC:
@@ -10823,7 +10823,7 @@ loc_913A:
 loc_9142:
 	addq.w	#4,sp
 	moveq	#1,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; End of function sub_902A
 
 
@@ -12203,7 +12203,7 @@ loc_9D2E:
 	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_7ACC
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 
@@ -12834,7 +12834,7 @@ loc_A28A:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
@@ -13213,7 +13213,7 @@ loc_A606:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	move.w	($FFFFFA96).w,a4
@@ -13305,7 +13305,7 @@ loc_A6F8:
 
 loc_A73A:
 	bsr.w	sub_7ACC
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 
@@ -13560,7 +13560,7 @@ loc_AA22:
 	bne.w	loc_A9AA
 	bsr.w	sub_7ACC
 	bne.w	loc_A74E
-	bsr.w	sub_B610
+	bsr.w	Character_CheckCollision
 	move.w	$1A(a3),($FFFFFA2C).w
 	move.w	$1E(a3),($FFFFFA2E).w
 	bsr.w	sub_B168
@@ -14777,9 +14777,9 @@ loc_B5F6:
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
 ; =============== S U B	R O U T	I N E =======================================
+; Added some first basic labels for Character_CheckCollision
 
-
-sub_B610:
+Character_CheckCollision:
 	move.w	$38(a3),d7
 	beq.w	return_B63E
 	clr.w	$38(a3)
@@ -14799,36 +14799,36 @@ return_B63E:
 	rts
 ; ---------------------------------------------------------------------------
 off_B640:
-	dc.l loc_B66C
+	dc.l Crushed_to_Death
 	dc.l loc_B672
 	dc.l loc_B672
 	dc.l loc_B672
 	dc.l loc_B672
 	dc.l loc_B672
-	dc.l loc_B6F6
+	dc.l Check_for_recent_damge
 	dc.l loc_B678
 	dc.l loc_B678
-	dc.l loc_B6F6
-	dc.l loc_B6A8
+	dc.l Check_for_recent_damge
+	dc.l Jump_On_Enemy
 ; ---------------------------------------------------------------------------
 
-loc_B66C:
+Crushed_to_Death:
 	moveq	#0,d7
-	bra.w	loc_B79C
+	bra.w	Death
 ; ---------------------------------------------------------------------------
 
 loc_B672:
 
 	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
-	bra.s	loc_B672
+	bra.s	loc_B672 ; Restart current level not losing a live and time doesn't reset?!
 ; ---------------------------------------------------------------------------
 
 loc_B678:
 	cmpi.w	#$18,d5
 	beq.w	loc_B69E
 	tst.b	(Berzerker_charging).w
-	beq.w	loc_B6F6
+	beq.w	Check_for_recent_damge
 	bclr	#$F,d6
 	bne.w	loc_B692
 
@@ -14846,14 +14846,14 @@ loc_B692:
 loc_B69E:
 	tst.b	(Cyclone_flying).w
 	bne.s	return_B690
-	bra.w	loc_B6F6
+	bra.w	Check_for_recent_damge
 ; ---------------------------------------------------------------------------
 
-loc_B6A8:
+Jump_On_Enemy:
 	cmpi.w	#Jump,(Character_Movement).w
-	bne.w	loc_B6F6
+	bne.w	Check_for_recent_damge
 	move.l	d0,-(sp)
-	moveq	#$4C,d0
+	moveq	#sfx_Jump_on_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.w	($FFFFFA2C).w,$1A(a3)
@@ -14870,11 +14870,11 @@ loc_B6DA:
 	asr.l	#1,d7
 	add.l	d7,$26(a3)
 	bclr	#$E,d6
-	bne.w	loc_B6F6
+	bne.w	Check_for_recent_damge
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_B6F6:
+Check_for_recent_damge:
 	tst.b	(Just_received_damage).w
 	beq.w	loc_B700
 	rts
@@ -14904,7 +14904,7 @@ loc_B72C:
 	beq.w	loc_B786
 
 loc_B73C:
-	cmpi.w	#$50,d5
+	cmpi.w	#$50,d5 ; compare with enemy ID
 	bne.s	loc_B750
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_ouch_1,d0 ; original recording
@@ -14914,7 +14914,7 @@ loc_B73C:
 ; ---------------------------------------------------------------------------
 
 loc_B750:
-	cmpi.w	#$40,d5
+	cmpi.w	#$40,d5 ; compare with enemy ID
 	bne.s	loc_B764
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_ouch_2,d0 ; slowed down
@@ -14924,7 +14924,7 @@ loc_B750:
 ; ---------------------------------------------------------------------------
 
 loc_B764:
-	cmpi.w	#$30,d5
+	cmpi.w	#$30,d5 ; compare with enemy ID
 	bne.s	loc_B778
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_ouch_3,d0 ; slowed down
@@ -14944,7 +14944,7 @@ loc_B778:
 loc_B786:
 	moveq	#0,d7
 	tst.w	(Current_Helmet).w
-	beq.w	loc_B79C
+	beq.w	Death
 	st	(Check_Helmet_Change).w
 	clr.w	(Current_Helmet_Available).w
 	bra.s	loc_B73C
@@ -14952,7 +14952,7 @@ loc_B786:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_B79C:
+Death:
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
@@ -15010,7 +15010,7 @@ lose_life:							; Death management
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
 
-loc_B84E:
+Teleport:
 	sf	($FFFFFB56).w
 	jsr	(sub_E1334).l
 	cmpi.w	#$FFFB,d6
@@ -15073,11 +15073,12 @@ loc_B8E2:
 ; ---------------------------------------------------------------------------
 
 loc_B8E6:
-	bgt.w	loc_B906
+	bgt.w	Assign_ID_to_Helmet
 	st	(NoPrize_Bonus_Flag).w
 	rts
 ; ---------------------------------------------------------------------------
-word_B8F0:	dc.w	 1
+word_B8F0:
+	dc.w	 1
 	dc.w	 1
 	dc.w	 2
 	dc.w	 3
@@ -15090,9 +15091,9 @@ word_B8F0:	dc.w	 1
 	dc.w	$A
 ; ---------------------------------------------------------------------------
 
-loc_B906:
+Assign_ID_to_Helmet:
 	cmpi.w	#$90,d5
-	bge.w	loc_B93A
+	bge.w	loc_B93A ; No helmet prize continue other
 	st	(NoPrize_Bonus_Flag).w
 	move.w	d5,d7
 	subi.w	#$68,d7
@@ -15101,44 +15102,45 @@ loc_B906:
 	st	(Check_Helmet_Change).w
 	rts
 ; ---------------------------------------------------------------------------
-off_B926:	dc.l sub_B944
-	dc.l sub_B956
-	dc.l loc_B95C
+off_B926:
+	dc.l Ankh
+	dc.l Clock
+	dc.l Coin
 	dc.l loc_B972
-	dc.l sub_C048
+	dc.l Flagpole
 ; ---------------------------------------------------------------------------
 
 loc_B93A:
 	subi.w	#$90,d5
 	move.l	off_B926(pc,d5.w),a4
 	jmp	(a4)
-; End of function sub_B610
+; End of function Character_CheckCollision
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_B944:
+Ankh:
 	st	(NoPrize_Bonus_Flag).w
 	move.l	d0,-(sp)
 	moveq	#sfx_Ankh_prize,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
-; End of function sub_B944
+; End of function Ankh
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_B956:
+Clock:
 	st	(NoPrize_Bonus_Flag).w
 	rts
-; End of function sub_B956
+; End of function Clock
 
 ; ---------------------------------------------------------------------------
 
-loc_B95C:
+Coin:
 	st	(NoPrize_Bonus_Flag).w
 	addq.w	#1,(Number_Continues).w
 	move.l	d0,-(sp)
@@ -15514,7 +15516,7 @@ loc_BCF6:
 	st	($FFFFFC29).w
 	move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp?
 	moveq	#-5,d6
-	bra.w	loc_B84E
+	bra.w	Teleport
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -15581,11 +15583,11 @@ unk_BD8E:
 	dc.b $A5 ; ¥
 ; ---------------------------------------------------------------------------
 	tst.b	(Check_Helmet_Change).w
-	bne.s	loc_BD9E
+	bne.s	Transform_Character
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_BD9E:
+Transform_Character:
 	move.w	(Current_Helmet_Available).w,(Current_Helmet).w
 	rts
 ; ---------------------------------------------------------------------------
@@ -15827,7 +15829,7 @@ split_double_digit:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_BFA6:
+Flagpole_Boss:
 	move.l	#$FF0004,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,a3
@@ -15870,13 +15872,13 @@ loc_C03A:
 
 return_C046:
 	rts
-; End of function sub_BFA6
+; End of function Flagpole_Boss
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_C048:
+Flagpole:
 
 ; FUNCTION CHUNK AT 0000D468 SIZE 0000042C BYTES
 
@@ -16039,21 +16041,21 @@ loc_C21E:
 
 loc_C228:
 	bsr.w	sub_C254
-	bmi.s	loc_C238
+	bmi.s	Score_Board
 	tst.w	d7
 	bge.s	loc_C228
 	move.l	a0,($FFFFF8B2).w
 	bra.s	loc_C21E
 ; ---------------------------------------------------------------------------
 
-loc_C238:
+Score_Board:
 	move.l	a0,($FFFFF8B2).w
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.l	#bgm_Score_Board,d0
 	jsr	(j_PlaySound).l
 	bra.w	loc_D468
-; End of function sub_C048
+; End of function Flagpole
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -16577,7 +16579,7 @@ Pal_D00C:	binclude	"scenes/palette/Score_screen.bin"
 Pal_D02A:	binclude	"scenes/palette/0D02A.bin"
 Pal_D048:	binclude	"scenes/palette/0D048.bin"
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_B610
+; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 loc_D052:
 
@@ -16728,7 +16730,7 @@ loc_D17E:
 
 loc_D25E:
 	tst.w	(Number_Continues).w
-	bne.w	loc_D2E0
+	bne.w	Continue_Screen
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_C57C,4(a0)
@@ -16759,7 +16761,7 @@ loc_D2DC:
 	bra.w	loc_D3F0
 ; ---------------------------------------------------------------------------
 
-loc_D2E0:
+Continue_Screen:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_C57C,4(a0)
@@ -16829,7 +16831,7 @@ lose_continue:							; Losing a Continue
 	clr.w	(Extra_hitpoint_slots).w
 	move.w	#2,(Number_Hitpoints).w
 	st	($FFFFFC36).w
-	bra.w	loc_B84E
+	bra.w	Teleport
 ; ---------------------------------------------------------------------------
 
 loc_D3F0:
@@ -16875,10 +16877,10 @@ loc_D44C:
 	jsr	(j_sub_14C0).w
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
-	bra.w	loc_B84E
-; END OF FUNCTION CHUNK	FOR sub_B610
+	bra.w	Teleport
+; END OF FUNCTION CHUNK	FOR Character_CheckCollision
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_C048
+; START	OF FUNCTION CHUNK FOR Flagpole
 
 loc_D468:
 	tst.b	($FFFFFC37).w
@@ -17167,14 +17169,14 @@ loc_D7F4:
 	move.w	d0,-(sp)
 	jsr	(j_Hibernate_Object).w
 	cmpi.w	#Final_LevelID,(Current_LevelID).w
-	beq.w	loc_D820
+	beq.w	End_Credits
 	addq.w	#1,(Current_LevelID).w
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
-	bra.w	loc_B84E
+	bra.w	Teleport
 ; ---------------------------------------------------------------------------
 
-loc_D820:
+End_Credits:
 	jsr	(j_StopMusic).l
 	move.w	#$28,-(sp)
 	jsr	(j_Hibernate_Object).w
@@ -17217,7 +17219,7 @@ loc_D882:
 	clr.w	($FFFFFBCC).w
 	move.w	#$30,(Game_Mode).w
 	jmp	(j_loc_6E2).w
-; END OF FUNCTION CHUNK	FOR sub_C048
+; END OF FUNCTION CHUNK	FOR Flagpole
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -17342,7 +17344,7 @@ loc_DA4A:
 	move.w	#HundredKTripDest_LevelID,(Current_LevelID).w
 	clr.w	(Current_Helmet).w
 	st	($FFFFFC29).w
-	bra.w	loc_B84E
+	bra.w	Teleport
 ; ---------------------------------------------------------------------------
 	moveq	#0,d0
 
@@ -23846,7 +23848,7 @@ j_DecompressToRAM:
 j_EniDec:
 	jmp	EniDec(pc)
 ; ---------------------------------------------------------------------------
-Addr_TtlCrdLetters:dc.l	ArtComp_19C68_TtlCardLetters ;	DATA XREF: sub_B610+1AE0r
+Addr_TtlCrdLetters:dc.l	ArtComp_19C68_TtlCardLetters ;	DATA XREF: Character_CheckCollision+1AE0r
 off_1194C:	dc.l sub_12D64
 ; ---------------------------------------------------------------------------
 

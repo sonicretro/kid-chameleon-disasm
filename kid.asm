@@ -8108,7 +8108,7 @@ loc_7742:
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$35,d0
+	moveq	#sfx_Eyeclops_normal_lightbeam,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -10346,7 +10346,7 @@ loc_8C26:
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$3B,d0
+	moveq	#sfx_Eyeclops_hard_lightbeam,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -13339,7 +13339,7 @@ loc_A76A:
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
-	moveq	#$3B,d0
+	moveq	#sfx_Eyeclops_hard_lightbeam,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -13495,7 +13495,7 @@ loc_A94E:
 	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_A984
 	move.l	d0,-(sp)
-	moveq	#$4C,d0
+	moveq	#sfx_Jump_on_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -13539,7 +13539,7 @@ loc_A9E4:
 	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AA22
 	move.l	d0,-(sp)
-	moveq	#$22,d0
+	moveq	#sfx_Micromax_sticking,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	tst.l	$2A(a3)
@@ -21744,7 +21744,7 @@ loc_10200:
 	move.l	$36(a5),a3
 	st	$13(a3)
 	move.l	d0,-(sp)
-	moveq	#$D,d0
+	moveq	#sfx_Block_hit,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_10296,d7
@@ -29863,7 +29863,7 @@ loc_1B23A:
 ; ---------------------------------------------------------------------------
 
 Load_TitleScreen:
-	move.w	#3,d0
+	move.w	#bgm_Ice,d0
 	jsr	(j_PlaySound).l
 	move.l	#vdpComm($0000,VRAM,WRITE),4(a6)
 	move.w	#$7FF,d0
@@ -30000,7 +30000,7 @@ unk_1B32C:	dc.b $11
 
 sub_1B36C:
 	move.l	d0,-(sp)
-	move.w	#$77,d0
+	move.w	#sfx_Thunderstorm,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	rts
@@ -32040,7 +32040,7 @@ Pal_1C97C:  binclude	"scenes/palette/options.bin"
 
 Load_OptionMenu:
 	jsr	(j_StopMusic).l
-	move.w	#$65,d0
+	move.w	#bgm_City,d0
 	jsr	(j_PlaySound).l
 	move.w	#$1780,d0
 	move.l	(Addr_HoloBG).w,a0
@@ -44664,7 +44664,7 @@ loc_34E9C:
 	tst.b	$19(a3)
 	bne.w	loc_34EEC
 	move.l	d0,-(sp)
-	moveq	#$3A,d0
+	moveq	#sfx_UFO_shoots,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 
@@ -46882,7 +46882,7 @@ loc_3621A:
 	bsr.w	loc_3639E
 	bne.s	loc_3621A
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_3647E,d7
@@ -46972,7 +46972,7 @@ loc_36346:
 	jsr	(j_Init_Animation).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	d0,-(sp)
-	moveq	#$11,d0
+	moveq	#sfx_Prize_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	jsr	(j_sub_105E).w
@@ -48431,7 +48431,7 @@ loc_370C2:
 
 sub_370D2:
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$1010002,a3
@@ -52608,7 +52608,7 @@ stru_3A0C0:
 
 loc_3A0D2:
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$1040002,a3
@@ -52723,7 +52723,7 @@ stru_3A1E0:
 
 loc_3A1EA:
 	move.l	d0,-(sp)
-	moveq	#$60,d0
+	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#$1040002,a3
@@ -52803,7 +52803,7 @@ sub_3A292:
 loc_3A2C0:
 	move.b	#$A,d1
 	move.l	d0,-(sp)
-	moveq	#$5C,d0
+	moveq	#sfx_Big_Hopping_Skull_groan,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	subi.w	#1,$3E(a3)
@@ -53281,7 +53281,7 @@ loc_3A7EE:
 	move.l	#$10001,$54(a5)
 	tst.b	$19(a3)
 	bne.s	loc_3A884
-	moveq	#$5F,d0
+	moveq	#sfx_Robot_jumping_on,d0
 	jsr	(j_PlaySound).l
 
 loc_3A884:
@@ -53297,7 +53297,7 @@ loc_3A890:
 	bne.s	loc_3A8AE
 	tst.b	$19(a3)
 	bne.s	loc_3A8AE
-	moveq	#$5F,d0
+	moveq	#sfx_Robot_jumping_on,d0
 	jsr	(j_PlaySound).l
 
 loc_3A8AE:
@@ -53585,7 +53585,7 @@ loc_3AC0C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$19(a3)
 	bne.s	loc_3AC48
-	moveq	#$3A,d0
+	moveq	#sfx_Robot_shoots,d0
 	jsr	(j_PlaySound).l
 
 loc_3AC48:
@@ -59892,7 +59892,7 @@ sub_3F3F0:
 	jsr	(j_Hibernate_Object).w
 	tst.b	$19(a3)
 	bne.s	loc_3F406
-	moveq	#$3F,d0
+	moveq	#sfx_Mini_Hopping_Skull_screams,d0
 	jsr	(j_PlaySound).l
 
 loc_3F406:

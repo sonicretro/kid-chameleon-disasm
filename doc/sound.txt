@@ -1,14 +1,28 @@
 Kid Chameleon uses the GEMS sound driver.
 
+Informational video:
+https://www.youtube.com/watch?v=WEvnZRCW_qc
+
+Possible(?) options to edit music:
+- Use gems_split and gems_combine to replace songs with e.g. songs from other games
+- Set up the GEMS music editor in Dosbox and compose music
+- Use GEMS2ASM and hand-edit music in a text editor
+- ?
+
 Relevant resources: 
-
 https://forums.sonicretro.org/index.php?showtopic=18892&st=0&p=766022&#entry766022
-
+http://elektropage.ru/forum/7-68-1
 http://hiddenpalace.org/News/I%27m_not_dead!
+http://gendev.spritesmind.net/forum/viewtopic.php?t=1898
+http://www.deflemask.com/forum/cafe/(smd)-gems-sound-driver-editor/
+http://elektropage.ru/publ/o_prekrasnom/articles/gems_sound_driver/2-1-0-71 (Russian)
 
-
+Tools:
 https://github.com/TheRetroSnake/GEMS2ASM
 https://github.com/ValleyBell/MidiConverters/blob/master/gems2mid.c
 https://github.com/realmonster/GEMS
 
-http://www.deflemask.com/forum/cafe/(smd)-gems-sound-driver-editor/
+r57shell's video tutorials:
+https://www.youtube.com/watch?v=gr5t977Gn2c
+https://www.youtube.com/watch?v=hDXsRWKaqGw
+

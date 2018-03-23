@@ -12,8 +12,10 @@ FF0500 ?        DMA queue?
 FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
 FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
 FF3B24 ?        Block list.
-?      FF4A00   ?
-FF4A00 FF4E58	?
+?      FF4A04   ?
+FF4A04 FF4B80	List of pointers (words) to beginning of each row in Level_Layout, including 2 above the top and 8 below the bottom (at FF9E32 FFA652)
+FF4B80 FF4D5C   List of pointers (words) to beginning of each row in Level foreground layout
+FF4D5C FF4E58   List of pointers (words) to beginning of each row in background buffer
 FF4E58 FF4ED8	Palette_Buffer: $80 bytes
 FF4ED8 FF4FD8	more palette buffers?
 FF4FD8 FF503A	?
@@ -23,8 +25,9 @@ FF7392 FF7432	Horizontal scrolling related data
 FF7432 FF77B2	Horizontal Scroll Buffer: $380 bytes. a.k.a. deformation array
 FF77B2 FF87B2   decompression buffer
 FF87B2 FF9CB2   background buffer
-FF9CB2 FFA652   ?
-FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
+FF9CB2 FF9E32   ? -- in Final Marathon, this RAM up to FFA652 is filled with background mappings it seems? And the 2 rows of tiles are relocated to the last part of Level_Layout
+FF9E32 FFA652   2 rows of tiles, 1 above the top, 1 below bottom of the levels (same format as Level_Layout) -- top: solid, bottom: non solid
+FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: 1 bit ?, 3 bits collision, 4 bits block, 8 bits skin (30 screens of $118 entries each)
 FFE7F2 ?		Object RAM?: ($13 objects), $E bytes per object
 FFE90A ?        Object RAM?: ($13 objects), $C bytes per object
 FFE9FA ?        Shooter Block Bullet RAM: ($27 objects), $C bytes per object
@@ -32,6 +35,9 @@ FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
 FFEDBA ?        Platform RAM?: ($11 objects), $22 bytes per object
 FFF01E ?        
 FFF2B0 ?        Object RAM?
+FFF5A0 ?        Object RAM? - for collision purposes?
+FFF862 ?        Object RAM? - red stealth sword, axe, skull for collision purposes? - with pointers into GfxObject_RAM
+FFF8C0 ?        Object RAM? - for collision purposes?
 ?      FFF8FE   Misc variables
 FFF8FE ?        Enemy status table, one word entry per enemy in enemy layout (whether it's loaded or something)
 ?      FFFFFF	Misc variables
@@ -308,10 +314,23 @@ Object format for GfxObject from GfxObject RAM at FF2448:
 2E: (long) pointer to current anim_frame
 32: (word) animation frame duration countdown?
 34: ?
-38: (word) level collision event ID
-3A: (word)
-3C: (byte) flag: whether to execute level collision?
-3D: (byte) flag
+38: (word) collision event ID
+     0: no collision
+     4: right wall
+     8: left wall
+     C: floor
+    10: ceiling
+    14: up-slope /
+    18: down-slope \
+    1C: hurt, by e.g. shooter bullet, sword, axe, ...
+    20: kid is to the right
+    24: kid is to the left
+    28: kid is below
+    2C: kid is above (jumped on top of object)
+    negative: ?
+3A: (word) bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
+3C: (byte) flag: whether to execute level collision
+3D: (byte) flag: whether to execute collision with the kid
 3E: (long) some x position relative to camera?
 42: (long) some y position relative to camera?
 46: ?

@@ -150,6 +150,20 @@ Cave = 8
 Woods = 9
 City = $A
 
+; Collision
+colid_empty = 0
+colid_rightwall = 4
+colid_leftwall = 8
+colid_floor = $C
+colid_ceiling = $10
+colid_slopeup = $14
+colid_slopedown = $18
+colid_hurt = $1C
+colid_kidright = $20
+colid_kidleft = $24
+colid_kidbelow = $28
+colid_kidabove = $2C
+
 ; Levels by number
 L_Blue_Lake_Woods_1 = 0
 L_Blue_Lake_Woods_2 = 1

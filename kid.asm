@@ -240,10 +240,10 @@ j_Make_SpriteFromGfxObject: ;288
 ; ---------------------------------------------------------------------------
 	jmp	loc_1698(pc)
 ; ===========================================================================
-j_sub_16F0: ;290
-	jmp	sub_16F0(pc)
+j_GfxObjects_Collision: ;290
+	jmp	GfxObjects_Collision(pc)
 ; ---------------------------------------------------------------------------
-	jmp	sub_1B76(pc)
+	jmp	GfxObjects_CollisionKid(pc)
 ; ---------------------------------------------------------------------------
 	jmp	sub_219C(pc)
 ; ===========================================================================
@@ -922,23 +922,23 @@ loc_80C:
 	bsr.w	Execute_ScriptedPlatforms
 	bsr.w	Platforms_CheckCollision
 	lea	($FFFFF86A).w,a2
-	bsr.w	sub_16F0	; GfxObjects Collision?
+	bsr.w	GfxObjects_Collision	; GfxObjects Collision?
 	lea	($FFFFF866).w,a2
-	bsr.w	sub_16F0	; GfxObjects Collision?
+	bsr.w	GfxObjects_Collision	; GfxObjects Collision?
 
 loc_83E:
 	move.b	(Just_received_damage).w,($FFFFFC28).w
 	move.b	($FFFFFA75).w,($FFFFFA74).w
 	sf	($FFFFFA75).w
 	lea	($FFFFF866).w,a2
-	bsr.w	sub_1B76
+	bsr.w	GfxObjects_CollisionKid	; collision GfxObject/Kid?
 	bsr.w	sub_1F52
 	bsr.w	sub_219C
 	bsr.w	sub_226A
 	lea	($FFFFF86A).w,a2
-	bsr.w	sub_1B76
+	bsr.w	GfxObjects_CollisionKid
 	lea	($FFFFF86E).w,a2
-	bsr.w	sub_1B76
+	bsr.w	GfxObjects_CollisionKid
 	bsr.w	sub_1D76
 	bsr.w	sub_1FA2
 	bsr.w	sub_2A4C
@@ -2848,93 +2848,104 @@ loc_16E0:
 ; =============== S U B	R O U T	I N E =======================================
 
 ; Collide GfxObject(s) in a2 with terrain?
-sub_16F0:
+;sub_16F0:
+GfxObjects_Collision:
 	movem.l	d0-a6,-(sp)
 	subq.w	#4,sp
 	lea	($FFFF4A04).l,a0
 
-loc_16FC:
+;loc_16FC
+GfxObjects_Collision_Loop:
 	move.l	4(a2),d0
 	beq.w	loc_17BE
 	move.l	d0,a2
 	tst.b	$3C(a2)
-	beq.s	loc_16FC
+	beq.s	GfxObjects_Collision_Loop
 	move.w	$22(a2),d0
 	asr.w	#1,d0
-	lea	(off_30BF4).l,a4
+	lea	(CollisionSize_Index).l,a4
 	add.w	(a4,d0.w),a4
 
-loc_171C:
+;loc_171C
+; a sprite can be composed of multiple hitboxes
+GfxObjects_Collision_SubBoxLoop:
 	move.l	a4,a1
-	move.w	(a4)+,d0
-	beq.s	loc_16FC
-	tst.b	$16(a2)
-	bne.s	loc_1734
-	add.w	$1A(a2),d0
+	move.w	(a4)+,d0	; first entry 0 mean there's no collision
+	beq.s	GfxObjects_Collision_Loop
+	tst.b	$16(a2)		; sprite x-flipped?
+	bne.s	+
+	add.w	$1A(a2),d0	; d0 = left edge of hitbox
 	move.w	d0,d1
-	add.w	(a4)+,d1
-	bra.w	loc_173E
-; ---------------------------------------------------------------------------
+	add.w	(a4)+,d1	; d1 = right edge of hitbox
+	bra.w	GfxObjects_Collision_ChkBoundaries
 
-loc_1734:
+;loc_1734
++	; sprite is flipped
 	neg.w	d0
 	add.w	$1A(a2),d0
-	move.w	d0,d1
-	sub.w	(a4)+,d0
+	move.w	d0,d1		; d1 = right edge of hitbox
+	sub.w	(a4)+,d0	; d0 = left edge of hitbox
 
-loc_173E:
+;loc_173E
+GfxObjects_Collision_ChkBoundaries:
 	tst.w	d0
-	bmi.w	loc_1AEA
+	bmi.w	GfxObjects_Collision_LeftBoundary	; left level boundary
 	cmp.w	(Level_width_pixels).w,d1
-	bge.w	loc_1B0A
+	bge.w	GfxObjects_Collision_RightBoundary	; right level boundary
 	move.w	d0,d2
-	andi.w	#$FFF0,d2
+	andi.w	#$FFF0,d2	; left edge in pixels rounded to full block
 	move.w	d2,a6
 	move.w	d0,d4
 	move.w	d1,d5
-	asr.w	#4,d4
+	asr.w	#4,d4	; d4 = left edge in blocks
 	asr.w	#4,d5
-	sub.w	d4,d5
+	sub.w	d4,d5	; d5 = difference between right and left block
 	add.w	d4,d4
 	swap	d0
 	swap	d1
 	move.w	(a4)+,d0
-	add.w	$1E(a2),d0
-	bmi.w	loc_1B30
+	add.w	$1E(a2),d0	; d0 = top edge of hitbox
+	bmi.w	GfxObjects_Collision_TopBoundary	; top level boundary
 	move.w	d0,d1
-	add.w	(a4)+,d1
+	add.w	(a4)+,d1	; d1 = bottom edge of hitbox
 	cmp.w	(Level_height_blocks).w,d1
-	bge.w	loc_1B50
+	bge.w	GfxObjects_Collision_BottomBoundary	; bottom level boundary
 	move.w	d0,d3
 	andi.w	#$FFF0,d3
-	move.w	d1,d6
-	move.w	d0,d7
-	asr.w	#4,d6
-	asr.w	#4,d7
-	sub.w	d7,d6
+	move.w	d1,d6	; bottom edge in pixels
+	move.w	d0,d7	; top edge in pixels
+	asr.w	#4,d6	; bottom edge in blocks
+	asr.w	#4,d7	; d7 = top edge in blocks
+	sub.w	d7,d6	; d6 = difference between bottom and top block
 	add.w	d7,d7
-	move.w	(a0,d7.w),a3
-	add.w	d4,a3
+	move.w	(a0,d7.w),a3	; get pointer to row of tiles in Level_Layout
+	add.w	d4,a3	; get pointer to tile in Level_layout
 
-loc_1792:
-	move.w	d5,d4
-	move.w	a6,d2
+; this double loop checks for collision with every tiles that overlaps the hitbox
+;loc_1792
+GfxObjects_Collision_Tiles_Loop:
+	move.w	d5,d4	; difference between right and left block
+	move.w	a6,d2	; left edge in pixels rounded to full block
 
-loc_1796:
-	move.w	(a3)+,d7
-	andi.w	#$4000,d7
-	bne.w	loc_17C6
+;loc_1796
+GfxObjects_Collision_Tiles_RowLoop:
+	move.w	(a3)+,d7	; get tile
+	andi.w	#$4000,d7	; is there collision?
+	bne.w	loc_17C6	; yes --> go there
 
-loc_17A0:
+;loc_17A0
+GfxObjects_Collision_Tiles_Continue:
 	addi.w	#$10,d2
-	dbf	d4,loc_1796
+	dbf	d4,GfxObjects_Collision_Tiles_RowLoop
+
 	addi.w	#$10,d3
 	add.w	(Level_width_tiles).w,a3
 	subq.w	#2,a3
 	suba.w	d5,a3
 	suba.w	d5,a3
-	dbf	d6,loc_1792
-	bra.w	loc_171C
+	dbf	d6,GfxObjects_Collision_Tiles_Loop
+
+	bra.w	GfxObjects_Collision_SubBoxLoop
 ; ---------------------------------------------------------------------------
 
 loc_17BE:
@@ -2942,21 +2953,21 @@ loc_17BE:
 	movem.l	(sp)+,d0-a6
 	rts
 ; ---------------------------------------------------------------------------
-
+; collision at the current tile
 loc_17C6:
-	move.w	-2(a3),d7
-	andi.w	#$7000,d7
-	cmpi.w	#$7000,d7
-	beq.s	loc_17A0
-	cmpi.w	#$6000,d7
-	beq.w	loc_1844
-	cmpi.w	#$4000,d7
-	beq.w	loc_17EA
-	bra.w	loc_1820
+	move.w	-2(a3),d7	; get tile again
+	andi.w	#$7000,d7	; only get collision bits
+	cmpi.w	#$7000,d7	; spikes?
+	beq.s	GfxObjects_Collision_Tiles_Continue	; we ignore spikes
+	cmpi.w	#$6000,d7	; solid?
+	beq.w	GfxObjects_Collision_Solid
+	cmpi.w	#$4000,d7	; up slope?
+	beq.w	GfxObjects_Collision_UpSlope
+	bra.w	GfxObjects_Collision_DownSlope	; $5000 = down slope
 ; ---------------------------------------------------------------------------
 	nop
 
-loc_17EA:
+GfxObjects_Collision_UpSlope:
 	movem.l	d0-d1,-(sp)
 	move.w	d1,d0
 	swap	d1
@@ -2973,17 +2984,17 @@ loc_17EA:
 
 loc_180E:
 	movem.l	(sp)+,d0-d1
-	bra.s	loc_17A0
+	bra.s	GfxObjects_Collision_Tiles_Continue
 ; ---------------------------------------------------------------------------
 
 loc_1814:
 	subq.w	#2,a3
 	move.w	a3,($FFFFFB6C).w
 	addq.w	#8,sp
-	bra.w	loc_1A94
+	bra.w	GfxObjects_Collision_ChkUpSlope
 ; ---------------------------------------------------------------------------
-
-loc_1820:
+;loc_1820
+GfxObjects_Collision_DownSlope:
 	movem.l	d0-d1,-(sp)
 	swap	d0
 	sub.w	d3,d1
@@ -2991,17 +3002,17 @@ loc_1820:
 	cmp.w	d1,d0
 	ble.w	loc_1838
 	movem.l	(sp)+,d0-d1
-	bra.w	loc_17A0
+	bra.w	GfxObjects_Collision_Tiles_Continue
 ; ---------------------------------------------------------------------------
 
 loc_1838:
 	subq.w	#2,a3
 	move.w	a3,($FFFFFB6C).w
 	addq.w	#8,sp
-	bra.w	loc_1AB8
+	bra.w	GfxObjects_Collision_ChkDownSlope
 ; ---------------------------------------------------------------------------
 
-loc_1844:
+GfxObjects_Collision_Solid:
 	subq.w	#2,a3
 	move.l	a3,a5
 	move.w	a3,($FFFFFB6C).w
@@ -3016,20 +3027,22 @@ loc_1844:
 	move.w	d1,(sp)
 	move.w	d2,2(sp)
 	move.l	$26(a2),d0
-	bmi.w	loc_18E4
+	bmi.w	GfxObjects_Collision_Solid_MovingLeft
+	;moving right
 	lsr.l	#8,d0
 	move.l	$2A(a2),d7
-	bmi.w	loc_18AA
+	bmi.w	GfxObjects_Collision_Solid_MovingRightUp
+;GfxObjects_Collision_Solid_MovingRightDown
 	lsr.l	#8,d7
-	move.w	-2(a5),d3
+	move.w	-2(a5),d3	; get tile to the left
 	andi.w	#$7000,d3
 	cmpi.w	#$6000,d3
-	beq.w	loc_1A12
+	beq.w	loc_1A12	; tile to the left is solid
 	suba.w	(Level_width_tiles).w,a5
-	move.w	(a5),d3
+	move.w	(a5),d3	; get tile above
 	andi.w	#$7000,d3
 	cmpi.w	#$6000,d3
-	beq.w	loc_1966
+	beq.w	loc_1966	; tile above is solid
 	sub.w	d1,d4
 	sub.w	d2,d6
 	muls.w	d0,d6
@@ -3038,8 +3051,8 @@ loc_1844:
 	bgt.w	loc_1966
 	bra.w	loc_1A12
 ; ---------------------------------------------------------------------------
-
-loc_18AA:
+;loc_18AA
+GfxObjects_Collision_Solid_MovingRightUp:
 	lsr.l	#8,d7
 	move.w	-2(a5),d3
 	andi.w	#$7000,d3
@@ -3059,11 +3072,12 @@ loc_18AA:
 	blt.w	loc_1966
 	bra.w	loc_1A6C
 ; ---------------------------------------------------------------------------
-
-loc_18E4:
+;loc_18E4
+GfxObjects_Collision_Solid_MovingLeft:
 	lsr.l	#8,d0
 	move.l	$2A(a2),d7
-	bmi.w	loc_1928
+	bmi.w	GfxObjects_Collision_Solid_MovingLeftUp
+;GfxObjects_Collision_Solid_MovingLeftDown:
 	lsr.l	#8,d7
 	move.w	2(a5),d4
 	andi.w	#$7000,d4
@@ -3083,8 +3097,8 @@ loc_18E4:
 	blt.w	loc_19BA
 	bra.w	loc_1A12
 ; ---------------------------------------------------------------------------
-
-loc_1928:
+;loc_1928
+GfxObjects_Collision_Solid_MovingLeftUp:
 	lsr.l	#8,d7
 	move.w	2(a5),d4
 	andi.w	#$7000,d4
@@ -3112,14 +3126,14 @@ loc_1966:
 	cmpi.w	#$4000,d7
 	bne.w	loc_197E
 	subq.w	#2,($FFFFFB6C).w
-	bra.w	loc_1A94
+	bra.w	GfxObjects_Collision_ChkUpSlope
 ; ---------------------------------------------------------------------------
 
 loc_197E:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
-	move.w	#4,$38(a2)
+	move.w	#colid_rightwall,$38(a2)
 	move.w	(sp),d7
 	tst.b	$16(a2)
 	beq.w	loc_19A8
@@ -3127,7 +3141,7 @@ loc_197E:
 	subq.w	#1,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_19A8:
@@ -3136,7 +3150,7 @@ loc_19A8:
 	subq.w	#1,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_19BA:
@@ -3145,14 +3159,14 @@ loc_19BA:
 	cmpi.w	#$5000,d7
 	bne.w	loc_19D2
 	addq.w	#2,($FFFFFB6C).w
-	bra.w	loc_1AB8
+	bra.w	GfxObjects_Collision_ChkDownSlope
 ; ---------------------------------------------------------------------------
 
 loc_19D2:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
-	move.w	#8,$38(a2)
+	move.w	#colid_leftwall,$38(a2)
 	move.w	(sp),d7
 	tst.b	$16(a2)
 	beq.w	loc_1A00
@@ -3161,7 +3175,7 @@ loc_19D2:
 	addi.w	#$10,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_1A00:
@@ -3169,7 +3183,7 @@ loc_1A00:
 	addi.w	#$10,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_1A12:
@@ -3180,7 +3194,7 @@ loc_1A12:
 	bne.w	loc_1A30
 	move.w	(Level_width_tiles).w,d7
 	sub.w	d7,($FFFFFB6C).w
-	bra.w	loc_1A94
+	bra.w	GfxObjects_Collision_ChkUpSlope
 ; ---------------------------------------------------------------------------
 
 loc_1A30:
@@ -3188,14 +3202,14 @@ loc_1A30:
 	bne.w	loc_1A44
 	move.w	(Level_width_tiles).w,d7
 	sub.w	d7,($FFFFFB6C).w
-	bra.w	loc_1AB8
+	bra.w	GfxObjects_Collision_ChkDownSlope
 ; ---------------------------------------------------------------------------
 
 loc_1A44:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
-	move.w	#$C,$38(a2)
+	move.w	#colid_floor,$38(a2)
 	move.w	2(sp),d7
 	addq.w	#4,a1
 	sub.w	(a1)+,d7
@@ -3203,48 +3217,46 @@ loc_1A44:
 	subq.w	#1,d7
 	move.w	d7,$1E(a2)
 	clr.w	$20(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_1A6C:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.w	loc_1ADA
-	move.w	#$10,$38(a2)
+	move.w	#colid_ceiling,$38(a2)
 	move.w	2(sp),d7
 	addq.w	#4,a1
 	sub.w	(a1)+,d7
 	addi.w	#$10,d7
 	move.w	d7,$1E(a2)
 	clr.w	$20(a2)
-	bra.w	loc_16FC
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
-
-loc_1A94:
+;loc_1A94
+GfxObjects_Collision_ChkUpSlope:
 	tst.l	$2A(a2)
-	bpl.w	loc_1AAE
+	bpl.w	+
 	move.l	$26(a2),d7
-	bmi.w	loc_16FC
+	bmi.w	GfxObjects_Collision_Loop
 	neg.l	d7
 	cmp.l	$2A(a2),d7
-	bgt.w	loc_16FC
-
-loc_1AAE:
-	move.w	#$14,$38(a2)
-	bra.w	loc_16FC
+	bgt.w	GfxObjects_Collision_Loop
++
+	move.w	#colid_slopeup,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
-
-loc_1AB8:
+;loc_1AB8
+GfxObjects_Collision_ChkDownSlope:
 	tst.l	$2A(a2)
-	bpl.w	loc_1AD0
+	bpl.w	+
 	move.l	$26(a2),d7
-	bpl.w	loc_16FC
+	bpl.w	GfxObjects_Collision_Loop
 	cmp.l	$2A(a2),d7
-	bgt.w	loc_16FC
-
-loc_1AD0:
-	move.w	#$18,$38(a2)
-	bra.w	loc_16FC
+	bgt.w	GfxObjects_Collision_Loop
++
+	move.w	#colid_slopedown,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
 
 loc_1ADA:
@@ -3255,8 +3267,8 @@ loc_1ADA:
 	st	($FFFFFBCE).w
 	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
-
-loc_1AEA:
+;loc_1AEA
+GfxObjects_Collision_LeftBoundary:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
@@ -3264,11 +3276,11 @@ loc_1AEA:
 	sub.w	d0,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	move.w	#8,$38(a2)
-	bra.w	loc_16FC
+	move.w	#colid_leftwall,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
-
-loc_1B0A:
+; loc_1B0A
+GfxObjects_Collision_RightBoundary:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
@@ -3278,11 +3290,11 @@ loc_1B0A:
 	subq.w	#1,d7
 	move.w	d7,$1A(a2)
 	clr.w	$1C(a2)
-	move.w	#4,$38(a2)
-	bra.w	loc_16FC
+	move.w	#colid_rightwall,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
-
-loc_1B30:
+;loc_1B30
+GfxObjects_Collision_TopBoundary:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
@@ -3290,11 +3302,11 @@ loc_1B30:
 	sub.w	d0,d7
 	move.w	d7,$1E(a2)
 	clr.w	$20(a2)
-	move.w	#$10,$38(a2)
-	bra.w	loc_16FC
+	move.w	#colid_ceiling,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
 ; ---------------------------------------------------------------------------
-
-loc_1B50:
+;loc_1B50
+GfxObjects_Collision_BottomBoundary:
 	move.l	(Addr_GfxObject_Kid).w,d7
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
@@ -3304,15 +3316,15 @@ loc_1B50:
 	subq.w	#1,d7
 	move.w	d7,$1E(a2)
 	clr.w	$20(a2)
-	move.w	#$C,$38(a2)
-	bra.w	loc_16FC
-; End of function sub_16F0
+	move.w	#colid_floor,$38(a2)
+	bra.w	GfxObjects_Collision_Loop
+; End of function GfxObjects_Collision
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_1B76:
+;sub_1B76
+GfxObjects_CollisionKid:
 	tst.b	($FFFFFA64).w
 	beq.w	*+4
 	subq.w	#2,sp
@@ -3322,62 +3334,65 @@ sub_1B76:
 	move.w	(Kid_hitbox_top).w,d2
 	move.w	(Kid_hitbox_bottom).w,d3
 
-loc_1B94:
+;loc_1B94
+GfxObjects_CollisionKid_Loop:
 	move.l	4(a2),d4
 	beq.w	loc_1D00
 	move.l	d4,a2
 	tst.b	$3D(a2)
-	bne.s	loc_1B94
+	bne.s	GfxObjects_CollisionKid_Loop
 	move.w	$22(a2),d4
 	asr.w	#1,d4
-	lea	(off_30BF4).l,a3
+	lea	(CollisionSize_Index).l,a3
 	add.w	(a3,d4.w),a3
 	subq.w	#8,a3
 	tst.b	$16(a2)
-	bne.s	loc_1BEA
+	bne.s	GfxObjects_CollisionKid_SubBoxLoop_Flipped
 
-loc_1BBC:
+GfxObjects_CollisionKid_SubBoxLoop:	; sprite is not flipped
 	addq.w	#8,a3
 	move.w	(a3),d4
-	beq.s	loc_1B94
-	add.w	$1A(a2),d4
-	cmp.w	d1,d4
-	bgt.s	loc_1BBC
-	add.w	2(a3),d4
+	beq.s	GfxObjects_CollisionKid_Loop	; processed all hitboxes
+	add.w	$1A(a2),d4	; left boundary
+	cmp.w	d1,d4	; is left boundary of sprite less than right boundary of kid?
+	bgt.s	GfxObjects_CollisionKid_SubBoxLoop
+	add.w	2(a3),d4	; right boundary
 	cmp.w	d0,d4
-	blt.s	loc_1BBC
+	blt.s	GfxObjects_CollisionKid_SubBoxLoop
 	move.w	4(a3),d5
-	add.w	$1E(a2),d5
+	add.w	$1E(a2),d5	; top boundary
 	move.w	d5,(sp)
 	cmp.w	d3,d5
-	bgt.s	loc_1BBC
-	add.w	6(a3),d5
+	bgt.s	GfxObjects_CollisionKid_SubBoxLoop
+	add.w	6(a3),d5	; bottom boundary
 	cmp.w	d2,d5
-	blt.s	loc_1BBC
-	bra.s	loc_1C18
+	blt.s	GfxObjects_CollisionKid_SubBoxLoop
+	bra.s	GfxObjects_CollisionKid_Collide
 ; ---------------------------------------------------------------------------
 
-loc_1BEA:
+GfxObjects_CollisionKid_SubBoxLoop_Flipped:	; sprite is flipped
 	addq.w	#8,a3
 	move.w	(a3),d4
-	beq.s	loc_1B94
+	beq.s	GfxObjects_CollisionKid_Loop
 	neg.w	d4
 	add.w	$1A(a2),d4
 	cmp.w	d0,d4
-	blt.s	loc_1BEA
+	blt.s	GfxObjects_CollisionKid_SubBoxLoop_Flipped
 	sub.w	2(a3),d4
 	cmp.w	d1,d4
-	bgt.s	loc_1BEA
+	bgt.s	GfxObjects_CollisionKid_SubBoxLoop_Flipped
 	move.w	4(a3),d5
 	add.w	$1E(a2),d5
 	move.w	d5,(sp)
 	cmp.w	d3,d5
-	bgt.s	loc_1BEA
+	bgt.s	GfxObjects_CollisionKid_SubBoxLoop_Flipped
 	add.w	6(a3),d5
 	cmp.w	d2,d5
-	blt.s	loc_1BEA
+	blt.s	GfxObjects_CollisionKid_SubBoxLoop_Flipped
 
-loc_1C18:
+;loc_1C18
+;the kid's hitbox and the object hitbox overlap
+GfxObjects_CollisionKid_Collide:
 	cmpi.w	#4,8(a2)
 	beq.w	loc_1D5A
 	cmpi.w	#3,8(a2)
@@ -3391,26 +3406,28 @@ loc_1C18:
 
 loc_1C42:
 	move.l	$26(a2),d6
-	sub.l	$26(a0),d6
-	bmi.w	loc_1C94
+	sub.l	$26(a0),d6	; x_vel of object minus x_vel of kid
+	bmi.w	loc_1C94	; if kid has faster x_vel than object --> branch
 	lsl.l	#8,d6
 	swap	d6
-	move.l	$2A(a2),d7
-	sub.l	$2A(a0),d7
+	move.l	$2A(a2),d7	; y_vel of object minus y_vel of kid
+	sub.l	$2A(a0),d7	; if kid has faster y_vel than object --> branch
 	bmi.s	loc_1C76
+	; object has faster x and y velocity
 	lsl.l	#8,d7
 	swap	d7
-	add.w	2(a3),d4
-	sub.w	d0,d4
-	sub.w	d2,d5
-	muls.w	d7,d4
-	muls.w	d6,d5
+	add.w	2(a3),d4	; right edge of object hitbox
+	sub.w	d0,d4	; minus left edge of kid hitbox = size of x overlap (in pixels)
+	sub.w	d2,d5	; size of y overlap (in pixels)
+	muls.w	d7,d4	; multiply with $100 times x_vel
+	muls.w	d6,d5	; multiply with $100 times y_vel
 	cmp.l	d4,d5
-	bgt.w	loc_1CD2
-	bra.w	loc_1CDE
+	bgt.w	loc_1CD2	; y overlap * y_vel > x overlap * x_vel
+	bra.w	loc_1CDE	; y overlap * y_vel < x overlap * x_vel
 ; ---------------------------------------------------------------------------
 
 loc_1C76:
+	; object has faster x velocity and slower y velocity
 	lsl.l	#8,d7
 	swap	d7
 	add.w	2(a3),d4
@@ -3420,16 +3437,18 @@ loc_1C76:
 	muls.w	d7,d4
 	muls.w	d6,d5
 	cmp.l	d4,d5
-	blt.w	loc_1CD2
-	bra.w	loc_1CE4
+	blt.w	loc_1CD2	; y overlap * y_vel > x overlap * x_vel
+	bra.w	loc_1CE4	; y overlap * y_vel < x overlap * x_vel
 ; ---------------------------------------------------------------------------
 
 loc_1C94:
+	; object has slower x velocity
 	lsl.l	#8,d6
 	swap	d6
-	move.l	$2A(a2),d7
-	sub.l	$2A(a0),d7
+	move.l	$2A(a2),d7	; y_vel of object minus y_vel of kid
+	sub.l	$2A(a0),d7	; if kid has faster y_vel than object --> branch
 	bmi.s	loc_1CB8
+	; object has faster y velocity and slower x velocity
 	lsl.l	#8,d7
 	swap	d7
 	sub.w	d1,d4
@@ -3442,6 +3461,7 @@ loc_1C94:
 ; ---------------------------------------------------------------------------
 
 loc_1CB8:
+	; object has slower x and y velocity
 	lsl.l	#8,d7
 	swap	d7
 	sub.w	d1,d4
@@ -3455,22 +3475,22 @@ loc_1CB8:
 ; ---------------------------------------------------------------------------
 
 loc_1CD2:
-	move.w	#$20,d7
+	move.w	#colid_kidright,d7
 	bra.s	loc_1CF2
 ; ---------------------------------------------------------------------------
 
 loc_1CD8:
-	move.w	#$24,d7
+	move.w	#colid_kidleft,d7
 	bra.s	loc_1CF2
 ; ---------------------------------------------------------------------------
 
 loc_1CDE:
-	move.w	#$28,d7
+	move.w	#colid_kidbelow,d7
 	bra.s	loc_1CF2
 ; ---------------------------------------------------------------------------
 
 loc_1CE4:
-	move.w	#$2C,d7
+	move.w	#colid_kidabove,d7
 	cmpi.w	#Jump,(Character_Movement).w
 	bne.w	loc_1D4C
 
@@ -3507,10 +3527,10 @@ loc_1D34:
 ; ---------------------------------------------------------------------------
 
 loc_1D46:
-	move.w	#$28,$38(a2)
+	move.w	#colid_kidbelow,$38(a2)
 
 loc_1D4C:
-	move.w	#$28,$38(a0)
+	move.w	#colid_kidbelow,$38(a0)
 	move.w	$3A(a2),$3A(a0)
 	bra.s	loc_1D00
 ; ---------------------------------------------------------------------------
@@ -3522,10 +3542,10 @@ loc_1D5A:
 loc_1D62:
 	blt.s	loc_1D62
 	move.w	d6,$3A(a0)
-	move.w	#$28,$38(a0)
-	move.w	#$28,$38(a2)
+	move.w	#colid_kidbelow,$38(a0)
+	move.w	#colid_kidbelow,$38(a2)
 	bra.s	loc_1D00
-; End of function sub_1B76
+; End of function GfxObjects_CollisionKid
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -3549,7 +3569,7 @@ sub_1D84:
 	move.l	d0,a0
 	move.w	$22(a0),d0
 	beq.s	sub_1D84
-	lea	(off_30BF4).l,a1
+	lea	(CollisionSize_Index).l,a1
 	asr.w	#1,d0
 	add.w	(a1,d0.w),a1
 	move.w	(a1)+,d0
@@ -3583,7 +3603,7 @@ loc_1DCC:
 	bne.s	loc_1DCC
 	move.w	$22(a2),d4
 	asr.w	#1,d4
-	lea	(off_30BF4).l,a3
+	lea	(CollisionSize_Index).l,a3
 	add.w	(a3,d4.w),a3
 	subq.w	#8,a3
 	tst.b	$16(a2)
@@ -3644,7 +3664,7 @@ loc_1E5E:
 	exg	a0,a1
 	move.w	$1A(a0),$44(a1)
 	move.w	$1E(a0),$46(a1)
-	move.w	#$1C,$38(a2)
+	move.w	#colid_hurt,$38(a2)	; hurt by e.g. red stealth sword, axe, skull
 	cmpi.w	#$3C,$3A(a0)
 	bne.w	loc_1E94
 	move.w	#$FFFF,$38(a2)
@@ -3665,50 +3685,51 @@ loc_1EA0:
 	add.w	d7,d7
 	move.w	unk_1EBE(pc,d7.w),$38(a2)
 	swap	d7
-	move.w	#4,$38(a0)
+	move.w	#colid_rightwall,$38(a0)
 	bra.w	sub_1D84
 ; End of function sub_1D84
 
 ; ---------------------------------------------------------------------------
-unk_1EBE:	dc.w $1C
-	dc.w $1C
-	dc.w 0
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $1C
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $2C ; ,
-	dc.w $1C
-	dc.w $1C
-	dc.w $1C
+unk_1EBE:
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_empty
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_kidabove
+	dc.w colid_hurt
+	dc.w colid_hurt
+	dc.w colid_hurt
 	dc.w $FFFF
 	dc.w $FFFF
 	dc.w $FFFF
 	dc.w $FFFF
 	dc.w $FFFF
 ; ---------------------------------------------------------------------------
-
+; explosion object?
 loc_1F08:
 	move.l	#$3000401,a3
 	jsr	(j_Load_GfxObjectSlot).w
@@ -3752,7 +3773,7 @@ loc_1F56:
 	cmp.w	(Kid_hitbox_top).w,d0
 	blt.s	loc_1F56
 	move.l	(Addr_GfxObject_Kid).w,a0
-	move.w	#$28,$38(a0)
+	move.w	#colid_kidbelow,$38(a0)
 
 return_1F8C:
 	rts
@@ -4033,7 +4054,7 @@ sub_21F8:
 	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$22(a0),d0
 	beq.w	loc_2252
-	lea	(off_30BF4).l,a4
+	lea	(CollisionSize_Index).l,a4
 	move.l	a4,a1
 	asr.w	#1,d0
 	add.w	(a1,d0.w),a1
@@ -4097,7 +4118,7 @@ loc_2286:
 	move.l	d4,a2
 	move.w	$22(a2),d4
 	asr.w	#1,d4
-	lea	(off_30BF4).l,a3
+	lea	(CollisionSize_Index).l,a3
 	add.w	(a3,d4.w),a3
 	subq.w	#8,a3
 	tst.b	$16(a2)
@@ -4143,7 +4164,7 @@ loc_22D2:
 	ble.s	loc_22D2
 
 loc_22FE:
-	move.w	#$1C,$38(a2)
+	move.w	#colid_hurt,$38(a2)	; hurt by shooter block bullet
 	move.w	$A(a0),$A(a1)
 	move.w	($FFFFF8CC).w,$A(a0)
 	move.w	a0,($FFFFF8CC).w
@@ -10868,7 +10889,7 @@ loc_919E:
 ; ---------------------------------------------------------------------------
 
 loc_91A6:
-	move.w	#$28,$38(a3)
+	move.w	#colid_kidbelow,$38(a3)
 
 loc_91AC:
 	st	1(sp)
@@ -10985,7 +11006,7 @@ loc_92AA:
 ; ---------------------------------------------------------------------------
 
 loc_92B6:
-	move.w	#$28,$38(a3)
+	move.w	#colid_kidbelow,$38(a3)
 
 loc_92BC:
 	st	1(sp)
@@ -11658,7 +11679,7 @@ loc_985A:
 	bne.s	loc_985A
 	move.w	$22(a2),d4
 	asr.w	#1,d4
-	lea	(off_30BF4).l,a3
+	lea	(CollisionSize_Index).l,a3
 	add.w	(a3,d4.w),a3
 	subq.w	#8,a3
 	tst.b	$16(a2)
@@ -13127,7 +13148,7 @@ sub_A4EE:
 	move.l	d7,$1E(a3)
 	move.l	a2,-(sp)
 	lea	(Addr_FirstGfxObjectSlot+2).w,a2
-	jsr	(j_sub_16F0).w
+	jsr	(j_GfxObjects_Collision).w
 	move.l	(sp)+,a2
 	move.w	$38(a3),d7
 	beq.w	loc_A532
@@ -14509,7 +14530,8 @@ loc_B3B2:
 ; End of function sub_B270
 
 ; ---------------------------------------------------------------------------
-off_B3B8:	dc.w LnkTo_unk_A3B66-Data_Index
+off_B3B8:
+	dc.w LnkTo_unk_A3B66-Data_Index
 	dc.w LnkTo_unk_A3B66-Data_Index
 	dc.w LnkTo_unk_A3CEC-Data_Index
 	dc.w LnkTo_unk_A3CEC-Data_Index
@@ -14605,7 +14627,7 @@ sub_B43A:
 	btst	#Button_A,(Ctrl_Held).w ; keyboard key (S) jump
 	beq.w	loc_B482
 	move.w	#WarpCheatDest_LevelID,(Current_LevelID).w
-	move.w	#$28,$38(a3)
+	move.w	#colid_kidbelow,$38(a3)
 	move.w	#$A0,$3A(a3)
 
 loc_B482:
@@ -14659,7 +14681,7 @@ loc_B4E0:
 	beq.w	loc_B4FA
 	cmpi.w	#$7000,d0
 	bne.s	loc_B514
-	move.w	#$28,$38(a3)
+	move.w	#colid_kidbelow,$38(a3)
 
 loc_B4FA:
 	moveq	#1,d7
@@ -14736,8 +14758,8 @@ loc_B580:
 
 loc_B598:
 	lea	(Addr_FirstGfxObjectSlot+2).w,a2
-	jsr	(j_sub_16F0).w
-	cmpi.w	#$10,$38(a3)
+	jsr	(j_GfxObjects_Collision).w
+	cmpi.w	#colid_ceiling,$38(a3)
 	bne.w	loc_A6F8
 	clr.w	$38(a3)
 	subi.l	#$30000,d7
@@ -14806,10 +14828,10 @@ off_B640:
 	dc.l loc_B672
 	dc.l loc_B672
 	dc.l Check_for_recent_damge
-	dc.l loc_B678
-	dc.l loc_B678
-	dc.l Check_for_recent_damge
-	dc.l Jump_On_Enemy
+	dc.l loc_B678	; kid right of enemy
+	dc.l loc_B678	; kid left of enemy
+	dc.l Check_for_recent_damge	; kid below enemy
+	dc.l Jump_On_Enemy	; kid above enemy
 ; ---------------------------------------------------------------------------
 
 Crushed_to_Death:
@@ -14825,7 +14847,7 @@ loc_B672:
 ; ---------------------------------------------------------------------------
 
 loc_B678:
-	cmpi.w	#$18,d5
+	cmpi.w	#$18,d5	; is the enemy a tornado?
 	beq.w	loc_B69E
 	tst.b	(Berzerker_charging).w
 	beq.w	Check_for_recent_damge
@@ -14836,7 +14858,7 @@ return_B690:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_B692:
+loc_B692:	; negate x velocity
 	move.l	$26(a3),d7
 	neg.l	d7
 	move.l	d7,$26(a3)
@@ -15568,19 +15590,13 @@ loc_BD40:
 
 ; ---------------------------------------------------------------------------
 unk_BD8A:
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b   1
+	dc.w  -7
+	dc.w   1
 unk_BD8E:
-	dc.b   0
-	dc.b $90 ; ê
-	dc.b   0
-	dc.b $98 ; ò
-	dc.b   0
-	dc.b $9D ; ù
-	dc.b   0
-	dc.b $A5 ; •
+	dc.w $90
+	dc.w $98
+	dc.w $9D
+	dc.w $A5
 ; ---------------------------------------------------------------------------
 	tst.b	(Check_Helmet_Change).w
 	bne.s	Transform_Character
@@ -30124,7 +30140,7 @@ loc_1B494:
 	bsr.w	Load_TitleArt
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1B504,4(a0)
+	move.l	#GfxObjects_Collision_BottomBoundary4,4(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1B6AC,4(a0)
@@ -30183,7 +30199,7 @@ unk_1B4F4:	dc.b   0
 	dc.b  $F
 ; ---------------------------------------------------------------------------
 
-loc_1B504:
+GfxObjects_Collision_BottomBoundary4:
 	move.w	#$A,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.l	(Level_Layout).w,d0
@@ -35885,3567 +35901,1929 @@ unk_309B8:	dc.b $27 ; '
 	dc.b $FF
 	dc.b $FF
 	dc.b $FF
-off_30BF4:	dc.w unk_31D8E-off_30BF4 
-	dc.w loc_320C0+2-off_30BF4
-	dc.w loc_320C0+2-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314CE-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314D0-off_30BF4
-	dc.w unk_314DA-off_30BF4
-	dc.w unk_314DA-off_30BF4
-	dc.w unk_314DA-off_30BF4
-	dc.w loc_320D8-off_30BF4
-	dc.w loc_320D8-off_30BF4
-	dc.w loc_320D8-off_30BF4
-	dc.w loc_320D8-off_30BF4
-	dc.w unk_314E4-off_30BF4
-	dc.w unk_314E4-off_30BF4
-	dc.w unk_314E4-off_30BF4
-	dc.w unk_314E4-off_30BF4
-	dc.w unk_314EE-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314F8-off_30BF4
-	dc.w unk_314F8-off_30BF4
-	dc.w unk_314F8-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_31504-off_30BF4
-	dc.w unk_31504-off_30BF4
-	dc.w unk_31504-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w unk_314FA-off_30BF4
-	dc.w loc_32102-off_30BF4
-	dc.w loc_32102-off_30BF4
-	dc.w loc_32102-off_30BF4
-	dc.w unk_3150E-off_30BF4
-	dc.w unk_3150E-off_30BF4
-	dc.w unk_31518-off_30BF4
-	dc.w unk_31518-off_30BF4
-	dc.w unk_31518-off_30BF4
-	dc.w unk_3151A-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w unk_31524-off_30BF4
-	dc.w loc_32122-off_30BF4
-	dc.w loc_32122-off_30BF4
-	dc.w loc_32122-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_3152E-off_30BF4
-	dc.w unk_31538-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w unk_31542-off_30BF4
-	dc.w loc_32140-off_30BF4
-	dc.w loc_32140-off_30BF4
-	dc.w loc_32140-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_31556-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_31560-off_30BF4
-	dc.w unk_31560-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_31562-off_30BF4
-	dc.w unk_31562-off_30BF4
-	dc.w unk_31562-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w unk_3154C-off_30BF4
-	dc.w loc_3215E+2-off_30BF4
-	dc.w loc_3215E+2-off_30BF4
-	dc.w loc_3215E+2-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_3156C-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31580-off_30BF4
-	dc.w unk_31580-off_30BF4
-	dc.w unk_31580-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w unk_31576-off_30BF4
-	dc.w loc_3217C+2-off_30BF4
-	dc.w loc_3217C+2-off_30BF4
-	dc.w loc_3217C+2-off_30BF4
-	dc.w unk_3158A-off_30BF4
-	dc.w unk_3158A-off_30BF4
-	dc.w unk_3158A-off_30BF4
-	dc.w unk_3158C-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_315A0-off_30BF4
-	dc.w unk_315A0-off_30BF4
-	dc.w unk_315A0-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w unk_31596-off_30BF4
-	dc.w loc_3219E-off_30BF4
-	dc.w loc_3219E-off_30BF4
-	dc.w loc_3219E-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315B4-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315C8-off_30BF4
-	dc.w unk_315C8-off_30BF4
-	dc.w unk_315C8-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w unk_315BE-off_30BF4
-	dc.w loc_321C6-off_30BF4
-	dc.w loc_321C6-off_30BF4
-	dc.w loc_321C6-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315D2-off_30BF4
-	dc.w unk_315DC-off_30BF4
-	dc.w unk_315DC-off_30BF4
-	dc.w unk_315DC-off_30BF4
-	dc.w unk_315DC-off_30BF4
-	dc.w unk_315DC-off_30BF4
-	dc.w unk_315E8-off_30BF4
-	dc.w unk_315DE-off_30BF4
-	dc.w unk_315DE-off_30BF4
-	dc.w loc_321E4+2-off_30BF4
-	dc.w loc_321E4+2-off_30BF4
-	dc.w loc_321E4+2-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315F2-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_31606-off_30BF4
-	dc.w unk_31606-off_30BF4
-	dc.w unk_31606-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w unk_315FC-off_30BF4
-	dc.w loc_32200+4-off_30BF4
-	dc.w loc_32200+4-off_30BF4
-	dc.w loc_32200+4-off_30BF4
-	dc.w unk_31610-off_30BF4
-	dc.w unk_31610-off_30BF4
-	dc.w unk_31610-off_30BF4
-	dc.w unk_31612-off_30BF4
-	dc.w unk_3161C-off_30BF4
-	dc.w unk_31626-off_30BF4
-	dc.w unk_31630-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_31658-off_30BF4
-	dc.w unk_3163A-off_30BF4
-	dc.w unk_3163A-off_30BF4
-	dc.w unk_31644-off_30BF4
-	dc.w unk_31644-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w unk_3164E-off_30BF4
-	dc.w loc_32256-off_30BF4
-	dc.w unk_31662-off_30BF4
-	dc.w unk_31662-off_30BF4
-	dc.w unk_31662-off_30BF4
-	dc.w unk_31664-off_30BF4
-	dc.w unk_31664-off_30BF4
-	dc.w unk_31664-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3166E-off_30BF4
-	dc.w unk_3226C-off_30BF4
-	dc.w unk_3226C-off_30BF4
-	dc.w unk_3226C-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_3167A-off_30BF4
-	dc.w unk_31684-off_30BF4
-	dc.w unk_31684-off_30BF4
-	dc.w unk_31684-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_31686-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_32284-off_30BF4
-	dc.w unk_31692-off_30BF4
-	dc.w unk_31692-off_30BF4
-	dc.w unk_31692-off_30BF4
-	dc.w unk_31692-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_3169C-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w off_32290+2-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_3169E-off_30BF4
-	dc.w unk_316A0-off_30BF4
-	dc.w unk_316A0-off_30BF4
-	dc.w unk_316A0-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AA-off_30BF4
-	dc.w unk_316AC-off_30BF4
-	dc.w unk_316B6-off_30BF4
-	dc.w unk_316B8-off_30BF4
-	dc.w unk_316C2-off_30BF4
-	dc.w loc_322C0-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_316CC-off_30BF4
-	dc.w unk_316CC-off_30BF4
-	dc.w unk_316CE-off_30BF4
-	dc.w unk_316CE-off_30BF4
-	dc.w unk_316CE-off_30BF4
-	dc.w loc_322C8+4-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_316D8-off_30BF4
-	dc.w unk_316E2-off_30BF4
-	dc.w unk_316EC-off_30BF4
-	dc.w unk_316F6-off_30BF4
-	dc.w unk_31710-off_30BF4
-	dc.w unk_3172A-off_30BF4
-	dc.w unk_31744-off_30BF4
-	dc.w unk_3175E-off_30BF4
-	dc.w unk_3175E-off_30BF4
-	dc.w unk_3175E-off_30BF4
-	dc.w unk_31760-off_30BF4
-	dc.w unk_31760-off_30BF4
-	dc.w unk_31760-off_30BF4
-	dc.w unk_31760-off_30BF4
-	dc.w loc_3235E-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_3176A-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_31774-off_30BF4
-	dc.w unk_3177E-off_30BF4
-	dc.w unk_3177E-off_30BF4
-	dc.w unk_3177E-off_30BF4
-	dc.w loc_3237A+2-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31788-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w unk_31792-off_30BF4
-	dc.w loc_3247E+2-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188C-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_3188E-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_31898-off_30BF4
-	dc.w unk_3189A-off_30BF4
-	dc.w unk_318A4-off_30BF4
-	dc.w unk_318A4-off_30BF4
-	dc.w unk_318A6-off_30BF4
-	dc.w unk_318B0-off_30BF4
-	dc.w unk_318B2-off_30BF4
-	dc.w unk_318B2-off_30BF4
-	dc.w unk_318B2-off_30BF4
-	dc.w unk_318BC-off_30BF4
-	dc.w unk_318BC-off_30BF4
-	dc.w unk_318BC-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D0-off_30BF4
-	dc.w unk_318D2-off_30BF4
-	dc.w unk_318B2-off_30BF4
-	dc.w unk_318BC-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w unk_318C6-off_30BF4
-	dc.w loc_32386+2-off_30BF4
-	dc.w loc_32386+2-off_30BF4
-	dc.w loc_32386+2-off_30BF4
-	dc.w unk_31796-off_30BF4
-	dc.w unk_31798-off_30BF4
-	dc.w unk_3179A-off_30BF4
-	dc.w unk_3179C-off_30BF4
-	dc.w unk_317A6-off_30BF4
-	dc.w unk_317B0-off_30BF4
-	dc.w unk_317BA-off_30BF4
-	dc.w unk_317C4-off_30BF4
-	dc.w unk_317CE-off_30BF4
-	dc.w unk_317D8-off_30BF4
-	dc.w loc_323D6-off_30BF4
-	dc.w loc_323D6-off_30BF4
-	dc.w loc_323D6-off_30BF4
-	dc.w unk_317E2-off_30BF4
-	dc.w unk_317E4-off_30BF4
-	dc.w unk_317EE-off_30BF4
-	dc.w unk_317F8-off_30BF4
-	dc.w unk_31802-off_30BF4
-	dc.w unk_3180C-off_30BF4
-	dc.w unk_31816-off_30BF4
-	dc.w unk_31820-off_30BF4
-	dc.w unk_31822-off_30BF4
-	dc.w unk_31824-off_30BF4
-	dc.w unk_3182E-off_30BF4
-	dc.w unk_31838-off_30BF4
-	dc.w unk_31842-off_30BF4
-	dc.w unk_3184C-off_30BF4
-	dc.w unk_31856-off_30BF4
-	dc.w loc_32454-off_30BF4
-	dc.w loc_32454-off_30BF4
-	dc.w loc_32454-off_30BF4
-	dc.w unk_31862-off_30BF4
-	dc.w unk_31864-off_30BF4
-	dc.w unk_31866-off_30BF4
-	dc.w unk_31870-off_30BF4
-	dc.w unk_31872-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_31874-off_30BF4
-	dc.w unk_3187E-off_30BF4
-	dc.w unk_31880-off_30BF4
-	dc.w unk_31882-off_30BF4
-	dc.w unk_31882-off_30BF4
-	dc.w unk_31882-off_30BF4
-	dc.w unk_31882-off_30BF4
-	dc.w loc_324D0-off_30BF4
-	dc.w loc_324D0-off_30BF4
-	dc.w loc_324D0-off_30BF4
-	dc.w unk_318DC-off_30BF4
-	dc.w unk_318DC-off_30BF4
-	dc.w unk_318DC-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w unk_318DE-off_30BF4
-	dc.w loc_324DC-off_30BF4
-	dc.w loc_324DC-off_30BF4
-	dc.w loc_324DC-off_30BF4
-	dc.w unk_318E8-off_30BF4
-	dc.w unk_318E8-off_30BF4
-	dc.w unk_318E8-off_30BF4
-	dc.w unk_318EA-off_30BF4
-	dc.w unk_318F4-off_30BF4
-	dc.w unk_318FE-off_30BF4
-	dc.w unk_31908-off_30BF4
-	dc.w unk_31912-off_30BF4
-	dc.w unk_3191C-off_30BF4
-	dc.w unk_31926-off_30BF4
-	dc.w unk_31930-off_30BF4
-	dc.w unk_3193A-off_30BF4
-	dc.w loc_32534+4-off_30BF4
-	dc.w loc_32534+4-off_30BF4
-	dc.w loc_32534+4-off_30BF4
-	dc.w unk_31944-off_30BF4
-	dc.w unk_31944-off_30BF4
-	dc.w unk_31944-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_319C2-off_30BF4
-	dc.w unk_319D4-off_30BF4
-	dc.w unk_319EE-off_30BF4
-	dc.w unk_31A00-off_30BF4
-	dc.w unk_31A12-off_30BF4
-	dc.w unk_3194E-off_30BF4
-	dc.w unk_31958-off_30BF4
-	dc.w unk_3196A-off_30BF4
-	dc.w unk_31984-off_30BF4
-	dc.w unk_3199E-off_30BF4
-	dc.w unk_319B0-off_30BF4
-	dc.w loc_32618-off_30BF4
-	dc.w loc_32618-off_30BF4
-	dc.w loc_32618-off_30BF4
-	dc.w unk_31A24-off_30BF4
-	dc.w unk_31A24-off_30BF4
-	dc.w unk_31A26-off_30BF4
-	dc.w unk_31A30-off_30BF4
-	dc.w unk_31A30-off_30BF4
-	dc.w unk_31A30-off_30BF4
-	dc.w unk_31A32-off_30BF4
-	dc.w unk_31A3C-off_30BF4
-	dc.w unk_31A46-off_30BF4
-	dc.w unk_31A48-off_30BF4
-	dc.w unk_31A48-off_30BF4
-	dc.w unk_31A48-off_30BF4
-	dc.w unk_31A52-off_30BF4
-	dc.w unk_31A54-off_30BF4
-	dc.w unk_31A54-off_30BF4
-	dc.w unk_31A5E-off_30BF4
-	dc.w off_329B6+$14-off_30BF4
-	dc.w off_329B6+$14-off_30BF4
-	dc.w off_329B6+$14-off_30BF4
-	dc.w unk_31DD6-off_30BF4
-	dc.w unk_31DD6-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DD6-off_30BF4
-	dc.w unk_31DD6-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31DE0-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A60-off_30BF4
-	dc.w unk_31A6A-off_30BF4
-	dc.w unk_31A6A-off_30BF4
-	dc.w unk_31A6A-off_30BF4
-	dc.w off_32656+$A-off_30BF4
-	dc.w off_32656+$A-off_30BF4
-	dc.w off_32656+$A-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6C-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w unk_31A6E-off_30BF4
-	dc.w off_32656+$16-off_30BF4
-	dc.w off_32656+$16-off_30BF4
-	dc.w off_32656+$16-off_30BF4
-	dc.w unk_31A78-off_30BF4
-	dc.w unk_31A78-off_30BF4
-	dc.w unk_31A78-off_30BF4
-	dc.w unk_31A7A-off_30BF4
-	dc.w unk_31A7A-off_30BF4
-	dc.w unk_31A7A-off_30BF4
-	dc.w unk_31A7A-off_30BF4
-	dc.w unk_31A84-off_30BF4
-	dc.w unk_31A84-off_30BF4
-	dc.w unk_31A84-off_30BF4
-	dc.w unk_31A86-off_30BF4
-	dc.w unk_31A86-off_30BF4
-	dc.w loc_32682+2-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_31A90-off_30BF4
-	dc.w unk_31A9A-off_30BF4
-	dc.w unk_31AA4-off_30BF4
-	dc.w unk_31AAE-off_30BF4
-	dc.w unk_31AAE-off_30BF4
-	dc.w unk_31AAE-off_30BF4
-	dc.w unk_31AB0-off_30BF4
-	dc.w unk_31ABA-off_30BF4
-	dc.w unk_31AC4-off_30BF4
-	dc.w loc_326C0+2-off_30BF4
-	dc.w loc_326C0+2-off_30BF4
-	dc.w loc_326C0+2-off_30BF4
-	dc.w unk_31ACE-off_30BF4
-	dc.w unk_31ACE-off_30BF4
-	dc.w unk_31ACE-off_30BF4
-	dc.w unk_31ACE-off_30BF4
-	dc.w unk_31ACE-off_30BF4
-	dc.w unk_31AD0-off_30BF4
-	dc.w unk_31ADA-off_30BF4
-	dc.w unk_31AE4-off_30BF4
-	dc.w unk_31AEE-off_30BF4
-	dc.w unk_31AF8-off_30BF4
-	dc.w stru_326F6-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B04-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B0E-off_30BF4
-	dc.w unk_31B10-off_30BF4
-	dc.w unk_31B1A-off_30BF4
-	dc.w unk_31B24-off_30BF4
-	dc.w unk_31B36-off_30BF4
-	dc.w unk_31B48-off_30BF4
-	dc.w unk_31B5A-off_30BF4
-	dc.w unk_31B64-off_30BF4
-	dc.w unk_31B6E-off_30BF4
-	dc.w unk_31B78-off_30BF4
-	dc.w unk_31B8A-off_30BF4
-	dc.w unk_31B9C-off_30BF4
-	dc.w unk_31BAE-off_30BF4
-	dc.w unk_31BB8-off_30BF4
-	dc.w loc_327B6-off_30BF4
-	dc.w loc_327B6-off_30BF4
-	dc.w loc_327B6-off_30BF4
-	dc.w unk_31BC4-off_30BF4
-	dc.w unk_31BC6-off_30BF4
-	dc.w unk_31BC8-off_30BF4
-	dc.w unk_31BCA-off_30BF4
-	dc.w unk_31BCA-off_30BF4
-	dc.w unk_31BCA-off_30BF4
-	dc.w unk_31BD4-off_30BF4
-	dc.w unk_31BD6-off_30BF4
-	dc.w unk_31BD8-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31BE4-off_30BF4
-	dc.w unk_31BEE-off_30BF4
-	dc.w unk_31BF8-off_30BF4
-	dc.w unk_31C02-off_30BF4
-	dc.w unk_31C0C-off_30BF4
-	dc.w unk_31C16-off_30BF4
-	dc.w unk_31C20-off_30BF4
-	dc.w unk_31C20-off_30BF4
-	dc.w unk_31C20-off_30BF4
-	dc.w unk_31C20-off_30BF4
-	dc.w unk_31C22-off_30BF4
-	dc.w unk_31BDA-off_30BF4
-	dc.w unk_31C2C-off_30BF4
-	dc.w unk_31C36-off_30BF4
-	dc.w loc_32832+2-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w off_329B6+$20-off_30BF4
-	dc.w unk_31CAE-off_30BF4
-	dc.w unk_31CC0-off_30BF4
-	dc.w unk_31CD2-off_30BF4
-	dc.w unk_31CD2-off_30BF4
-	dc.w unk_31CD2-off_30BF4
-	dc.w unk_31C42-off_30BF4
-	dc.w unk_31C54-off_30BF4
-	dc.w unk_31C66-off_30BF4
-	dc.w unk_31C78-off_30BF4
-	dc.w unk_31C8A-off_30BF4
-	dc.w unk_31C9C-off_30BF4
-	dc.w unk_31CD4-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CDE-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CEA-off_30BF4
-	dc.w unk_31CEA-off_30BF4
-	dc.w unk_31CEA-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CE0-off_30BF4
-	dc.w unk_31CEC-off_30BF4
-	dc.w unk_31CEC-off_30BF4
-	dc.w unk_31D06-off_30BF4
-	dc.w unk_31D06-off_30BF4
-	dc.w unk_31D06-off_30BF4
-	dc.w unk_31D06-off_30BF4
-	dc.w unk_31D06-off_30BF4
-	dc.w unk_31D08-off_30BF4
-	dc.w unk_31D12-off_30BF4
-	dc.w unk_31D14-off_30BF4
-	dc.w unk_31D1E-off_30BF4
-	dc.w unk_31D28-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2A-off_30BF4
-	dc.w unk_31D2C-off_30BF4
-	dc.w unk_31D2C-off_30BF4
-	dc.w unk_31D36-off_30BF4
-	dc.w unk_31D36-off_30BF4
-	dc.w unk_31D40-off_30BF4
-	dc.w unk_31D40-off_30BF4
-	dc.w unk_31D40-off_30BF4
-	dc.w unk_31D40-off_30BF4
-	dc.w unk_31D40-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4A-off_30BF4
-	dc.w unk_31D4C-off_30BF4
-	dc.w unk_31D4C-off_30BF4
-	dc.w unk_31D4C-off_30BF4
-	dc.w unk_31D4C-off_30BF4
-	dc.w unk_31D4C-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D56-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D58-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5A-off_30BF4
-	dc.w unk_31D5C-off_30BF4
-	dc.w unk_31D5C-off_30BF4
-	dc.w unk_31D5C-off_30BF4
-	dc.w unk_31D5E-off_30BF4
-	dc.w unk_31D5E-off_30BF4
-	dc.w unk_31D5E-off_30BF4
-	dc.w unk_31D5E-off_30BF4
-	dc.w unk_31D68-off_30BF4
-	dc.w unk_31D68-off_30BF4
-	dc.w unk_31D68-off_30BF4
-	dc.w unk_31D68-off_30BF4
-	dc.w unk_31D6A-off_30BF4
-	dc.w unk_31D74-off_30BF4
-	dc.w unk_31D76-off_30BF4
-	dc.w unk_31D76-off_30BF4
-	dc.w unk_31D76-off_30BF4
-	dc.w unk_31D76-off_30BF4
-	dc.w unk_31D76-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D78-off_30BF4
-	dc.w unk_31D7A-off_30BF4
-	dc.w unk_31D7A-off_30BF4
-	dc.w unk_31D7A-off_30BF4
-	dc.w unk_31D7A-off_30BF4
-	dc.w unk_31D84-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-	dc.w unk_31D90-off_30BF4
-	dc.w unk_31D9A-off_30BF4
-	dc.w unk_31DA4-off_30BF4
-	dc.w unk_31DAE-off_30BF4
-	dc.w unk_31DB8-off_30BF4
-	dc.w unk_31DC2-off_30BF4
-	dc.w unk_31DCC-off_30BF4
-	dc.w unk_31DE4-off_30BF4
-	dc.w unk_31DEE-off_30BF4
-	dc.w unk_31DF8-off_30BF4
-	dc.w unk_31E02-off_30BF4
-	dc.w unk_31E0C-off_30BF4
-	dc.w unk_31E16-off_30BF4
-	dc.w unk_31E20-off_30BF4
-	dc.w unk_31E2A-off_30BF4
-	dc.w unk_31E34-off_30BF4
-	dc.w unk_31E3E-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31E48-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-	dc.w unk_31D8E-off_30BF4
-unk_314CE:	dc.b   0
-	dc.b   0
-unk_314D0:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_314DA:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_314E4:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_314EE:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_314F8:	dc.b   0
-	dc.b   0
-unk_314FA:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31504:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_3150E:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_31518:	dc.b   0
-	dc.b   0
-unk_3151A:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31524:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_3152E:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_31538:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31542:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_3154C:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31556:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $B
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31560:	dc.b   0
-	dc.b   0
-unk_31562:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_3156C:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31576:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31580:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_3158A:	dc.b   0
-	dc.b   0
-unk_3158C:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31596:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_315A0:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_315B4:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_315BE:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_315C8:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_315D2:	dc.b $FF
-	dc.b $E9 ; È
-	dc.b   0
-	dc.b $2E ; .
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_315DC:	dc.b   0
-	dc.b   0
-unk_315DE:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   0
-unk_315E8:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_315F2:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_315FC:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31606:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_31610:	dc.b   0
-	dc.b   0
-unk_31612:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_3161C:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31626:	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b $12
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31630:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_3163A:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31644:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_3164E:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b   0
-unk_31658:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31662:	dc.b   0
-	dc.b   0
-unk_31664:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b $1B
-	dc.b   0
-	dc.b   0
-unk_3166E:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b $1B
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_3167A:	dc.b $FF
-	dc.b $EB ; Î
-	dc.b   0
-	dc.b $27 ; '
-	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b   0
-unk_31684:	dc.b   0
-	dc.b   0
-unk_31686:	dc.b $FF
-	dc.b $EB ; Î
-	dc.b   0
-	dc.b $27 ; '
-	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31692:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-unk_3169C:	dc.b   0
-	dc.b   0
-unk_3169E:	dc.b   0
-	dc.b   0
-unk_316A0:	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b $12
-	dc.b $FF
-	dc.b $E3 ; „
-	dc.b   0
-	dc.b $1D
-	dc.b   0
-	dc.b   0
-unk_316AA:	dc.b   0
-	dc.b   0
-unk_316AC:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_316B6:	dc.b   0
-	dc.b   0
-unk_316B8:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_316C2:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_316CC:	dc.b   0
-	dc.b   0
-unk_316CE:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $DF ; ﬂ
-	dc.b   0
-	dc.b $21 ; !
-	dc.b   0
-	dc.b   0
-unk_316D8:	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_316E2:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_316EC:	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_316F6:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31710:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_3172A:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31744:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_3175E:	dc.b   0
-	dc.b   0
-unk_31760:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b $16
-	dc.b   0
-	dc.b   0
-unk_3176A:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31774:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_3177E:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31788:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_31792:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31796:	dc.b   0
-	dc.b   0
-unk_31798:	dc.b   0
-	dc.b   0
-unk_3179A:	dc.b   0
-	dc.b   0
-unk_3179C:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_317A6:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317B0:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317BA:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317C4:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317CE:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317D8:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $E6 ; Ê
-	dc.b   0
-	dc.b $1A
-	dc.b   0
-	dc.b   0
-unk_317E2:	dc.b   0
-	dc.b   0
-unk_317E4:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $26 ; &
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317EE:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $26 ; &
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_317F8:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $24 ; $
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31802:	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b $24 ; $
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_3180C:	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b $25 ; %
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-unk_31816:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $23 ; #
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31820:	dc.b   0
-	dc.b   0
-unk_31822:	dc.b   0
-	dc.b   0
-unk_31824:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_3182E:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31838:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1F
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31842:	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_3184C:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1F
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31856:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31862:	dc.b   0
-	dc.b   0
-unk_31864:	dc.b   0
-	dc.b   0
-unk_31866:	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $16
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b $1C
-	dc.b   0
-	dc.b   0
-unk_31870:	dc.b   0
-	dc.b   0
-unk_31872:	dc.b   0
-	dc.b   0
-unk_31874:	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $16
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b $1C
-	dc.b   0
-	dc.b   0
-unk_3187E:	dc.b   0
-	dc.b   0
-unk_31880:	dc.b   0
-	dc.b   0
-unk_31882:	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $40 ; @
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_3188C:	dc.b   0
-	dc.b   0
-unk_3188E:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b   7
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31898:	dc.b   0
-	dc.b   0
-unk_3189A:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-unk_318A4:	dc.b   0
-	dc.b   0
-unk_318A6:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_318B0:	dc.b   0
-	dc.b   0
-unk_318B2:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_318BC:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b  $D
-	dc.b   0
-	dc.b   0
-unk_318C6:	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_318D0:	dc.b   0
-	dc.b   0
-unk_318D2:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-unk_318DC:	dc.b   0
-	dc.b   0
-unk_318DE:	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $16
-	dc.b $FF
-	dc.b $E3 ; „
-	dc.b   0
-	dc.b $1D
-	dc.b   0
-	dc.b   0
-unk_318E8:	dc.b   0
-	dc.b   0
-unk_318EA:	dc.b $FF
-	dc.b $E9 ; È
-	dc.b   0
-	dc.b $2B ; +
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_318F4:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_318FE:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $2B ; +
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_31908:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $29 ; )
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_31912:	dc.b $FF
-	dc.b $EB ; Î
-	dc.b   0
-	dc.b $2B ; +
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_3191C:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $29 ; )
-	dc.b $FF
-	dc.b $EA ; Í
-	dc.b   0
-	dc.b $15
-	dc.b   0
-	dc.b   0
-unk_31926:	dc.b $FF
-	dc.b $EB ; Î
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $D3 ; ”
-	dc.b   0
-	dc.b $2D ; -
-	dc.b   0
-	dc.b   0
-unk_31930:	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $27 ; '
-	dc.b $FF
-	dc.b $DE ; ﬁ
-	dc.b   0
-	dc.b $22 ; "
-	dc.b   0
-	dc.b   0
-unk_3193A:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $19
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31944:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   9
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_3194E:	dc.b $FF
-	dc.b $ED ; Ì
-	dc.b   0
-	dc.b $21 ; !
-	dc.b $FF
-	dc.b $D5 ; ’
-	dc.b   0
-	dc.b $29 ; )
-	dc.b   0
-	dc.b   0
-unk_31958:	dc.b $FF
-	dc.b $EB ; Î
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $D4 ; ‘
-	dc.b   0
-	dc.b $21 ; !
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_3196A:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $16
-	dc.b $FF
-	dc.b $D4 ; ‘
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $ED ; Ì
-	dc.b   0
-	dc.b $21 ; !
-	dc.b $FF
-	dc.b $DC ; ‹
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31984:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $D6 ; ÷
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $13
-	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $DF ; ﬂ
-	dc.b   0
-	dc.b $17
-	dc.b   0
-	dc.b   0
-unk_3199E:	dc.b $FF
-	dc.b $EC ; Ï
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $D4 ; ‘
-	dc.b   0
-	dc.b $23 ; #
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_319B0:	dc.b $FF
-	dc.b $ED ; Ì
-	dc.b   0
-	dc.b $1F
-	dc.b $FF
-	dc.b $D5 ; ’
-	dc.b   0
-	dc.b $1F
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_319C2:	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b $15
-	dc.b $FF
-	dc.b $D3 ; ”
-	dc.b   0
-	dc.b $2D ; -
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $D5 ; ’
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-unk_319D4:	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b $23 ; #
-	dc.b $FF
-	dc.b $D3 ; ”
-	dc.b   0
-	dc.b $1B
-	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b   9
-	dc.b $FF
-	dc.b $ED ; Ì
-	dc.b   0
-	dc.b   7
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $15
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_319EE:	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $22 ; "
-	dc.b $FF
-	dc.b $D3 ; ”
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $11
-	dc.b   0
-	dc.b   0
-unk_31A00:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $D4 ; ‘
-	dc.b   0
-	dc.b $2C ; ,
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b  $D
-	dc.b   0
-	dc.b   0
-unk_31A12:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $D7 ; ◊
-	dc.b   0
-	dc.b $27 ; '
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   7
-	dc.b $FF
-	dc.b $DF ; ﬂ
-	dc.b   0
-	dc.b $1F
-	dc.b   0
-	dc.b   0
-unk_31A24:	dc.b   0
-	dc.b   0
-unk_31A26:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $19
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31A30:	dc.b   0
-	dc.b   0
-unk_31A32:	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-unk_31A3C:	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-unk_31A46:	dc.b   0
-	dc.b   0
-unk_31A48:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $19
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31A52:	dc.b   0
-	dc.b   0
-unk_31A54:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $19
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31A5E:	dc.b   0
-	dc.b   0
-unk_31A60:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E7 ; Á
-	dc.b   0
-	dc.b $19
-	dc.b   0
-	dc.b   0
-unk_31A6A:	dc.b   0
-	dc.b   0
-unk_31A6C:	dc.b   0
-	dc.b   0
-unk_31A6E:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31A78:	dc.b   0
-	dc.b   0
-unk_31A7A:	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_31A84:	dc.b   0
-	dc.b   0
-unk_31A86:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $F
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31A90:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-unk_31A9A:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-unk_31AA4:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_31AAE:	dc.b   0
-	dc.b   0
-unk_31AB0:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31ABA:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31AC4:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31ACE:	dc.b   0
-	dc.b   0
-unk_31AD0:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31ADA:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31AE4:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31AEE:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31AF8:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31B04:	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b $1B
-	dc.b   0
-	dc.b   0
-unk_31B0E:	dc.b   0
-	dc.b   0
-unk_31B10:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-unk_31B1A:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_31B24:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_31B36:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_31B48:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31B5A:	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_31B64:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $F7 ; ˜
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-unk_31B6E:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_31B78:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   7
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_31B8A:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-unk_31B9C:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   0
-unk_31BAE:	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31BB8:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   9
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31BC4:	dc.b   0
-	dc.b   0
-unk_31BC6:	dc.b   0
-	dc.b   0
-unk_31BC8:	dc.b   0
-	dc.b   0
-unk_31BCA:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-unk_31BD4:	dc.b   0
-	dc.b   0
-unk_31BD6:	dc.b   0
-	dc.b   0
-unk_31BD8:	dc.b   0
-	dc.b   0
-unk_31BDA:	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b $14
-	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $12
-	dc.b   0
-	dc.b   0
-unk_31BE4:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31BEE:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31BF8:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31C02:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31C0C:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31C16:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31C20:	dc.b   0
-	dc.b   0
-unk_31C22:	dc.b $FF
-	dc.b $EE ; Ó
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31C2C:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $17
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-unk_31C36:	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b $16
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31C42:	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $13
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $D
-	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31C54:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $13
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31C66:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $12
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $D
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31C78:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1A
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31C8A:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $11
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $D
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31C9C:	dc.b $FF
-	dc.b $F3 ; Û
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F1 ; Ò
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31CAE:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $12
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $B
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b $1D
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   0
-unk_31CC0:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $12
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31CD2:	dc.b   0
-	dc.b   0
-unk_31CD4:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31CDE:	dc.b   0
-	dc.b   0
-unk_31CE0:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-unk_31CEA:	dc.b   0
-	dc.b   0
-unk_31CEC:	dc.b $FF
-	dc.b $E1 ; ·
-	dc.b   0
-	dc.b $3E ; >
-	dc.b $FF
-	dc.b $90 ; ê
-	dc.b   0
-	dc.b $70 ; p
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31D06:	dc.b   0
-	dc.b   0
-unk_31D08:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_31D12:	dc.b   0
-	dc.b   0
-unk_31D14:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31D1E:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31D28:	dc.b   0
-	dc.b   0
-unk_31D2A:	dc.b   0
-	dc.b   0
-unk_31D2C:	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31D36:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $1C
-	dc.b   0
-	dc.b   0
-unk_31D40:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31D4A:	dc.b   0
-	dc.b   0
-unk_31D4C:	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b $C0 ; ¿
-	dc.b   0
-	dc.b $38 ; 8
-	dc.b   0
-	dc.b   0
-unk_31D56:	dc.b   0
-	dc.b   0
-unk_31D58:	dc.b   0
-	dc.b   0
-unk_31D5A:	dc.b   0
-	dc.b   0
-unk_31D5C:	dc.b   0
-	dc.b   0
-unk_31D5E:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31D68:	dc.b   0
-	dc.b   0
-unk_31D6A:	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $F
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31D74:	dc.b   0
-	dc.b   0
-unk_31D76:	dc.b   0
-	dc.b   0
-unk_31D78:	dc.b   0
-	dc.b   0
-unk_31D7A:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31D84:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31D8E:	dc.b   0
-	dc.b   0
-unk_31D90:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-unk_31D9A:	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-unk_31DA4:	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   0
-unk_31DAE:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-unk_31DB8:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-unk_31DC2:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31DCC:	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b   0
-unk_31DD6:	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b   0
-	dc.b $1C
-	dc.b $FF
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b $1C
-	dc.b   0
-	dc.b   0
-unk_31DE0:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_31DE4:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-unk_31DEE:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-unk_31DF8:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-unk_31E02:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b   0
-	dc.b   0
-unk_31E0C:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-unk_31E16:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $38 ; 8
-	dc.b   0
-	dc.b   0
-unk_31E20:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-unk_31E2A:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $48 ; H
-	dc.b   0
-	dc.b   0
-unk_31E34:	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $50 ; P
-	dc.b   0
-	dc.b   0
-unk_31E3E:	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-unk_31E48:	dc.b   0
-	dc.b   0
+;off_30BF4
+; one entry for each (sprite) entry in Data_Index:
+; 4 words each:
+; - x-coordinate of left edge of hitbox relative to sprite (center?)
+; - width
+; - y-coordinate of top edge of hitbox relative to sprite (center?)
+; - height
+CollisionSize_Index:
+	dc.w unk_31D8E-CollisionSize_Index 
+	dc.w loc_320C0+2-CollisionSize_Index
+	dc.w loc_320C0+2-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314CE-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314D0-CollisionSize_Index
+	dc.w unk_314DA-CollisionSize_Index
+	dc.w unk_314DA-CollisionSize_Index
+	dc.w unk_314DA-CollisionSize_Index
+	dc.w loc_320D8-CollisionSize_Index
+	dc.w loc_320D8-CollisionSize_Index
+	dc.w loc_320D8-CollisionSize_Index
+	dc.w loc_320D8-CollisionSize_Index
+	dc.w unk_314E4-CollisionSize_Index
+	dc.w unk_314E4-CollisionSize_Index
+	dc.w unk_314E4-CollisionSize_Index
+	dc.w unk_314E4-CollisionSize_Index
+	dc.w unk_314EE-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314F8-CollisionSize_Index
+	dc.w unk_314F8-CollisionSize_Index
+	dc.w unk_314F8-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_31504-CollisionSize_Index
+	dc.w unk_31504-CollisionSize_Index
+	dc.w unk_31504-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w unk_314FA-CollisionSize_Index
+	dc.w loc_32102-CollisionSize_Index
+	dc.w loc_32102-CollisionSize_Index
+	dc.w loc_32102-CollisionSize_Index
+	dc.w unk_3150E-CollisionSize_Index
+	dc.w unk_3150E-CollisionSize_Index
+	dc.w unk_31518-CollisionSize_Index
+	dc.w unk_31518-CollisionSize_Index
+	dc.w unk_31518-CollisionSize_Index
+	dc.w unk_3151A-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w unk_31524-CollisionSize_Index
+	dc.w loc_32122-CollisionSize_Index
+	dc.w loc_32122-CollisionSize_Index
+	dc.w loc_32122-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_3152E-CollisionSize_Index
+	dc.w unk_31538-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w unk_31542-CollisionSize_Index
+	dc.w loc_32140-CollisionSize_Index
+	dc.w loc_32140-CollisionSize_Index
+	dc.w loc_32140-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_31556-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_31560-CollisionSize_Index
+	dc.w unk_31560-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_31562-CollisionSize_Index
+	dc.w unk_31562-CollisionSize_Index
+	dc.w unk_31562-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w unk_3154C-CollisionSize_Index
+	dc.w loc_3215E+2-CollisionSize_Index
+	dc.w loc_3215E+2-CollisionSize_Index
+	dc.w loc_3215E+2-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_3156C-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31580-CollisionSize_Index
+	dc.w unk_31580-CollisionSize_Index
+	dc.w unk_31580-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w unk_31576-CollisionSize_Index
+	dc.w loc_3217C+2-CollisionSize_Index
+	dc.w loc_3217C+2-CollisionSize_Index
+	dc.w loc_3217C+2-CollisionSize_Index
+	dc.w unk_3158A-CollisionSize_Index
+	dc.w unk_3158A-CollisionSize_Index
+	dc.w unk_3158A-CollisionSize_Index
+	dc.w unk_3158C-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_315A0-CollisionSize_Index
+	dc.w unk_315A0-CollisionSize_Index
+	dc.w unk_315A0-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w unk_31596-CollisionSize_Index
+	dc.w loc_3219E-CollisionSize_Index
+	dc.w loc_3219E-CollisionSize_Index
+	dc.w loc_3219E-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315B4-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315C8-CollisionSize_Index
+	dc.w unk_315C8-CollisionSize_Index
+	dc.w unk_315C8-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w unk_315BE-CollisionSize_Index
+	dc.w loc_321C6-CollisionSize_Index
+	dc.w loc_321C6-CollisionSize_Index
+	dc.w loc_321C6-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315D2-CollisionSize_Index
+	dc.w unk_315DC-CollisionSize_Index
+	dc.w unk_315DC-CollisionSize_Index
+	dc.w unk_315DC-CollisionSize_Index
+	dc.w unk_315DC-CollisionSize_Index
+	dc.w unk_315DC-CollisionSize_Index
+	dc.w unk_315E8-CollisionSize_Index
+	dc.w unk_315DE-CollisionSize_Index
+	dc.w unk_315DE-CollisionSize_Index
+	dc.w loc_321E4+2-CollisionSize_Index
+	dc.w loc_321E4+2-CollisionSize_Index
+	dc.w loc_321E4+2-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315F2-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_31606-CollisionSize_Index
+	dc.w unk_31606-CollisionSize_Index
+	dc.w unk_31606-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w unk_315FC-CollisionSize_Index
+	dc.w loc_32200+4-CollisionSize_Index
+	dc.w loc_32200+4-CollisionSize_Index
+	dc.w loc_32200+4-CollisionSize_Index
+	dc.w unk_31610-CollisionSize_Index
+	dc.w unk_31610-CollisionSize_Index
+	dc.w unk_31610-CollisionSize_Index
+	dc.w unk_31612-CollisionSize_Index
+	dc.w unk_3161C-CollisionSize_Index
+	dc.w unk_31626-CollisionSize_Index
+	dc.w unk_31630-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_31658-CollisionSize_Index
+	dc.w unk_3163A-CollisionSize_Index
+	dc.w unk_3163A-CollisionSize_Index
+	dc.w unk_31644-CollisionSize_Index
+	dc.w unk_31644-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w unk_3164E-CollisionSize_Index
+	dc.w loc_32256-CollisionSize_Index
+	dc.w unk_31662-CollisionSize_Index
+	dc.w unk_31662-CollisionSize_Index
+	dc.w unk_31662-CollisionSize_Index
+	dc.w unk_31664-CollisionSize_Index
+	dc.w unk_31664-CollisionSize_Index
+	dc.w unk_31664-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3166E-CollisionSize_Index
+	dc.w unk_3226C-CollisionSize_Index
+	dc.w unk_3226C-CollisionSize_Index
+	dc.w unk_3226C-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_3167A-CollisionSize_Index
+	dc.w unk_31684-CollisionSize_Index
+	dc.w unk_31684-CollisionSize_Index
+	dc.w unk_31684-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_31686-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_32284-CollisionSize_Index
+	dc.w unk_31692-CollisionSize_Index
+	dc.w unk_31692-CollisionSize_Index
+	dc.w unk_31692-CollisionSize_Index
+	dc.w unk_31692-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_3169C-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w off_32290+2-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_3169E-CollisionSize_Index
+	dc.w unk_316A0-CollisionSize_Index
+	dc.w unk_316A0-CollisionSize_Index
+	dc.w unk_316A0-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AA-CollisionSize_Index
+	dc.w unk_316AC-CollisionSize_Index
+	dc.w unk_316B6-CollisionSize_Index
+	dc.w unk_316B8-CollisionSize_Index
+	dc.w unk_316C2-CollisionSize_Index
+	dc.w loc_322C0-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_316CC-CollisionSize_Index
+	dc.w unk_316CC-CollisionSize_Index
+	dc.w unk_316CE-CollisionSize_Index
+	dc.w unk_316CE-CollisionSize_Index
+	dc.w unk_316CE-CollisionSize_Index
+	dc.w loc_322C8+4-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_316D8-CollisionSize_Index
+	dc.w unk_316E2-CollisionSize_Index
+	dc.w unk_316EC-CollisionSize_Index
+	dc.w unk_316F6-CollisionSize_Index
+	dc.w unk_31710-CollisionSize_Index
+	dc.w unk_3172A-CollisionSize_Index
+	dc.w unk_31744-CollisionSize_Index
+	dc.w unk_3175E-CollisionSize_Index
+	dc.w unk_3175E-CollisionSize_Index
+	dc.w unk_3175E-CollisionSize_Index
+	dc.w unk_31760-CollisionSize_Index
+	dc.w unk_31760-CollisionSize_Index
+	dc.w unk_31760-CollisionSize_Index
+	dc.w unk_31760-CollisionSize_Index
+	dc.w loc_3235E-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_3176A-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_31774-CollisionSize_Index
+	dc.w unk_3177E-CollisionSize_Index
+	dc.w unk_3177E-CollisionSize_Index
+	dc.w unk_3177E-CollisionSize_Index
+	dc.w loc_3237A+2-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31788-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w unk_31792-CollisionSize_Index
+	dc.w loc_3247E+2-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188C-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_3188E-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_31898-CollisionSize_Index
+	dc.w unk_3189A-CollisionSize_Index
+	dc.w unk_318A4-CollisionSize_Index
+	dc.w unk_318A4-CollisionSize_Index
+	dc.w unk_318A6-CollisionSize_Index
+	dc.w unk_318B0-CollisionSize_Index
+	dc.w unk_318B2-CollisionSize_Index
+	dc.w unk_318B2-CollisionSize_Index
+	dc.w unk_318B2-CollisionSize_Index
+	dc.w unk_318BC-CollisionSize_Index
+	dc.w unk_318BC-CollisionSize_Index
+	dc.w unk_318BC-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D0-CollisionSize_Index
+	dc.w unk_318D2-CollisionSize_Index
+	dc.w unk_318B2-CollisionSize_Index
+	dc.w unk_318BC-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w unk_318C6-CollisionSize_Index
+	dc.w loc_32386+2-CollisionSize_Index
+	dc.w loc_32386+2-CollisionSize_Index
+	dc.w loc_32386+2-CollisionSize_Index
+	dc.w unk_31796-CollisionSize_Index
+	dc.w unk_31798-CollisionSize_Index
+	dc.w unk_3179A-CollisionSize_Index
+	dc.w unk_3179C-CollisionSize_Index
+	dc.w unk_317A6-CollisionSize_Index
+	dc.w unk_317B0-CollisionSize_Index
+	dc.w unk_317BA-CollisionSize_Index
+	dc.w unk_317C4-CollisionSize_Index
+	dc.w unk_317CE-CollisionSize_Index
+	dc.w unk_317D8-CollisionSize_Index
+	dc.w loc_323D6-CollisionSize_Index
+	dc.w loc_323D6-CollisionSize_Index
+	dc.w loc_323D6-CollisionSize_Index
+	dc.w unk_317E2-CollisionSize_Index
+	dc.w unk_317E4-CollisionSize_Index
+	dc.w unk_317EE-CollisionSize_Index
+	dc.w unk_317F8-CollisionSize_Index
+	dc.w unk_31802-CollisionSize_Index
+	dc.w unk_3180C-CollisionSize_Index
+	dc.w unk_31816-CollisionSize_Index
+	dc.w unk_31820-CollisionSize_Index
+	dc.w unk_31822-CollisionSize_Index
+	dc.w unk_31824-CollisionSize_Index
+	dc.w unk_3182E-CollisionSize_Index
+	dc.w unk_31838-CollisionSize_Index
+	dc.w unk_31842-CollisionSize_Index
+	dc.w unk_3184C-CollisionSize_Index
+	dc.w unk_31856-CollisionSize_Index
+	dc.w loc_32454-CollisionSize_Index
+	dc.w loc_32454-CollisionSize_Index
+	dc.w loc_32454-CollisionSize_Index
+	dc.w unk_31862-CollisionSize_Index
+	dc.w unk_31864-CollisionSize_Index
+	dc.w unk_31866-CollisionSize_Index
+	dc.w unk_31870-CollisionSize_Index
+	dc.w unk_31872-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_31874-CollisionSize_Index
+	dc.w unk_3187E-CollisionSize_Index
+	dc.w unk_31880-CollisionSize_Index
+	dc.w unk_31882-CollisionSize_Index
+	dc.w unk_31882-CollisionSize_Index
+	dc.w unk_31882-CollisionSize_Index
+	dc.w unk_31882-CollisionSize_Index
+	dc.w loc_324D0-CollisionSize_Index
+	dc.w loc_324D0-CollisionSize_Index
+	dc.w loc_324D0-CollisionSize_Index
+	dc.w unk_318DC-CollisionSize_Index
+	dc.w unk_318DC-CollisionSize_Index
+	dc.w unk_318DC-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w unk_318DE-CollisionSize_Index
+	dc.w loc_324DC-CollisionSize_Index
+	dc.w loc_324DC-CollisionSize_Index
+	dc.w loc_324DC-CollisionSize_Index
+	dc.w unk_318E8-CollisionSize_Index
+	dc.w unk_318E8-CollisionSize_Index
+	dc.w unk_318E8-CollisionSize_Index
+	dc.w unk_318EA-CollisionSize_Index
+	dc.w unk_318F4-CollisionSize_Index
+	dc.w unk_318FE-CollisionSize_Index
+	dc.w unk_31908-CollisionSize_Index
+	dc.w unk_31912-CollisionSize_Index
+	dc.w unk_3191C-CollisionSize_Index
+	dc.w unk_31926-CollisionSize_Index
+	dc.w unk_31930-CollisionSize_Index
+	dc.w unk_3193A-CollisionSize_Index
+	dc.w loc_32534+4-CollisionSize_Index
+	dc.w loc_32534+4-CollisionSize_Index
+	dc.w loc_32534+4-CollisionSize_Index
+	dc.w unk_31944-CollisionSize_Index
+	dc.w unk_31944-CollisionSize_Index
+	dc.w unk_31944-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_319C2-CollisionSize_Index
+	dc.w unk_319D4-CollisionSize_Index
+	dc.w unk_319EE-CollisionSize_Index
+	dc.w unk_31A00-CollisionSize_Index
+	dc.w unk_31A12-CollisionSize_Index
+	dc.w unk_3194E-CollisionSize_Index
+	dc.w unk_31958-CollisionSize_Index
+	dc.w unk_3196A-CollisionSize_Index
+	dc.w unk_31984-CollisionSize_Index
+	dc.w unk_3199E-CollisionSize_Index
+	dc.w unk_319B0-CollisionSize_Index
+	dc.w loc_32618-CollisionSize_Index
+	dc.w loc_32618-CollisionSize_Index
+	dc.w loc_32618-CollisionSize_Index
+	dc.w unk_31A24-CollisionSize_Index
+	dc.w unk_31A24-CollisionSize_Index
+	dc.w unk_31A26-CollisionSize_Index
+	dc.w unk_31A30-CollisionSize_Index
+	dc.w unk_31A30-CollisionSize_Index
+	dc.w unk_31A30-CollisionSize_Index
+	dc.w unk_31A32-CollisionSize_Index
+	dc.w unk_31A3C-CollisionSize_Index
+	dc.w unk_31A46-CollisionSize_Index
+	dc.w unk_31A48-CollisionSize_Index
+	dc.w unk_31A48-CollisionSize_Index
+	dc.w unk_31A48-CollisionSize_Index
+	dc.w unk_31A52-CollisionSize_Index
+	dc.w unk_31A54-CollisionSize_Index
+	dc.w unk_31A54-CollisionSize_Index
+	dc.w unk_31A5E-CollisionSize_Index
+	dc.w off_329B6+$14-CollisionSize_Index
+	dc.w off_329B6+$14-CollisionSize_Index
+	dc.w off_329B6+$14-CollisionSize_Index
+	dc.w unk_31DD6-CollisionSize_Index
+	dc.w unk_31DD6-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DD6-CollisionSize_Index
+	dc.w unk_31DD6-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31DE0-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A60-CollisionSize_Index
+	dc.w unk_31A6A-CollisionSize_Index
+	dc.w unk_31A6A-CollisionSize_Index
+	dc.w unk_31A6A-CollisionSize_Index
+	dc.w off_32656+$A-CollisionSize_Index
+	dc.w off_32656+$A-CollisionSize_Index
+	dc.w off_32656+$A-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6C-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w unk_31A6E-CollisionSize_Index
+	dc.w off_32656+$16-CollisionSize_Index
+	dc.w off_32656+$16-CollisionSize_Index
+	dc.w off_32656+$16-CollisionSize_Index
+	dc.w unk_31A78-CollisionSize_Index
+	dc.w unk_31A78-CollisionSize_Index
+	dc.w unk_31A78-CollisionSize_Index
+	dc.w unk_31A7A-CollisionSize_Index
+	dc.w unk_31A7A-CollisionSize_Index
+	dc.w unk_31A7A-CollisionSize_Index
+	dc.w unk_31A7A-CollisionSize_Index
+	dc.w unk_31A84-CollisionSize_Index
+	dc.w unk_31A84-CollisionSize_Index
+	dc.w unk_31A84-CollisionSize_Index
+	dc.w unk_31A86-CollisionSize_Index
+	dc.w unk_31A86-CollisionSize_Index
+	dc.w loc_32682+2-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_31A90-CollisionSize_Index
+	dc.w unk_31A9A-CollisionSize_Index
+	dc.w unk_31AA4-CollisionSize_Index
+	dc.w unk_31AAE-CollisionSize_Index
+	dc.w unk_31AAE-CollisionSize_Index
+	dc.w unk_31AAE-CollisionSize_Index
+	dc.w unk_31AB0-CollisionSize_Index
+	dc.w unk_31ABA-CollisionSize_Index
+	dc.w unk_31AC4-CollisionSize_Index
+	dc.w loc_326C0+2-CollisionSize_Index
+	dc.w loc_326C0+2-CollisionSize_Index
+	dc.w loc_326C0+2-CollisionSize_Index
+	dc.w unk_31ACE-CollisionSize_Index
+	dc.w unk_31ACE-CollisionSize_Index
+	dc.w unk_31ACE-CollisionSize_Index
+	dc.w unk_31ACE-CollisionSize_Index
+	dc.w unk_31ACE-CollisionSize_Index
+	dc.w unk_31AD0-CollisionSize_Index
+	dc.w unk_31ADA-CollisionSize_Index
+	dc.w unk_31AE4-CollisionSize_Index
+	dc.w unk_31AEE-CollisionSize_Index
+	dc.w unk_31AF8-CollisionSize_Index
+	dc.w stru_326F6-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B04-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B0E-CollisionSize_Index
+	dc.w unk_31B10-CollisionSize_Index
+	dc.w unk_31B1A-CollisionSize_Index
+	dc.w unk_31B24-CollisionSize_Index
+	dc.w unk_31B36-CollisionSize_Index
+	dc.w unk_31B48-CollisionSize_Index
+	dc.w unk_31B5A-CollisionSize_Index
+	dc.w unk_31B64-CollisionSize_Index
+	dc.w unk_31B6E-CollisionSize_Index
+	dc.w unk_31B78-CollisionSize_Index
+	dc.w unk_31B8A-CollisionSize_Index
+	dc.w unk_31B9C-CollisionSize_Index
+	dc.w unk_31BAE-CollisionSize_Index
+	dc.w unk_31BB8-CollisionSize_Index
+	dc.w loc_327B6-CollisionSize_Index
+	dc.w loc_327B6-CollisionSize_Index
+	dc.w loc_327B6-CollisionSize_Index
+	dc.w unk_31BC4-CollisionSize_Index
+	dc.w unk_31BC6-CollisionSize_Index
+	dc.w unk_31BC8-CollisionSize_Index
+	dc.w unk_31BCA-CollisionSize_Index
+	dc.w unk_31BCA-CollisionSize_Index
+	dc.w unk_31BCA-CollisionSize_Index
+	dc.w unk_31BD4-CollisionSize_Index
+	dc.w unk_31BD6-CollisionSize_Index
+	dc.w unk_31BD8-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31BE4-CollisionSize_Index
+	dc.w unk_31BEE-CollisionSize_Index
+	dc.w unk_31BF8-CollisionSize_Index
+	dc.w unk_31C02-CollisionSize_Index
+	dc.w unk_31C0C-CollisionSize_Index
+	dc.w unk_31C16-CollisionSize_Index
+	dc.w unk_31C20-CollisionSize_Index
+	dc.w unk_31C20-CollisionSize_Index
+	dc.w unk_31C20-CollisionSize_Index
+	dc.w unk_31C20-CollisionSize_Index
+	dc.w unk_31C22-CollisionSize_Index
+	dc.w unk_31BDA-CollisionSize_Index
+	dc.w unk_31C2C-CollisionSize_Index
+	dc.w unk_31C36-CollisionSize_Index
+	dc.w loc_32832+2-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w off_329B6+$20-CollisionSize_Index
+	dc.w unk_31CAE-CollisionSize_Index
+	dc.w unk_31CC0-CollisionSize_Index
+	dc.w unk_31CD2-CollisionSize_Index
+	dc.w unk_31CD2-CollisionSize_Index
+	dc.w unk_31CD2-CollisionSize_Index
+	dc.w unk_31C42-CollisionSize_Index
+	dc.w unk_31C54-CollisionSize_Index
+	dc.w unk_31C66-CollisionSize_Index
+	dc.w unk_31C78-CollisionSize_Index
+	dc.w unk_31C8A-CollisionSize_Index
+	dc.w unk_31C9C-CollisionSize_Index
+	dc.w unk_31CD4-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CDE-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CEA-CollisionSize_Index
+	dc.w unk_31CEA-CollisionSize_Index
+	dc.w unk_31CEA-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CE0-CollisionSize_Index
+	dc.w unk_31CEC-CollisionSize_Index
+	dc.w unk_31CEC-CollisionSize_Index
+	dc.w unk_31D06-CollisionSize_Index
+	dc.w unk_31D06-CollisionSize_Index
+	dc.w unk_31D06-CollisionSize_Index
+	dc.w unk_31D06-CollisionSize_Index
+	dc.w unk_31D06-CollisionSize_Index
+	dc.w unk_31D08-CollisionSize_Index
+	dc.w unk_31D12-CollisionSize_Index
+	dc.w unk_31D14-CollisionSize_Index
+	dc.w unk_31D1E-CollisionSize_Index
+	dc.w unk_31D28-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2A-CollisionSize_Index
+	dc.w unk_31D2C-CollisionSize_Index
+	dc.w unk_31D2C-CollisionSize_Index
+	dc.w unk_31D36-CollisionSize_Index
+	dc.w unk_31D36-CollisionSize_Index
+	dc.w unk_31D40-CollisionSize_Index
+	dc.w unk_31D40-CollisionSize_Index
+	dc.w unk_31D40-CollisionSize_Index
+	dc.w unk_31D40-CollisionSize_Index
+	dc.w unk_31D40-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4A-CollisionSize_Index
+	dc.w unk_31D4C-CollisionSize_Index
+	dc.w unk_31D4C-CollisionSize_Index
+	dc.w unk_31D4C-CollisionSize_Index
+	dc.w unk_31D4C-CollisionSize_Index
+	dc.w unk_31D4C-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D56-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D58-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5A-CollisionSize_Index
+	dc.w unk_31D5C-CollisionSize_Index
+	dc.w unk_31D5C-CollisionSize_Index
+	dc.w unk_31D5C-CollisionSize_Index
+	dc.w unk_31D5E-CollisionSize_Index
+	dc.w unk_31D5E-CollisionSize_Index
+	dc.w unk_31D5E-CollisionSize_Index
+	dc.w unk_31D5E-CollisionSize_Index
+	dc.w unk_31D68-CollisionSize_Index
+	dc.w unk_31D68-CollisionSize_Index
+	dc.w unk_31D68-CollisionSize_Index
+	dc.w unk_31D68-CollisionSize_Index
+	dc.w unk_31D6A-CollisionSize_Index
+	dc.w unk_31D74-CollisionSize_Index
+	dc.w unk_31D76-CollisionSize_Index
+	dc.w unk_31D76-CollisionSize_Index
+	dc.w unk_31D76-CollisionSize_Index
+	dc.w unk_31D76-CollisionSize_Index
+	dc.w unk_31D76-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D78-CollisionSize_Index
+	dc.w unk_31D7A-CollisionSize_Index
+	dc.w unk_31D7A-CollisionSize_Index
+	dc.w unk_31D7A-CollisionSize_Index
+	dc.w unk_31D7A-CollisionSize_Index
+	dc.w unk_31D84-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+	dc.w unk_31D90-CollisionSize_Index
+	dc.w unk_31D9A-CollisionSize_Index
+	dc.w unk_31DA4-CollisionSize_Index
+	dc.w unk_31DAE-CollisionSize_Index
+	dc.w unk_31DB8-CollisionSize_Index
+	dc.w unk_31DC2-CollisionSize_Index
+	dc.w unk_31DCC-CollisionSize_Index
+	dc.w unk_31DE4-CollisionSize_Index
+	dc.w unk_31DEE-CollisionSize_Index
+	dc.w unk_31DF8-CollisionSize_Index
+	dc.w unk_31E02-CollisionSize_Index
+	dc.w unk_31E0C-CollisionSize_Index
+	dc.w unk_31E16-CollisionSize_Index
+	dc.w unk_31E20-CollisionSize_Index
+	dc.w unk_31E2A-CollisionSize_Index
+	dc.w unk_31E34-CollisionSize_Index
+	dc.w unk_31E3E-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31E48-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+	dc.w unk_31D8E-CollisionSize_Index
+unk_314CE:
+	dc.w	   0
+unk_314D0:
+	dc.w	 -$5,  $A,-$1F, $1F
+	dc.w	   0
+unk_314DA:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_314E4:
+	dc.w	 -$2,  $4, -$7,  $E
+	dc.w	   0
+unk_314EE:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_314F8:
+	dc.w	   0
+unk_314FA:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_31504:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_3150E:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_31518:
+	dc.w	   0
+unk_3151A:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_31524:
+	dc.w	 -$A, $14,-$1F, $1F
+	dc.w	   0
+unk_3152E:
+	dc.w	 -$4,  $8, -$F,  $F
+	dc.w	   0
+unk_31538:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_31542:
+	dc.w	 -$4,  $8, -$F,  $F
+	dc.w	   0
+unk_3154C:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_31556:
+	dc.w	 -$6,  $B, -$C,  $C
+	dc.w	   0
+unk_31560:
+	dc.w	   0
+unk_31562:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_3156C:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_31576:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_31580:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_3158A:
+	dc.w	   0
+unk_3158C:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_31596:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_315A0:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+	dc.w	 -$A, $14, -$F,  $F
+	dc.w	   0
+unk_315B4:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_315BE:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_315C8:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_315D2:
+	dc.w	-$17, $2E, -$F,  $F
+	dc.w	   0
+unk_315DC:
+	dc.w	   0
+unk_315DE:
+	dc.w	 -$3,  $6, -$5,  $7
+	dc.w	   0
+unk_315E8:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_315F2:
+	dc.w	 -$6,  $C, -$C,  $C
+	dc.w	   0
+unk_315FC:
+	dc.w	 -$7,  $E,-$1F, $1F
+	dc.w	   0
+unk_31606:
+	dc.w	 -$E, $1C, -$F,  $F
+	dc.w	   0
+unk_31610:
+	dc.w	   0
+unk_31612:
+	dc.w	 -$8, $10, -$A,  $A
+	dc.w	   0
+unk_3161C:
+	dc.w	 -$8, $10, -$A,  $A
+	dc.w	   0
+unk_31626:
+	dc.w	 -$9, $12, -$C,  $C
+	dc.w	   0
+unk_31630:
+	dc.w	-$10, $20,-$20, $20
+	dc.w	   0
+unk_3163A:
+	dc.w	 -$8, $10, -$4,  $8
+	dc.w	   0
+unk_31644:
+	dc.w	 -$E, $1C, -$2,  $4
+	dc.w	   0
+unk_3164E:
+	dc.w	 -$A, $14, -$A, $14
+	dc.w	   0
+unk_31658:
+	dc.w	-$10, $20,-$20, $20
+	dc.w	   0
+unk_31662:
+	dc.w	   0
+unk_31664:
+	dc.w	 -$E, $1C,-$1B, $1B
+	dc.w	   0
+unk_3166E:
+	dc.w	 -$E, $1C,-$1B, $1B
+	dc.w	   0
+	dc.w	   0
+unk_3167A:
+	dc.w	-$15, $27,-$14, $14
+	dc.w	   0
+unk_31684:
+	dc.w	   0
+unk_31686:
+	dc.w	-$15, $27,-$14, $14
+	dc.w	   0
+	dc.w	   0
+unk_31692:
+	dc.w	 -$7,  $E,-$1E, $1E
+	dc.w	   0
+unk_3169C:
+	dc.w	   0
+unk_3169E:
+	dc.w	   0
+unk_316A0:
+	dc.w	 -$C, $12,-$1D, $1D
+	dc.w	   0
+unk_316AA:
+	dc.w	   0
+unk_316AC:
+	dc.w	 -$4,  $8, -$4,  $8
+	dc.w	   0
+unk_316B6:
+	dc.w	   0
+unk_316B8:
+	dc.w	 -$3,  $6, -$3,  $6
+	dc.w	   0
+unk_316C2:
+	dc.w	 -$2,  $4, -$2,  $4
+	dc.w	   0
+unk_316CC:
+	dc.w	   0
+unk_316CE:
+	dc.w	 -$7,  $E,-$21, $21
+	dc.w	   0
+unk_316D8:
+	dc.w	 $20,  $F, -$3,  $6
+	dc.w	   0
+unk_316E2:
+	dc.w	 -$3,  $6, $20,  $F
+	dc.w	   0
+unk_316EC:
+	dc.w	 $1E,  $4, $1E,  $4
+	dc.w	   0
+unk_316F6:
+	dc.w	 -$E,  $F,-$1C,  $F
+	dc.w	 -$1,  $F,-$1E,  $F
+	dc.w	 -$1,  $F, -$C,  $B
+	dc.w	   0
+unk_31710:
+	dc.w	 -$E,  $F,-$1C,  $F
+	dc.w	 -$1,  $F,-$1E,  $F
+	dc.w	 -$1,  $F, -$C,  $B
+	dc.w	   0
+unk_3172A:
+	dc.w	 -$E,  $F,-$1C,  $F
+	dc.w	 -$1,  $F,-$1E,  $F
+	dc.w	 -$1,  $F, -$C,  $B
+	dc.w	   0
+unk_31744:
+	dc.w	 -$E,  $F,-$1C,  $F
+	dc.w	 -$1,  $F,-$1E,  $F
+	dc.w	 -$1,  $F, -$C,  $B
+	dc.w	   0
+unk_3175E:
+	dc.w	   0
+unk_31760:
+	dc.w	 -$E, $1B,-$1C, $16
+	dc.w	   0
+unk_3176A:
+	dc.w	 -$4,  $8, -$4,  $8
+	dc.w	   0
+unk_31774:
+	dc.w	 -$6,  $C, -$4,  $4
+	dc.w	   0
+unk_3177E:
+	dc.w	 -$8, $10, -$8, $10
+	dc.w	   0
+unk_31788:
+	dc.w	 -$E, $1C, -$9,  $9
+	dc.w	   0
+unk_31792:
+	dc.w	   0
+	dc.w	   0
+unk_31796:
+	dc.w	   0
+unk_31798:
+	dc.w	   0
+unk_3179A:
+	dc.w	   0
+unk_3179C:
+	dc.w	 -$F, $1D,-$1F, $1F
+	dc.w	   0
+unk_317A6:
+	dc.w	 -$E, $1B,-$20, $20
+	dc.w	   0
+unk_317B0:
+	dc.w	 -$E, $1B,-$20, $20
+	dc.w	   0
+unk_317BA:
+	dc.w	 -$E, $1B,-$20, $20
+	dc.w	   0
+unk_317C4:
+	dc.w	 -$E, $1B,-$20, $20
+	dc.w	   0
+unk_317CE:
+	dc.w	 -$E, $1B,-$20, $20
+	dc.w	   0
+unk_317D8:
+	dc.w	 -$E, $1C,-$1A, $1A
+	dc.w	   0
+unk_317E2:
+	dc.w	   0
+unk_317E4:
+	dc.w	-$12, $26,-$20, $20
+	dc.w	   0
+unk_317EE:
+	dc.w	-$12, $26,-$20, $20
+	dc.w	   0
+unk_317F8:
+	dc.w	-$10, $24,-$1F, $1F
+	dc.w	   0
+unk_31802:
+	dc.w	-$11, $24,-$1F, $1F
+	dc.w	   0
+unk_3180C:
+	dc.w	-$11, $25,-$1E, $1E
+	dc.w	   0
+unk_31816:
+	dc.w	 -$F, $23,-$1F, $1F
+	dc.w	   0
+unk_31820:
+	dc.w	   0
+unk_31822:
+	dc.w	   0
+unk_31824:
+	dc.w	 -$F, $1E,-$1F, $1F
+	dc.w	   0
+unk_3182E:
+	dc.w	 -$F, $1E,-$20, $20
+	dc.w	   0
+unk_31838:
+	dc.w	-$10, $1F,-$1F, $1F
+	dc.w	   0
+unk_31842:
+	dc.w	-$11, $20,-$1F, $1F
+	dc.w	   0
+unk_3184C:
+	dc.w	-$10, $1F,-$20, $20
+	dc.w	   0
+unk_31856:
+	dc.w	 -$F, $1E,-$1F, $1F
+	dc.w	   0
+	dc.w	   0
+unk_31862:
+	dc.w	   0
+unk_31864:
+	dc.w	   0
+unk_31866:
+	dc.w	 -$B, $16,-$1C, $1C
+	dc.w	   0
+unk_31870:
+	dc.w	   0
+unk_31872:
+	dc.w	   0
+unk_31874:
+	dc.w	 -$B, $16,-$1C, $1C
+	dc.w	   0
+unk_3187E:
+	dc.w	   0
+unk_31880:
+	dc.w	   0
+unk_31882:
+	dc.w	-$20, $40,-$1F, $1F
+	dc.w	   0
+unk_3188C:
+	dc.w	   0
+unk_3188E:
+	dc.w	 -$7,  $7, -$B,  $B
+	dc.w	   0
+unk_31898:
+	dc.w	   0
+unk_3189A:
+	dc.w	 -$4,  $A, -$2,  $2
+	dc.w	   0
+unk_318A4:
+	dc.w	   0
+unk_318A6:
+	dc.w	 -$2,  $4,   0,  $9
+	dc.w	   0
+unk_318B0:
+	dc.w	   0
+unk_318B2:
+	dc.w	 -$7,  $E, -$E,  $E
+	dc.w	   0
+unk_318BC:
+	dc.w	 -$4,  $8,  $1,  $D
+	dc.w	   0
+unk_318C6:
+	dc.w	  $1,  $E, -$4,  $8
+	dc.w	   0
+unk_318D0:
+	dc.w	   0
+unk_318D2:
+	dc.w	 -$1,  $2, -$1,  $2
+	dc.w	   0
+unk_318DC:
+	dc.w	   0
+unk_318DE:
+	dc.w	 -$B, $16,-$1D, $1D
+	dc.w	   0
+unk_318E8:
+	dc.w	   0
+unk_318EA:
+	dc.w	-$17, $2B,-$16, $15
+	dc.w	   0
+unk_318F4:
+	dc.w	-$14, $28,-$16, $15
+	dc.w	   0
+unk_318FE:
+	dc.w	-$14, $2B,-$16, $15
+	dc.w	   0
+unk_31908:
+	dc.w	-$14, $29,-$16, $15
+	dc.w	   0
+unk_31912:
+	dc.w	-$15, $2B,-$16, $15
+	dc.w	   0
+unk_3191C:
+	dc.w	-$14, $29,-$16, $15
+	dc.w	   0
+unk_31926:
+	dc.w	-$15, $1D,-$2D, $2D
+	dc.w	   0
+unk_31930:
+	dc.w	-$20, $27,-$22, $22
+	dc.w	   0
+unk_3193A:
+	dc.w	 -$1, $19, -$8,  $8
+	dc.w	   0
+unk_31944:
+	dc.w	 -$5,  $9, -$5,  $9
+	dc.w	   0
+unk_3194E:
+	dc.w	-$13, $21,-$2B, $29
+	dc.w	   0
+unk_31958:
+	dc.w	-$15, $1E,-$2C, $21
+	dc.w	 -$7, $14, -$A,  $A
+	dc.w	   0
+unk_3196A:
+	dc.w	-$10, $16,-$2C,  $6
+	dc.w	-$13, $21,-$24, $1A
+	dc.w	 -$4,  $E, -$A,  $8
+	dc.w	   0
+unk_31984:
+	dc.w	-$14, $1D,-$2A, $20
+	dc.w	 -$A, $13, -$9,  $7
+	dc.w	  $6,  $8,-$21, $17
+	dc.w	   0
+unk_3199E:
+	dc.w	-$14, $20,-$2C, $23
+	dc.w	 -$7, $10, -$7,  $6
+	dc.w	   0
+unk_319B0:
+	dc.w	-$13, $1F,-$2B, $1F
+	dc.w	 -$7,  $F, -$B,  $A
+	dc.w	   0
+unk_319C2:
+	dc.w	 -$C, $15,-$2D, $2D
+	dc.w	  $9,  $C,-$2B, $18
+	dc.w	   0
+unk_319D4:
+	dc.w	 -$C, $23,-$2D, $1B
+	dc.w	-$12,  $9,-$13,  $7
+	dc.w	 -$B, $15,-$10, $10
+	dc.w	   0
+unk_319EE:
+	dc.w	 -$B, $22,-$2D, $1A
+	dc.w	-$10, $1C,-$12, $11
+	dc.w	   0
+unk_31A00:
+	dc.w	 -$E, $1A,-$2C, $2C
+	dc.w	  $A,  $8,-$1F,  $D
+	dc.w	   0
+unk_31A12:
+	dc.w	-$10, $1A,-$29, $27
+	dc.w	  $A,  $7,-$21, $1F
+	dc.w	   0
+unk_31A24:
+	dc.w	   0
+unk_31A26:
+	dc.w	 -$D, $19,-$10, $10
+	dc.w	   0
+unk_31A30:
+	dc.w	   0
+unk_31A32:
+	dc.w	 -$9,  $F, -$5,  $5
+	dc.w	   0
+unk_31A3C:
+	dc.w	 -$9,  $F, -$5,  $5
+	dc.w	   0
+unk_31A46:
+	dc.w	   0
+unk_31A48:
+	dc.w	 -$D, $19,-$10, $10
+	dc.w	   0
+unk_31A52:
+	dc.w	   0
+unk_31A54:
+	dc.w	 -$D, $19,-$10, $10
+	dc.w	   0
+unk_31A5E:
+	dc.w	   0
+unk_31A60:
+	dc.w	 -$A, $14,-$19, $19
+	dc.w	   0
+unk_31A6A:
+	dc.w	   0
+unk_31A6C:
+	dc.w	   0
+unk_31A6E:
+	dc.w	 -$5,  $A, -$B,  $B
+	dc.w	   0
+unk_31A78:
+	dc.w	   0
+unk_31A7A:
+	dc.w	  $1,  $F, -$B,  $9
+	dc.w	   0
+unk_31A84:
+	dc.w	   0
+unk_31A86:
+	dc.w	 -$7,  $F, -$F,  $E
+	dc.w	   0
+unk_31A90:
+	dc.w	-$10, $10,  $1,  $3
+	dc.w	   0
+unk_31A9A:
+	dc.w	 -$F,  $2,  $6,  $2
+	dc.w	   0
+unk_31AA4:
+	dc.w	 -$2,  $4,  $1,  $F
+	dc.w	   0
+unk_31AAE:
+	dc.w	   0
+unk_31AB0:
+	dc.w	 -$7,  $E, -$7,  $E
+	dc.w	   0
+unk_31ABA:
+	dc.w	 -$7,  $E, -$7,  $E
+	dc.w	   0
+unk_31AC4:
+	dc.w	 -$7,  $E, -$7,  $E
+	dc.w	   0
+unk_31ACE:
+	dc.w	   0
+unk_31AD0:
+	dc.w	 -$A, $14,-$20, $20
+	dc.w	   0
+unk_31ADA:
+	dc.w	 -$A, $14,-$20, $20
+	dc.w	   0
+unk_31AE4:
+	dc.w	 -$A, $14,-$20, $20
+	dc.w	   0
+unk_31AEE:
+	dc.w	 -$A, $14,-$20, $20
+	dc.w	   0
+unk_31AF8:
+	dc.w	 -$A, $14,-$20, $20
+	dc.w	   0
+	dc.w	   0
+unk_31B04:
+	dc.w	 -$9, $14,-$1B, $1B
+	dc.w	   0
+unk_31B0E:
+	dc.w	   0
+unk_31B10:
+	dc.w	 -$7,  $E, -$1,  $3
+	dc.w	   0
+unk_31B1A:
+	dc.w	 -$3,  $E, -$2,  $4
+	dc.w	   0
+unk_31B24:
+	dc.w	 -$8,  $7,   0,  $4
+	dc.w	  $1,  $6, -$4,  $4
+	dc.w	   0
+unk_31B36:
+	dc.w	 -$5,  $5,  $1,  $4
+	dc.w	  $1,  $5, -$6,  $6
+	dc.w	   0
+unk_31B48:
+	dc.w	 -$4,  $4,  $1,  $7
+	dc.w	  $1,  $3, -$8,  $8
+	dc.w	   0
+unk_31B5A:
+	dc.w	  $1,  $2, -$9,  $9
+	dc.w	   0
+unk_31B64:
+	dc.w	 -$1,  $2, -$9,  $9
+	dc.w	   0
+unk_31B6E:
+	dc.w	 -$3,  $E, -$2,  $4
+	dc.w	   0
+unk_31B78:
+	dc.w	 -$8,  $7, -$4,  $5
+	dc.w	  $1,  $6,  $1,  $4
+	dc.w	   0
+unk_31B8A:
+	dc.w	 -$5,  $5, -$4,  $5
+	dc.w	  $1,  $5,  $1,  $5
+	dc.w	   0
+unk_31B9C:
+	dc.w	 -$4,  $5, -$8,  $8
+	dc.w	  $1,  $3,  $1,  $7
+	dc.w	   0
+unk_31BAE:
+	dc.w	  $1,  $2,  $1,  $8
+	dc.w	   0
+unk_31BB8:
+	dc.w	 -$1,  $2,   0,  $9
+	dc.w	   0
+	dc.w	   0
+unk_31BC4:
+	dc.w	   0
+unk_31BC6:
+	dc.w	   0
+unk_31BC8:
+	dc.w	   0
+unk_31BCA:
+	dc.w	 -$2,  $5, -$6,  $3
+	dc.w	   0
+unk_31BD4:
+	dc.w	   0
+unk_31BD6:
+	dc.w	   0
+unk_31BD8:
+	dc.w	   0
+unk_31BDA:
+	dc.w	 -$A, $14,-$12, $12
+	dc.w	   0
+unk_31BE4:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31BEE:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31BF8:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31C02:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31C0C:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31C16:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31C20:
+	dc.w	   0
+unk_31C22:
+	dc.w	-$12, $1E,-$10, $10
+	dc.w	   0
+unk_31C2C:
+	dc.w	 -$E, $17, -$F,  $F
+	dc.w	   0
+unk_31C36:
+	dc.w	 -$B, $16, -$F,  $F
+	dc.w	   0
+	dc.w	   0
+unk_31C42:
+	dc.w	 -$F, $13,-$1B,  $D
+	dc.w	 -$D, $1A, -$C,  $B
+	dc.w	   0
+unk_31C54:
+	dc.w	 -$D, $13,-$1B,  $E
+	dc.w	 -$E, $1D, -$B,  $A
+	dc.w	   0
+unk_31C66:
+	dc.w	 -$E, $12,-$1B,  $D
+	dc.w	-$10, $1E, -$B,  $A
+	dc.w	   0
+unk_31C78:
+	dc.w	 -$E, $10,-$1B,  $C
+	dc.w	 -$E, $1A, -$B,  $A
+	dc.w	   0
+unk_31C8A:
+	dc.w	 -$D, $11,-$1B,  $D
+	dc.w	-$11, $1D, -$B,  $A
+	dc.w	   0
+unk_31C9C:
+	dc.w	 -$D, $10,-$1B,  $C
+	dc.w	 -$F, $1D, -$C,  $B
+	dc.w	   0
+unk_31CAE:
+	dc.w	 -$E, $12,-$1B,  $B
+	dc.w	-$11, $1D, -$C,  $B
+	dc.w	   0
+unk_31CC0:
+	dc.w	 -$E, $12,-$1B,  $C
+	dc.w	-$10, $1E, -$B,  $A
+	dc.w	   0
+unk_31CD2:
+	dc.w	   0
+unk_31CD4:
+	dc.w	 -$3,  $6, -$8,  $8
+	dc.w	   0
+unk_31CDE:
+	dc.w	   0
+unk_31CE0:
+	dc.w	 -$E, $1C,-$1B, $18
+	dc.w	   0
+unk_31CEA:
+	dc.w	   0
+unk_31CEC:
+	dc.w	-$1F, $3E,-$70, $70
+	dc.w	-$10, $20,   0, $10
+	dc.w	 -$8, $10, $10, $10
+	dc.w	   0
+unk_31D06:
+	dc.w	   0
+unk_31D08:
+	dc.w	 -$4,  $6, -$4,  $6
+	dc.w	   0
+unk_31D12:
+	dc.w	   0
+unk_31D14:
+	dc.w	 -$8,  $E, -$8,  $E
+	dc.w	   0
+unk_31D1E:
+	dc.w	 -$8,  $E, -$8,  $E
+	dc.w	   0
+unk_31D28:
+	dc.w	   0
+unk_31D2A:
+	dc.w	   0
+unk_31D2C:
+	dc.w	 -$8,  $E, -$8,  $E
+	dc.w	   0
+unk_31D36:
+	dc.w	-$10, $1C,-$10, $1C
+	dc.w	   0
+unk_31D40:
+	dc.w	 -$4,  $8, -$4,  $8
+	dc.w	   0
+unk_31D4A:
+	dc.w	   0
+unk_31D4C:
+	dc.w	-$10, $20,-$40, $38
+	dc.w	   0
+unk_31D56:
+	dc.w	   0
+unk_31D58:
+	dc.w	   0
+unk_31D5A:
+	dc.w	   0
+unk_31D5C:
+	dc.w	   0
+unk_31D5E:
+	dc.w	 -$5,  $A, -$A,  $A
+	dc.w	   0
+unk_31D68:
+	dc.w	   0
+unk_31D6A:
+	dc.w	  $F,   0,  $F,   0
+	dc.w	   0
+unk_31D74:
+	dc.w	   0
+unk_31D76:
+	dc.w	   0
+unk_31D78:
+	dc.w	   0
+unk_31D7A:
+	dc.w	 -$5,  $A, -$A,  $A
+	dc.w	   0
+unk_31D84:
+	dc.w	 -$6,  $C, -$8, $10
+	dc.w	   0
+unk_31D8E:
+	dc.w	   0
+unk_31D90:
+	dc.w	 -$1,  $2, -$1,  $2
+	dc.w	   0
+unk_31D9A:
+	dc.w	 -$2,  $4, -$2,  $4
+	dc.w	   0
+unk_31DA4:
+	dc.w	 -$3,  $6, -$3,  $6
+	dc.w	   0
+unk_31DAE:
+	dc.w	 -$4,  $8, -$4,  $8
+	dc.w	   0
+unk_31DB8:
+	dc.w	 -$5,  $A, -$5,  $A
+	dc.w	   0
+unk_31DC2:
+	dc.w	 -$6,  $C, -$6,  $C
+	dc.w	   0
+unk_31DCC:
+	dc.w	 -$7,  $E, -$7,  $E
+	dc.w	   0
+unk_31DD6:
+	dc.w	 -$E, $1C,-$1C, $1C
+	dc.w	   0
+unk_31DE0:
+	dc.w	   0
+	dc.w	   0
+unk_31DE4:
+	dc.w	 -$1,  $8,   0, $10
+	dc.w	   0
+unk_31DEE:
+	dc.w	 -$1,  $8,   0, $18
+	dc.w	   0
+unk_31DF8:
+	dc.w	 -$1,  $8,   0, $20
+	dc.w	   0
+unk_31E02:
+	dc.w	 -$1,  $8,   0, $28
+	dc.w	   0
+unk_31E0C:
+	dc.w	 -$1,  $8,   0, $30
+	dc.w	   0
+unk_31E16:
+	dc.w	 -$1,  $8,   0, $38
+	dc.w	   0
+unk_31E20:
+	dc.w	 -$1,  $8,   0, $40
+	dc.w	   0
+unk_31E2A:
+	dc.w	 -$1,  $8,   0, $48
+	dc.w	   0
+unk_31E34:
+	dc.w	 -$1,  $8,   0, $50
+	dc.w	   0
+unk_31E3E:
+	dc.w	 -$6,  $C, -$6,  $C
+	dc.w	   0
+unk_31E48:
+	dc.w	   0
+
 	dc.b   0
 	dc.b   0
 	dc.b $FF
@@ -40856,7 +39234,7 @@ loc_32D16:
 	st	$44(a0)
 	move.w	$22(a3),d7
 	asr.w	#1,d7
-	lea	(off_30BF4).l,a4
+	lea	(CollisionSize_Index).l,a4
 	add.w	(a4,d7.w),a4
 	move.w	$1A(a3),d7
 	sub.w	$26(a3),d7
@@ -40916,7 +39294,7 @@ loc_32DD2:
 	sf	$44(a0)
 	move.w	$22(a3),d7
 	asr.w	#1,d7
-	lea	(off_30BF4).l,a4
+	lea	(CollisionSize_Index).l,a4
 	add.w	(a4,d7.w),a4
 	move.w	$1A(a3),d7
 	sub.w	$26(a3),d7
@@ -41560,7 +39938,7 @@ Enemy16_Drip_Init:
 loc_333F6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Object_CheckInRange
-	cmpi.w	#$10,$38(a3)
+	cmpi.w	#colid_ceiling,$38(a3)
 	bne.s	loc_333F6
 	clr.w	$38(a3)
 	clr.l	$2A(a3)
@@ -53486,7 +51864,7 @@ loc_3AAD4:
 	beq.s	loc_3AB04
 	cmpi.w	#$1C,d4
 	beq.s	loc_3AB04
-	cmpi.w	#$1C,$38(a3)
+	cmpi.w	#colid_hurt,$38(a3)
 	beq.s	loc_3AB04
 	cmpi.w	#$20,d4
 	beq.w	loc_3AAFA
@@ -57464,7 +55842,7 @@ loc_3D8E6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_3E8BA
 	addi.l	#$1800,$2A(a3)
-	cmpi.w	#$C,$38(a3)
+	cmpi.w	#colid_floor,$38(a3)
 	bne.s	loc_3D8E6
 	clr.l	$2A(a3)
 	clr.l	$26(a3)
@@ -57625,7 +56003,7 @@ loc_3DABC:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_3E8BA
 	addi.l	#$1800,$2A(a3)
-	cmpi.w	#$C,$38(a3)
+	cmpi.w	#colid_floor,$38(a3)
 	bne.s	loc_3DABC
 	clr.l	$2A(a3)
 	clr.l	$26(a3)

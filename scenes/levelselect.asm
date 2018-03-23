@@ -4,7 +4,7 @@ LevelSelect_ChkKey:
 	jmp	(j_loc_6E2).w
 
 LevelSelect_Loop:
-	jsr	(j_sub_E76).w
+	jsr	(j_Hibernate_Object_1Frame).w
 	jsr	(sub_1CC88).l
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	LevelSelect_DrawText
@@ -218,7 +218,7 @@ CostumeSelect_loop3:
 	bclr	#7,(Ctrl_Pressed).w
 	
 CostumeSelect_Loop:
-	jsr	(j_sub_E76).w
+	jsr	(j_Hibernate_Object_1Frame).w
 	jsr	(sub_1CC88).l
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	CostumeSelect_DrawText

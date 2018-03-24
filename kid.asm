@@ -158,17 +158,17 @@ j_WaitForVint: ;210
 j_Palette_to_VRAM: ;218
 	jmp	Palette_to_VRAM(pc)
 ; ===========================================================================
-j_sub_9AE: ;21C
-	jmp	sub_9AE(pc)
+j_Init_RNG: ;21C
+	jmp	Init_RNG(pc)
 ; ===========================================================================
-j_sub_9FE: ;220
-	jmp	sub_9FE(pc)
+j_Get_RandomNumber_byte: ;220
+	jmp	Get_RandomNumber_byte(pc)
 ; ===========================================================================
-j_sub_A34: ;224
-	jmp	sub_A34(pc)
+j_Get_RandomNumber_word: ;224
+	jmp	Get_RandomNumber_word(pc)
 ; ===========================================================================
-j_sub_A4A: ;228
-	jmp	sub_A4A(pc)
+j_Get_RandomNumber_long: ;228
+	jmp	Get_RandomNumber_long(pc)
 ; ===========================================================================
 j_sub_B52: ;22C
 	jmp	sub_B52(pc)
@@ -633,7 +633,8 @@ loc_53C:
 	bra.s	loc_5AA
 ; END OF FUNCTION CHUNK	FOR Character_CheckCollision
 ; ---------------------------------------------------------------------------
-SetupValues:	dc.w $8000
+SetupValues:
+	dc.w $8000
 	dc.w $3FFF
 	dc.w $100
 	dc.l $A00000
@@ -756,13 +757,13 @@ loc_604:
 	dbf	d0,loc_604
 	move.l	d7,(Options_Suboption_2PController).w
 	cmpi.w	#5,d7
-	if Default_Options = 0
+    if Default_Options = 0
 	bls.s	loc_61C
 	move.l	#0,(Options_Suboption_2PController).w
-	else
+    else
 	nop	; not strictly necessary, but avoids shifting stuff
 	move.l	#Default_Options,(Options_Suboption_2PController).w
-	endif
+    endif
 
 loc_61C:
 	; clear entire	VRAM
@@ -786,7 +787,7 @@ loc_62A:
 loc_65C:
 	move.b	#1,($FFFFF805).w
 	jsr	(j_sub_924).w
-	jsr	(j_sub_9AE).w
+	jsr	(j_Init_RNG).w
 	clr.w	(Game_Mode).w
 	sf	(Check_Helmet_Change).w
 	sf	($FFFFFBCE).w
@@ -903,14 +904,14 @@ Mode_Level:
 	tst.b	($FFFFFB49).w
 	bne.s	loc_80C
 	jsr	(sub_3F57E).l
-	jsr	(sub_DEDE).l
+	jsr	(j_sub_DFB0).l
 
 loc_7FC:
-	jsr	(sub_DED2).l
+	jsr	(j_sub_F7E0).l
 	bsr.w	sub_6034
 
 loc_806:
-	jsr	(sub_DED6).l
+	jsr	(j_sub_F096).l
 
 loc_80C:
 	bsr.w	sub_44DC
@@ -922,16 +923,16 @@ loc_80C:
 	bsr.w	Execute_ScriptedPlatforms
 	bsr.w	Platforms_CheckCollision
 	lea	($FFFFF86A).w,a2
-	bsr.w	GfxObjects_Collision	; GfxObjects Collision?
+	bsr.w	GfxObjects_Collision
 	lea	($FFFFF866).w,a2
-	bsr.w	GfxObjects_Collision	; GfxObjects Collision?
+	bsr.w	GfxObjects_Collision
 
 loc_83E:
 	move.b	(Just_received_damage).w,($FFFFFC28).w
 	move.b	($FFFFFA75).w,($FFFFFA74).w
 	sf	($FFFFFA75).w
 	lea	($FFFFF866).w,a2
-	bsr.w	GfxObjects_CollisionKid	; collision GfxObject/Kid?
+	bsr.w	GfxObjects_CollisionKid
 	bsr.w	sub_1F52
 	bsr.w	sub_219C
 	bsr.w	sub_226A
@@ -1097,99 +1098,97 @@ Palette_to_VRAM:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_9AE:
-	lea	($FFFFFBDA).w,a0
-	lea	unk_9C6(pc),a1
-	moveq	#$36,d0
-
-loc_9B8:
+;sub_9AE
+Init_RNG:
+	lea	(RNG_RAM_Start).w,a0
+	lea	RNG_Seed(pc),a1
+	moveq	#RNG_RAM_Length-1,d0
+-
 	move.b	(a1)+,(a0)+
-	dbf	d0,loc_9B8
-	move.w	#$FFC9,($FFFFFC12).w
+	dbf	d0,-
+	move.w	#-RNG_RAM_Length,(RNG_Offset).w
 	rts
-; End of function sub_9AE
+; End of function Init_RNG
 
 ; ---------------------------------------------------------------------------
-unk_9C6:	dc.b $89 ; ‰
-	dc.b $72 ; r
-	dc.b $2D ; -
-	dc.b $8D ; 
-	dc.b $66 ; f
-	dc.b $4F ; O
-	dc.b $80 ; €
-	dc.b $62 ; b
-	dc.b $CA ; Ê
-	dc.b $5D ; ]
-	dc.b $30 ; 0
-	dc.b $30 ; 0
-	dc.b $9D ; 
-	dc.b $9E ; ž
-	dc.b $21 ; !
-	dc.b $B8 ; ¸
-	dc.b $93 ; “
-	dc.b $77 ; w
-	dc.b $7F ; 
-	dc.b $E4 ; ä
-	dc.b $2B ; +
-	dc.b $BE ; ¾
-	dc.b $8D ; 
-	dc.b $9E ; ž
-	dc.b $56 ; V
-	dc.b $AA ; ª
-	dc.b $DD ; Ý
-	dc.b $C2 ; Â
-	dc.b $A8 ; ¨
+;unk_9C6
+RNG_Seed:
+	dc.b $89
+	dc.b $72
+	dc.b $2D
+	dc.b $8D
+	dc.b $66
+	dc.b $4F
+	dc.b $80
+	dc.b $62
+	dc.b $CA
+	dc.b $5D
+	dc.b $30
+	dc.b $30
+	dc.b $9D
+	dc.b $9E
+	dc.b $21
+	dc.b $B8
+	dc.b $93
+	dc.b $77
+	dc.b $7F
+	dc.b $E4
+	dc.b $2B
+	dc.b $BE
+	dc.b $8D
+	dc.b $9E
+	dc.b $56
+	dc.b $AA
+	dc.b $DD
+	dc.b $C2
+	dc.b $A8
 	dc.b $10
-	dc.b $BF ; ¿
+	dc.b $BF
 	dc.b   8
-	dc.b $B2 ; ²
-	dc.b $9B ; ›
-	dc.b $8A ; Š
-	dc.b $CF ; Ï
-	dc.b $AC ; ¬
-	dc.b $64 ; d
-	dc.b $59 ; Y
+	dc.b $B2
+	dc.b $9B
+	dc.b $8A
+	dc.b $CF
+	dc.b $AC
+	dc.b $64
+	dc.b $59
 	dc.b  $E
 	dc.b $18
-	dc.b $4B ; K
-	dc.b $C4 ; Ä
-	dc.b $F4 ; ô
-	dc.b $89 ; ‰
-	dc.b $6C ; l
-	dc.b $50 ; P
-	dc.b $FD ; ý
-	dc.b $99 ; ™
-	dc.b $5F ; _
-	dc.b $92 ; ’
-	dc.b $D8 ; Ø
-	dc.b $D0 ; Ð
-	dc.b $90 ; 
-	dc.b $68 ; h
+	dc.b $4B
+	dc.b $C4
+	dc.b $F4
+	dc.b $89
+	dc.b $6C
+	dc.b $50
+	dc.b $FD
+	dc.b $99
+	dc.b $5F
+	dc.b $92
+	dc.b $D8
+	dc.b $D0
+	dc.b $90
+	dc.b $68
 	dc.b   0
 
 ; =============== S U B	R O U T	I N E =======================================
+; Get a random number and write it to d7
 
-
-sub_9FE:
+;sub_9FE
+Get_RandomNumber_byte:
 	move.l	a0,-(sp)
 	move.l	a1,-(sp)
-	lea	($FFFFFC11).w,a0
-	move.w	($FFFFFC12).w,d7
-
-loc_A0A:
+	lea	(RNG_RAM_End).w,a0
+	move.w	(RNG_Offset).w,d7
 	addq.w	#1,d7
-	bne.s	loc_A10
-	moveq	#-$37,d7
-
-loc_A10:
-	move.w	d7,($FFFFFC12).w
+	bne.s	+
+	moveq	#-RNG_RAM_Length,d7
++
+	move.w	d7,(RNG_Offset).w
 	lea	(a0,d7.w),a1
 	addi.w	#$1F,d7
-	bcc.s	loc_A22
-	subi.w	#$37,d7
-
-loc_A22:
+	bcc.s	+
+	subi.w	#RNG_RAM_Length,d7
++
 	lea	(a0,d7.w),a0
 	moveq	#0,d7
 	move.b	(a1),d7
@@ -1198,32 +1197,32 @@ loc_A22:
 	move.l	(sp)+,a1
 	move.l	(sp)+,a0
 	rts
-; End of function sub_9FE
+; End of function Get_RandomNumber_byte
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_A34:
-	jsr	(j_sub_9FE).w
-	move.b	d7,($FFFFFC14).w
-	jsr	(j_sub_9FE).w
-	move.b	d7,($FFFFFC15).w
-	move.w	($FFFFFC14).w,d7
+;sub_A34
+Get_RandomNumber_word:
+	jsr	(j_Get_RandomNumber_byte).w
+	move.b	d7,(RNG_Buffer).w
+	jsr	(j_Get_RandomNumber_byte).w
+	move.b	d7,(RNG_Buffer+1).w
+	move.w	(RNG_Buffer).w,d7
 	rts
-; End of function sub_A34
+; End of function Get_RandomNumber_word
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_A4A:
-	jsr	(j_sub_A34).w
-	move.w	d7,($FFFFFC16).w
-	jsr	(j_sub_A34).w
-	move.l	($FFFFFC14).w,d7
+;sub_A4A
+Get_RandomNumber_long:
+	jsr	(j_Get_RandomNumber_word).w
+	move.w	d7,(RNG_Buffer+2).w
+	jsr	(j_Get_RandomNumber_word).w
+	move.l	(RNG_Buffer).w,d7
 	rts
-; End of function sub_A4A
+; End of function Get_RandomNumber_long
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -1633,7 +1632,7 @@ loc_E0C:
 
 ;sub_E12
 Execute_Objects:
-	jsr	(j_sub_A4A).w
+	jsr	(j_Get_RandomNumber_long).w
 	move.l	sp,($FFFFF84C).w	; save address where this was called from
 	lea	(Addr_FirstObjectSlot).w,a5	; address of first object
 
@@ -6302,7 +6301,7 @@ loc_613E:
 	cmpi.w	#$FFE5,($FFFFFADC).w
 	bne.s	loc_6172
 	move.w	#$F7,($FFFFFADC).w
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.b	#$F5,d7
 	sub.w	d7,($FFFFFADC).w
 	move.l	(LnkTo_Pal_7B85C).l,a0
@@ -6400,7 +6399,7 @@ loc_623A:
 	subq.b	#1,($FFFFFB3C).w
 	bne.w	loc_62CE
 	move.b	#$25,($FFFFFB3C).w
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.b	#$F,d7
 	sub.b	d7,($FFFFFB3C).w
 	tst.b	($FFFFFB3D).w
@@ -6417,7 +6416,7 @@ loc_625E:
 ; ---------------------------------------------------------------------------
 
 loc_626C:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$FF,d7
 	add.w	(Camera_X_pos).w,d7
 	addi.w	#$28,d7
@@ -12880,7 +12879,7 @@ loc_A2E2:
 ; ---------------------------------------------------------------------------
 
 loc_A2F6:
-	bsr.w	sub_A34C
+	bsr.w	Get_RandomNumber_wordC
 	move.w	($FFFFFA78).w,d7
 	addq.w	#1,d7
 	tst.b	$16(a3)
@@ -12917,7 +12916,7 @@ loc_A338:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_A34C:
+Get_RandomNumber_wordC:
 	moveq	#0,d6
 	move.w	($FFFFFA76).w,d7
 	addi.w	#$80,d7
@@ -12957,7 +12956,7 @@ loc_A3B4:
 	move.l	d7,$2A(a3)
 	tst.w	d6
 	rts
-; End of function sub_A34C
+; End of function Get_RandomNumber_wordC
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -17462,48 +17461,20 @@ sub_DB22:
 	dc.b	$FF
     endm
 
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_DED2:
+; ---------------------------------------------------------------------------
+j_sub_F7E0:	;sub_DED2
 	jmp	sub_F730(pc)
-; End of function sub_DED2
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_DED6:
+; ---------------------------------------------------------------------------
+j_sub_F096:	;sub_DED6
 	jmp	sub_F096(pc)
-; End of function sub_DED6
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_DEDA:
+; ---------------------------------------------------------------------------
+j_sub_F06A:	;sub_DEDA
 	jmp	sub_F06A(pc)
-; End of function sub_DEDA
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_DEDE:
+; ---------------------------------------------------------------------------
+j_sub_DFB0:	;sub_DEDE
 	jmp	sub_DFB0(pc)
-; End of function sub_DEDE
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
+; ---------------------------------------------------------------------------
 j_loc_DF22: ;DEE2
-
-
 	jmp	loc_DF22(pc)
 ; ---------------------------------------------------------------------------
 	jmp	sub_DF68(pc)
@@ -24419,7 +24390,7 @@ loc_11EFA:
 	bsr.w	sub_129CE
 	bsr.w	sub_12B8C
 	bsr.w	sub_12C24
-	jsr	(sub_DEDA).l
+	jsr	(j_sub_F06A).l
 	jsr	(j_loc_DF22).l
 	bsr.w	Init_SpriteAttr_HUD
 	jsr	(sub_3F57A).l
@@ -29349,7 +29320,7 @@ loc_1AC70:
 	subi.w	#8,d1
 
 loc_1ACB0:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.b	#3,d7
 	beq.s	loc_1ACE6
 	cmpi.b	#2,d7
@@ -29363,7 +29334,7 @@ loc_1ACC8:
 	move.w	#$FFE0,d6
 
 loc_1ACCC:
-	jsr	(j_sub_A34).w
+	jsr	(j_Get_RandomNumber_word).w
 	andi.w	#$FF,d7
 	addi.w	#$3E,d7
 	andi.w	#$FFFC,d7
@@ -29380,7 +29351,7 @@ loc_1ACE6:
 	move.w	#$FFE0,d5
 
 loc_1ACEA:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	subi.w	#$20,d7
 	bgt.s	loc_1ACF8
 	addi.w	#$28,d7
@@ -33573,14 +33544,14 @@ word_1D83A:	dc.w   $AF
 
 
 sub_1D846:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.b	(V_Int_counter).w,d5
 	bclr	#7,d5
 	eor.b	d5,d7
 	ext.w	d7
 	asr.w	#5,d7
 	move.w	d7,(Camera_X_pos).w
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	eor.b	d5,d7
 	ext.w	d7
 	asr.w	#5,d7
@@ -33593,14 +33564,14 @@ sub_1D846:
 
 
 sub_1D86C:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.b	(V_Int_counter).w,d5
 	bclr	#7,d5
 	eor.b	d5,d7
 	ext.w	d7
 	asr.w	#1,d7
 	move.w	d7,d6
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	eor.b	d5,d7
 	ext.w	d7
 	asr.w	#1,d7
@@ -33628,7 +33599,7 @@ sub_1D8B4:
 	move.w	$44(a5),$1A(a3)
 	move.w	$46(a5),$1E(a3)
 	move.w	$48(a5),$22(a3)
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.b	(V_Int_counter).w,d0
 	eor.b	d0,d7
 	andi.w	#$FF,d7
@@ -38772,7 +38743,7 @@ loc_328A6:
 	move.w	$46(a5),d5
 
 loc_328AA:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.w	$1E(a2),d6
 	eor.b	d6,d7
 	andi.l	#3,d7
@@ -38780,7 +38751,7 @@ loc_328AA:
 	neg.w	d7
 	swap	d7
 	move.l	d7,$2A(a3)
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.w	$1A(a2),d6
 	eor.b	d6,d7
 	andi.l	#3,d7
@@ -39184,7 +39155,7 @@ loc_32C8E:
 ; ---------------------------------------------------------------------------
 
 loc_32CC2:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.b	(Camera_X_pos).w,d6
 	eor.b	d6,d7
 	ext.w	d7
@@ -39944,7 +39915,7 @@ loc_333F6:
 	clr.l	$2A(a3)
 
 loc_3340E:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$FF,d7
 	asr.w	#2,d7
 	move.w	d7,d0
@@ -40137,7 +40108,7 @@ loc_335D8:
 	move.b	$44(a4),$44(a5)
 	move.b	$45(a4),$45(a5)
 	move.l	#$3000,$26(a3)
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	bclr	#2,d7
 	beq.w	loc_33630
 	not.b	$16(a3)
@@ -41456,7 +41427,7 @@ Enemy07_Archer_Init:
 	move.l	($FFFFF86A).w,4(a3)
 	move.l	a3,($FFFFF86A).w
 	st	$3D(a1)
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$FF,d7
 	move.b	(Camera_X_pos).w,d6
 	eor.b	d6,d7
@@ -42897,7 +42868,8 @@ stru_34D02:
 	anim_frame	  1, $21, LnkTo_unk_C83C8-Data_Index
 	dc.b 2
 	dc.b $45
-unk_34D48:	dc.b $FF
+unk_34D48:
+	dc.b $FF
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -42910,7 +42882,19 @@ unk_34D48:	dc.b $FF
 	dc.b $FF
 	dc.b $FF
 ; ---------------------------------------------------------------------------
-
+;$44(a5)	word counter
+;$46(a5)	flag whether UFO is shooting
+;$47(a5)	flag ?
+;$4C(a5)	flag ?
+;$4D(a5)	flag ?
+;$4E(a5)	flag ?
+;$4F(a5)	flag ?
+;$50(a5)	flag whether UFO is on screen
+;d0	x acceleration
+;d1
+;d2	y acceleration
+;d3
+; ---------------------------------------------------------------------------
 ;loc_34D54:
 Enemy0F_UFO_Init:
 	move.l	#$1000002,a3
@@ -42945,35 +42929,41 @@ Enemy0F_UFO_Init:
 	jsr	(j_Init_Animation).w
 	move.l	(Addr_GfxObject_Kid).w,a2
 
-loc_34DD6:
-	bsr.w	loc_35326
+;loc_34DD6
+Enemy0F_UFO_1SecLoop:
+	; this part happens once per second (every $3C frames)
+	bsr.w	loc_35326	; randomness?
 	bsr.w	loc_34E10
 	move.w	#$3C,$44(a5)
 
-loc_34DE4:
-	bsr.w	loc_35008
+;loc_34DE4
+Enemy0F_UFO_Loop:
+	; this part happens every frame
+	bsr.w	Enemy_HandleAcceleration
 	bsr.w	loc_34E2A
-	bsr.w	loc_34E9C
-	bsr.w	loc_34F8E
-	bsr.w	loc_352E4
-	bsr.w	loc_34F18
+	bsr.w	Enemy0F_UFO_ChkShoot
+	bsr.w	Enemy0F_UFO_ChkLoadBeam
+	bsr.w	Enemy0F_UFO_SpeedToPos
+	bsr.w	Enemy0F_UFO_ChkOnScreen
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	loc_35280
-	bsr.w	loc_35076
+	bsr.w	loc_35280	; loading/unloading
+	bsr.w	Enemy0F_UFO_ExecCollisionBehavior
 	subq.w	#1,$44(a5)
-	bne.s	loc_34DE4
-	bra.s	loc_34DD6
+	bne.s	Enemy0F_UFO_Loop
+	bra.s	Enemy0F_UFO_1SecLoop
 ; ---------------------------------------------------------------------------
 
 loc_34E10:
 	tst.b	$4E(a5)
 	beq.w	loc_34E1C
+	; double acceleration?
 	add.l	d0,d0
 	add.l	d2,d2
 
 loc_34E1C:
 	tst.b	$4F(a5)
 	beq.w	return_34E28
+	; double terminal speed?
 	add.l	d1,d1
 	add.l	d3,d3
 
@@ -42981,14 +42971,15 @@ return_34E28:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_34E2A:
+loc_34E2A:	; adjust x-vel/accel towards kid if Kid is close and below UFO
 	tst.b	$4D(a5)
 	beq.w	return_34E9A
-	tst.b	($FFFFFA27).w
+	tst.b	(Some_UFO_Shooting).w
 	bne.w	return_34E9A
 	move.w	$1E(a2),d7
-	cmp.w	$1E(a3),d7
-	ble.w	return_34E9A
+	cmp.w	$1E(a3),d7	; is Kid lower than UFO?
+	ble.w	return_34E9A	; no
+	; yes
 	move.w	$1A(a3),d7
 	move.w	$1A(a2),d6
 	move.w	d6,d5
@@ -42998,13 +42989,14 @@ loc_34E2A:
 	addi.w	#$60,d6
 	cmp.w	d6,d7
 	bgt.w	return_34E9A
+	; Kid's x-position is close to UFO's x-position
 	moveq	#0,d2
 	moveq	#0,d3
-	move.l	d2,$2A(a3)
+	move.l	d2,$2A(a3)	; clear vertical velocity
 	cmp.w	d5,d7
 	blt.w	loc_34E86
-	move.l	#$FFFE0000,d1
-	move.l	#$FFFFF000,d0
+	move.l	#-$20000,d1	; speed we want to achieve
+	move.l	#-$1000,d0	; acceleration (towards that speed)
 	sf	$16(a3)
 	bra.w	loc_34E96
 ; ---------------------------------------------------------------------------
@@ -43020,17 +43012,18 @@ loc_34E96:
 return_34E9A:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_34E9C:
+;loc_34E9C
+Enemy0F_UFO_ChkShoot:
 	tst.b	$4C(a5)
 	beq.w	return_34F16
 	tst.b	$46(a5)
 	bne.w	return_34F16
-	tst.b	($FFFFFA27).w
+	tst.b	(Some_UFO_Shooting).w
 	bne.w	return_34F16
 	move.w	$1E(a2),d7
-	cmp.w	$1E(a3),d7
-	ble.w	return_34F16
+	cmp.w	$1E(a3),d7	; is Kid lower than UFO?
+	ble.w	return_34F16	; no
+	; yes
 	move.w	$1A(a3),d7
 	move.w	$1A(a2),d6
 	subq.w	#2,d6
@@ -43039,6 +43032,7 @@ loc_34E9C:
 	addq.w	#4,d6
 	cmp.w	d6,d7
 	bgt.w	return_34F16
+	; Kid is directly below UFO
 	tst.b	$19(a3)
 	bne.w	loc_34EEC
 	move.l	d0,-(sp)
@@ -43050,35 +43044,38 @@ loc_34EEC:
 	move.w	#4,$48(a5)
 	move.w	#5,$4A(a5)
 	st	$46(a5)
-	st	($FFFFFA27).w
+	st	(Some_UFO_Shooting).w
 	moveq	#0,d0
 	moveq	#0,d1
 	moveq	#0,d2
 	moveq	#0,d3
-	move.l	d0,$26(a3)
-	move.l	d0,$2A(a3)
+	move.l	d0,$26(a3)	; clear velocities and acceleration,
+	move.l	d0,$2A(a3)	; i.e. UFO stays in place
 	move.w	#$32,$44(a5)
 
 return_34F16:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_34F18:
+;loc_35008
+Enemy0F_UFO_ChkOnScreen:
 	move.w	$1A(a3),d7
 	sub.w	$1A(a2),d7
-	cmpi.w	#$FF60,d7
+	cmpi.w	#-$A0,d7
 	blt.w	loc_34F6E
 	cmpi.w	#$A0,d7
 	bgt.w	loc_34F6E
+	; UFO's x-position is within $A0 pixels of Kid's x-position
 	move.w	$1E(a3),d7
 	sub.w	$1E(a2),d7
-	cmpi.w	#$FF60,d7
+	cmpi.w	#-$A0,d7
 	blt.w	loc_34F6E
 	cmpi.w	#$50,d7
 	bgt.w	loc_34F6E
+	; UFO is also not too far away in y-position
+	; --> UFO is on screen
 	tst.b	$50(a5)
 	bne.w	return_34F6C
-	move.b	($FFFFFB66).w,d7
+	move.b	(Number_UFOs_OnScreen).w,d7
 	bne.w	loc_34F64
 	move.l	d0,-(sp)
 	moveq	#sfx_UFO_hovering,d0
@@ -43086,7 +43083,7 @@ loc_34F18:
 	move.l	(sp)+,d0
 
 loc_34F64:
-	addq.w	#1,($FFFFFB66).w
+	addq.w	#1,(Number_UFOs_OnScreen).w
 	st	$50(a5)
 
 return_34F6C:
@@ -43094,9 +43091,10 @@ return_34F6C:
 ; ---------------------------------------------------------------------------
 
 loc_34F6E:
+	; UFO is off screen
 	tst.b	$50(a5)
 	beq.s	return_34F6C
-	subq.w	#1,($FFFFFB66).w
+	subq.w	#1,(Number_UFOs_OnScreen).w
 	bne.w	loc_34F88
 	move.l	d0,-(sp)
 	moveq	#$19,d0
@@ -43107,15 +43105,15 @@ loc_34F88:
 	sf	$50(a5)
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_34F8E:
+;loc_34F8E
+Enemy0F_UFO_ChkLoadBeam:
 	tst.b	$46(a5)
 	bne.w	loc_34FD6
-	tst.b	($FFFFFA27).w
+	tst.b	(Some_UFO_Shooting).w
 	bne.w	return_34FFC
 	tst.b	$4C(a5)
 	bne.w	return_34FFC
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$FF,d7
 	cmpi.w	#4,d7
 	bgt.w	return_34FFC
@@ -43126,7 +43124,7 @@ loc_34F8E:
 	move.w	#4,$48(a5)
 	move.w	#5,$4A(a5)
 	st	$46(a5)
-	st	($FFFFFA27).w
+	st	(Some_UFO_Shooting).w
 
 loc_34FD6:
 	subq.w	#1,$4A(a5)
@@ -43136,7 +43134,7 @@ loc_34FD6:
 	beq.w	loc_34FFE
 	move.w	#$8000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3556C,4(a0)
+	move.l	#Enemy0F_UFOBeam_Init,4(a0)	; laser beam
 
 return_34FFC:
 	rts
@@ -43144,17 +43142,17 @@ return_34FFC:
 
 loc_34FFE:
 	sf	$46(a5)
-	sf	($FFFFFA27).w
+	sf	(Some_UFO_Shooting).w
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_35008:
-	move.l	d0,d7
+;loc_35008
+Enemy_HandleAcceleration:
+	move.l	d0,d7	; d0 = x acceleration?
 	bmi.w	loc_3501E
 	add.l	$26(a3),d7
-	cmp.l	d1,d7
+	cmp.l	d1,d7	; d1 = desired x speed?
 	blt.w	loc_3502A
-	move.l	d1,d7
+	move.l	d1,d7	; cap the speed at the desired value
 	bra.w	loc_3502A
 ; ---------------------------------------------------------------------------
 
@@ -43166,6 +43164,7 @@ loc_3501E:
 
 loc_3502A:
 	move.l	d7,$26(a3)
+
 	move.l	d2,d7
 	bmi.w	loc_35044
 	add.l	$2A(a3),d7
@@ -43204,29 +43203,31 @@ loc_35070:
 	clr.w	$38(a3)
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_35076:
-	lea	off_3507C(pc),a4
+;loc_35076
+Enemy0F_UFO_ExecCollisionBehavior:
+	lea	Enemy0F_UFO_CollisionBehaviors(pc),a4
 	bra.s	loc_35056
 ; ---------------------------------------------------------------------------
-off_3507C:	dc.l loc_35104
-	dc.l loc_35104
-	dc.l loc_3512A
-	dc.l loc_3512A
-	dc.l loc_350AA
-	dc.l loc_350CC
-	dc.l loc_35150
-	dc.l return_350A8
-	dc.l return_350A8
-	dc.l return_350A8
-	dc.l loc_35150
+;off_3507C
+Enemy0F_UFO_CollisionBehaviors:
+	dc.l Enemy0F_UFO_BounceWall
+	dc.l Enemy0F_UFO_BounceWall
+	dc.l Enemy0F_UFO_BounceFloorCeil
+	dc.l Enemy0F_UFO_BounceFloorCeil
+	dc.l Enemy0F_UFO_BounceUpSlope
+	dc.l Enemy0F_UFO_BounceDownSlope
+	dc.l Enemy0F_UFO_Hurt	; hit by e.g. projectile
+	dc.l return_350A8	; touching kid
+	dc.l return_350A8	; touching kid
+	dc.l return_350A8	; touching kid
+	dc.l Enemy0F_UFO_Hurt	; kid jumped on top
 ; ---------------------------------------------------------------------------
 
 return_350A8:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_350AA:
+;loc_350AA
+Enemy0F_UFO_BounceUpSlope:
 	bsr.w	loc_350F2
 	move.l	#-$10000,d7
 	move.l	d7,$26(a3)
@@ -43238,8 +43239,8 @@ loc_350AA:
 	moveq	#0,d3
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_350CC:
+;loc_350CC
+Enemy0F_UFO_BounceDownSlope:
 	bsr.w	loc_350F2
 	move.l	#$10000,d7
 	move.l	d7,$26(a3)
@@ -43261,8 +43262,8 @@ loc_350F2:
 	sub.l	d7,$1E(a3)
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_35104:
+;loc_35104
+Enemy0F_UFO_BounceWall:
 	moveq	#0,d1
 	move.l	$26(a3),d7
 	neg.l	d7
@@ -43282,8 +43283,8 @@ loc_35120:
 return_35128:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3512A:
+;loc_3512A
+Enemy0F_UFO_BounceFloorCeil:
 	moveq	#0,d3
 	move.l	$2A(a3),d7
 	neg.l	d7
@@ -43303,13 +43304,13 @@ loc_35146:
 return_3514E:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_35150:
+;loc_35150
+Enemy0F_UFO_Hurt:
 	tst.b	$47(a5)
 	beq.w	loc_351EE
 	tst.b	$50(a5)
 	beq.w	loc_35174
-	subq.w	#1,($FFFFFB66).w
+	subq.w	#1,(Number_UFOs_OnScreen).w
 	bne.w	loc_35174
 	move.l	d0,-(sp)
 	moveq	#$19,d0
@@ -43319,12 +43320,12 @@ loc_35150:
 loc_35174:
 	tst.b	$46(a5)
 	beq.w	loc_35180
-	sf	($FFFFFA27).w
+	sf	(Some_UFO_Shooting).w
 
 loc_35180:
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_355E2,4(a0)
+	move.l	#loc_355E2,4(a0)	; UFO Driver?
 	move.w	#$FFFF,$46(a0)
 	move.w	$26(a3),$44(a0)
 	sf	$13(a1)
@@ -43440,7 +43441,7 @@ loc_35280:
 loc_3528A:
 	tst.b	$50(a5)
 	beq.w	loc_352A6
-	subq.w	#1,($FFFFFB66).w
+	subq.w	#1,(Number_UFOs_OnScreen).w
 	bne.w	loc_352A6
 	move.l	d0,-(sp)
 	moveq	#$19,d0
@@ -43450,7 +43451,7 @@ loc_3528A:
 loc_352A6:
 	tst.b	$46(a5)
 	beq.w	loc_352B2
-	sf	($FFFFFA27).w
+	sf	(Some_UFO_Shooting).w
 
 loc_352B2:
 	moveq	#0,d0
@@ -43475,7 +43476,7 @@ loc_352E0:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_352E4:
+Enemy0F_UFO_SpeedToPos:
 	move.l	$26(a3),d7
 	add.l	d7,$1A(a3)
 	move.l	$2A(a3),d7
@@ -43501,7 +43502,7 @@ return_35324:
 ; ---------------------------------------------------------------------------
 
 loc_35326:
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.l	(Addr_GfxObject_Kid).w,a4
 	move.w	$1A(a3),d6
 	eor.b	d6,d7
@@ -43511,7 +43512,9 @@ loc_35326:
 	add.w	d7,a4
 	bra.w	loc_35444
 ; ---------------------------------------------------------------------------
-unk_35344:	dc.b   0
+; each entry is 4 longs
+unk_35344:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -43876,8 +43879,8 @@ loc_3555A:
 	beq.s	loc_3554A
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_3556C:
+;loc_3556C
+Enemy0F_UFOBeam_Init:
 	move.l	#$3000003,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$A(a5),a0
@@ -43897,13 +43900,14 @@ loc_3556C:
 	move.l	#$30000,$2A(a3)
 	subi.w	#4,$1A(a3)
 	tst.b	$16(a0)
-	beq.w	loc_355D4
+	beq.w	Enemy0F_UFOBeam_Loop
 	addi.w	#8,$1A(a3)
 
-loc_355D4:
+;loc_355D4
+Enemy0F_UFOBeam_Loop:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.w	$38(a3)
-	beq.s	loc_355D4
+	beq.s	Enemy0F_UFOBeam_Loop
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -43999,11 +44003,11 @@ word_356E4:	dc.w $FFFF
 
 loc_356F2:
 
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$2F,d7
 	cmpi.w	#$A,d7
 	bgt.s	loc_356CE
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#6,d7
 	move.w	word_356E4(pc,d7.w),d7
 	move.w	d7,$2A(a3)
@@ -44199,7 +44203,7 @@ Enemy18_Tornado_Init:
 	move.w	$48(a5),$44(a5)
 
 loc_35908:
-	bsr.w	loc_35008
+	bsr.w	Enemy_HandleAcceleration
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Object_CheckInRange
 	bsr.w	loc_35948
@@ -44231,12 +44235,12 @@ loc_35948:
 	lea	off_35950(pc),a4
 	bra.w	loc_35056
 ; ---------------------------------------------------------------------------
-off_35950:	dc.l loc_35104
-	dc.l loc_35104
-	dc.l loc_3512A
-	dc.l loc_3512A
-	dc.l loc_350AA
-	dc.l loc_350CC
+off_35950:	dc.l Enemy0F_UFO_BounceWall
+	dc.l Enemy0F_UFO_BounceWall
+	dc.l Enemy0F_UFO_BounceFloorCeil
+	dc.l Enemy0F_UFO_BounceFloorCeil
+	dc.l Enemy0F_UFO_BounceUpSlope
+	dc.l Enemy0F_UFO_BounceDownSlope
 	dc.l loc_359B2
 	dc.l loc_3597E
 	dc.l loc_35984
@@ -44738,7 +44742,7 @@ loc_35CA2:
 	bne.w	return_35CD6
 	subq.w	#1,d2
 	bne.s	return_35CD6
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	andi.w	#$2F,d7
 	cmpi.w	#$A,d7
 	bgt.s	loc_35CD2
@@ -44975,11 +44979,11 @@ Enemy06_Sphere_Loop:
 +
 	addi.l	#$800,$2A(a3)	; apply gravity
 	tst.w	$38(a3)
-	bne.s	Enemy06_Sphere_ExecBehavior
+	bne.s	Enemy06_Sphere_ExecCollisionBehavior
 	bra.s	Enemy06_Sphere_Loop
 ; ---------------------------------------------------------------------------
 ;off_35F72
-Enemy06_Sphere_Behaviors:
+Enemy06_Sphere_CollisionBehaviors:
 	dc.l Enemy06_Sphere_BounceWall	; bounce on wall
 	dc.l Enemy06_Sphere_BounceWall	; bounce on wall
 	dc.l Enemy06_Sphere_BounceFloor	; bounce on floor
@@ -44993,14 +44997,14 @@ Enemy06_Sphere_Behaviors:
 	dc.l Enemy06_Sphere_Kill	; kill sphere
 ; ---------------------------------------------------------------------------
 ;loc_35F9E
-Enemy06_Sphere_ExecBehavior:
+Enemy06_Sphere_ExecCollisionBehavior:
 	bmi.w	Enemy06_Sphere_Kill
 	move.w	#1,d0
 	clr.l	d7
 	move.w	$38(a3),d7
 	subq.w	#4,d7
 	clr.w	$38(a3)
-	move.l	Enemy06_Sphere_Behaviors(pc,d7.w),a0
+	move.l	Enemy06_Sphere_CollisionBehaviors(pc,d7.w),a0
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
 ;loc_35FB8
@@ -45235,7 +45239,7 @@ Enemy1B_EmoRock_Init:
 
 loc_361F4:
 	move.w	#$3C,d0
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.w	$1A(a2),d6
 	eor.b	d6,d7
 	bclr	#7,d7
@@ -51781,7 +51785,7 @@ loc_3A9D2:
 loc_3A9F0:
 	subi.w	#1,$54(a5)
 	bne.s	loc_3AA0C
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	lsr.w	#1,d7
 	addi.w	#$F,d7
 	move.w	d7,$54(a5)
@@ -54231,7 +54235,7 @@ return_3C552:
 loc_3C554:
 	cmpi.w	#2,$40(a3)
 	beq.w	loc_3C5FC
-	jsr	(j_sub_A4A).w
+	jsr	(j_Get_RandomNumber_long).w
 	cmpi.w	#$A,d7
 	ble.s	loc_3C56A
 	rts
@@ -56426,7 +56430,7 @@ loc_3DFF0:
 	move.w	#$A,$42(a3)
 	move.l	#$3C,$54(a5)
 	move.l	#loc_3E318,a0
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	move.b	d7,$71(a5)
 	bne.s	loc_3E030
 	addi.b	#$4B,$71(a5)
@@ -59359,7 +59363,7 @@ loc_3FE04:
 	andi.w	#$F,d0
 	bne.s	loc_3FE62
 	addq.w	#1,($FFFFF5C0).w
-	jsr	(j_sub_9FE).w
+	jsr	(j_Get_RandomNumber_byte).w
 	lsl.w	#2,d7
 	divu.w	#$140,d7
 	swap	d7

@@ -7,7 +7,7 @@
 
 FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
 FF0280 FF0500   ?
-FF0500 ?        DMA queue?
+FF0500 ?        DMA queue? Format: 6 bytes per entry. word: length, long: source address
 ?      FF0DA0	?
 FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
 FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
@@ -40,6 +40,7 @@ FFF862 ?        Object RAM? - red stealth sword, axe, skull for collision purpos
 FFF8C0 ?        Object RAM? - for collision purposes?
 ?      FFF8FE   Misc variables
 FFF8FE ?        Enemy status table, one word entry per enemy in enemy layout (whether it's loaded or something)
+FFFBDA FFFC18   RNG RAM and related variables
 ?      FFFFFF	Misc variables
 
 # To be merged with the above table:
@@ -93,6 +94,7 @@ FFF8AE  long    Address of theme mappings
 FFF8BA  word    maximal camera X position (width in pixels - $140)
 FFF8BC  word    maximal camera Y position (height in pixels - $E0)
 FFF8D4  long    pointer to block list?
+FFFA27  byte    flag: whether an UFO is shooting at the Kid
 FFFA6D  byte    flag whether kid is currently transforming
 FFFA70  word    Telepad timer
 FFFA7A  word    Kid hitbox left
@@ -115,6 +117,7 @@ FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a
 FFFAD6  word    timer for storm background (counts down from 4, and if 0, display rain background)
 FFFB40	word	Level Special Effects: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 FFFB48	byte	background format (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+FFFB66  word    number of UFOs on screen
 FFFBC4	word	Pointer to current Keypress in Demo
 FFFBC9  byte    Demo Mode flag (for input)
 FFFBCA  word    Game Mode:
@@ -132,6 +135,9 @@ FFFBCA  word    Game Mode:
     2C - TitleScreen
     30 - EndSequence
 FFFBD4  long    address of map header
+FFFBDA  $37 bytes   RNG RAM
+FFFC12  word    offset for next random number
+FFFC14  long    random number word/long buffer
 FFFC18	word	Lives displayed on counter
 FFFC1A	word	number of diamonds from previous frame (displayed on counter?)
 FFFC1C	word	Time: Frames

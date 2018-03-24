@@ -58,6 +58,7 @@ Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
 Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
 Maniaxe_throwing_axe = $FFFFFA65 ; byte: flag
 Cyclone_flying =	$FFFFFA68 ; byte: flag
@@ -84,6 +85,7 @@ MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
 Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid    
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+Number_UFOs_OnScreen = 	$FFFFFB66	; word
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo
 Demo_Mode_flag = 	$FFFFFBC9	; byte (for input)
 Game_Mode = 		$FFFFFBCA	; word
@@ -103,6 +105,11 @@ Game_Mode = 		$FFFFFBCA	; word
 Check_Helmet_Change = $FFFFFBCF ; byte: flag
 Current_Helmet_Available = $FFFFFBD0 ; word
 Addr_MapHeader = 	$FFFFFBD4	; long
+RNG_RAM_Start = 	$FFFFFBDA	; $38 bytes
+RNG_RAM_End = 		$FFFFFC11	; 
+RNG_RAM_Length = 	RNG_RAM_End-RNG_RAM_Start
+RNG_Offset = 		$FFFFFC12	; word
+RNG_Buffer = 		$FFFFFC14	; long
 Number_Lives_prev = 	$FFFFFC18	; word
 Number_Diamonds_prev = 	$FFFFFC1A	; word
 Time_SubSeconds = 	$FFFFFC1C	; word: Frames until next second countdown

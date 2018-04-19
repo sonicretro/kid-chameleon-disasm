@@ -15,7 +15,7 @@
 ; (Takes less space but is not bit-perfect.)
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
-insertLevelSelect = 0
+insertLevelSelect = 1
 ; Introduce type of scripted platform that starts the script only once the
 ; kid stands on the platform.
 ; In the layout, such a platform is used when the platform parameter t=1.
@@ -54,7 +54,7 @@ Boss4_LevelID = $33
 	; 3: Jump/Special/Speed
 	; 4: Special/Speed/Jump
 	; 5: Special/Jump/Speed
-Default_Options = $00000000
+Default_Options = $00FF0000
 ; ===========================================================================
 	include "constants.asm"
 	include "macros.asm"
@@ -6881,6 +6881,7 @@ Game_Paused_ChkStart:
 	subi.w	#1,(Number_Lives).w
 	beq.s	loc_6B62
 	; lives left --> restart level
+	st	LevelSelect_Flag	; randomize: flag for showing costume select
 	clr.w	(Extra_hitpoint_slots).w
 	clr.w	(Current_Helmet).w
 	move.w	#2,(Number_Hitpoints).w
@@ -7411,7 +7412,7 @@ sub_6E24:
 	else
 LevelSelect_Start:
 ; LevelSelect_Loop_Pre:
-	include	"scenes/levelselect.asm"
+	include	"scenes/costumeselect.asm"
 LevelSelect_End:
 	; pad with $FF. Not really necessary but this ensures
 	; consistency with the existing binary patch
@@ -15374,16 +15375,43 @@ loc_BCAC:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_BCB2:
-	addq.w	#6,a4
-	move.w	(a4),d7
-	andi.w	#$FF,d7
-	asl.w	#4,d7
-	move.w	d7,(PlayerStart_Y_pos).w
-	move.w	2(a4),d7
+	jsr	Get_RandomNumber_word
+	divu.w	#106,d7
+	swap	d7
+	move.w	d7,Current_LevelID	; randomize: pick random level when teleporting
+	tst.b	$1337
+
+	; get normal start pos rather than teleporter determined start pos
+	movem.l	d0/a0,-(sp)
+	move.w	(Current_LevelID).w,d0
+	move.l	(LnkTo_MapOrder_Index).l,a0
+	move.b	(a0,d0.w),d0
+	ext.w	d0
+	move.l	#MapHeader_Index,a0
+	add.w	d0,d0
+	move.w	(a0,d0.w),d0
+	move.l	#MapHeader_BaseAddress,a0
+	add.w	d0,a0
+	move.w	4(a0),d7
 	asl.w	#4,d7
 	move.w	d7,(PlayerStart_X_pos).w
-	move.w	(a4),d7
-	asr.w	#8,d7
+	move.w	6(a0),d7
+	asl.w	#4,d7
+	move.w	d7,(PlayerStart_Y_pos).w
+	movem.l	(sp)+,d0/a0
+	st	($FFFFFC36).w	; different level than before
+
+	addq.w	#6,a4
+	;move.w	(a4),d7
+	;andi.w	#$FF,d7
+	;asl.w	#4,d7
+	;move.w	d7,(PlayerStart_Y_pos).w
+	;move.w	2(a4),d7
+	;asl.w	#4,d7
+	;move.w	d7,(PlayerStart_X_pos).w
+	;move.w	(a4),d7
+	;asr.w	#8,d7
+	move.w	Current_LevelID,d7
 	moveq	#0,d6
 	move.l	(LnkTo_MapOrder_Index).l,a4
 
@@ -17056,7 +17084,11 @@ loc_D7F4:
 	jsr	(j_Hibernate_Object).w
 	cmpi.w	#Final_LevelID,(Current_LevelID).w
 	beq.w	End_Credits
-	addq.w	#1,(Current_LevelID).w
+	;addq.w	#1,(Current_LevelID).w
+	jsr	Get_RandomNumber_word
+	divu.w	#106,d7
+	swap	d7
+	move.w	d7,Current_LevelID	; randomize: pick random level when touching flag
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
 	bra.w	Teleport
@@ -21698,6 +21730,22 @@ off_102F0:	; code to load prize object from prize block
 	dc.l loc_107F2	; D - Continue
 	dc.l loc_108CA	; E - 10 diamonds
 	dc.l loc_10354	; F - Same as 0
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
+	;dc.l loc_10354
 ; ---------------------------------------------------------------------------
 
 ; load prize object from prize block.
@@ -21716,8 +21764,10 @@ loc_10344:
 	cmp.w	(a1),d2
 	bne.s	loc_10342
 	addq.w	#6,a1
-	move.w	(a1),d7
-	asl.w	#2,d7
+	;move.w	(a1),d7
+	;asl.w	#2,d7
+	jsr	Get_RandomNumber_byte
+	and.w	#$3C,d7	; randomize: get a random prize.
 	move.l	off_102F0(pc,d7.w),a4
 	jmp	(a4)
 ; End of function sub_1007A
@@ -30607,6 +30657,13 @@ Title_InputLoop:
 	cmpi.w	#2,d1
 	beq.s	loc_1BBD6
 	move.w	#8,(Game_Mode).w
+
+	jsr	Get_RandomNumber_word
+	divu.w	#106,d7
+	swap	d7
+	move.w	d7,(Player_1_LevelID).w
+	move.w	d7,(Player_2_LevelID).w	; randomize: starting level
+
 	tst.w	d1
 	sne	(Two_player_flag).w
 	jsr	(j_StopMusic).l
@@ -31829,7 +31886,7 @@ OptionScreen_IntroLoop:
 
 loc_1CB88:
 	bsr.w	sub_1CC88
-	bclr	#7,(Ctrl_1_Pressed).w
+	;bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
 	beq.s	OptionScreen_IntroLoop
 	bra.w	Option_Exit
 ; ---------------------------------------------------------------------------

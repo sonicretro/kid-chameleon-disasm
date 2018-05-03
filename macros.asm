@@ -64,7 +64,7 @@ ptfm_move	macro	duration, xvel, yvel
 ptfm		macro	xpos, ypos, bufL, bufR, bufT, bufB, t, s, h, v, pp
 		dc.w	xpos, ypos
 		dc.b	bufL, bufR, bufT, bufB
-		dc.b	(t<<7)|(s<<1), (h<<4)|v
+		dc.b	(t<<4)|s, (h<<4)|v
 		dc.w	pp
 		endm
 

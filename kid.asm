@@ -17,7 +17,7 @@ zeroOffsetOptimization = 0
 ; Whether to include the platform definitions for levels as asm (1) or bin (0)
 ; asm has the advantage that platform presets can be extended/changed without
 ; invalidating pointers in other platform layouts
-platforms_asm = 0
+platforms_asm = 1
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
 ; ===========================================================================
@@ -4757,7 +4757,7 @@ loc_2836:
 	tst.b	$1F(a3)
 	bmi.w	loc_2876
 	; scripted platform
-	move.l	#unk_3602,d7
+	move.l	#PlatformScript_BaseAddress,d7
 	add.w	$A(a4),d7
 	move.l	d7,$12(a3)
 	bra.w	loc_286E
@@ -5224,8 +5224,9 @@ unk_33D6:   binclude    "level/platform/38.bin"
 unk_35C4:   binclude    "level/platform/10.bin"
 	endif
 
-;unk_3602:
-	include	"level/platform_presets.asm"
+;PlatformScript_BaseAddress:
+;PlatformScript_3602:
+	include	"level/platform_scripts.asm"
 
 off_40D2:
 	dc.l SoftPlatform_Init	; soft platform

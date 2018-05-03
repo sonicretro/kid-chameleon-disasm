@@ -170,12 +170,12 @@ fleveldata.close()
 # make an additional file of the platform presets that are
 # actually in used in the game. This is mainly useful for hacks,
 # and not used in the bit-perfect disassembly.
-fpresets = open("hack/platform_presets.asm", "w")
-fpresets.write("; Replace level/platform_presets.asm with this file.\n")
+fpresets = open("hack/platform_scripts.asm", "w")
+fpresets.write("; Replace level/platform_scripts.asm with this file.\n")
 fpresets.write("; At the beginning of kid.asm, set platforms_asm = 1.\n\n")
 for addr0 in sorted(presets_addrs):
     addr = addr0
-    fpresets.write("unk_{:X}:\t; relative offset: {:04X}\n".format(addr0, addr0-0x3602))
+    fpresets.write("PlatformScript_{:X}:\t; relative offset: {:04X}\n".format(addr0, addr0-0x3602))
     while True:
         count = btoi(addr+0, 2)
         xvel = btoi(addr+2, 4)
@@ -191,9 +191,9 @@ for addr0 in sorted(presets_addrs):
         else:
             fpresets.write("\tdc.w\t$FFFF\n")
             if xvel == addr0:
-                fpresets.write("\tdc.l\tunk_{:X}\n".format(xvel))
+                fpresets.write("\tdc.l\tPlatformScript_{:X}\n".format(xvel))
             else:
-                fpresets.write("\tdc.l\tunk_{:X}+${:X}\n".format(addr0, xvel-addr0))
+                fpresets.write("\tdc.l\tPlatformScript_{:X}+${:X}\n".format(addr0, xvel-addr0))
             break
         addr += 10
 fpresets.close()

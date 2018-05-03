@@ -243,15 +243,17 @@ def write_platform_asm(addr, fname):
 
             H = HV >> 4
             V = HV & 0x0F
-            t = TS >> 7
-            s = (TS & 6) >> 1
+            t = TS >> 4 # upper nybble
+            s = TS & 7  # lower nybble
             if TS & 0x79:
                 print("bad platform!")
             if t == 0:
-                if PPP+0x3602 == 0x10000 or PPP==0xFFFF:
+                if PPP+0x3602 == 0x10000:
+                    out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},PlatformScript_Nothing-PlatformScript_BaseAddress\n".format(x, y, BL, BR, BT, BB, t, s, H, V))
+                elif PPP==0xFFFF: # not sure if this actually occurs
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},${:X}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))
                 else:
-                    out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},unk_{:X}-unk_3602\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP+0x3602))
+                    out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},PlatformScript_{:X}-PlatformScript_BaseAddress\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP+0x3602))
             else:
                 out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},{}\n".format(x, y, BL, BR, BT, BB, t, s, H, V, PPP))    
             addr += 12

@@ -861,3 +861,13 @@ FE976 FFFFA sound/GEMS_Sounddriver.bin
 9F912 9F998 theme/bg_chunks/city_0B.bin
 9F998 9F9EC theme/bg_chunks/city_0C.bin
 9F9EC 9F9F1 theme/bg_chunks/city_0D.bin
+1443A 1444A theme/palette_permutations/unknown.bin
+1444A 1445A theme/palette_permutations/city_fg.bin
+1445A 1446A theme/palette_permutations/forest_fg.bin
+1446A 1447A theme/palette_permutations/unused.bin
+1447A 1448A theme/palette_permutations/identity.bin
+1448A 1449A theme/palette_permutations/forest_bg.bin
+1449A 144AA theme/palette_permutations/mountain_fg.bin
+144AA 144BA theme/palette_permutations/mountain_bg.bin
+144BA 144CA theme/palette_permutations/hill_bg.bin
+144CA 144DA theme/palette_permutations/hill_alt_bg.bin

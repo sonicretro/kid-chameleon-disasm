@@ -20,7 +20,7 @@ using namespace std;
 
 static const int BUFFER_SIZE = 0x1000;
 
-typedef struct byteinfo {
+struct byteinfo {
     unsigned int position;
     unsigned short length;
 };
@@ -30,12 +30,12 @@ int max(int a, int b) {
 }
 
 int compress(unsigned char* data, int size, const char* outfilename) {
-   
+
     /* contains info on where the pattern beginning at position i
      * has already occurred previously, and how long it is
      * (for the longest previous re-appearance of the pattern) */
     byteinfo* infoarray = (byteinfo*) calloc(size, sizeof(byteinfo));
-    
+
     // Question: linear time version of this?
     for(int i=0; i<size; i++) {
         for(int j=max(0, i-0x7FF); j<i; j++) {
@@ -58,7 +58,7 @@ int compress(unsigned char* data, int size, const char* outfilename) {
         printf("%04x: %04x - %d\n", i, infoarray[i].position, infoarray[i].length);
         #endif
     }
-    
+
     /* list to contain the compression commands */
     list<byteinfo> compinfo;
     /* current position, initialised as last byte of the file */
@@ -83,7 +83,7 @@ int compress(unsigned char* data, int size, const char* outfilename) {
             }
         }
         compinfo.push_front(temp);
-        
+
         if(temp.length == 1) {
             /* direct copy */
             bitcount++;
@@ -101,7 +101,7 @@ int compress(unsigned char* data, int size, const char* outfilename) {
             bitcount += 7;
             bytecount += 2;
         }
-        
+
         /* go back by the length of the found pattern */
         position -= temp.length;
 
@@ -115,33 +115,33 @@ int compress(unsigned char* data, int size, const char* outfilename) {
             bytecount += 2;
         }
     }
-    
+
     /* terminating sequence */
     bitcount += 7;
     bytecount += 2;
-    
+
     unsigned short command_size = (bitcount+7)>>3;
     unsigned short input_size = bytecount;
-    
+
     unsigned char* cmdarray = (unsigned char*) calloc(command_size, 1);
     unsigned char* inputarray = (unsigned char*) calloc(input_size, 1);
-    
+
     bitcount = 0;
     bytecount = 0;
-    
+
     /* theoretical position in uncompressed data */
     position = 0;
-    
+
     list<byteinfo>::iterator it;
     /* loop to encode the data */
     for(it=compinfo.begin(); it!=compinfo.end(); it++) {
-        
+
         #ifdef DEBUG
         printf("%04x: %04x - %02x ", position, it->position, it->length);
         #endif
-        
+
         unsigned short offset = position - it->position;
-        
+
         if(it->length == 0) {
             /* buffer flush */
             #ifdef DEBUG
@@ -197,20 +197,20 @@ int compress(unsigned char* data, int size, const char* outfilename) {
             bitcount += 7;
             bytecount += 2;
         }
-        
+
         position += it->length;
     }
-    
+
     /* terminating sequence */
     cmdarray[bitcount>>3] |= (0x23<<1) >> (bitcount&0x07);
     cmdarray[(bitcount>>3) + 1] |= ((0x23<<9) >> (bitcount&0x07)) & 0xFF;
     inputarray[bytecount] = 0x00;
     inputarray[bytecount+1] = 0x00;
-    
+
     #ifdef DEBUG
     printf("command_size: %04x\ninput_size: %04x\n", command_size, input_size);
     #endif
-    
+
     FILE* comp = fopen(outfilename, "wb");
         if(comp == NULL) {
         printf("Could not write file.");
@@ -223,7 +223,7 @@ int compress(unsigned char* data, int size, const char* outfilename) {
     fwrite(cmdarray, command_size, 1, comp);
     fwrite(inputarray, input_size, 1, comp);
     fclose(comp);
-    
+
     // printf("\nUncompressed size: %5d bytes", size);
     // printf("\nCompressed size:   %5d bytes", 2 + command_size + input_size);
     // printf("\nCompression ratio:  %.2f%%", (1 - (float)(2 + command_size + input_size)/(float)size) * 100);
@@ -290,12 +290,12 @@ void compress_blocks(unsigned char* kcm, int length, int xsize, int ysize, const
     bits.write(0x40, 8);
     bits.write(xbits, 4);
     bits.write(ybits, 4);
-    
+
     for (int type = 0x80; type < 0xA0; ++type) {
         for (int hidden = 0; hidden < 2; ++hidden) {
             int id = type + 0x20*hidden;
             //if ((id & 0x9F) == 0x83) continue;
-                
+
             // how many bits for length of column/row of consecutive blocks
             int reptbits = 4;
             if ((id & 0x9F) == 0x83) reptbits = 3;
@@ -365,7 +365,7 @@ void compress_blocks(unsigned char* kcm, int length, int xsize, int ysize, const
                             //printf("telepad: %02X %02X %02X %02X\n", blocks[y][x][1], blocks[y][x][2], blocks[y][x][3], blocks[y][x][4]);
                             bits.write(blocks[y][x][1], 8); // map
                             bits.write(blocks[y][x][2], 8); // y coord
-                            bits.write((blocks[y][x][4] << 8) + blocks[y][x][3], 9); // x coord 
+                            bits.write((blocks[y][x][4] << 8) + blocks[y][x][3], 9); // x coord
                         } else if ((id & 0x9F) == 0x83) {
                             // Ghost block
                             //printf("Ghost: %d %d %02X %02X %02X %02X %d\n", x, y, blocks[y][x][1], blocks[y][x][2], blocks[y][x][3], blocks[y][x][4], chain_length);
@@ -381,7 +381,7 @@ void compress_blocks(unsigned char* kcm, int length, int xsize, int ysize, const
                             if (reptinfobits != 0) {
                                 for (int i = 0; i < chain_length; ++i) {
                                     bits.write(blocks[y+i*yd][x+i*xd][1], reptinfobits);
-                                }                        
+                                }
                             }
                         }
                     }
@@ -399,7 +399,7 @@ void compress_blocks(unsigned char* kcm, int length, int xsize, int ysize, const
 
 int split_kcm(int map_id, std::vector<std::string> filenames) {
     std::string level = "level/";
-    
+
     // read the kcm file into memory
     char dump_filename[12];
     sprintf(dump_filename, "map%02x.kcm", map_id);
@@ -409,7 +409,7 @@ int split_kcm(int map_id, std::vector<std::string> filenames) {
         return -1;
     }
     fseek(dump, 0, SEEK_END);
-    int kcmsize = ftell(dump);    
+    int kcmsize = ftell(dump);
     fseek(dump, 0, SEEK_SET);
     unsigned char* kcm = (unsigned char*) malloc(kcmsize);
     fread(kcm, kcmsize, 1, dump);
@@ -438,7 +438,7 @@ int split_kcm(int map_id, std::vector<std::string> filenames) {
     // background
     FILE* fbackground = fopen(("level/" + filenames[6]).c_str(), "wb");
     fwrite(kcm+bg_offset, enemy_offset-bg_offset, 1, fbackground);
-    fclose(fbackground);    
+    fclose(fbackground);
 
     // enemy data
     FILE* fenemy = fopen(("level/" + filenames[3]).c_str(), "wb");
@@ -466,7 +466,7 @@ int parse_input(std::vector<int>& map_ids, std::string in) {
     if (in == "all") {
         is_all = true;
     } else if (in.size() != 0) {
-        // try to convert to integer        
+        // try to convert to integer
         try {
             int map_id = std::stoi(in, nullptr, 16);
             map_ids.push_back(map_id);

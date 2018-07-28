@@ -148,6 +148,7 @@ FFFC2A	word	player x start position
 FFFC2C	word	player y start position
 FFFC2E	word	flag x position
 FFFC30	word	flag y position
+FFFC36  byte    flag: set if teleporting to different level, clear if teleporting to same level.
 FFFC38	word	two player flag ?
 FFFC3B	byte	No Hit Bonus: 0 = retained, -1 = lost
 FFFC3C	byte	No Prize Bonus: 0 = retained, -1 = lost

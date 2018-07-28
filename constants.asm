@@ -9,7 +9,7 @@ bgm_Sky = 2
 bgm_Ice = 3
 bgm_Hills = 4
 bgm_Ending = 5
-bgm_Woods = 6
+bgm_Forest = 6
 bgm_Cave = 7
 bgm_Island = 8
 bgm_Murderwall = 9
@@ -147,7 +147,7 @@ Desert = 5
 Swamp = 6
 Mountain = 7
 Cave = 8
-Woods = 9
+Forest = 9
 City = $A
 
 ; Collision
@@ -294,6 +294,7 @@ M_Devils_March_2 = $16
 M_Alien_Twilight = $17
 M_Wind_City = $18
 M_Forced_Entry = $19
+M_unused_1A = $1A
 M_The_Deadly_Skyscrapers = $1C
 M_Sinister_Sewers = $1D
 M_Skydragon_Castle_2 = $21

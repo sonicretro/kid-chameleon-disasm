@@ -4289,7 +4289,7 @@ Execute_ScriptedPlatforms_Loop:
 	_move.w	0(a2),d7	; next one in list
 	beq.w	return_2442	; quit if it was last one
 	move.w	d7,a2		; next one becomes current one
-	tst.b	$1F(a2)
+	tst.b	$1F(a2)		; scripted or special platform?
 	bmi.s	Execute_ScriptedPlatforms_Loop
 	move.l	$A(a2),d7
 	add.l	d7,2(a2)	; Add x_vel to x_pos
@@ -4297,11 +4297,11 @@ Execute_ScriptedPlatforms_Loop:
 	add.l	d7,6(a2)	; Add y_vel to y_pos
 	subi.w	#1,$16(a2)	; count down (from duration)
 	bne.s	Execute_ScriptedPlatforms_Loop
-	move.l	$12(a2),a4	; address in platform preset
+	move.l	$12(a2),a4	; address in platform script
 
 loc_2422:
-	move.w	(a4)+,d3	; read next entry of platform preset
-	bmi.w	loc_243E	; if FFFF, read address and save that as platform preset address
+	move.w	(a4)+,d3	; read next entry of platform script
+	bmi.w	loc_243E	; if FFFF, read address and save that as platform script address
 	move.w	d3,$16(a2)	; duration
 	move.l	(a4)+,d3
 	move.l	d3,$A(a2)	; x vel
@@ -24184,12 +24184,10 @@ loc_11CF6:
 	bcs.s	loc_11D0C	; background tiles
 
 loc_11D0A:
-				; Load_InGame+2D0j ...
 	bra.s	loc_11D0A
 ; ---------------------------------------------------------------------------
 
 loc_11D0C:
-				; Load_InGame+2FAj
 	move.l	(a0)+,a1	; background tiles
 	bsr.w	sub_1280A
 	move.l	(LnkTo_ThemeMappings_Index).l,a1
@@ -24222,35 +24220,38 @@ loc_11D46:
 	move.w	(Current_LevelID).w,d2
 	move.l	(LnkTo_MapOrder_Index).l,a2
 	move.b	(a2,d2.w),d2
-	cmpi.b	#3,d2
-	beq.s	loc_11D8E
-	cmpi.b	#8,d2
-	beq.s	loc_11D8E
-	cmpi.b	#5,d2
-	bne.s	loc_11D92
-	lea	Pal_12CBC(pc),a1
+	; check for alternative foreground palettes
+	cmpi.b	#M_Stairway_to_Obilivion,d2	; MapID = 3 (Stairway to Oblivion)?
+	beq.s	loc_11D8E	; yes -> alternative cave palette
+	cmpi.b	#M_Elsewhere_23,d2
+	beq.s	loc_11D8E	; yes -> alternative cave palette
+	cmpi.b	#M_Plethora,d2
+	bne.s	loc_11D92	; no -> continue other checks
+	lea	Pal_12CBC(pc),a1	; use Plethora cave palette
 	bra.s	loc_11D92
-; ---------------------------------------------------------------------------
 
 loc_11D8E:
-				; Load_InGame+372j
-	lea	Pal_12CDA(pc),a1
+	lea	Pal_12CDA(pc),a1	; use alternative cave palette
 
 loc_11D92:
-				; Load_InGame+37Ej
-	cmpi.b	#$1C,d2
-	beq.s	loc_11D9E
-	cmpi.b	#$73,d2
-	bne.s	loc_11DA0
+	cmpi.b	#M_The_Deadly_Skyscrapers,d2	; MapID = 1C (The Deadly Skyscrapers)?
+	beq.s	loc_11D9E	; yes -> do nothing special anyway
+	cmpi.b	#M_Elsewhere_30,d2
+	bne.s	loc_11DA0	; no -> continue other checks
 
 loc_11D9E:
+	; There was probably a special palette here for these two levels
+	; but they removed the command
+	; lea	Pal_12D08(pc),a1
+	; and replaced it with nop, which does nothing
+	; comment in the above instruction to see the palette in use
 	nop
 
 loc_11DA0:
-	cmpi.b	#$1A,d2
-	beq.s	loc_11DAC
-	cmpi.b	#$17,d2
-	bne.s	loc_11DB0
+	cmpi.b	#M_unused_1A,d2	; MapID = 1A (The Crypt (leftover))?
+	beq.s	loc_11DAC	; yes -> alternative palette
+	cmpi.b	#M_Alien_Twilight,d2
+	bne.s	loc_11DB0	; no -> regular palette
 
 loc_11DAC:
 	lea	Pal_12D26(pc),a1
@@ -24259,9 +24260,10 @@ loc_11DB0:
 	lea	($FFFF4E5A).l,a2
 	moveq	#$E,d1
 
-loc_11DB8:
+-	; loop to copy foreground palette into palette RAM
 	move.w	(a1)+,(a2)+
-	dbf	d1,loc_11DB8
+	dbf	d1,-
+
 	move.l	(LnkTo_ThemePal2_Index).l,a1
 	moveq	#0,d0
 	move.w	(Background_theme).w,d0
@@ -24273,27 +24275,34 @@ loc_11DB8:
 	move.w	(Current_LevelID).w,d2
 	move.l	(LnkTo_MapOrder_Index).l,a2
 	move.b	(a2,d2.w),d2
-	cmpi.b	#3,d2
+	; check for alternative foreground palettes
+	cmpi.b	#M_Stairway_to_Obilivion,d2
 	beq.s	loc_11DF4
-	cmpi.b	#8,d2
+	cmpi.b	#M_Elsewhere_23,d2
 	bne.s	loc_11DF8
 
 loc_11DF4:
 	lea	Pal_12CF8(pc),a1
 
 loc_11DF8:
-	cmpi.b	#$1C,d2
+	cmpi.b	#M_The_Deadly_Skyscrapers,d2
 	beq.s	loc_11E04
-	cmpi.b	#$73,d2
+	cmpi.b	#M_Elsewhere_30,d2
 	bne.s	loc_11E06
 
 loc_11E04:
+
+	; There was probably a special palette here for these two levels
+	; but they removed the command
+	; lea	Pal_12D44(pc),a1
+	; and replaced it with nop, which does nothing
+	; comment in the above instruction to see the palette in use
 	nop
 
 loc_11E06:
-	cmpi.b	#$1A,d2
+	cmpi.b	#M_unused_1A,d2
 	beq.s	loc_11E12
-	cmpi.b	#$17,d2
+	cmpi.b	#M_Alien_Twilight,d2
 	bne.s	loc_11E16
 
 loc_11E12:
@@ -24310,20 +24319,20 @@ loc_11E24:
 	move.l	(MainAddr_Index).l,a0
 	move.l	(a0,d7.w),a0
 	move.w	#$1780,d0
-	lea	unk_1447A(pc),a3
-	cmpi.w	#$A,(Foreground_theme).w
+	lea	Palette_Permutation_Identity(pc),a3
+	cmpi.w	#City,(Foreground_theme).w
 	bne.s	loc_11E48
-	lea	unk_1444A(pc),a3
+	lea	Palette_Permutation_FGCity(pc),a3
 
 loc_11E48:
-	cmpi.w	#9,(Foreground_theme).w
+	cmpi.w	#Forest,(Foreground_theme).w
 	bne.s	loc_11E54
-	lea	unk_1445A(pc),a3
+	lea	Palette_Permutation_FGForest(pc),a3
 
 loc_11E54:
-	cmpi.w	#7,(Foreground_theme).w
+	cmpi.w	#Mountain,(Foreground_theme).w
 	bne.s	loc_11E60
-	lea	unk_1449A(pc),a3
+	lea	Palette_Permutation_FGMountain(pc),a3
 
 loc_11E60:
 	bsr.w	DecompressToRAM
@@ -24333,45 +24342,45 @@ loc_11E60:
 	add.w	d7,d7
 	move.l	(a0,d7.w),a0
 	move.w	#$F000,d0
-	lea	unk_1447A(pc),a3
-	cmpi.w	#9,(Background_theme).w
+	lea	Palette_Permutation_Identity(pc),a3
+	cmpi.w	#Forest,(Background_theme).w
 	bne.s	loc_11E8A
-	lea	unk_1448A(pc),a3
+	lea	Palette_Permutation_BGForest(pc),a3
 
 loc_11E8A:
-	cmpi.w	#7,(Background_theme).w
+	cmpi.w	#Mountain,(Background_theme).w
 	bne.s	loc_11E96
-	lea	unk_144AA(pc),a3
+	lea	Palette_Permutation_BGMountain(pc),a3
 
 loc_11E96:
-	cmpi.w	#3,(Background_theme).w
+	cmpi.w	#Hills,(Background_theme).w
 	bne.s	loc_11EA2
-	lea	unk_144BA(pc),a3
+	lea	Palette_Permutation_BGHill(pc),a3
 
 loc_11EA2:
 	bsr.w	DecompressToRAM
-	cmpi.w	#3,(Background_theme).w
+	cmpi.w	#Hills,(Background_theme).w
 	bne.s	loc_11EC4
-	lea	unk_144CA(pc),a3
+	lea	Palette_Permutation_BGHill_alt(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
 	move.l	$34(a1),a0
 	move.w	#$F800,d0
 	bsr.w	DecompressToRAM
 
 loc_11EC4:
-	cmpi.w	#7,(Background_theme).w
+	cmpi.w	#Mountain,(Background_theme).w
 	bne.s	loc_11EFA
-	lea	unk_1447A(pc),a3
+	lea	Palette_Permutation_Identity(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
 	move.l	$2C(a1),a0
-	cmpi.w	#2,(Level_Special_Effects).w
+	cmpi.w	#Storm,(Level_Special_Effects).w
 	beq.s	loc_11EEA
-	cmpi.w	#3,(Level_Special_Effects).w
+	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	loc_11EF2
 
 loc_11EEA:
 	move.l	$30(a1),a0
-	lea	unk_144AA(pc),a3
+	lea	Palette_Permutation_BGMountain(pc),a3
 
 loc_11EF2:
 	move.w	#$FCA0,d0
@@ -24424,7 +24433,7 @@ loc_11F48:
 ; ---------------------------------------------------------------------------
 
 loc_11F96:
-	cmpi.w	#8,(Foreground_theme).w
+	cmpi.w	#Cave,(Foreground_theme).w
 	bne.s	loc_11FB0
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -24433,7 +24442,7 @@ loc_11F96:
 ; ---------------------------------------------------------------------------
 
 loc_11FB0:
-	cmpi.w	#4,(Background_theme).w
+	cmpi.w	#Island,(Background_theme).w
 	bne.s	loc_11FC8
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -24481,7 +24490,7 @@ unk_1201E:
 	dc.b   bgm_Swamp
 	dc.b   bgm_Mountain
 	dc.b   bgm_Cave
-	dc.b   bgm_Woods
+	dc.b   bgm_Forest
 	dc.b   bgm_City
 	dc.b   0
 ; ---------------------------------------------------------------------------
@@ -27457,7 +27466,7 @@ return_14334:
 ; End of function DecompressToVRAM
 
 ; ---------------------------------------------------------------------------
-	lea	(unk_1447A).l,a3
+	lea	(Palette_Permutation_Identity).l,a3
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -27527,14 +27536,13 @@ loc_143B2:
 ; START	OF FUNCTION CHUNK FOR j_LoadGameModeData
 
 DecompressToRAM_Special:
-	lea	unk_1443A(pc),a3
+	lea	Palette_Permutation_unknown(pc),a3
 ; END OF FUNCTION CHUNK	FOR j_LoadGameModeData
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 DecompressToRAM:
-				; Load_InGame:loc_11EA2p ...
 	bsr.w	sub_142CC
 	lea	($FFFF0280).l,a4
 	moveq	#0,d3
@@ -27592,167 +27600,36 @@ return_14438:
 ; End of function DecompressToRAM
 
 ; ---------------------------------------------------------------------------
-unk_1443A:	dc.b   0
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_1444A:	dc.b   0
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b  $A
-	dc.b   7
-	dc.b   8
-	dc.b   9
-	dc.b   6
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-unk_1445A:	dc.b   0
-	dc.b   1
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b   6
-	dc.b  $A
-	dc.b   9
-	dc.b  $D
-	dc.b   7
-	dc.b  $E
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   8
-	dc.b  $F
-	dc.b   0
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   6
-	dc.b   7
-	dc.b   0
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-unk_1447A:	dc.b   0
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   6
-	dc.b   7
-	dc.b   8
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-unk_1448A:	dc.b   0
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   6
-	dc.b   8
-	dc.b   7
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-unk_1449A:	dc.b   0
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   6
-	dc.b   7
-	dc.b   8
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b   6
-	dc.b  $E
-	dc.b  $F
-unk_144AA:	dc.b   0
-				; Load_InGame+4E0o
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-unk_144BA:	dc.b   9
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   6
-	dc.b   7
-	dc.b   8
-	dc.b   0
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
-unk_144CA:	dc.b   6
-	dc.b   1
-	dc.b   2
-	dc.b   3
-	dc.b   4
-	dc.b   5
-	dc.b   0
-	dc.b   7
-	dc.b   8
-	dc.b   9
-	dc.b  $A
-	dc.b  $B
-	dc.b  $C
-	dc.b  $D
-	dc.b  $E
-	dc.b  $F
+;unk_1443A
+Palette_Permutation_unknown:
+	binclude	"theme/palette_permutations/unknown.bin"
+;unk_1444A
+Palette_Permutation_FGCity:
+	binclude	"theme/palette_permutations/city_fg.bin"
+;unk_1445A
+Palette_Permutation_FGForest:
+	binclude	"theme/palette_permutations/forest_fg.bin"
+;unk_1446A
+;Palette_Permutation_unused:
+	binclude	"theme/palette_permutations/unused.bin"
+;unk_1447A
+Palette_Permutation_Identity:
+	binclude	"theme/palette_permutations/identity.bin"
+;unk_1448A
+Palette_Permutation_BGForest:
+	binclude	"theme/palette_permutations/forest_bg.bin"
+;unk_1449A
+Palette_Permutation_FGMountain:
+	binclude	"theme/palette_permutations/mountain_fg.bin"
+;unk_144AA
+Palette_Permutation_BGMountain:
+	binclude	"theme/palette_permutations/mountain_bg.bin"
+;unk_144BA
+Palette_Permutation_BGHill:
+	binclude	"theme/palette_permutations/hill_bg.bin"
+;unk_144CA
+Palette_Permutation_BGHill_alt:
+	binclude	"theme/palette_permutations/hill_alt_bg.bin"
 
 ; =============== S U B	R O U T	I N E =======================================
 

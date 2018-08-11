@@ -2,6 +2,7 @@ kid.log
 kid.p
 kid.h
 kid_built.bin
+kid_built.prev.bin
 kid.bin
 level/*.bin
 level/*/*.bin

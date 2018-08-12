@@ -559,7 +559,6 @@ unk_49C:	dc.b $14
 	dc.b   0
 	dc.b   0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 EntryPoint:
 	tst.l	(HW_Port_1_Control-1).l	; test ports A and B control
@@ -597,11 +596,12 @@ VDPInitLoop:
 WaitForZ80:
 	btst	d0,(a1)	; has the Z80 stopped?
 	bne.s	WaitForZ80	; if not, branch
-	moveq	#$25,d2
+	moveq	#Z80StartupCodeEnd-Z80StartupCodeBegin-1,d2
 
 Z80InitLoop:
 	move.b	(a5)+,(a0)+
 	dbf	d2,Z80InitLoop
+	
 	move.w	d0,(a2)
 	move.w	d0,(a1)	; start the Z80
 	move.w	d7,(a2)	; reset the Z80
@@ -611,21 +611,21 @@ ClrRAMLoop:
 	dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
 	move.l	(a5)+,(a4)	; set VDP display mode and increment mode
 	move.l	(a5)+,(a4)	; set VDP to CRAM write
-	moveq	#$1F,d3	; set repeat times
+	moveq	#bytesToLcnt($80),d3	; set repeat times
 
 ClrCRAMLoop:
 	move.l	d0,(a3)	; clear 2 palettes
 	dbf	d3,ClrCRAMLoop	; repeat until the entire CRAM is clear
 	move.l	(a5)+,(a4)	; set VDP to VSRAM write
-	moveq	#$13,d4	; set repeat times
+	moveq	#bytesToLcnt($50),d4	; set repeat times
 
 ClrVSRAMLoop:
 	move.l	d0,(a3)	; clear 4 bytes of VSRAM.
 	dbf	d4,ClrVSRAMLoop	; repeat until the entire VSRAM is clear
-	moveq	#3,d5	; set repeat times
+	moveq	#PSGInitValues_End-PSGInitValues-1,d5	; set repeat times
 
 PSGInitLoop:
-	move.b	(a5)+,$11(a3) ; reset the PSG
+	move.b	(a5)+,PSG_input-VDP_data_port(a3) ; reset the PSG
 	dbf	d5,PSGInitLoop	; repeat for other channels
 	move.w	d0,(a2)
 	movem.l	(a6),d0-a6	; clear all registers
@@ -633,14 +633,14 @@ PSGInitLoop:
 
 PortC_OK:
 	bra.s	GameProgram	; Branch to game program.
-; END OF FUNCTION CHUNK	FOR Character_CheckCollision
 ; ---------------------------------------------------------------------------
 SetupValues:
-	dc.w $8000,$3FFF,$100
-	dc.l $A00000
-	dc.l $A11100
-	dc.l $A11200
-	dc.l $C00000, $C00004
+	dc.w	$8000,bytesToLcnt($10000),$100
+
+	dc.l	Z80_RAM
+	dc.l	Z80_Bus_Request
+	dc.l	Z80_Reset
+	dc.l	VDP_data_port, VDP_control_port
 
 VDPInitValues:	; values for VDP registers
 	dc.b 4			; Command $8004 - HInt off, Enable HV counter read
@@ -668,76 +668,70 @@ VDPInitValues:	; values for VDP registers
 	dc.b 0			; Command $9600 - See above
 	dc.b $80		; Command $9780	- See above + VRAM fill mode
 VDPInitValues_End:
-	dc.b $40 
-	dc.b   0
-	dc.b   0
-	dc.b $80 
-	dc.b $AF 
-	dc.b   1
-	dc.b $D9 
-	dc.b $1F
-	dc.b $11
-	dc.b $27 
-	dc.b   0
-	dc.b $21 
-	dc.b $26 
-	dc.b   0
-	dc.b $F9 
-	dc.b $77 ; w
-	dc.b $ED ; Ì
-	dc.b $B0 ; ∞
-	dc.b $DD ; ›
-	dc.b $E1 ; ·
-	dc.b $FD ; ˝
-	dc.b $E1 ; ·
-	dc.b $ED ; Ì
-	dc.b $47 ; G
-	dc.b $ED ; Ì
-	dc.b $4F ; O
-	dc.b $D1 ; —
-	dc.b $E1 ; ·
-	dc.b $F1 ; Ò
-	dc.b   8
-	dc.b $D9 ; Ÿ
-	dc.b $C1 ; ¡
-	dc.b $D1 ; —
-	dc.b $E1 ; ·
-	dc.b $F1 ; Ò
-	dc.b $F9 ; ˘
-	dc.b $F3 ; Û
-	dc.b $ED ; Ì
-	dc.b $56 ; V
-	dc.b $36 ; 6
-	dc.b $E9 ; È
-	dc.b $E9 ; È
-	dc.b $81 ; Å
-	dc.b   4
-	dc.b $8F ; è
-	dc.b   2
-	dc.b $C0 ; ¿
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $9F ; ü
-	dc.b $BF ; ø
-	dc.b $DF ; ﬂ
-	dc.b $FF
+
+	dc.l	vdpComm($0000,VRAM,DMA) ; value for VRAM write mode
+	
+	; Z80 instructions (not the sound driver; that gets loaded later)
+Z80StartupCodeBegin: ; loc_2CA:
+    if (*)+$26 < $10000
+    save
+    CPU Z80 ; start assembling Z80 code
+    phase 0 ; pretend we're at address 0
+	xor	a	; clear a to 0
+	ld	bc,((Z80_RAM_End-Z80_RAM)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
+	ld	de,zStartupCodeEndLoc+1	; initial destination address
+	ld	hl,zStartupCodeEndLoc	; initial source address
+	ld	sp,hl	; set the address the stack starts at
+	ld	(hl),a	; set first byte of the stack to 0
+	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
+	pop	ix	; clear ix
+	pop	iy	; clear iy
+	ld	i,a	; clear i
+	ld	r,a	; clear r
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ex	af,af'	; swap af with af'
+	exx		; swap bc/de/hl with their shadow registers too
+	pop	bc	; clear bc
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ld	sp,hl	; clear sp
+	di		; clear iff1 (for interrupt handler)
+	im	1	; interrupt handling mode = 1
+	ld	(hl),0E9h ; replace the first instruction with a jump to itself
+	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+zStartupCodeEndLoc:
+    dephase ; stop pretending
+	restore
+    padding off ; unfortunately our flags got reset so we have to set them again...
+    else ; due to an address range limitation I could work around but don't think is worth doing so:
+	message "Warning: using pre-assembled Z80 startup code."
+	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
+    endif
+Z80StartupCodeEnd:
+
+	dc.w	$8104	; value for VDP display mode
+	dc.w	$8F02	; value for VDP increment
+	dc.l	vdpComm($0000,CRAM,WRITE)	; value for CRAM write mode
+	dc.l	vdpComm($0000,VSRAM,WRITE)	; value for VSRAM write mode
+
+PSGInitValues:
+	dc.b	$9F,$BF,$DF,$FF	; values for PSG channel volumes
+PSGInitValues_End:
 ; ---------------------------------------------------------------------------
 
 GameProgram:
-	tst.w	($C00004).l
-	move	#$2700,sr
+	tst.w	(VDP_control_port).l
+	move	#$2700,sr	; Initialise stack (already done in the init routine though
 	lea	($FFFFF7FE).w,sp
-	lea	($C00000).l,a6
+	lea	(VDP_data_port).l,a6
 	moveq	#$40,d0
-	move.b	d0,($A10009).l
-	move.b	d0,($A1000B).l
-	move.b	#$1F,($A1000D).l
-	move.b	#$7F,($A10007).l
+	move.b	d0,(HW_Port_1_Control).l
+	move.b	d0,(HW_Port_2_Control).l
+	move.b	#$1F,(HW_Expansion_Control).l
+	move.b	#$7F,(HW_Expansion_Data).l
 	lea	unk_49C(pc),a0
 	moveq	#$12,d0
 	move.w	#$8000,d1
@@ -759,13 +753,13 @@ loc_604:
 	dbf	d0,loc_604
 	move.l	d7,(Options_Suboption_2PController).w
 	cmpi.w	#5,d7
-    if Default_Options = 0
+	if Default_Options = 0
 	bls.s	loc_61C
 	move.l	#0,(Options_Suboption_2PController).w
-    else
+	else
 	nop	; not strictly necessary, but avoids shifting stuff
 	move.l	#Default_Options,(Options_Suboption_2PController).w
-    endif
+	endif
 
 loc_61C:
 	; clear entire	VRAM

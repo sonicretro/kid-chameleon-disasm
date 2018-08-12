@@ -271,8 +271,8 @@ j_sub_28FC: ;2B4
 j_sub_44B0: ;2B8
 	jmp	sub_44B0(pc)
 ; ===========================================================================
-j_sub_6526: ;2BC
-	jmp	sub_6526(pc)
+j_Init_Timer_and_Bonus_Flags: ;2BC
+	jmp	Init_Timer_and_Bonus_Flags(pc)
 ; ---------------------------------------------------------------------------
 	jmp	sub_8A4(pc)
 ; ===========================================================================
@@ -6711,13 +6711,13 @@ loc_6504:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6526:
+Init_Timer_and_Bonus_Flags:
 	tst.b	($FFFFFC36).w
 	beq.w	return_6550
 	sf	($FFFFFC36).w
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
-	move.w	#3,(Time_Minutes).w
+	move.w	#3,(Time_Minutes).w	; Starting timer is 3 minutes
 	clr.w	(Clocks_collected).w
 	sf	(NoHit_Bonus_Flag).w
 	sf	(NoPrize_Bonus_Flag).w
@@ -6725,7 +6725,7 @@ sub_6526:
 
 return_6550:
 	rts
-; End of function sub_6526
+; End of function Init_Timer_and_Bonus_Flags
 
 ; ---------------------------------------------------------------------------
 word_6552:	dc.w $19
@@ -14962,7 +14962,11 @@ loc_B778:
 loc_B786:
 	moveq	#0,d7
 	tst.w	(Current_Helmet).w
+	
+	; Player dies if he doesn't have a helmet
 	beq.w	Death
+	
+	; Lose the helmet
 	st	(Check_Helmet_Change).w
 	clr.w	(Current_Helmet_Available).w
 	bra.s	loc_B73C
@@ -15729,12 +15733,15 @@ loc_BE74:
 loc_BE82:
 	move.b	d4,(Number_Sprites).w
 	move.l	a2,(Addr_NextSpriteSlot).w
+	
 	tst.b	(Currently_transforming).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left	; Time left does not decrease while transforming
 	tst.b	($FFFFFB4B).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
+	
+	; Handle the math for decreasing the time left
 	subq.w	#1,(Time_SubSeconds).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
 	move.w	#$3C,(Time_SubSeconds).w
 	subq.w	#1,(Time_Seconds_low_digit).w
 	bpl.s	loc_BEE8
@@ -15744,6 +15751,8 @@ loc_BE82:
 	move.w	#5,(Time_Seconds_high_digit).w
 	subq.w	#1,(Time_Minutes).w
 	bpl.s	loc_BEE8
+	
+	; No time left
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 	clr.w	(Time_Minutes).w
@@ -15767,7 +15776,7 @@ loc_BEE8:
 	moveq	#0,d7
 	bsr.w	sub_BD0A
 
-loc_BF12:
+End_Decrease_Time_Left:
 	tst.w	(Time_Minutes).w
 	bne.w	loc_BF2A
 	cmpi.w	#2,(Time_Seconds_high_digit).w
@@ -16799,7 +16808,7 @@ Continue_Screen:
 loc_D350:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D350
 	move.l	$44(a5),d0
 	beq.s	loc_D372
@@ -16826,12 +16835,12 @@ loc_D386:
 loc_D3AA:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D3AA
 	bra.w	loc_D3F0
 ; ---------------------------------------------------------------------------
 
-lose_continue:							; Losing a Continue
+Use_Continue:							; Using a Continue (it's lost afterwards
 	subq.w	#1,(Number_Continues).w
 	sf	(Check_Helmet_Change).w
 	sf	($FFFFFC29).w
@@ -21371,7 +21380,7 @@ diamond_pickup:
 	move.l	#stru_10D6E,d7
 	jsr	(j_Init_Animation).w
 	cmpi.w	#$63,(Number_Diamonds).w		; Check if more than max diamonds
-	bne.w	diamond_increment
+	bne.w	Increase_Diamonds
 	sf	$3C(a3)
 	st	$3D(a3)
 	move.l	(Addr_GfxObject_Kid).w,a4
@@ -21386,7 +21395,7 @@ diamond_pickup:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-diamond_increment:
+Increase_Diamonds:
 	move.l	$1A(a3),d0
 	sub.l	(Camera_X_pos).w,d0
 	move.l	d0,$3E(a3)
@@ -21533,14 +21542,16 @@ loc_FF92:
 
 loc_FFDE:
 	move.w	(Time_Minutes).w,d7
-	addq.w	#3,d7
-	cmpi.w	#$A,d7
-	blt.w	loc_FFF8
-	move.w	#$A,d7
+	addq.w	#3,d7	; Clocks are worth 3 minutes
+	cmpi.w	#10,d7
+	blt.w	+
+	
+	; If timer is above 10 minutes, reset it to 10 minutes
+	move.w	#10,d7
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 
-loc_FFF8:
++
 	move.w	d7,(Time_Minutes).w
 
 loc_FFFC:
@@ -23903,7 +23914,7 @@ Load_InGame:
 	jsr	(j_Initialize_Platforms).w
 	jsr	(j_sub_28FC).w
 	jsr	(j_sub_44B0).w
-	jsr	(j_sub_6526).w
+	jsr	(j_Init_Timer_and_Bonus_Flags).w
 	jsr	(j_StopMusic).l
 	move.l	#$F,-(sp)
 	jsr	(sub_E133C).l

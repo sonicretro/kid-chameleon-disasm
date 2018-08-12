@@ -27,7 +27,7 @@ REM // -A gives us a small speedup
 set AS_MSGPATH=build/win/msg
 set USEANSI=n
 
-"build/win/asw" -xx -c -A kid.asm
+"build/win/asw" -xx -c -L -A kid.asm
 
 IF NOT EXIST kid.p goto LABLCHKERROR
 

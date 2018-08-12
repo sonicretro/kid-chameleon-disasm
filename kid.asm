@@ -562,26 +562,26 @@ unk_49C:	dc.b $14
 ; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 EntryPoint:
-	tst.l	($A10008).l	; test ports A and B control
-	bne.s	PortA_Ok
-	tst.w	($A1000C).l	; test port C control
+	tst.l	(HW_Port_1_Control-1).l	; test ports A and B control
+	bne.s	PortA_Ok	; If so, branch.
+	tst.w	(HW_Expansion_Control-1).l	; test port C control
 
 PortA_Ok:
 	bne.s	PortC_OK ; skip the VDP and Z80 setup code if port A, B or C is ok...?
 	lea	SetupValues(pc),a5	; Load setup values array address.
 	movem.w	(a5)+,d5-d7
 	movem.l	(a5)+,a0-a4
-	move.b	-$10FF(a1),d0	; get hardware version
+	move.b	HW_Version-Z80_Bus_Request(a1),d0	; get hardware version
 	andi.b	#$F,d0	; Compare
 	beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
-	move.l	#'SEGA',$2F00(a1) ; Satisfy the TMSS
+	move.l	#'SEGA',Security_Addr-Z80_Bus_Request(a1) ; Satisfy the TMSS
 
 SkipSecurity:
 	move.w	(a4),d0	; check if VDP works
 	moveq	#0,d0	; clear d0
 	move.l	d0,a6	; clear a6
 	move	a6,usp	; set usp to $0
-	moveq	#$17,d1 ; run the following loop $18 times
+	moveq	#VDPInitValues_End-VDPInitValues-1,d1 ; run the following loop $18 times
 
 VDPInitLoop:
 	move.b	(a5)+,d5	; add $8000 to value
@@ -643,30 +643,31 @@ SetupValues:
 	dc.l $C00000, $C00004
 
 VDPInitValues:	; values for VDP registers
-	dc.b   4
-	dc.b $14
-	dc.b $30 
-	dc.b $3C 
-	dc.b   7
-	dc.b $6C 
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $81 
-	dc.b $37 
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $80 
+	dc.b 4			; Command $8004 - HInt off, Enable HV counter read
+	dc.b $14		; Command $8114 - Display off, VInt off, DMA on, PAL off
+	dc.b $30		; Command $8230 - Scroll A Address $C000
+	dc.b $3C		; Command $833C - Window Address $F000
+	dc.b 7			; Command $8407 - Scroll B Address $E000
+	dc.b $6C		; Command $856C - Sprite Table Address $D800
+	dc.b 0			; Command $8600 - Null
+	dc.b 0			; Command $8700 - Background color Pal 0 Color 0
+	dc.b 0			; Command $8800 - Null
+	dc.b 0			; Command $8900 - Null
+	dc.b $FF		; Command $8AFF - Hint timing $FF scanlines
+	dc.b 0			; Command $8B00 - Ext Int off, VScroll full, HScroll full
+	dc.b $81		; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
+	dc.b $37		; Command $8D37 - HScroll Table Address $DC00
+	dc.b 0			; Command $8E00 - Null
+	dc.b 1			; Command $8F01 - VDP auto increment 1 byte
+	dc.b 1			; Command $9001 - 64x32 cell scroll size
+	dc.b 0			; Command $9100 - Window H left side, Base Point 0
+	dc.b 0			; Command $9200 - Window V upside, Base Point 0
+	dc.b $FF		; Command $93FF - DMA Length Counter $FFFF
+	dc.b $FF		; Command $94FF - See above
+	dc.b 0			; Command $9500 - DMA Source Address $0
+	dc.b 0			; Command $9600 - See above
+	dc.b $80		; Command $9780	- See above + VRAM fill mode
+VDPInitValues_End:
 	dc.b $40 
 	dc.b   0
 	dc.b   0

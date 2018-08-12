@@ -50141,7 +50141,7 @@ sub_397E4:
 	bne.s	loc_397FA
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Trap03ExceptionD2,4(a0)
+	move.l	#loc_3A0D2,4(a0)
 	bra.s	loc_3980A
 ; ---------------------------------------------------------------------------
 
@@ -50862,7 +50862,7 @@ stru_3A0C0:
 	dc.b   0
 ; ---------------------------------------------------------------------------
 
-Trap03ExceptionD2:
+loc_3A0D2:
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_die,d0
 	jsr	(j_PlaySound).l
@@ -58358,7 +58358,7 @@ off_3F6CE:	; Looks like pointers to definitions of each diamond power
 	dc.l loc_3F7D0
 	dc.l loc_3FC78
 	dc.l loc_3F7D0
-	dc.l Trap14ExceptionEE
+	dc.l loc_3F8EE
 	dc.l loc_3F90C
 	dc.l loc_40206
 	dc.l loc_3FDE8
@@ -58368,7 +58368,7 @@ off_3F6CE:	; Looks like pointers to definitions of each diamond power
 	dc.l loc_3FB90
 	dc.l loc_3FFE4
 	dc.l loc_3FB94
-	dc.l Trap14ExceptionD0
+	dc.l loc_3F8D0
 ; ---------------------------------------------------------------------------
 
 loc_3F71E:
@@ -58465,11 +58465,11 @@ loc_3F7FE:
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
 	move.l	($FFFFF5A4).w,d0
-	bne.s	Trap14Exception1A
+	bne.s	loc_3F81A
 	rts
 ; ---------------------------------------------------------------------------
 
-Trap14Exception1A:
+loc_3F81A:
 	move.l	d0,a0
 	move.l	$3E(a0),d5
 	lsr.l	#8,d5
@@ -58494,19 +58494,19 @@ Trap14Exception1A:
 	lsr.w	#1,d5
 	move.b	byte_3F8B4(pc,d5.w),d6
 	tst.w	$38(a0)
-	bne.s	Trap14Exception7A
+	bne.s	loc_3F87A
 	subi.l	#$400,$3E(a0)
 	cmpi.w	#$C,d5
-	bge.s	Trap14Exception80
+	bge.s	loc_3F880
 	subi.l	#$19000,$3E(a0)
-	bge.s	Trap14Exception80
+	bge.s	loc_3F880
 
-Trap14Exception7A:
+loc_3F87A:
 	bsr.w	sub_3F5E8
-	bra.s	Trap14ExceptionAA
+	bra.s	loc_3F8AA
 ; ---------------------------------------------------------------------------
 
-Trap14Exception80:
+loc_3F880:
 	sub.w	d6,d0
 	sub.w	d6,d1
 	add.w	d6,d6
@@ -58523,9 +58523,9 @@ Trap14Exception80:
 	move.w	d0,(a2)+
 	subq.w	#4,$42(a0)
 
-Trap14ExceptionAA:
+loc_3F8AA:
 	move.l	4(a0),d0
-	bne.w	Trap14Exception1A
+	bne.w	loc_3F81A
 	rts
 ; ---------------------------------------------------------------------------
 byte_3F8B4:	dc.b 0
@@ -58558,7 +58558,7 @@ byte_3F8B4:	dc.b 0
 	dc.b   6
 ; ---------------------------------------------------------------------------
 
-Trap14ExceptionD0:
+loc_3F8D0:
 	moveq	#$10,d4
 	move.w	#$480,d5
 	lea	unk_3F8E2(pc),a2
@@ -58579,7 +58579,7 @@ unk_3F8E2:	dc.b   0
 	dc.b   1
 ; ---------------------------------------------------------------------------
 
-Trap14ExceptionEE:
+loc_3F8EE:
 	moveq	#6,d4
 	move.w	#$300,d5
 	lea	unk_3F900(pc),a2

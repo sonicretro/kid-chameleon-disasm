@@ -3,6 +3,8 @@
 
 using namespace std;
 
+char version[11] = "2018-03-01";
+
 int swap_endian(unsigned int in, char size);
 int Decompress(int address_data, unsigned short size);
 int ReadData();
@@ -17,7 +19,8 @@ FILE* rom;
 
 int main(int argc, char* argv[]) {
     if(argc < 3) {
-        printf("Usage: decompress.exe inputfile outputfile [offset]");
+        printf("Usage: decompress.exe inputfile outputfile [offset]\n");
+		printf("Version: %s", version);
         return 0;
     }
     

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-
+char version[11] = "2018-03-01";
 // mostly based on Saxman's old code
 
 char map_theme_text[11][9]={
@@ -156,6 +156,7 @@ int parse_input(std::vector<int>& map_ids, std::string in) {
 int main(int argc, char* argv[]) {
 
     std::cout << "Merges files as specified in level/level_files.txt into a single .kcm file." << std::endl;
+    std::cout << "Version: " << version << std::endl;
     std::ifstream infile("level/level_files.txt");
     if (infile.fail()) {
         std::cout << "Can't open \"level/level_files.txt\"" << std::endl;
@@ -865,7 +866,7 @@ void ExpandBlockLayout(FILE* rom)
                     case 0xE:   // freezes game
                     case 0xF:   // freezes game
                     default:
-                        printf("\nFound block-type 0x%02X at 0x%06X\n", block_type-0x80, ftell(rom));
+                        printf("\nFound block-type 0x%02X at 0x%06X\n", block_type-0x80, (unsigned int) ftell(rom));
                         system("PAUSE");
                 }
                 

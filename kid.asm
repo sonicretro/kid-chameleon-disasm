@@ -8927,28 +8927,31 @@ sub_7EB2:
 ; End of function sub_7EB2
 
 ; ---------------------------------------------------------------------------
-unk_7EC2:	dc.b   2
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   5
-	dc.b   3
-	dc.b   3
-	dc.b   3
-unk_7ECC:	dc.b   0
-	dc.b $7E ; ~
-	dc.b $7A ; z
-	dc.b $87 ; ‡
-	dc.b $78 ; x
-	dc.b $6C ; l
-	dc.b $78 ; x
-	dc.b $7D ; }
-	dc.b $74 ; t
-	dc.b $78 ; x
-	dc.b $68 ; h
-	dc.b $76 ; v
+; Initial number of hitpoints for each helmet
+unk_7EC2:
+	dc.b   2	; the kid
+	dc.b   3	; skycutter
+	dc.b   3	; cyclone
+	dc.b   3	; red stealth
+	dc.b   3	; eyeclops
+	dc.b   3	; juggernaut
+	dc.b   5	; iron knight
+	dc.b   3	; berzerker
+	dc.b   3	; maniaxe
+	dc.b   3	; micromax
+unk_7ECC:
+	dc.b   0
+	dc.b $7E
+	dc.b $7A
+	dc.b $87
+	dc.b $78
+	dc.b $6C
+	dc.b $78
+	dc.b $7D
+	dc.b $74
+	dc.b $78
+	dc.b $68
+	dc.b $76
 unk_7ED8:
 	dc.b   0
 	dc.b sfx_Skycutter_transform
@@ -8960,7 +8963,8 @@ unk_7ED8:
 	dc.b sfx_Berzerker_transform
 	dc.b sfx_Maniaxe_transform
 	dc.b sfx_Micromax_transform
-off_7EE2:	dc.w off_7EE2-off_7EE2
+off_7EE2:
+	dc.w off_7EE2-off_7EE2
 	dc.w stru_7EFA-off_7EE2
 	dc.w stru_7F30-off_7EE2
 	dc.w stru_7F5A-off_7EE2
@@ -28795,80 +28799,83 @@ loc_14E46:
 Init_SpecialEffect_Nothing:
 	rts
 ; ---------------------------------------------------------------------------
-Pal_14E6E:  binclude    "theme/titlecard/palette/sky.bin"
-Pal_14E8E:  binclude    "theme/titlecard/palette/ice.bin"
-Pal_14EAE:  binclude    "theme/titlecard/palette/hill.bin"
-Pal_14ECE:  binclude    "theme/titlecard/palette/island.bin"
-Pal_14EEE:  binclude    "theme/titlecard/palette/desert.bin"
-Pal_14F0E:  binclude    "theme/titlecard/palette/swamp.bin"
-Pal_14F2E:  binclude    "theme/titlecard/palette/mountain.bin"
-Pal_14F4E:  binclude    "theme/titlecard/palette/cave.bin"
-Pal_14F6E:  binclude    "theme/titlecard/palette/forest.bin"
-Pal_14F8E:  binclude    "theme/titlecard/palette/city.bin"
-TitleCardPalettes_Index:dc.l 0
-	dc.l Pal_14E6E
-	dc.l Pal_14E8E
-	dc.l Pal_14EAE
-	dc.l Pal_14ECE
-	dc.l Pal_14EEE
-	dc.l Pal_14F0E
-	dc.l Pal_14F2E
-	dc.l Pal_14F4E
-	dc.l Pal_14F6E
-	dc.l Pal_14F8E
-MapEni_14FDA:  binclude    "theme/titlecard/mapeni/sky.bin"
+Pal_TitleCard_sky:	binclude    "theme/titlecard/palette/sky.bin"
+Pal_TitleCard_ice:	binclude    "theme/titlecard/palette/ice.bin"
+Pal_TitleCard_hill:	binclude    "theme/titlecard/palette/hill.bin"
+Pal_TitleCard_island:	binclude    "theme/titlecard/palette/island.bin"
+Pal_TitleCard_desert:	binclude    "theme/titlecard/palette/desert.bin"
+Pal_TitleCard_swamp:	binclude    "theme/titlecard/palette/swamp.bin"
+Pal_TitleCard_mountain:	binclude    "theme/titlecard/palette/mountain.bin"
+Pal_TitleCard_cave:	binclude    "theme/titlecard/palette/cave.bin"
+Pal_TitleCard_forest:	binclude    "theme/titlecard/palette/forest.bin"
+Pal_TitleCard_city:	binclude    "theme/titlecard/palette/city.bin"
+;14FAE
+TitleCardPalettes_Index:
+	dc.l 0
+	dc.l Pal_TitleCard_sky
+	dc.l Pal_TitleCard_ice
+	dc.l Pal_TitleCard_hill
+	dc.l Pal_TitleCard_island
+	dc.l Pal_TitleCard_desert
+	dc.l Pal_TitleCard_swamp
+	dc.l Pal_TitleCard_mountain
+	dc.l Pal_TitleCard_cave
+	dc.l Pal_TitleCard_forest
+	dc.l Pal_TitleCard_city
+MapEni_TitleCard_sky:		binclude    "theme/titlecard/mapeni/sky.bin"
 	align	2
-MapEni_1503C:  binclude    "theme/titlecard/mapeni/ice.bin"
+MapEni_TitleCard_ice:		binclude    "theme/titlecard/mapeni/ice.bin"
 	align	2
-MapEni_150FC:  binclude    "theme/titlecard/mapeni/hill.bin"
+MapEni_TitleCard_hill:		binclude    "theme/titlecard/mapeni/hill.bin"
 	align	2
-MapEni_15172:  binclude    "theme/titlecard/mapeni/island.bin"
+MapEni_TitleCard_island:	binclude    "theme/titlecard/mapeni/island.bin"
 	align	2
-MapEni_151FE:  binclude    "theme/titlecard/mapeni/desert.bin"
+MapEni_TitleCard_desert:	binclude    "theme/titlecard/mapeni/desert.bin"
 	align	2
-MapEni_15266:  binclude    "theme/titlecard/mapeni/swamp.bin"
+MapEni_TitleCard_swamp:		binclude    "theme/titlecard/mapeni/swamp.bin"
 	align	2
-MapEni_1529A:  binclude    "theme/titlecard/mapeni/mountain.bin"
+MapEni_TitleCard_mountain:	binclude    "theme/titlecard/mapeni/mountain.bin"
 	align	2
-MapEni_15362:  binclude    "theme/titlecard/mapeni/cave.bin"
+MapEni_TitleCard_cave:		binclude    "theme/titlecard/mapeni/cave.bin"
 	align	2
-MapEni_153BA:  binclude    "theme/titlecard/mapeni/forest.bin"
+MapEni_TitleCard_forest:	binclude    "theme/titlecard/mapeni/forest.bin"
 	align	2
-MapEni_154CE:  binclude    "theme/titlecard/mapeni/city.bin"
+MapEni_TitleCard_city:		binclude    "theme/titlecard/mapeni/city.bin"
 	align	2
-TitleCardMaps_Index:dc.l 0
-	dc.l MapEni_14FDA
-	dc.l MapEni_1503C
-	dc.l MapEni_150FC
-	dc.l MapEni_15172
-	dc.l MapEni_151FE
-	dc.l MapEni_15266
-	dc.l MapEni_1529A
-	dc.l MapEni_15362
-	dc.l MapEni_153BA
-	dc.l MapEni_154CE
-ArtComp_155D4:  binclude    "theme/titlecard/artcomp/sky.bin"
-ArtComp_15E5E:  binclude    "theme/titlecard/artcomp/ice.bin"
-ArtComp_164B6:  binclude    "theme/titlecard/artcomp/hill.bin"
-ArtComp_16D20:  binclude    "theme/titlecard/artcomp/island.bin"
-ArtComp_17536:  binclude    "theme/titlecard/artcomp/desert.bin"
-ArtComp_17BD0:  binclude    "theme/titlecard/artcomp/swamp.bin"
-ArtComp_1834E:  binclude    "theme/titlecard/artcomp/mountain.bin"
-ArtComp_18BAB:  binclude    "theme/titlecard/artcomp/cave.bin"
-ArtComp_19134:  binclude    "theme/titlecard/artcomp/forest.bin"
-ArtComp_19756:  binclude    "theme/titlecard/artcomp/city.bin"
+TitleCardMaps_Index:
+	dc.l 0
+	dc.l MapEni_TitleCard_sky
+	dc.l MapEni_TitleCard_ice
+	dc.l MapEni_TitleCard_hill
+	dc.l MapEni_TitleCard_island
+	dc.l MapEni_TitleCard_desert
+	dc.l MapEni_TitleCard_swamp
+	dc.l MapEni_TitleCard_mountain
+	dc.l MapEni_TitleCard_cave
+	dc.l MapEni_TitleCard_forest
+	dc.l MapEni_TitleCard_city
+ArtComp_TitleCard_sky:		binclude    "theme/titlecard/artcomp/sky.bin"
+ArtComp_TitleCard_ice:		binclude    "theme/titlecard/artcomp/ice.bin"
+ArtComp_TitleCard_hill:		binclude    "theme/titlecard/artcomp/hill.bin"
+ArtComp_TitleCard_island:	binclude    "theme/titlecard/artcomp/island.bin"
+ArtComp_TitleCard_desert:	binclude    "theme/titlecard/artcomp/desert.bin"
+ArtComp_TitleCard_swamp:	binclude    "theme/titlecard/artcomp/swamp.bin"
+ArtComp_TitleCard_mountain:	binclude    "theme/titlecard/artcomp/mountain.bin"
+ArtComp_TitleCard_cave:		binclude    "theme/titlecard/artcomp/cave.bin"
+ArtComp_TitleCard_forest:	binclude    "theme/titlecard/artcomp/forest.bin"
+ArtComp_TitleCard_city:		binclude    "theme/titlecard/artcomp/city.bin"
 TitleCardArt_Index:
 	dc.l	0
-	dc.l ArtComp_155D4	;ArtComp_TtlCrd_Sky
-	dc.l ArtComp_15E5E	;ArtComp_TtlCrd_Ice
-	dc.l ArtComp_164B6	;ArtComp_TtlCrd_Hills
-	dc.l ArtComp_16D20	;ArtComp_TtlCrd_Island
-	dc.l ArtComp_17536	;ArtComp_TtlCrd_Desert
-	dc.l ArtComp_17BD0	;ArtComp_TtlCrd_Swamp
-	dc.l ArtComp_1834E	;ArtComp_TtlCrd_Mountain
-	dc.l ArtComp_18BAB	;ArtComp_TtlCrd_Cave
-	dc.l ArtComp_19134	;ArtComp_TtlCrd_Woods
-	dc.l ArtComp_19756	;ArtComp_TtlCrd_City
+	dc.l ArtComp_TitleCard_sky
+	dc.l ArtComp_TitleCard_ice
+	dc.l ArtComp_TitleCard_hill
+	dc.l ArtComp_TitleCard_island
+	dc.l ArtComp_TitleCard_desert
+	dc.l ArtComp_TitleCard_swamp
+	dc.l ArtComp_TitleCard_mountain
+	dc.l ArtComp_TitleCard_cave
+	dc.l ArtComp_TitleCard_forest
+	dc.l ArtComp_TitleCard_city
 ; ---------------------------------------------------------------------------
 
 Load_TitleCard:

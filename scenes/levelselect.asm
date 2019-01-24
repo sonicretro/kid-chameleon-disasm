@@ -231,7 +231,7 @@ CostumeSelect_Loop:
 ;CostumeSelect_Exit:
 	move.w	(Options_Selected_Option).w,d7
 	move.w	d7,(Current_Helmet).w
-	lea	(unk_7EC2).w,a4	; helmet hitpoints
+	lea	(unk_7EC2).l,a4	; helmet hitpoints
 	move.b	(a4,d7.w),d7
 	move.w	d7,(Number_Hitpoints).w
 	;move.w	d7,(Extra_hitpoint_slots).w

@@ -60961,6 +60961,7 @@ unk_9F9EC:  binclude	"theme/bg_chunks/city_0D.bin"
     rept 133
 	dc.b	$FF
     endm
+    	align	2
 
 Data_Index:	dc.l 0
 LnkTo_Pal_A1C72:	dc.l Pal_A1C72

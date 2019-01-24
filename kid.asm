@@ -48260,6 +48260,7 @@ Enemy22_Shiskaboss_Init:
 ; ---------------------------------------------------------------------------
 
 loc_38494:
+	; skewer piece 1
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48301,6 +48302,7 @@ loc_38510:
 ; ---------------------------------------------------------------------------
 
 loc_38512:
+	; skewer piece 2
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48342,6 +48344,7 @@ loc_3858E:
 ; ---------------------------------------------------------------------------
 
 loc_38590:
+	; skewer piece 3
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48383,6 +48386,7 @@ loc_3860C:
 ; ---------------------------------------------------------------------------
 
 loc_3860E:
+	; skewer piece 4
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48424,6 +48428,7 @@ loc_3868A:
 ; ---------------------------------------------------------------------------
 
 loc_3868C:
+	; skewer piece 5
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48465,6 +48470,7 @@ loc_38708:
 ; ---------------------------------------------------------------------------
 
 loc_3870A:
+	; skewer piece 6
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48506,6 +48512,7 @@ loc_38786:
 ; ---------------------------------------------------------------------------
 
 loc_38788:
+	; skewer piece 7
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48547,6 +48554,7 @@ loc_38804:
 ; ---------------------------------------------------------------------------
 
 loc_38806:
+	; skewer piece 8
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -48588,6 +48596,7 @@ loc_38882:
 ; ---------------------------------------------------------------------------
 
 loc_38884:
+	; skewer piece 9
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,$10(a3)
@@ -49614,6 +49623,7 @@ loc_39478:
 	move.w	#$24,d0
 
 loc_39494:
+	; head 1
 	move.w	d0,$3A(a3)
 	bset	#7,$3A(a3)
 	jsr	loc_32146(pc)
@@ -49738,6 +49748,7 @@ loc_39598:
 	move.w	#$24,d0
 
 loc_395B4:
+	; head 2
 	move.w	d0,$3A(a3)
 	bset	#7,$3A(a3)
 	jsr	loc_32146(pc)
@@ -49863,6 +49874,7 @@ loc_396BE:
 	move.w	#$24,d0
 
 loc_396DA:
+	; head 3
 	move.w	d0,$3A(a3)
 	bset	#7,$3A(a3)
 	jsr	loc_32146(pc)
@@ -59642,6 +59654,7 @@ word_402B0:
 	dc.w $FFFF
 	dc.w $FFFF
 ; ---------------------------------------------------------------------------
+;word_4033A
 MapHeader_BaseAddress:
 	dc.w Start_LevelID
 	dc.w 0
@@ -59652,7 +59665,7 @@ LnkTo_MapOrder_Index:	dc.l MapOrder_Index
 ;MapHeader_Index:
 	include "level/mapheader_index.asm"
 
-;MapOrder_Index:
+MapOrder_Index:
 	include	"level/maporder.asm"
 
 
@@ -59800,7 +59813,7 @@ ThemeCollision_Index:dc.l unk_7BB64
 	dc.l unk_7C2F1
 	dc.l unk_7C3F1
 ;BackgroundScroll_Index:
-	include "bgscroll_index.asm"
+	include "level/bgscroll_index.asm"
 off_7B3E4:	dc.l off_7B410
 	dc.l off_7B410
 	dc.l off_7B490
@@ -60943,7 +60956,7 @@ unk_9F998:  binclude	"theme/bg_chunks/city_0C.bin"
 unk_9F9EC:  binclude	"theme/bg_chunks/city_0D.bin"
 	align	2
 
-	include	"bgscroll_includes.asm"
+	include	"level/bgscroll_includes.asm"
 
 ; filler
     rept 133

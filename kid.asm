@@ -14,10 +14,6 @@
 ; Set to 1 to compile all instances of 0(ax) as (ax)
 ; (Takes less space but is not bit-perfect.)
 zeroOffsetOptimization = 0
-; Whether to include the platform definitions for levels as asm (1) or bin (0)
-; asm has the advantage that platform presets can be extended/changed without
-; invalidating pointers in other platform layouts
-platforms_asm = 1
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
 ; ===========================================================================
@@ -5176,6 +5172,8 @@ return_2BB4:
 ; End of function sub_2A4C
 
 ; ---------------------------------------------------------------------------
+; Include all relevant platform layouts into the disasm
+; 2BB6
 PlatformLayout_BaseAddress:
 	include    "level/platform_includes.asm"
 
@@ -5494,14 +5492,13 @@ PlatformChain_YVelocities:
 	dc.l	 $8000
 	dc.l	 $4000
 
-;MapPtfmLayout_Index:
+; For each map, which platform layout to use.
+; If it is PlatformLayout_Blank, then use layout level/platform/00.asm which
+; contains no platforms.
+MapPtfmLayout_Index:
 	include    "level/platform_index.asm"
 
-	if platforms_asm
 PlatformLayout_Blank:   include    "level/platform/00.asm"
-	else
-PlatformLayout_Blank:   binclude    "level/platform/00.bin"
-	endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -59654,7 +59651,7 @@ word_402B0:
 	dc.w $FFFF
 	dc.w $FFFF
 ; ---------------------------------------------------------------------------
-;word_4033A
+; 4033A
 MapHeader_BaseAddress:
 	dc.w Start_LevelID
 	dc.w 0
@@ -59662,12 +59659,14 @@ MapHeader_BaseAddress:
 ; 4033E
 LnkTo_MapOrder_Index:	dc.l MapOrder_Index 
 
-;MapHeader_Index:
+; 40342
+MapHeader_Index:
 	include "level/mapheader_index.asm"
 
+; 4043E
 MapOrder_Index:
 	include	"level/maporder.asm"
-
+	align 2
 
 	include "level/mapheader_definitions.asm"
 
@@ -59812,7 +59811,7 @@ ThemeCollision_Index:dc.l unk_7BB64
 	dc.l unk_7C1F5
 	dc.l unk_7C2F1
 	dc.l unk_7C3F1
-;BackgroundScroll_Index:
+BackgroundScroll_Index:
 	include "level/bgscroll_index.asm"
 off_7B3E4:	dc.l off_7B410
 	dc.l off_7B410

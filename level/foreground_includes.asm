@@ -147,7 +147,8 @@ ForegroundLayout_0D:  binclude    "level/foreground/0D.bin"
 ForegroundLayout_33:  binclude    "level/foreground/33.bin"
     align 2
 
-; some unused junk data. Maybe uncompressed foreground layout?
+; Some unused junk data. Maybe uncompressed foreground layout?
+; It has the size of a standard Elsewhere foreground layout.
 	binclude "ingame/misc/unused_67D9C.bin"
 ; filler
     rept 10080

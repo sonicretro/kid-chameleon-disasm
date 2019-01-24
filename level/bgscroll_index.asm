@@ -1,4 +1,3 @@
-BackgroundScroll_Index:
 	dc.l BackgroundScroll_00	; 0
 	dc.l BackgroundScroll_01_73	; 1
 	dc.l BackgroundScroll_02	; 2

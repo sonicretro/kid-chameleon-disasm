@@ -1,4 +1,3 @@
-MapHeader_Index:
 	dc.w MapHeader_00-MapHeader_BaseAddress ; 0
 	dc.w MapHeader_01-MapHeader_BaseAddress	; 1
 	dc.w MapHeader_02-MapHeader_BaseAddress	; 2

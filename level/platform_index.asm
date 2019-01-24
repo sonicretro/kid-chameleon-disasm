@@ -1,8 +1,3 @@
-; For each map, which platform layout to use.
-; If it is PlatformLayout_Blank, then use layout level/platform/00.asm which
-; contains no platforms.
-
-MapPtfmLayout_Index:
 	dc.w PlatformLayout_Blank-PlatformLayout_BaseAddress	;00
 	dc.w PlatformLayout_Blank-PlatformLayout_BaseAddress	;01
 	dc.w PlatformLayout_02-PlatformLayout_BaseAddress	;02

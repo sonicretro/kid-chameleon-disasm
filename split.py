@@ -1,18 +1,43 @@
 import math
 import os
 
-MapHeader_Index = 0x40342
-MapHeader_Offset = 0x4033A
-Platform_Index = 0x43A6
-Platform_Offset = 0x2BB6
-Bgscroll_Index = 0x7B1EC
-Number_Levels = 126
-
 f = open("kid.bin", "rb")
 b = f.read()
 
 # read /length/ bytes starting at /addr/ as integer 
 btoi = lambda addr,length: int.from_bytes(b[addr:addr+length], byteorder='big')
+
+# MapHeader_Index = 0x40342  # --> dynamically determined below.
+# MapHeader_BaseAddress = 0x4033A  # --> dynamically determined below.
+Platform_Index = 0x43A6
+# Platform_Offset = 0x2BB6  # --> dynamically determined below.
+Bgscroll_Index = 0x7B1EC
+Number_Levels = 126
+# We're detemining these 3 addresses dynamically so splitting works
+# both for hacks and the original game.
+Pointer1To_Mapheader_Index = 0x11A44
+Pointer2To_Mapheader_Index = 0x19AEC
+Pointer1To_Mapheader_BaseAddress = 0x11A50
+Pointer2To_Mapheader_BaseAddress = 0x19AF8
+PointerTo_Platform_Offset = 0x2384
+# Get the address that's used for relative offsets for the level index.
+MapHeader_BaseAddress1 = btoi(Pointer1To_Mapheader_BaseAddress, 4)
+MapHeader_BaseAddress2 = btoi(Pointer2To_Mapheader_BaseAddress, 4)
+if MapHeader_BaseAddress1 == MapHeader_BaseAddress2:
+    MapHeader_BaseAddress = MapHeader_BaseAddress1
+else:
+    print("Something seems to be broken in the ROM. Aborting.")
+    exit(-1)
+# Get the addresses of the level index.
+MapHeader_Index1 = btoi(Pointer1To_Mapheader_Index, 4)
+MapHeader_Index2 = btoi(Pointer2To_Mapheader_Index, 4)
+if MapHeader_Index1 == MapHeader_Index2:
+    MapHeader_Index = MapHeader_Index1
+else:
+    print("Something seems to be broken in the ROM. Aborting.")
+    exit(-1)
+# Also get the platform offset.
+Platform_Offset = btoi(PointerTo_Platform_Offset, 4)
 
 
 # get a single bit from position x
@@ -306,15 +331,16 @@ linfo = open("level/level_files.txt", "w")
 # layout for each level to files.
 for lev in range(Number_Levels):
     linfo.write("\n")
-    addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
+    addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_BaseAddress
     platform = btoi(Platform_Index+2*lev, 2) + Platform_Offset
     bgscroll = btoi(Bgscroll_Index+4*lev, 4)
     # need this because of load of duplicates
     if platform not in platform_addrs:
         l = length_platform(platform)
         platform_addrs[platform] = lev
-        with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
-            out.write(b[platform:platform+l])
+        # We don't need platforms in .bin format anymore.
+        # with open("level/platform/{:02X}.bin".format(lev), "wb") as out:
+        #     out.write(b[platform:platform+l])
         write_platform_asm(platform, "level/platform/{:02X}.asm".format(lev))
 
     if bgscroll not in bgscroll_addrs:
@@ -327,11 +353,11 @@ for lev in range(Number_Levels):
     linfo.write("platform/{:02X}.bin ".format(platform_addrs[platform]))
     linfo.write("bgscroll/{:02X}.bin ".format(bgscroll_addrs[bgscroll]))
 
-    if addr == 0x40FF6:
-        # for some entries, the pointer points to invalid data
-        # specifically, to the address after the last valid map header
+    if addr == 0x40FF6 or addr == MapHeader_BaseAddress:
+        # For some entries, the pointer points to invalid data
+        # specifically, to the address after the last valid map header.
+        # In hacks, invalid entries seems to point at the base address.
         continue
-
 
     # don't process duplicate entries. They give us false overlap alarms.
     if addr in mapheader_addrs:
@@ -394,7 +420,7 @@ for lev in range(Number_Levels):
                     linfo.write("background/{:02X}.bin ".format(ref))
                 else: # this is a bit dirty, need to find the level whose background is shared somehow
                     for l in range(Number_Levels):
-                        a = btoi(MapHeader_Index+2*lev, 2) + MapHeader_Offset
+                        a = btoi(MapHeader_Index+2*lev, 2) + MapHeader_BaseAddress
                         bg = btoi(a+20, 4)
                         if bg == ref_addr:
                             linfo.write("background/{:02X}.bin ".format(l))

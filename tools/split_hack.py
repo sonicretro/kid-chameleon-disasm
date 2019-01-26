@@ -163,6 +163,7 @@ fbgs_idx = open("level/bgscroll_index.asm", "w")
 fbgs_inc = open("level/bgscroll_includes.asm", "w")
 fplat_inc = open("level/platform_includes.asm", "w")
 fplat_idx = open("level/platform_index.asm", "w")
+flevelfiles = open("level/level_files.txt", "w")
 
 for lev in range(Number_Levels):
     addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_BaseAddress
@@ -170,6 +171,7 @@ for lev in range(Number_Levels):
     # Every map gets its own set of files.
     fheader_idx.write("\t\tdc.w\tMapHeader_{:02X}-MapHeader_BaseAddress\t; {:2X}\n".format(lev, lev))
     fheader_def.write("MapHeader_{:02X}:\tmaphdr\t\"level/header/{:02X}.bin\", ForegroundLayout_{:02X}, BlockLayout_{:02X}, BackgroundLayout_{:02X}, EnemyLayout_{:02X}\n".format(lev, lev, lev, lev, lev, lev))
+    flevelfiles.write("{:02X}\tplatform/{:02X}.bin bgcsroll/{:02X}.bin header/{:02X}.bin enemy/{:02X}.bin foregound/{:02X}.bin block/{:02X}.bin".format(lev, lev, lev, lev, lev, lev, lev))
     ffg.write("ForegroundLayout_{:02X}:\tbinclude\t\"level/foreground/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
     fblock.write("BlockLayout_{:02X}:\tbinclude\t\"level/block/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
     fenemy.write("EnemyLayout_{:02X}:\tdc.l\tEnemyLayout_{:02X}+$10\n\tbinclude\t\"level/enemy/{:02X}.bin\"\n".format(lev, lev, lev))
@@ -198,6 +200,7 @@ for lev in range(Number_Levels):
         make_enemy_template(lev)
         make_header_template(lev)
         fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
+        flevelfiles.write(" background/{:02X}.bin\n".format(lev))
 
     # Handle duplicate entries.
     elif addr in mapheader_addrs:
@@ -213,13 +216,16 @@ for lev in range(Number_Levels):
         if background_addrs[background][0] == 0: # chunked
             copyfile("level/background/{:02X}.bin".format(orig_lev), "level/background/{:02X}.bin".format(lev))
             fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
+            flevelfiles.write(" background/{:02X}.bin\n".format(lev))
         elif background_addrs[background][0] == 1: # layered
             copyfile("level/background/{:02X}_layered.bin".format(orig_lev), "level/background/{:02X}_layered.bin".format(lev))
             fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}_layered.bin\"\n\talign 2\n".format(lev, lev))
+            flevelfiles.write(" background/{:02X}_layered.bin\n".format(lev))
         else: #copied
             copied_addr = background_addrs[background][2]
             copied_lev = background_addrs[copied_addr][1]
             fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
+            flevelfiles.write("\n")
 
     # New valid entry
     else:
@@ -245,14 +251,17 @@ for lev in range(Number_Levels):
             if orig_lev != lev: # two levels sharing same bg --> make copy
                 copyfile("level/background/{:02X}.bin".format(orig_lev), "level/background/{:02X}.bin".format(lev))
             fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
+            flevelfiles.write(" background/{:02X}.bin\n".format(lev))
         elif background_addrs[background][0] == 1: # layered
             if orig_lev != lev: # two levels sharing same bg --> make copy
                 copyfile("level/background/{:02X}_layered.bin".format(orig_lev), "level/background/{:02X}_layered.bin".format(lev))
             fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}_layered.bin\"\n\talign 2\n".format(lev, lev))
+            flevelfiles.write(" background/{:02X}_layered.bin\n".format(lev))
         else: #copied
             copied_addr = background_addrs[background][2]
             copied_lev = background_addrs[copied_addr][1]
             fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
+            flevelfiles.write("\n")
 
 
     if bgscroll in bgscroll_addrs:
@@ -288,6 +297,7 @@ fbgs_idx.close()
 fbgs_inc.close()
 fplat_idx.close()
 fplat_inc.close()
+flevelfiles.close()
 
 
 # make an additional file of the platform presets that are

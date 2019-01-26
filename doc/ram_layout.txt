@@ -94,6 +94,7 @@ FFF8AE  long    Address of theme mappings
 FFF8BA  word    maximal camera X position (width in pixels - $140)
 FFF8BC  word    maximal camera Y position (height in pixels - $E0)
 FFF8D4  long    pointer to block list?
+FFFA0A  word    terrain kid is standing on: 0 = normal, 1 = ice, 2 = rubber
 FFFA27  byte    flag: whether an UFO is shooting at the Kid
 FFFA6D  byte    flag whether kid is currently transforming
 FFFA70  word    Telepad timer

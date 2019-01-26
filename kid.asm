@@ -9553,21 +9553,24 @@ loc_85C0:
 ; End of function sub_8506
 
 ; ---------------------------------------------------------------------------
-unk_85C4:	dc.l   $10000
-	dc.l    $1000
-	dc.l    $1000
-	dc.l    $1800
-	dc.l    $4000
-unk_85D8:	dc.l    $8000
-	dc.l    $2000
-	dc.l    $1000
-	dc.l    $3000
-	dc.l    $8000
-unk_85EC:	dc.l   $18000
-	dc.l     $200
-	dc.l     $200
-	dc.l     $100
-	dc.l     $800
+unk_85C4:	; on normal terrain
+	dc.l   $10000	; max crawling speed
+	dc.l    $1000	; crawling acceleration (when pressing left/right)
+	dc.l    $1000	; crawling deceleration (when going faster than max speed)
+	dc.l    $1800	; ?
+	dc.l    $4000	; crawling acceleration (when changing direction)
+unk_85D8:	; on ice
+	dc.l    $8000	; max crawling speed
+	dc.l    $2000	; crawling acceleration (when pressing left/right)
+	dc.l    $1000	; crawling deceleration (when going faster than max speed)
+	dc.l    $3000	; ?
+	dc.l    $8000	; crawling acceleration (when changing direction)
+unk_85EC:	; on rubber blocks
+	dc.l   $18000	; max crawling speed
+	dc.l     $200	; crawling acceleration (when pressing left/right)
+	dc.l     $200	; crawling deceleration (when going faster than max speed)
+	dc.l     $100	; ?
+	dc.l     $800	; crawling acceleration (when changing direction)
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -11972,7 +11975,8 @@ loc_9C06:
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_9A0A
 ; ---------------------------------------------------------------------------
-unk_9C0A:	dc.l	$20000	; Max walking speed
+unk_9C0A:	; The below properties when the kid is walking on normal terrain
+	dc.l	$20000	; Max walking speed
 	dc.l	 $1000	; Acceleration walking rate
 	dc.l	 $2800	; Deceleration walking/running rate
 	dc.l	 $2000	; Brake walking-left rate
@@ -12000,48 +12004,50 @@ unk_9C0A:	dc.l	$20000	; Max walking speed
 	dc.l	$30000
 	dc.l	 $3800
 	dc.l	 $6000
-unk_9C7A:	dc.l	$18000
-	dc.l	 $2000
-	dc.l	 $5000
-	dc.l	 $4000
-	dc.l	$28000
-	dc.l	 $3800
-	dc.l	 $6000
-	dc.l	 $C000
-	dc.l	 $1000
-	dc.l	 $2800
-	dc.l	 $2000
-	dc.l	$18000
-	dc.l	 $2000
-	dc.l	 $3000
-	dc.l	$14000
-	dc.l	 $4000
-	dc.l	 $A000
-	dc.l	 $8000
-	dc.l	$20000
-	dc.l	 $7000
-	dc.l	 $C000
-unk_9CCE:	dc.l	$40000
-	dc.l	  $200
-	dc.l	  $100
-	dc.l	  $400
-	dc.l	$70000
-	dc.l	  $380
-	dc.l	  $680
-	dc.l	$20000
-	dc.l	  $100
-	dc.l	   $80
-	dc.l	  $200
-	dc.l	$40000
-	dc.l	  $200
-	dc.l	  $380
-	dc.l	$30000
-	dc.l	  $400
-	dc.l	  $200
-	dc.l	  $800
-	dc.l	$58000
-	dc.l	  $700
-	dc.l	  $D00
+unk_9C7A:	; The below properties when the kid is walking on ice
+	dc.l	$18000	; Max walking speed
+	dc.l	 $2000	; Acceleration walking rate
+	dc.l	 $5000	; Deceleration walking/running rate
+	dc.l	 $4000	; Brake walking-left rate
+	dc.l	$28000	; Max running speed
+	dc.l	 $3800	; Acceleration running rate
+	dc.l	 $6000	; Brake walking-right/running rate
+	dc.l	 $C000	; Micromax: Max walking speed
+	dc.l	 $1000	; Micromax: Acceleration walking rate
+	dc.l	 $2800	; Micromax: Deceleration walking/running rate
+	dc.l	 $2000	; Micromax: Brake walking-left rate
+	dc.l	$18000	; Micromax: Max running speed
+	dc.l	 $2000	; Micromax: Acceleration running rate
+	dc.l	 $3000	; Micromax: Brake walking-right/running rate
+	dc.l	$14000	; Juggernaut: Max walking speed
+	dc.l	 $4000	; Juggernaut: Acceleration walking rate
+	dc.l	 $A000	; Juggernaut: Deceleration walking/running rate
+	dc.l	 $8000	; Juggernaut: Brake walking-left rate
+	dc.l	$20000	; Juggernaut: Max running speed
+	dc.l	 $7000	; Juggernaut: Acceleration running rate
+	dc.l	 $C000	; Juggernaut: Brake walking-right/running rate
+unk_9CCE:	; The below properties when the kid is walking on rubber blocks
+	dc.l	$40000	; Max walking speed
+	dc.l	  $200	; Acceleration walking rate
+	dc.l	  $100	; Deceleration walking/running rate
+	dc.l	  $400	; Brake walking-left rate
+	dc.l	$70000	; Max running speed
+	dc.l	  $380	; Acceleration running rate
+	dc.l	  $680	; Brake walking-right/running rate
+	dc.l	$20000	; Micromax: Max walking speed
+	dc.l	  $100	; Micromax: Acceleration walking rate
+	dc.l	   $80	; Micromax: Deceleration walking/running rate
+	dc.l	  $200	; Micromax: Brake walking-left rate
+	dc.l	$40000	; Micromax: Max running speed
+	dc.l	  $200	; Micromax: Acceleration running rate
+	dc.l	  $380	; Micromax: Brake walking-right/running rate
+	dc.l	$30000	; Juggernaut: Max walking speed
+	dc.l	  $400	; Juggernaut: Acceleration walking rate
+	dc.l	  $200	; Juggernaut: Deceleration walking/running rate
+	dc.l	  $800	; Juggernaut: Brake walking-left rate
+	dc.l	$58000	; Juggernaut: Max running speed
+	dc.l	  $700	; Juggernaut: Acceleration running rate
+	dc.l	  $D00	; Juggernaut: Brake walking-right/running rate
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
@@ -12931,42 +12937,42 @@ loc_A480:
 ; End of function sub_A432
 
 ; ---------------------------------------------------------------------------
-; jump height
+; Maximum jump height
 unk_A49E:
-	dc.w $42		
-	dc.w $42		
-	dc.w $42		
-	dc.w $4A		
-	dc.w $42		
-	dc.w $42		
-	dc.w $42		
-	dc.w $42		
-	dc.w $42		
-	dc.w $42
-; jump acceleration
+	dc.w $42	; kid
+	dc.w $42	; skycutter
+	dc.w $42	; cyclone
+	dc.w $4A	; red stealth
+	dc.w $42	; eyeclops
+	dc.w $42	; juggernaut
+	dc.w $42	; iron knight
+	dc.w $42	; berzerker
+	dc.w $42	; maniaxe
+	dc.w $42	; micromax
+; Horizontal acceleration when jumping (due to pressing left/right)
 unk_A4B2:
-	dc.w $2B00
-	dc.w $3400
-	dc.w $2B00
-	dc.w $4000
-	dc.w $2B00
-	dc.w $2B00
-	dc.w $2B00
-	dc.w $2B00
-	dc.w $2B00
-	dc.w $2B00
-; max jump speed
+	dc.w $2B00	; kid
+	dc.w $3400	; skycutter
+	dc.w $2B00	; cyclone
+	dc.w $4000	; red stealth
+	dc.w $2B00	; eyeclops
+	dc.w $2B00	; juggernaut
+	dc.w $2B00	; iron knight
+	dc.w $2B00	; berzerker
+	dc.w $2B00	; maniaxe
+	dc.w $2B00	; micromax
+; Maximum horizontal jump speed
 unk_A4C6:
-	dc.l $2A000
-	dc.l $32000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
-	dc.l $2A000
+	dc.l $2A000	; kid
+	dc.l $32000	; skycutter
+	dc.l $2A000	; cyclone
+	dc.l $2A000	; red stealth
+	dc.l $2A000	; eyeclops
+	dc.l $2A000	; juggernaut
+	dc.l $2A000	; iron knight
+	dc.l $2A000	; berzerker
+	dc.l $2A000	; maniaxe
+	dc.l $2A000	; micromax
 ; =============== S U B	R O U T	I N E =======================================
 
 

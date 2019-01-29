@@ -225,7 +225,7 @@ for lev in range(Number_Levels):
             copied_addr = background_addrs[background][2]
             copied_lev = background_addrs[copied_addr][1]
             fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
-            flevelfiles.write("\n")
+            flevelfiles.write(" background/{:02X}.bin\n".format(copied_lev)) # background files are never layered
 
     # New valid entry
     else:
@@ -261,7 +261,7 @@ for lev in range(Number_Levels):
             copied_addr = background_addrs[background][2]
             copied_lev = background_addrs[copied_addr][1]
             fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
-            flevelfiles.write("\n")
+            flevelfiles.write(" background/{:02X}.bin\n".format(copied_lev)) # background files are never layered
 
 
     if bgscroll in bgscroll_addrs:

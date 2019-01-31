@@ -471,17 +471,23 @@ forder.close()
 
 # make an asm file with all the level names, and level name index
 AddrTbl_LevelNames = 0x1A842
-name_addrs = set()
-name_addrs2 = set()
-name_addrs2.add(0x1A842)
+name_addrs = dict()
+name_addrs2 = dict()
+name_addrs2[0x1A842] = "dummy"
 fnames = open("level/levelnames.asm", "w")
 for lev in range(74):
     addr = btoi(AddrTbl_LevelNames+10*lev, 4)
     addr2 = btoi(AddrTbl_LevelNames+10*lev+4, 4)
-    name_addrs.add(addr)
-    name_addrs2.add(addr2)
+    if addr not in name_addrs:
+        name_addrs[addr] = lev
+    name_addrs2[addr2] = "{:02X}".format(lev), "" # hopefully don't need this
+name_addrs2[0x1A802] = "3Lines", "last row is level number"
+name_addrs2[0x1A812] = "2Lines", "last row is level number"
+name_addrs2[0x1A81E] = "4Lines", "no level number here"
+name_addrs2[0x1A82E] = "3LinesDense", "last row is level number. Less vertical spacing between lines."
+name_addrs2[0x1A83E] = "1Line", "no level number here"
 fnames.write(
-'''; \\0   = linebreak
+'''; \\0   = end of line
 ; \\x7C = "The"
 ; \\x7D = "the"
 ; \\x7E = "of"
@@ -489,8 +495,8 @@ fnames.write(
 ; \\x83 = "'"
 ; \\x84 = " "
 ''')
-for addr in sorted(name_addrs):
-    fnames.write("unk_{:X}:\n".format(addr))
+for addr,lev in sorted(name_addrs.items()):
+    fnames.write("TitleText_{:02X}:\n".format(lev))
     addr_end = addr
     while btoi(addr_end, 1) != 0xFF:
         addr_end += 1
@@ -505,19 +511,28 @@ for addr in sorted(name_addrs):
     fnames.write(name)
     fnames.write("\tdc.b\t$FF\n")
 fnames.write("\n\talign\t2\n\n")
-name_addrs2 = sorted(name_addrs2)
-for i in range(len(name_addrs2)-1):
-    addr = name_addrs2[i]
-    fnames.write("unk_{:X}:\n".format(addr))
-    while addr < name_addrs2[i+1]:
-        fnames.write("\tdc.w\t${:02X}\n".format(btoi(addr, 2)))
-        addr += 2
+fnames.write(
+'''; Positions (x pos, y pos) in pixels of the lines in the title.
+; The last row is the position of the level number, if the level has one.
+; If a level title has no number, the last row can remain unused.
+; Note: Lines refers to units separated by \\0 bytes. For example, in the title
+;   dc.b    "\\x7C\\x84hills\\0have\\x84eyes"
+; "THE HILLS" is one line and "HAVE EYES" is one line.
+''')
+name_addrs2_s = sorted(name_addrs2.items())
+for i in range(len(name_addrs2_s)-1):
+    addr,layout = name_addrs2_s[i]
+    layout_name, layout_comment = layout
+    fnames.write("TitleTextLayout_{}: ; {}\n".format(layout_name, layout_comment))
+    while addr < name_addrs2_s[i+1][0]:
+        fnames.write("\tdc.w\t${:02X}, ${:02X}\n".format(btoi(addr, 2), btoi(addr+2, 2)))
+        addr += 4
 fnames.write("\nAddrTbl_LevelNames:   ;1A842\n")
 for lev in range(74):
     addr = btoi(AddrTbl_LevelNames+10*lev, 4)
     addr2 = btoi(AddrTbl_LevelNames+10*lev+4, 4)
     number = btoi(AddrTbl_LevelNames+10*lev+8, 2)
-    fnames.write("\tlevnamhdr\tunk_{:X}, unk_{:X}, {:d}\t; {:2X}\n".format(addr, addr2, number, lev))
+    fnames.write("\tlevnamhdr\tTitleText_{:02X}, TitleTextLayout_{}, {:d}\t; {:2X}\n".format(name_addrs[addr], name_addrs2[addr2][0], number, lev))
 fnames.close()
 
 

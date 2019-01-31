@@ -28354,13 +28354,15 @@ loc_14B2A:
 
 ; ---------------------------------------------------------------------------
 ; lava fountain positions.
-; first word: number of entries (3 words each)
+; first word: number of entries (3 words per entry)
 ; each entry: x-pos, y-pos, height
-unk_14B60:	dc.w   3
+LavaGeyserPositions_USM2:
+	dc.w   3
 	dc.w	$180, $312, $60
 	dc.w	$240, $312, $63
 	dc.w	$346, $312, $8000
-unk_14B74:	dc.w  $D
+LavaGeyserPositions_BlackPit:	; also used by USM3 if lava flag is set.
+	dc.w  $D
 	dc.w	$290, $170, $020
 	dc.w	$3D0, $170, $020
 	dc.w	$510, $170, $040
@@ -28374,7 +28376,8 @@ unk_14B74:	dc.w  $D
 	dc.w	$F10, $170, $100
 	dc.w	$1050, $170, $100
 	dc.w	$1190, $170, $100
-unk_14BC4:	dc.w   3
+LavaGeyserPositions_Other:	; e.g. Elsewhere 29
+	dc.w   3
 	dc.w	$090, $330, $260
 	dc.w	$010, $1D0, $090
 	dc.w	$110, $1D0, $090
@@ -28410,11 +28413,11 @@ loc_14BE8:
 
 ; ---------------------------------------------------------------------------
 ; address table for lava fountain positions
-off_14C26:
-	dc.l unk_14B60	; Under Skull Mountain 2
-	dc.l unk_14B74	; Under Skull Mountain 3
-	dc.l unk_14B74	; The Black Pit
-	dc.l unk_14BC4	; everything else
+LavaGeyserPositions_Index:
+	dc.l LavaGeyserPositions_USM2	; Under Skull Mountain 2
+	dc.l LavaGeyserPositions_BlackPit	; Under Skull Mountain 3
+	dc.l LavaGeyserPositions_BlackPit	; The Black Pit
+	dc.l LavaGeyserPositions_Other	; everything else
 ; ---------------------------------------------------------------------------
 
 Init_SpecialEffect_Lava:
@@ -28435,7 +28438,7 @@ Init_SpecialEffect_Lava:
 loc_14C5E:
 	add.w	d1,d1
 	add.w	d1,d1
-	move.l	off_14C26(pc,d1.w),a4
+	move.l	LavaGeyserPositions_Index(pc,d1.w),a4
 	move.w	(a4)+,d0
 	subq.w	#1,d0
 
@@ -30074,7 +30077,7 @@ loc_1B6DC:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1C7A0,4(a0)
-	move.l	#unk_1C78A,$44(a0)
+	move.l	#SegaText,$44(a0)
 	bra.s	loc_1B6DC
 ; ---------------------------------------------------------------------------
 off_1B70A:
@@ -30516,7 +30519,7 @@ loc_1BAC2:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1C7A0,4(a0)
-	move.l	#unk_1C78A,$44(a0)
+	move.l	#SegaText,$44(a0)
 
 loc_1BAEA:
 	move.w	#$280,d0
@@ -31491,94 +31494,41 @@ loc_1C5F4:
 ; End of function sub_1C5D0
 
 ; ---------------------------------------------------------------------------
-; \xFD  $FD - linebreak
+; Chart of characters
+; text value - meaning
+;   $5C-$65 - numbers 1-9, 0
 ;    f  $66 - .
+;    g  $67 - '
 ;    h  $68 - ,
+;    i  $69 - !
+;    j  $6A - ?
+;   kl  $6B,$6C - (c) copyright
+; \xFD  $FD - linebreak
+; \xFE  $FE - delay, followed by a byte indicating the duration of delay
 ; \xFF  $FF - end of text
-; \xFD  $FE - 
-; \x40  $40 - 
-; \x60  $60 - 
-; \x90  $90 - 
-IntroText1:	dc.b   0
-	dc.b   0
-	dc.b $67 ; g
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   2
-	dc.b "\xfe THERE WAS A NEW MACHINE\xfdIN THE ARCADE", $FD
-	dc.b "\xfe THAT ONE COULD WALK INTO\xfdAND PLAYf", $FF, 0
-IntroText2:	dc.b $E0 ; à
-	dc.b   0
-	dc.b $C7 ; Ç
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   3
-	dc.b "\xfe\x90IT USED HOLOGRAMS TO CREATE", $FD
-	dc.b "A REALITY NOT OUR OWNf", $FF, 0
-IntroText3:	dc.b   0
-	dc.b   0
-	dc.b $67 ; g
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   4
-	dc.b "\xfe EVERYBODY PLAYED ITf", $FF, 0
-IntroText4:	dc.b   0
-	dc.b   0
-	dc.b $C7 ; Ç
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   8
-	dc.b "\xfe BUT IT WAS A LITTLE TOO REALf", $FD, $FD, $FE, $40
-	dc.b "THE BOSS ESCAPEDh AND BEGAN", $FD
-	dc.b "CAPTURING KIDS BY DEFEATING\xfdTHEM AT THE GAMEf", $FF, 0
-IntroText5:	dc.b   0
-	dc.b   0
-	dc.b $C7 ; Ç
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b $19
-	dc.b   0
-	dc.b   3
-	dc.b "\xfe THIS IS THE\xfdSTORY OF\xfdSOMEONE TOO", $FD
-	dc.b "TOUGH TO BEATf", $FD, $FD, $FE, $60
-	dc.b "SOMEONE KNOWN\xfdASfff", $FF, 0
-unk_1C78A:	dc.b   0
-	dc.b   0
-	dc.b $67 ; g
-	dc.b $D3 ; Ó
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $19
-	dc.b   0
-	dc.b $19
-	dc.b $6B ; k
-	dc.b $6C ; l
-	dc.b $5C ; 
-	dc.b $64 ; d
-	dc.b $64 ; d
-	dc.b $5D ; ]
-	dc.b $20
-	dc.b "SEGA"
-	dc.b $FF
+; Headers: VRAM destination plane address, VRAM base tile, delay between characters, x pos, y pos
+IntroText1:	dc.w   0, $67D3, 2, 8, 2
+	dc.b $FE, $20, "THERE WAS A NEW MACHINE", $FD, "IN THE ARCADE", $FD
+	dc.b $FE, $20, "THAT ONE COULD WALK INTO", $FD, "AND PLAYf", $FF
+	align 2
+IntroText2:	dc.w $E000, $C7D3, 2, 7, 3
+	dc.b $FE, $90, "IT USED HOLOGRAMS TO CREATE", $FD, "A REALITY NOT OUR OWNf", $FF
+	align 2
+IntroText3:	dc.w   0, $67D3, 2, $A, 4
+	dc.b $FE, $20, "EVERYBODY PLAYED ITf", $FF
+	align 2
+IntroText4:	dc.w   0, $C7D3, 2, 6, 8
+	dc.b $FE, $20, "BUT IT WAS A LITTLE TOO REALf", $FD, $FD
+	dc.b $FE, $40, "THE BOSS ESCAPEDh AND BEGAN", $FD, "CAPTURING KIDS BY DEFEATING", $FD, "THEM AT THE GAMEf", $FF
+	align 2
+IntroText5:	dc.w   0, $C7D3, 2, $19, $3
+	dc.b $FE, $20, "THIS IS THE", $FD, "STORY OF", $FD, "SOMEONE TOO", $FD, "TOUGH TO BEATf", $FD, $FD
+	dc.b $FE, $60, "SOMEONE KNOWN", $FD, "ASfff", $FF
+	align 2
+SegaText:	dc.w   0, $67D3, 0, $19, $19
+	dc.b $6B, $6C ; copyright symbol
+	dc.b $5C, $64, $64, $5D, " SEGA", $FF	; 1992 SEGA
+	align 2
 ; ---------------------------------------------------------------------------
 
 loc_1C7A0:

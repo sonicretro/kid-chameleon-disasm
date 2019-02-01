@@ -86,10 +86,8 @@ FFF8A2  word    height in 8x8 tiles
 FFF8A4  word    height in 16x16 blocks
 FFF8A6  word    background width
 FFF8A8  word    background height
-FFF8AA  word    Foreground theme
-FFF8AA  word    Theme music
+FFF8AA  word    Foreground theme (also determines music)
 FFF8AC  word    Background theme
-FFF8AC  word    Theme background
 FFF8AE  long    Address of theme mappings
 FFF8BA  word    maximal camera X position (width in pixels - $140)
 FFF8BC  word    maximal camera Y position (height in pixels - $E0)

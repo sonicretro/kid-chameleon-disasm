@@ -15374,15 +15374,80 @@ loc_BCAC:
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
-loc_BCB2:
-	jsr	Get_RandomNumber_word
-	divu.w	#106,d7
-	swap	d7
-	move.w	d7,Current_LevelID	; randomize: pick random level when teleporting
+; ---------------------------------------------------------------------------
+; Subroutine to generate a pseudo-random number in d0
+; d0 = (RNG & $FFFF0000) | ((RNG*41 & $FFFF) + ((RNG*41 & $FFFF0000) >> 16))
+; RNG = ((RNG*41 + ((RNG*41 & $FFFF) << 16)) & $FFFF0000) | (RNG*41 & $FFFF)
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+; sub_3390:
+RandomNumber:
+	move.l	(Level_RNG_seed).w,d1
+	bne.s	+
+	move.l	#$2A6D365A,d1 ; if the RNG is 0, reset it to this crazy number
+
+	; set the high word of d0 to be the high word of the RNG
+	; and multiply the RNG by 41
++	move.l	d1,d0
+	asl.l	#2,d1
+	add.l	d0,d1
+	asl.l	#3,d1
+	add.l	d0,d1
+
+	; add the low word of the RNG to the high word of the RNG
+	; and set the low word of d0 to be the result
+	move.w	d1,d0
+	swap	d1
+	add.w	d1,d0
+	move.w	d0,d1
+	swap	d1
+
+	move.l	d1,(Level_RNG_seed).w
+	rts
+; End of function RandomNumber
+; ---------------------------------------------------------------------------
+Get_NextRandomLevel:
+	bsr.w	RandomNumber
+	and.l	#$FFFF,d0	; avoid division overflow
+
 	tst.b	$1337
+	move.w	Levels_Played,d1
+	sub.w	#103,d1
+	neg.w	d1	; remaining number of levels R.
+	divu.w	d1,d0
+	swap	d0	; a random number between 0 and R-1
+	addq.w	#1,d0
+
+	moveq	#0,d1
+	lea	Played_Level_List,a0	; has R zero-entries
+-	; count R unplayed slots
+	tst.b	(a0,d1.w)	; already played?
+	bmi.s	+
+	subq.w	#1,d0
+	beq.s	Get_NextRandomLevel_Found
++	addq.w	#1,d1
+	bra.s	-
+
+Get_NextRandomLevel_Found:
+	st	(a0,d1.w)	; mark level as played
+	move.w	d1,Current_LevelID
+	
+	addq.w	#1,Levels_Played
+	rts
+
+; ---------------------------------------------------------------------------
+loc_BCB2:
+;	jsr	Get_RandomNumber_word
+;	divu.w	#103,d7
+;	swap	d7
+;	move.w	d7,Current_LevelID	; randomize: pick random level when teleporting
+
+	movem.l	d0-d1/a0,-(sp)
+	bsr.w	Get_NextRandomLevel
 
 	; get normal start pos rather than teleporter determined start pos
-	movem.l	d0/a0,-(sp)
 	move.w	(Current_LevelID).w,d0
 	move.l	(LnkTo_MapOrder_Index).l,a0
 	move.b	(a0,d0.w),d0
@@ -15393,13 +15458,13 @@ loc_BCB2:
 	move.l	#MapHeader_BaseAddress,a0
 	add.w	d0,a0
 	move.w	4(a0),d7
-	asl.w	#4,d7
+	;asl.w	#4,d7
 	move.w	d7,(PlayerStart_X_pos).w
 	move.w	6(a0),d7
-	asl.w	#4,d7
+	;asl.w	#4,d7
 	move.w	d7,(PlayerStart_Y_pos).w
-	movem.l	(sp)+,d0/a0
-	st	($FFFFFC36).w	; different level than before
+	movem.l	(sp)+,d0-d1/a0
+;	st	($FFFFFC36).w	; different level than before
 
 	addq.w	#6,a4
 	;move.w	(a4),d7
@@ -15411,30 +15476,35 @@ loc_BCB2:
 	;move.w	d7,(PlayerStart_X_pos).w
 	;move.w	(a4),d7
 	;asr.w	#8,d7
-	move.w	Current_LevelID,d7
-	moveq	#0,d6
-	move.l	(LnkTo_MapOrder_Index).l,a4
+	;move.w	Current_LevelID,d6
 
-loc_BCD6:
-	move.b	(a4)+,d5
-	ext.w	d5
-	cmpi.w	#$FFFF,d5	; have we reached the end?
-	beq.s	loc_BCAC
-	cmp.w	d5,d7
-	beq.w	loc_BCEA
-	addq.w	#1,d6		; next level
-	bra.s	loc_BCD6
-; ---------------------------------------------------------------------------
+;	move.w	Current_LevelID,d7
+;	moveq	#0,d6
+;	move.l	(LnkTo_MapOrder_Index).l,a4
 
-loc_BCEA:
-	cmp.w	(Current_LevelID).w,d6
-	beq.w	loc_BCF6
-	st	($FFFFFC36).w
-
-loc_BCF6:
-	move.w	d6,(Current_LevelID).w
+	; Find the mapID that equals d7 and write the corresponding
+	; levelID (which is in d6) to Current_LevelID
+;loc_BCD6:
+;	move.b	(a4)+,d5
+;	ext.w	d5
+;	cmpi.w	#$FFFF,d5	; have we reached the end?
+;	beq.s	loc_BCAC
+;	cmp.w	d5,d7
+;	beq.w	loc_BCEA
+;	addq.w	#1,d6		; next level
+;	bra.s	loc_BCD6
+;; ---------------------------------------------------------------------------
+;
+;loc_BCEA:
+;	cmp.w	(Current_LevelID).w,d6
+;	beq.w	loc_BCF6
+;	st	($FFFFFC36).w
+;
+;loc_BCF6:
+;	move.w	d6,(Current_LevelID).w
+	st	($FFFFFC36).w	; different level than before
 	st	($FFFFFC29).w
-	move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp?
+	move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp
 	moveq	#-5,d6
 	bra.w	Teleport
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -16790,6 +16860,7 @@ loc_D44C:
 	jsr	(j_Palette_to_VRAM).w
 	jsr	(j_sub_14C0).w
 	clr.w	($FFFFFBCC).w
+	move.w	#$E0E,($FFFFFBCC).w	; yellow from teleport warp?
 	st	($FFFFFC36).w
 	bra.w	Teleport
 ; END OF FUNCTION CHUNK	FOR Character_CheckCollision
@@ -17085,10 +17156,14 @@ loc_D7F4:
 	cmpi.w	#Final_LevelID,(Current_LevelID).w
 	beq.w	End_Credits
 	;addq.w	#1,(Current_LevelID).w
-	jsr	Get_RandomNumber_word
-	divu.w	#106,d7
-	swap	d7
-	move.w	d7,Current_LevelID	; randomize: pick random level when touching flag
+
+	movem.l	d0-d1/a0,-(sp)
+	bsr.w	Get_NextRandomLevel	; randomize: pick random level when touching flag
+	movem.l	(sp)+,d0-d1/a0
+;	jsr	Get_RandomNumber_word
+;	divu.w	#103,d7
+;	swap	d7
+;	move.w	d7,Current_LevelID	
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
 	bra.w	Teleport
@@ -30658,23 +30733,44 @@ Title_InputLoop:
 	beq.s	loc_1BBD6
 	move.w	#8,(Game_Mode).w
 
-	jsr	Get_RandomNumber_word
-	divu.w	#106,d7
-	swap	d7
-	move.w	d7,(Player_1_LevelID).w
-	move.w	d7,(Player_2_LevelID).w	; randomize: starting level
-
 	tst.w	d1
 	sne	(Two_player_flag).w
 	jsr	(j_StopMusic).l
 
 loc_1BBD6:
 	st	($FFFFFBCE).w
+	bsr.w	Init_LevelRandomizer
 	if insertLevelSelect = 0
 	jmp	(j_loc_6E2).w
 	else
 	jmp	(LevelSelect_ChkKey).w
 	endif
+; ---------------------------------------------------------------------------
+Init_LevelRandomizer:
+	jsr	Get_RandomNumber_long
+	move.l	d7,Level_RNG_seed
+
+	tst.b	$1337
+	clr.w	Levels_Played
+	;move.w	#100,Levels_Played
+	; mark the broken crypt copies as already played
+	st	Played_Level_List+$38
+	st	Played_Level_List+$47
+	;; mark bosses as already played
+	;st	Played_Level_List+Boss1_LevelID
+	;st	Played_Level_List+Boss2_LevelID
+	;st	Played_Level_List+Boss3_LevelID
+	;st	Played_Level_List+Boss4_LevelID
+
+;	lea	Played_Level_List,a0
+;	moveq	#$65,d7
+;-	st	(a0)+
+;	dbf	d7,-
+
+	jsr	Get_NextRandomLevel
+	move.w	Current_LevelID,(Player_1_LevelID).w
+	move.w	Current_LevelID,(Player_2_LevelID).w	; randomize: starting level
+	rts
 ; ---------------------------------------------------------------------------
 
 loc_1BBDE:

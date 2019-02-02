@@ -166,5 +166,8 @@ Options_Suboption_Controls = $FFFFFDCA	; word: selected sub-option 2 in options 
 Options_Selected_Option = $FFFFFDCC	; word: currently selected option in options menu, also in level select
 Clocks_collected = 	$FFFFFDCE	; word
 
-
+Level_RNG_seed = 	$FFFFFDFA	; long
+Levels_Played = 	$FFFFFDFE	; word
+Played_Level_List = 	$FFFFFE00	; 105 bytes
+Played_Bosses_List = 	$FFFFFE69	; 4 bytes
 

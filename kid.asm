@@ -16,6 +16,11 @@
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
+; Introduce type of scripted platform that starts the script only once the
+; kid stands on the platform.
+; In the layout, such a platform is used when the platform parameter t=1.
+; (See doc/Kid Chameleon hacking.txt, Section "Moving platforms".)
+platforms_newtype = 0
 ; ===========================================================================
 Start_LevelID = 0 ; Level ID for first level: Blue Lake Woods 1
 Final_LevelID = $33 ; Level ID for final level: Plethora
@@ -4287,6 +4292,10 @@ Execute_ScriptedPlatforms_Loop:
 	move.w	d7,a2		; next one becomes current one
 	tst.b	$1F(a2)		; scripted or special platform?
 	bmi.s	Execute_ScriptedPlatforms_Loop
+    if platforms_newtype = 1
+	btst	#4,$1F(a2)
+	bne.s	ScriptedPlatform_CheckActivate
+    endif
 	move.l	$A(a2),d7
 	add.l	d7,2(a2)	; Add x_vel to x_pos
 	move.l	$E(a2),d7
@@ -4316,6 +4325,16 @@ return_2442:
 	rts
 ; End of function Execute_ScriptedPlatforms
 
+    if platforms_newtype = 1
+
+ScriptedPlatform_CheckActivate:
+	move.w	(Addr_PlatformStandingOn).w,d7
+	beq.s	Execute_ScriptedPlatforms_Loop
+	cmp.w	a2,d7
+	bne.s	Execute_ScriptedPlatforms_Loop
+	bclr	#4,$1F(a2)	; activate platform
+	bra.s	Execute_ScriptedPlatforms_Loop
+    endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -4352,7 +4371,11 @@ loc_244C:
 	asr.w	#4,d1
 	moveq	#0,d3
 	move.b	$1F(a2),d3
+    if platforms_newtype = 0
 	bclr	#7,d3
+    else
+	and.b	#$F,d3
+    endif
 	add.w	d3,d3
 	move.l	off_24AC(pc,d3.w),a3
 	jmp	(a3)
@@ -4730,7 +4753,11 @@ loc_2762:
 	move.w	d6,$1C(a3)	; y size in pixels
 	move.b	8(a4),d7
 	move.b	d7,$1F(a3)	; t/s bits from platform layout
+    if platforms_newtype = 0
 	bclr	#7,d7
+    else
+	and.b	#$F,d7
+    endif
 	ext.w	d7
 	bne.w	loc_2822
 	subq.w	#2,$1C(a3)
@@ -23922,7 +23949,7 @@ loc_11BEC:
 	moveq	#0,d2
 
 loc_11C10:
-	bsr.w	Decompress_Chunk	; decompres tile layout into buffer
+	bsr.w	Decompress_Chunk	; decompress tile layout into buffer
 	tst.w	d0
 	bne.s	loc_11C10
 	movem.l	(sp)+,d7-a0/a6
@@ -23953,12 +23980,11 @@ loc_11C36:
 	move.l	(a0)+,a1	; block	layout
 	lea	($FFFF3B24).l,a5
 	bsr.w	LoadBlockLayout	; into temp buffer at Decompression_Buffer?
-	cmpi.w	#$21,(Current_LevelID).w
+	cmpi.w	#$21,(Current_LevelID).w	; is the level Forced Entry?
 	bne.s	loc_11C7E
-	move.w	#$E50B,($FFBCEA).l
+	move.w	#$E50B,($FFBCEA).l	; if yes, insert steel block at ($20,$B)
 
 loc_11C7E:
-				; Load_InGame+286j
 	move.w	(a1)+,d0
 	cmpi.w	#$FFFF,d0
 	beq.s	loc_11C96
@@ -24115,7 +24141,7 @@ loc_11DB0:
 	move.w	(Current_LevelID).w,d2
 	move.l	(LnkTo_MapOrder_Index).l,a2
 	move.b	(a2,d2.w),d2
-	; check for alternative foreground palettes
+	; check for alternative background palettes
 	cmpi.b	#M_Stairway_to_Obilivion,d2
 	beq.s	loc_11DF4
 	cmpi.b	#M_Elsewhere_23,d2
@@ -24153,9 +24179,10 @@ loc_11E16:
 	lea	($FFFF4E8A).l,a2
 	moveq	#6,d1
 
-loc_11E24:
+-	; loop to copy foreground palette into palette RAM
 	move.w	(a1)+,(a2)+
-	dbf	d1,loc_11E24
+	dbf	d1,-
+
 	move.l	(MainAddr_Index).l,a0
 	move.l	(a0,d7.w),a0
 	move.w	#$1780,d0

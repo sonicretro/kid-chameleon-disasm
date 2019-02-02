@@ -272,7 +272,7 @@ def write_platform_asm(addr, fname):
             s = TS & 7  # lower nybble
             if TS & 0x79:
                 print("bad platform!")
-            if t == 0:
+            if t == 0 or t == 1: # t=1 should never occur in hex hacks, only disasm.
                 if PPP+0x3602 == 0x10000:
                     out.write("\tptfm\t{},{},{},{},{},{},{},{},{},{},PlatformScript_Nothing-PlatformScript_BaseAddress\n".format(x, y, BL, BR, BT, BB, t, s, H, V))
                 elif PPP==0xFFFF: # not sure if this actually occurs

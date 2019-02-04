@@ -46615,7 +46615,7 @@ loc_371F4:
 	move.l	(sp)+,d0
 
 loc_37200:
-	move.l	#$37C0E,d7
+	move.l	#stru_37C0E,d7
 	jsr	(j_Init_Animation).w
 
 loc_3720A:
@@ -47707,6 +47707,7 @@ stru_37BFC:
 	anim_frame	  1,  $A, LnkTo_unk_C8460-Data_Index
 	dc.b   0
 	dc.b   0
+stru_37C0E:
 	anim_frame	1, $64, LnkTo_unk_C8478-Data_Index
 	dc.b   0
 	dc.b   0

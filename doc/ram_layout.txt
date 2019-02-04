@@ -36,6 +36,8 @@ FFEDBA ?        Platform RAM?: ($11 objects), $22 bytes per object
 FFF01E ?        
 FFF2B0 ?        Object RAM?
 FFF5A0 ?        Object RAM? - for collision purposes?
+?      FFF7FE   Stack
+FFF7FE FFF862   ?
 FFF862 ?        Object RAM? - red stealth sword, axe, skull for collision purposes? - with pointers into GfxObject_RAM
 FFF8C0 ?        Object RAM? - for collision purposes?
 ?      FFF8FE   Misc variables
@@ -292,7 +294,10 @@ Object format for objects from Object RAM at FF0DA0:
 42: (byte) lower 6 bits: index in Enemy status table; bits 6&7: unknown flags.
 43: ?
 44: (long) (for enemies) address in enemy layout. (for platforms) corresponding platform object
-44-74: ?
+44-62: ?
+62: (long) some pointer to animation
+66: (long) some pointer to animation
+70-74: ?
 
 
 Object format for GfxObject from GfxObject RAM at FF2448:

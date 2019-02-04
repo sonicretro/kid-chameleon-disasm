@@ -15438,11 +15438,49 @@ Get_NextRandomLevel_Found:
 	rts
 
 ; ---------------------------------------------------------------------------
-loc_BCB2:
-;	jsr	Get_RandomNumber_word
-;	divu.w	#103,d7
-;	swap	d7
-;	move.w	d7,Current_LevelID	; randomize: pick random level when teleporting
+loc_BCB2:	; randomize: pick random level when teleporting
+
+	; check whether the level we're teleporting to is the current level
+	; Find the mapID that equals d7 and write the corresponding
+	; levelID (which is in d6) to Current_LevelID
+	addq.w	#6,a4
+	move.w	(a4),d7
+	asr.w	#8,d7	; map ID of teleporter destination
+	move.l	a4,-(sp)
+	moveq	#0,d6
+	move.l	(LnkTo_MapOrder_Index).l,a4
+
+loc_BCD6:
+	move.b	(a4)+,d5
+	ext.w	d5
+	cmpi.w	#$FFFF,d5	; have we reached the end?
+	beq.s	Teleport_LevelNotFound
+	cmp.w	d5,d7
+	beq.w	loc_BCEA
+	addq.w	#1,d6		; next level
+	bra.s	loc_BCD6
+; ---------------------------------------------------------------------------
+Teleport_LevelNotFound:
+	move.l	(sp)+,a4
+	bra.w	loc_BCAC
+
+loc_BCEA:
+	move.l	(sp)+,a4
+	cmp.w	(Current_LevelID).w,d6	; d6 is level ID of teleport destination
+	bne.w	Teleport_GetNewLevel
+
+	; teleporting to the same level
+	move.w	(a4),d7
+	andi.w	#$FF,d7
+	asl.w	#4,d7
+	move.w	d7,(PlayerStart_Y_pos).w
+	move.w	2(a4),d7
+	asl.w	#4,d7
+	move.w	d7,(PlayerStart_X_pos).w
+	bra.w	Teleport_Do
+
+Teleport_GetNewLevel:
+	move.w	d6,(Current_LevelID).w
 
 	movem.l	d0-d1/a0,-(sp)
 	bsr.w	Get_NextRandomLevel
@@ -15464,45 +15502,10 @@ loc_BCB2:
 	;asl.w	#4,d7
 	move.w	d7,(PlayerStart_Y_pos).w
 	movem.l	(sp)+,d0-d1/a0
-;	st	($FFFFFC36).w	; different level than before
 
-	addq.w	#6,a4
-	;move.w	(a4),d7
-	;andi.w	#$FF,d7
-	;asl.w	#4,d7
-	;move.w	d7,(PlayerStart_Y_pos).w
-	;move.w	2(a4),d7
-	;asl.w	#4,d7
-	;move.w	d7,(PlayerStart_X_pos).w
-	;move.w	(a4),d7
-	;asr.w	#8,d7
-	;move.w	Current_LevelID,d6
-
-;	move.w	Current_LevelID,d7
-;	moveq	#0,d6
-;	move.l	(LnkTo_MapOrder_Index).l,a4
-
-	; Find the mapID that equals d7 and write the corresponding
-	; levelID (which is in d6) to Current_LevelID
-;loc_BCD6:
-;	move.b	(a4)+,d5
-;	ext.w	d5
-;	cmpi.w	#$FFFF,d5	; have we reached the end?
-;	beq.s	loc_BCAC
-;	cmp.w	d5,d7
-;	beq.w	loc_BCEA
-;	addq.w	#1,d6		; next level
-;	bra.s	loc_BCD6
-;; ---------------------------------------------------------------------------
-;
-;loc_BCEA:
-;	cmp.w	(Current_LevelID).w,d6
-;	beq.w	loc_BCF6
-;	st	($FFFFFC36).w
-;
-;loc_BCF6:
-;	move.w	d6,(Current_LevelID).w
 	st	($FFFFFC36).w	; different level than before
+
+Teleport_Do:
 	st	($FFFFFC29).w
 	move.w	#$EE,($FFFFFBCC).w	; yellow from teleport warp
 	moveq	#-5,d6
@@ -21807,9 +21810,9 @@ loc_10344:
 	bne.s	loc_10342
 	tst.b	$1337
 	; (a1) is pointer into Level Layout RAM, and thus also encodes the
-	; position of the block
-	; --> use for hasher, together with Level_RNG_Seed,
-	; which changes each time you advance a level
+	; position of the block. We hash it together with Level_RNG_Seed,
+	; which changes each time you advance a level, to get a fixed but
+	; unique block randomization for each seed.
 	move.w	(a1),d7
 	addq.w	#6,a1
 	sub.w	#(Level_Layout & $FFFF),d7

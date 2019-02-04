@@ -21788,6 +21788,57 @@ stru_102DE:
 	anim_frame	  1,   4, LnkTo_unk_E0F46-Data_Index
 	dc.b 0
 	dc.b 0
+; ---------------------------------------------------------------------------
+
+; load prize object from prize block.
+loc_10330:
+	move.l	$36(a5),a3
+	clr.w	$3A(a3)
+	move.l	$48(a5),d2
+	move.l	($FFFFF8D4).w,a1
+	bra.s	loc_10344
+; ---------------------------------------------------------------------------
+
+loc_10342:
+	addq.w	#8,a1
+
+loc_10344:
+	cmp.w	(a1),d2
+	bne.s	loc_10342
+	tst.b	$1337
+	; (a1) is pointer into Level Layout RAM, and thus also encodes the
+	; position of the block
+	; --> use for hasher, together with Level_RNG_Seed,
+	; which changes each time you advance a level
+	move.w	(a1),d7
+	addq.w	#6,a1
+	sub.w	#(Level_Layout & $FFFF),d7
+	asr.w	#1,d7
+	move.w	d7,d1
+	rol.w	#3,d1
+	add.w	d1,d7
+	rol.w	#3,d1
+	eor.w	d1,d7
+	rol.w	#3,d1
+	add.w	d1,d7
+	rol.w	#3,d1
+	eor.w	d1,d7
+	move.l	Level_RNG_seed,d1
+	eor.w	d1,d7
+	swap	d1
+	ror.w	#3,d1
+	eor.w	d1,d7
+	lsl.w	#2,d7
+
+	;move.w	(a1),d7
+	;asl.w	#2,d7
+
+	;jsr	Get_RandomNumber_byte
+	and.w	#$3C,d7	; randomize: get a random prize.
+	move.l	off_102F0(pc,d7.w),a4
+	jmp	(a4)
+; End of function sub_1007A
+
 off_102F0:	; code to load prize object from prize block
 	dc.l loc_10354	; 0 - Diamond
 	dc.l loc_10A90	; 1 - 10000 points
@@ -21821,32 +21872,6 @@ off_102F0:	; code to load prize object from prize block
 	;dc.l loc_10354
 	;dc.l loc_10354
 	;dc.l loc_10354
-; ---------------------------------------------------------------------------
-
-; load prize object from prize block.
-loc_10330:
-	move.l	$36(a5),a3
-	clr.w	$3A(a3)
-	move.l	$48(a5),d2
-	move.l	($FFFFF8D4).w,a1
-	bra.s	loc_10344
-; ---------------------------------------------------------------------------
-
-loc_10342:
-	addq.w	#8,a1
-
-loc_10344:
-	cmp.w	(a1),d2
-	bne.s	loc_10342
-	addq.w	#6,a1
-	;move.w	(a1),d7
-	;asl.w	#2,d7
-	jsr	Get_RandomNumber_byte
-	and.w	#$3C,d7	; randomize: get a random prize.
-	move.l	off_102F0(pc,d7.w),a4
-	jmp	(a4)
-; End of function sub_1007A
-
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_10848
 

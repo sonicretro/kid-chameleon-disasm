@@ -297,7 +297,7 @@ loc_2D2:
 ; ---------------------------------------------------------------------------
 loc_2D8:
 	move.w	#3,d0
-	bra.s	return_2D0
+	bra.s	loc_2D8
 ; ---------------------------------------------------------------------------
 loc_2DE:
 	move.w	#4,d0
@@ -21792,7 +21792,98 @@ stru_102DE:
 	dc.b 0
 	dc.b 0
 ; ---------------------------------------------------------------------------
+Get_Hash:	; in: value to be hashed in d7, out: hash in d7
+	move.l	d1,-(sp)
+	move.w	d7,d1
+	rol.w	#3,d1
+	add.w	d1,d7
+	rol.w	#3,d1
+	eor.w	d1,d7
+	rol.w	#3,d1
+	add.w	d1,d7
+	rol.w	#3,d1
+	eor.w	d1,d7
+	move.l	Level_RNG_seed,d1
+	eor.w	d1,d7
+	swap	d1
+	ror.w	#3,d1
+	eor.w	d1,d7
+	move.l	(sp)+,d1
+	rts
+; ---------------------------------------------------------------------------
+SpecialBlocks_FoundBlock:
+	; count number of possible helmets -> d2
+	moveq	#-1,d1
+-	addq.w	#1,d1
+	move.w	(a4)+,d7
+	bpl.s	-
 
+	moveq	#0,d7
+	move.w	(a1),d7
+	addq.w	#6,a1
+	sub.w	#(Level_Layout & $FFFF),d7
+	asr.w	#1,d7
+	bsr.w	Get_Hash
+	divu.w	d1,d7
+	swap	d7	; d7 = random number between 0 and d1
+	addq.w	#2,d7	; a4 is already 2 words ahead of the last helmet entry
+	add.w	d7,d7
+	neg.w	d7	; translated to offset relative to a4
+	move.w	(a4,d7.w),d7	; random helmet (between 1 and 9)
+	addq.w	#1,d7	; adjusted to table below
+	asl.w	#2,d7
+	move.l	off_102F0(pc,d7.w),a4	; address to corresponding code
+	jmp	(a4)
+; ---------------------------------------------------------------------------
+SpecialBlocks_NormalBlock:
+	move.w	(a1),d7
+	addq.w	#6,a1
+	sub.w	#(Level_Layout & $FFFF),d7
+	asr.w	#1,d7
+	bsr.w	Get_Hash
+	lsl.w	#2,d7
+	;move.w	(a1),d7
+	;asl.w	#2,d7
+
+	;jsr	Get_RandomNumber_byte
+	and.w	#$3C,d7	; randomize: get a random prize.
+	move.l	off_102F0(pc,d7.w),a4
+	jmp	(a4)
+
+off_102F0:	; code to load prize object from prize block
+	dc.l loc_10354	; 0 - Diamond
+	dc.l loc_10A90	; 1 - 10000 points
+	dc.l loc_10436	; 2 - Helmet (skycutter)
+	dc.l loc_10480	; 3 - Helmet (cyclone)
+	dc.l loc_104CA	; 4 - Helmet (red stealth)
+	dc.l loc_10514	; 5 - Helmet (eyeclops)
+	dc.l loc_1055E	; 6 - Helmet (juggernaut)
+	dc.l loc_105A8	; 7 - Helmet (iron knight)
+	dc.l loc_105F2	; 8 - Helmet (berzerker)
+	dc.l loc_1063C	; 9 - Helmet (maniaxe)
+	dc.l loc_10686	; A - Helmet (micromax)
+	dc.l loc_10706	; B - 1-up
+	dc.l loc_1076C	; C - Time
+	dc.l loc_107F2	; D - Continue
+	dc.l loc_108CA	; E - 10 diamonds
+	dc.l loc_10354	; F - Same as 0
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+	dc.l loc_10354
+; ---------------------------------------------------------------------------
 ; load prize object from prize block.
 loc_10330:
 	move.l	$36(a5),a3
@@ -21813,68 +21904,140 @@ loc_10344:
 	; position of the block. We hash it together with Level_RNG_Seed,
 	; which changes each time you advance a level, to get a fixed but
 	; unique block randomization for each seed.
-	move.w	(a1),d7
-	addq.w	#6,a1
-	sub.w	#(Level_Layout & $FFFF),d7
-	asr.w	#1,d7
-	move.w	d7,d1
-	rol.w	#3,d1
-	add.w	d1,d7
-	rol.w	#3,d1
-	eor.w	d1,d7
-	rol.w	#3,d1
-	add.w	d1,d7
-	rol.w	#3,d1
-	eor.w	d1,d7
-	move.l	Level_RNG_seed,d1
-	eor.w	d1,d7
-	swap	d1
-	ror.w	#3,d1
-	eor.w	d1,d7
-	lsl.w	#2,d7
 
-	;move.w	(a1),d7
-	;asl.w	#2,d7
+	move.w	Current_LevelID,d1
+	add.w	d1,d1
+	move.w	SpecialBlocks_Index(pc,d1.w),d1
+	lea	SpecialBlocks_Index(pc,d1.w),a4
 
-	;jsr	Get_RandomNumber_byte
-	and.w	#$3C,d7	; randomize: get a random prize.
-	move.l	off_102F0(pc,d7.w),a4
-	jmp	(a4)
+; Address computation is wrong for levels whose top 2 bits of the y pos
+; in the header are not zero (i.e. where $FFFFFAD2 is not zero).
+; Current workaround: just set those bits to 0.
+; Map 31 (The Nightmare Peaks 2) and Map 17 (Alien Twilight)
+SpecialBlocks_ProcessEntry:
+	move.w	(a4)+,d1	; x pos
+	bmi.w	SpecialBlocks_NormalBlock
+	move.w	(a4)+,d7	; y pos
+	muls.w	Level_width_blocks,d7	; multiply with level width
+	add.w	d1,d7
+	add.w	d7,d7	; each entry is 2 bytes --> multiply by 2
+	add.w	#(Level_Layout & $FFFF),d7
+	cmp.w	(a1),d7
+	beq.w	SpecialBlocks_FoundBlock
+-	move.w	(a4)+,d1
+	bpl.s	-
+	bra.s	SpecialBlocks_ProcessEntry
 ; End of function sub_1007A
 
-off_102F0:	; code to load prize object from prize block
-	dc.l loc_10354	; 0 - Diamond
-	dc.l loc_10A90	; 1 - 10000 points
-	dc.l loc_10436	; 2 - Helmet (skycutter)
-	dc.l loc_10480	; 3 - Helmet (cyclone)
-	dc.l loc_104CA	; 4 - Helmet (red stealth)
-	dc.l loc_10514	; 5 - Helmet (eyeclops)
-	dc.l loc_1055E	; 6 - Helmet (juggernaut)
-	dc.l loc_105A8	; 7 - Helmet (iron knight)
-	dc.l loc_105F2	; 8 - Helmet (berzerker)
-	dc.l loc_1063C	; 9 - Helmet (maniaxe)
-	dc.l loc_10686	; A - Helmet (micromax)
-	dc.l loc_10706	; B - 1-up
-	dc.l loc_1076C	; C - Time
-	dc.l loc_107F2	; D - Continue
-	dc.l loc_108CA	; E - 10 diamonds
-	dc.l loc_10354	; F - Same as 0
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
-	;dc.l loc_10354
+SpecialBlocks_Index:
+	dc.w	SpecialBlocks_00-SpecialBlocks_Index
+	dc.w	SpecialBlocks_01-SpecialBlocks_Index
+	dc.w	SpecialBlocks_02-SpecialBlocks_Index
+	dc.w	SpecialBlocks_03-SpecialBlocks_Index
+	dc.w	SpecialBlocks_04-SpecialBlocks_Index
+	dc.w	SpecialBlocks_05-SpecialBlocks_Index
+	dc.w	SpecialBlocks_06-SpecialBlocks_Index
+	dc.w	SpecialBlocks_07-SpecialBlocks_Index
+	dc.w	SpecialBlocks_08-SpecialBlocks_Index
+	dc.w	SpecialBlocks_09-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_0F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_10-SpecialBlocks_Index
+	dc.w	SpecialBlocks_11-SpecialBlocks_Index
+	dc.w	SpecialBlocks_12-SpecialBlocks_Index
+	dc.w	SpecialBlocks_13-SpecialBlocks_Index
+	dc.w	SpecialBlocks_14-SpecialBlocks_Index
+	dc.w	SpecialBlocks_15-SpecialBlocks_Index
+	dc.w	SpecialBlocks_16-SpecialBlocks_Index
+	dc.w	SpecialBlocks_17-SpecialBlocks_Index
+	dc.w	SpecialBlocks_18-SpecialBlocks_Index
+	dc.w	SpecialBlocks_19-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_1F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_20-SpecialBlocks_Index
+	dc.w	SpecialBlocks_21-SpecialBlocks_Index
+	dc.w	SpecialBlocks_22-SpecialBlocks_Index
+	dc.w	SpecialBlocks_23-SpecialBlocks_Index
+	dc.w	SpecialBlocks_24-SpecialBlocks_Index
+	dc.w	SpecialBlocks_25-SpecialBlocks_Index
+	dc.w	SpecialBlocks_26-SpecialBlocks_Index
+	dc.w	SpecialBlocks_27-SpecialBlocks_Index
+	dc.w	SpecialBlocks_28-SpecialBlocks_Index
+	dc.w	SpecialBlocks_29-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_2F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_30-SpecialBlocks_Index
+	dc.w	SpecialBlocks_31-SpecialBlocks_Index
+	dc.w	SpecialBlocks_32-SpecialBlocks_Index
+	dc.w	SpecialBlocks_33-SpecialBlocks_Index
+	dc.w	SpecialBlocks_34-SpecialBlocks_Index
+	dc.w	SpecialBlocks_35-SpecialBlocks_Index
+	dc.w	SpecialBlocks_36-SpecialBlocks_Index
+	dc.w	SpecialBlocks_37-SpecialBlocks_Index
+	dc.w	SpecialBlocks_38-SpecialBlocks_Index
+	dc.w	SpecialBlocks_39-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_3F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_40-SpecialBlocks_Index
+	dc.w	SpecialBlocks_41-SpecialBlocks_Index
+	dc.w	SpecialBlocks_42-SpecialBlocks_Index
+	dc.w	SpecialBlocks_43-SpecialBlocks_Index
+	dc.w	SpecialBlocks_44-SpecialBlocks_Index
+	dc.w	SpecialBlocks_45-SpecialBlocks_Index
+	dc.w	SpecialBlocks_46-SpecialBlocks_Index
+	dc.w	SpecialBlocks_47-SpecialBlocks_Index
+	dc.w	SpecialBlocks_48-SpecialBlocks_Index
+	dc.w	SpecialBlocks_49-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_4F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_50-SpecialBlocks_Index
+	dc.w	SpecialBlocks_51-SpecialBlocks_Index
+	dc.w	SpecialBlocks_52-SpecialBlocks_Index
+	dc.w	SpecialBlocks_53-SpecialBlocks_Index
+	dc.w	SpecialBlocks_54-SpecialBlocks_Index
+	dc.w	SpecialBlocks_55-SpecialBlocks_Index
+	dc.w	SpecialBlocks_56-SpecialBlocks_Index
+	dc.w	SpecialBlocks_57-SpecialBlocks_Index
+	dc.w	SpecialBlocks_58-SpecialBlocks_Index
+	dc.w	SpecialBlocks_59-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5A-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5B-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5C-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5D-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5E-SpecialBlocks_Index
+	dc.w	SpecialBlocks_5F-SpecialBlocks_Index
+	dc.w	SpecialBlocks_60-SpecialBlocks_Index
+	dc.w	SpecialBlocks_61-SpecialBlocks_Index
+	dc.w	SpecialBlocks_62-SpecialBlocks_Index
+	dc.w	SpecialBlocks_63-SpecialBlocks_Index
+	dc.w	SpecialBlocks_64-SpecialBlocks_Index
+	dc.w	SpecialBlocks_65-SpecialBlocks_Index
+	dc.w	SpecialBlocks_66-SpecialBlocks_Index
+	dc.w	SpecialBlocks_67-SpecialBlocks_Index
+	dc.w	SpecialBlocks_68-SpecialBlocks_Index
+	dc.w	SpecialBlocks_69-SpecialBlocks_Index
+
+	include	"level/special_blocks.asm"
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_10848
 
@@ -23958,6 +24121,7 @@ Load_InGame:
 	moveq	#0,d0
 	move.b	(a0)+,d0	; y size + flags
 	move.b	d0,d1
+	moveq	#0,d1	; randomize: disable whatever those two bits are.
 	rol.b	#2,d1
 	andi.b	#3,d1
 	add.b	d1,d1
@@ -30780,7 +30944,6 @@ Init_LevelRandomizer:
 
 	tst.b	$1337
 	clr.w	Levels_Played
-	;move.w	#100,Levels_Played
 	; mark the broken crypt copies as already played
 	st	Played_Level_List+$38
 	st	Played_Level_List+$47
@@ -30790,12 +30953,14 @@ Init_LevelRandomizer:
 	;st	Played_Level_List+Boss3_LevelID
 	;st	Played_Level_List+Boss4_LevelID
 
+;	move.w	#100,Levels_Played
 ;	lea	Played_Level_List,a0
-;	moveq	#$65,d7
+;	moveq	#101,d7
 ;-	st	(a0)+
 ;	dbf	d7,-
 
 	jsr	Get_NextRandomLevel
+;	move.w	#$29,Current_LevelID
 	move.w	Current_LevelID,(Player_1_LevelID).w
 	move.w	Current_LevelID,(Player_2_LevelID).w	; randomize: starting level
 	rts
@@ -32010,7 +32175,7 @@ OptionScreen_IntroLoop:
 
 loc_1CB88:
 	bsr.w	sub_1CC88
-	;bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
+	bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
 	beq.s	OptionScreen_IntroLoop
 	bra.w	Option_Exit
 ; ---------------------------------------------------------------------------

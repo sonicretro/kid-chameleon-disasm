@@ -7412,7 +7412,7 @@ sub_6E24:
 	else
 LevelSelect_Start:
 ; LevelSelect_Loop_Pre:
-	include	"scenes/costumeselect.asm"
+	include	"scenes/gameselect.asm"
 LevelSelect_End:
 	; pad with $FF. Not really necessary but this ensures
 	; consistency with the existing binary patch
@@ -30923,24 +30923,21 @@ Title_InputLoop:
 	move.w	#$14,(Game_Mode).w ; mode options
 	cmpi.w	#2,d1
 	beq.s	loc_1BBD6
-	move.w	#8,(Game_Mode).w
+	;move.w	#8,(Game_Mode).w
 
 	tst.w	d1
 	sne	(Two_player_flag).w
 	jsr	(j_StopMusic).l
+	st	($FFFFFBCE).w
+	jmp	(LevelSelect_ChkKey).w
 
 loc_1BBD6:
 	st	($FFFFFBCE).w
-	bsr.w	Init_LevelRandomizer
-	if insertLevelSelect = 0
 	jmp	(j_loc_6E2).w
-	else
-	jmp	(LevelSelect_ChkKey).w
-	endif
 ; ---------------------------------------------------------------------------
 Init_LevelRandomizer:
-	jsr	Get_RandomNumber_long
-	move.l	d7,Level_RNG_seed
+	;jsr	Get_RandomNumber_long
+	;move.l	d7,Level_RNG_seed
 
 	tst.b	$1337
 	clr.w	Levels_Played
@@ -32175,9 +32172,9 @@ OptionScreen_IntroLoop:
 
 loc_1CB88:
 	bsr.w	sub_1CC88
-	bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
-	beq.s	OptionScreen_IntroLoop
-	bra.w	Option_Exit
+	;bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
+	bra.s	OptionScreen_IntroLoop	; beq --> bra
+	;bra.w	Option_Exit
 ; ---------------------------------------------------------------------------
 
 OptionScreen_Loop:

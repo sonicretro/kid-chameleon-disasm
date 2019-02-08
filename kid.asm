@@ -32,6 +32,9 @@ FirstElsewhere_LevelID = $49 ; from this level on name everything 'Elsewhere'.
 	; More specifically, all levels with a higher LevelID 
 	; use the title from the level with this LevelID.
 
+BagelBrothers_HitPointsPerHead = $1E
+BoomerangBoss_HitPointsPerHead = $1E
+ShishkaBoss_HitPointsPerHead = $14
 ; don't load flag for these levels until boss is killed:
 Boss1_LevelID = $10
 Boss2_LevelID = $1E
@@ -27627,7 +27630,8 @@ return_145C8:
 ; End of function Init_SpecialEffects
 
 ; ---------------------------------------------------------------------------
-unk_145CA:	dc.b   0
+unk_145CA:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   6
@@ -27637,7 +27641,8 @@ unk_145CA:	dc.b   0
 	dc.b $76 ; v
 	dc.b   8
 	dc.b   0
-unk_145D4:	dc.b   0
+unk_145D4:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
@@ -27647,7 +27652,8 @@ unk_145D4:	dc.b   0
 	dc.b   7
 	dc.b  $E
 	dc.b   0
-unk_145DE:	dc.b   0
+unk_145DE:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
@@ -27657,7 +27663,8 @@ unk_145DE:	dc.b   0
 	dc.b $79 ; y
 	dc.b  $F
 	dc.b   0
-unk_145E8:	dc.b   0
+unk_145E8:
+	dc.b   0
 	dc.b   2
 	dc.b   0
 	dc.b   0
@@ -27667,6 +27674,7 @@ unk_145E8:	dc.b   0
 	dc.b $A9 ; ©
 	dc.b  $D
 	dc.b   0
+
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27683,7 +27691,8 @@ unk_145E8:	dc.b   0
 	dc.b $89 ; ‰
 	dc.b  $F
 	dc.b   0
-unk_14602:	dc.b   0
+unk_14602:
+	dc.b   0
 	dc.b   3
 	dc.b   0
 	dc.b   2
@@ -27693,6 +27702,7 @@ unk_14602:	dc.b   0
 	dc.b $B1 ; ±
 	dc.b  $D
 	dc.b   0
+
 	dc.b   0
 	dc.b   1
 	dc.b   0
@@ -27717,7 +27727,8 @@ unk_14602:	dc.b   0
 	dc.b $99 ; ™
 	dc.b  $F
 	dc.b   0
-unk_14624:	dc.b   0
+unk_14624:
+	dc.b   0
 	dc.b   1
 	dc.b   0
 	dc.b   1
@@ -27727,6 +27738,7 @@ unk_14624:	dc.b   0
 	dc.b $3F ; ?
 	dc.b  $C
 	dc.b   0
+
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27742,6 +27754,7 @@ dword_14636:	dc.l $20000
 	dc.b $A9 ; ©
 	dc.b  $D
 	dc.b   0
+
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27758,7 +27771,8 @@ dword_14636:	dc.l $20000
 	dc.b $89 ; ‰
 	dc.b  $F
 	dc.b   0
-unk_14650:	dc.b   0
+unk_14650:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   2
@@ -27768,7 +27782,8 @@ unk_14650:	dc.b   0
 	dc.b $B1 ; ±
 	dc.b  $D
 	dc.b   0
-unk_1465A:	dc.b   0
+unk_1465A:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
@@ -27778,6 +27793,7 @@ unk_1465A:	dc.b   0
 	dc.b $6E ; n
 	dc.b  $D
 	dc.b   0
+unk_14664:
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27788,7 +27804,8 @@ unk_1465A:	dc.b   0
 	dc.b $68 ; h
 	dc.b   2
 	dc.b   0
-unk_1466E:	dc.b   0
+unk_1466E:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
@@ -27798,6 +27815,7 @@ unk_1466E:	dc.b   0
 	dc.b $6B ; k
 	dc.b   1
 	dc.b   0
+unk_14678:
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27808,6 +27826,7 @@ unk_1466E:	dc.b   0
 	dc.b $6D ; m
 	dc.b   0
 	dc.b   0
+unk_14682:
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27818,7 +27837,8 @@ unk_1466E:	dc.b   0
 	dc.b $6D ; m
 	dc.b   0
 	dc.b   0
-unk_1468C:	dc.b   0
+unk_1468C:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
@@ -27828,6 +27848,7 @@ unk_1468C:	dc.b   0
 	dc.b $6B ; k
 	dc.b   1
 	dc.b   0
+unk_14696:
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -27870,75 +27891,43 @@ unk_146B6:	dc.b   0
 	dc.b   0
 	dc.w unk_145CA-j_LoadGameModeData
 	dc.w $FFFE
-unk_146CC:	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $2D ; -
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b $2D ; -
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b $2D ; -
-	dc.b $3A ; :
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $2D ; -
-	dc.b $3A ; :
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FF
-	dc.b $2D ; -
-	dc.b $44 ; D
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b $2D ; -
-	dc.b $44 ; D
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b $2D ; -
-	dc.b $4E ; N
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   1
-	dc.b $2D ; -
-	dc.b $4E ; N
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   2
-	dc.b $2D ; -
-	dc.b $58 ; X
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   2
-	dc.b $2D ; -
-	dc.b $62 ; b
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b   4
-	dc.b $2D ; -
-	dc.b $62 ; b
-	dc.b $FF
-	dc.b $FF
-word_14710:	dc.w	 0
+unk_146CC:
+	dc.w  $A
+	dc.w  -4
+	dc.w unk_14664-j_LoadGameModeData
+	dc.w  $A
+	dc.w  -3
+	dc.w unk_14664-j_LoadGameModeData
+	dc.w  $A
+	dc.w  -3
+	dc.w unk_1466E-j_LoadGameModeData
+	dc.w  $A
+	dc.w  -2
+	dc.w unk_1466E-j_LoadGameModeData
+	dc.w   8
+	dc.w  -1
+	dc.w unk_14678-j_LoadGameModeData
+	dc.w   4
+	dc.w   0
+	dc.w unk_14678-j_LoadGameModeData
+	dc.w   4
+	dc.w   0
+	dc.w unk_14682-j_LoadGameModeData
+	dc.w   8
+	dc.w   1
+	dc.w unk_14682-j_LoadGameModeData
+	dc.w  $A
+	dc.w   2
+	dc.w unk_1468C-j_LoadGameModeData
+	dc.w  $A
+	dc.w   2
+	dc.w unk_14696-j_LoadGameModeData
+	dc.w $14
+	dc.w   4
+	dc.w unk_14696-j_LoadGameModeData
+	dc.w $FFFF
+word_14710:
+	dc.w	 0
 	dc.w	$A
 	dc.w   $14
 	dc.w   $1E
@@ -27957,9 +27946,9 @@ word_14710:	dc.w	 0
 ; ---------------------------------------------------------------------------
 
 Lava_Geyser:
-	move.w	$16(a5),d0
-	move.w	$18(a5),d1
-	move.w	$1A(a5),d2
+	move.w	$16(a5),d0	;x
+	move.w	$18(a5),d1	;y
+	move.w	$1A(a5),d2	;height ($8000 = small fireball)
 	bmi.w	loc_1499C
 	move.w	d2,d7
 	andi.w	#$F,d7
@@ -28195,7 +28184,7 @@ loc_1498C:
 	bra.w	loc_14788
 ; ---------------------------------------------------------------------------
 
-loc_1499C:
+loc_1499C:	; small fireball from USM2
 	andi.w	#$7FFF,d2
 	move.w	d2,d7
 	andi.w	#$F,d7
@@ -47872,7 +47861,7 @@ loc_37F30:
 	sf	$3D(a3)
 	st	$13(a3)
 	st	$14(a3)
-	move.w	#$1E,$3E(a3)
+	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
 	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
 	move.l	a3,($FFFFFB7A).w
 	move.w	$44(a5),$1A(a3)
@@ -47955,7 +47944,7 @@ loc_38012:
 	sf	$3D(a3)
 	st	$13(a3)
 	st	$14(a3)
-	move.w	#$1E,$3E(a3)
+	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
 	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
 	move.l	a3,($FFFFFB7E).w
 	move.w	$44(a5),$1A(a3)
@@ -48038,7 +48027,7 @@ loc_380F4:
 	sf	$3D(a3)
 	st	$13(a3)
 	st	$14(a3)
-	move.w	#$1E,$3E(a3)
+	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
 	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
 	move.l	a3,($FFFFFB82).w
 	move.w	$44(a5),$1A(a3)
@@ -49621,12 +49610,12 @@ loc_39494:
 	tst.w	d2
 	beq.s	loc_394E2
 	lea	(unk_39AB2).l,a2
-	move.w	#$1E,$3E(a3)
+	move.w	#BagelBrothers_HitPointsPerHead,$3E(a3)
 	bra.s	loc_394E8
 ; ---------------------------------------------------------------------------
 
 loc_394E2:
-	move.w	#$14,$3E(a3)
+	move.w	#ShishkaBoss_HitPointsPerHead,$3E(a3)
 
 loc_394E8:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -49747,12 +49736,12 @@ loc_395B4:
 	tst.w	d2
 	beq.s	loc_39608
 	lea	(unk_39C2E).l,a2
-	move.w	#$1E,$3E(a3)
+	move.w	#BagelBrothers_HitPointsPerHead,$3E(a3)
 	bra.s	loc_3960E
 ; ---------------------------------------------------------------------------
 
 loc_39608:
-	move.w	#$14,$3E(a3)
+	move.w	#ShishkaBoss_HitPointsPerHead,$3E(a3)
 
 loc_3960E:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -49873,12 +49862,12 @@ loc_396DA:
 	tst.w	d2
 	beq.s	loc_3972E
 	lea	(unk_39D80).l,a2
-	move.w	#$1E,$3E(a3)
+	move.w	#BagelBrothers_HitPointsPerHead,$3E(a3)
 	bra.s	loc_39734
 ; ---------------------------------------------------------------------------
 
 loc_3972E:
-	move.w	#$14,$3E(a3)
+	move.w	#ShishkaBoss_HitPointsPerHead,$3E(a3)
 
 loc_39734:
 	jsr	(j_Hibernate_Object_1Frame).w

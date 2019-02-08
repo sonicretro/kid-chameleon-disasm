@@ -151,7 +151,7 @@ ForegroundLayout_33:  binclude    "level/foreground/33.bin"
 ; It has the size of a standard Elsewhere foreground layout.
 	binclude "ingame/misc/unused_67D9C.bin"
 ; filler
-    rept 10080
+    rept 8350
 	dc.b	$4A
     endm
 

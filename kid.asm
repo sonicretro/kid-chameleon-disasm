@@ -21,6 +21,8 @@ insertLevelSelect = 1
 ; In the layout, such a platform is used when the platform parameter t=1.
 ; (See doc/Kid Chameleon hacking.txt, Section "Moving platforms".)
 platforms_newtype = 0
+; restart level moves on to the next level if it is set
+allow_level_skipping = 0
 ; ===========================================================================
 Start_LevelID = 0 ; Level ID for first level: Blue Lake Woods 1
 Final_LevelID = $33 ; Level ID for final level: Plethora
@@ -40,6 +42,11 @@ Boss1_LevelID = $10
 Boss2_LevelID = $1E
 Boss3_LevelID = $2A
 Boss4_LevelID = $33
+
+LNumber_Boss1 = 25
+LNumber_Boss2 = 50
+LNumber_Boss3 = 75
+LNumber_Boss4 = 103
 
 ; Variable names for RAM locations
 	include	"variables.asm"
@@ -289,7 +296,8 @@ j_sub_14C0: ;2CC
 	jmp	sub_14C0(pc)
 ; ---------------------------------------------------------------------------
 return_2D0:
-	rte
+	bra.s	return_2D0
+	;rte
 ; ---------------------------------------------------------------------------
 loc_2D2:
 	move.w	#2,d0
@@ -297,7 +305,7 @@ loc_2D2:
 ; ---------------------------------------------------------------------------
 loc_2D8:
 	move.w	#3,d0
-	bra.s	loc_2D8
+	bra.s	return_2D0
 ; ---------------------------------------------------------------------------
 loc_2DE:
 	move.w	#4,d0
@@ -6878,13 +6886,24 @@ Game_Paused_ChkStart:
 	tst.b	(Pause_Option).w
 	beq.s	loc_6B68
 	; restart level/give up
+    if allow_level_skipping=1
+	jsr	Get_NextRandomLevel
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+    else
 	subi.w	#1,(Number_Lives).w
 	beq.s	loc_6B62
 	; lives left --> restart level
-	st	LevelSelect_Flag	; randomize: flag for showing costume select
 	clr.w	(Extra_hitpoint_slots).w
 	clr.w	(Current_Helmet).w
 	move.w	#2,(Number_Hitpoints).w
+    endif	
 	st	($FFFFFC36).w
 	jsr	(j_sub_8C2).w
 	jmp	(j_loc_6E2).w
@@ -15413,8 +15432,19 @@ Get_NextRandomLevel:
 	and.l	#$FFFF,d0	; avoid division overflow
 
 	tst.b	$1337
+
 	move.w	Levels_Played,d1
-	sub.w	#103,d1
+	cmp.w	#LNumber_Boss1-1,d1
+	beq.s	Get_NextRandomLevel_Boss
+	cmp.w	#LNumber_Boss2-1,d1
+	beq.s	Get_NextRandomLevel_Boss
+	cmp.w	#LNumber_Boss3-1,d1
+	beq.s	Get_NextRandomLevel_Boss
+	cmp.w	#LNumber_Boss4-1,d1
+	beq.s	Get_NextRandomLevel_Boss
+
+	sub.w	#99,d1
+	sub.w	Bosses_Played,d1
 	neg.w	d1	; remaining number of levels R.
 	divu.w	d1,d0
 	swap	d0	; a random number between 0 and R-1
@@ -15436,7 +15466,39 @@ Get_NextRandomLevel_Found:
 	
 	addq.w	#1,Levels_Played
 	rts
+; ---------------------------------------------------------------------------
+Get_NextRandomLevel_Boss:
+	move.w	Bosses_Played,d1
+	sub.w	#4,d1
+	neg.w	d1	; remaining number of bosses R.
+	divu.w	d1,d0
+	swap	d0	; a random number between 0 and R-1
+	addq.w	#1,d0
 
+	moveq	#0,d1
+	lea	Played_Bosses_List,a0	; has R zero-entries
+-	; count R unplayed slots
+	tst.b	(a0,d1.w)	; already played?
+	bmi.s	+
+	subq.w	#1,d0
+	beq.s	Get_NextRandomBoss_Found
++	addq.w	#1,d1
+	bra.s	-	
+
+Get_NextRandomBoss_Found:
+	st	(a0,d1.w)	; mark boss as played
+	add.w	d1,d1
+	move.w	LevelIDs_Bosses(pc,d1.w),Current_LevelID
+
+	addq.w	#1,Levels_Played
+	addq.w	#1,Bosses_Played
+	rts
+
+LevelIDs_Bosses:
+	dc.w	Boss1_LevelID
+	dc.w	Boss2_LevelID
+	dc.w	Boss3_LevelID
+	dc.w	Boss4_LevelID
 ; ---------------------------------------------------------------------------
 loc_BCB2:	; randomize: pick random level when teleporting
 
@@ -17156,20 +17218,28 @@ loc_D7F4:
 	move.l	(sp)+,d0
 	move.w	d0,-(sp)
 	jsr	(j_Hibernate_Object).w
-	cmpi.w	#Final_LevelID,(Current_LevelID).w
+
+	move.w	Number_Bosses,d0
+	subq.w	#1,d0
+	add.w	d0,d0
+	move.w	LNumbers_Bosses(pc,d0.w),d0
+	;cmpi.w	#Final_LevelID,(Current_LevelID).w
+	cmp.w	Levels_Played,d0
 	beq.w	End_Credits
 	;addq.w	#1,(Current_LevelID).w
 
 	movem.l	d0-d1/a0,-(sp)
 	bsr.w	Get_NextRandomLevel	; randomize: pick random level when touching flag
 	movem.l	(sp)+,d0-d1/a0
-;	jsr	Get_RandomNumber_word
-;	divu.w	#103,d7
-;	swap	d7
-;	move.w	d7,Current_LevelID	
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
 	bra.w	Teleport
+
+LNumbers_Bosses:
+	dc.w	LNumber_Boss1
+	dc.w	LNumber_Boss2
+	dc.w	LNumber_Boss3
+	dc.w	LNumber_Boss4
 ; ---------------------------------------------------------------------------
 
 End_Credits:
@@ -21846,7 +21916,7 @@ SpecialBlocks_NormalBlock:
 	;asl.w	#2,d7
 
 	;jsr	Get_RandomNumber_byte
-	and.w	#$3C,d7	; randomize: get a random prize.
+	and.w	#$7C,d7	; randomize: get a random prize.
 	move.l	off_102F0(pc,d7.w),a4
 	jmp	(a4)
 
@@ -30936,19 +31006,17 @@ loc_1BBD6:
 	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 Init_LevelRandomizer:
-	;jsr	Get_RandomNumber_long
-	;move.l	d7,Level_RNG_seed
-
 	tst.b	$1337
 	clr.w	Levels_Played
+	clr.w	Bosses_Played
 	; mark the broken crypt copies as already played
 	st	Played_Level_List+$38
 	st	Played_Level_List+$47
-	;; mark bosses as already played
-	;st	Played_Level_List+Boss1_LevelID
-	;st	Played_Level_List+Boss2_LevelID
-	;st	Played_Level_List+Boss3_LevelID
-	;st	Played_Level_List+Boss4_LevelID
+	; mark bosses as already played
+	st	Played_Level_List+Boss1_LevelID
+	st	Played_Level_List+Boss2_LevelID
+	st	Played_Level_List+Boss3_LevelID
+	st	Played_Level_List+Boss4_LevelID
 
 ;	move.w	#100,Levels_Played
 ;	lea	Played_Level_List,a0
@@ -30957,7 +31025,6 @@ Init_LevelRandomizer:
 ;	dbf	d7,-
 
 	jsr	Get_NextRandomLevel
-;	move.w	#$29,Current_LevelID
 	move.w	Current_LevelID,(Player_1_LevelID).w
 	move.w	Current_LevelID,(Player_2_LevelID).w	; randomize: starting level
 	rts
@@ -30968,7 +31035,7 @@ loc_1BBDE:
 	beq.s	loc_1BBF6
 	tst.w	d1
 	beq.s	loc_1BBF6
-	subq.w	#1,d1
+	subq.w	#2,d1
 	bsr.w	sub_1BC26
 	move.w	#$280,d0
 	bra.s	loc_1BC0E
@@ -30980,7 +31047,7 @@ loc_1BBF6:
 	cmpi.w	#2,d1
 	beq.s	loc_1BC0E
 	bsr.w	sub_1BC26
-	addq.w	#1,d1
+	addq.w	#2,d1
 	move.w	#$280,d0
 
 loc_1BC0E:
@@ -32172,7 +32239,8 @@ OptionScreen_IntroLoop:
 
 loc_1CB88:
 	bsr.w	sub_1CC88
-	;bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
+	bclr	#7,(Ctrl_1_Pressed).w	; randomize: don't allow cancelling options screen
+	bclr	#7,(Ctrl_Pressed).w	; randomize: don't allow cancelling options screen
 	bra.s	OptionScreen_IntroLoop	; beq --> bra
 	;bra.w	Option_Exit
 ; ---------------------------------------------------------------------------
@@ -59993,11 +60061,7 @@ MapOrder_Index:
 	include "level/block_includes.asm"
 
 	include "level/enemy_includes.asm"
-; ---------------------------------------------------------------------------
-; filler
-    rept 534
-	dc.b	$FF
-    endm
+
 ; ---------------------------------------------------------------------------
 MainAddr_Index:	dc.l ThemeArtFront_Index 
 LnkTo_ThemeArtBack_Index:	dc.l ThemeArtBack_Index 

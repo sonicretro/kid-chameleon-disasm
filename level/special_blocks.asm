@@ -14,12 +14,14 @@ SpecialBlocks_0A: dc.w   -1              ;0x0A 0x18 Windy City
 SpecialBlocks_0B: dc.w   -1              ;0x0B 0x1D Sinister Sewers
 SpecialBlocks_0C: dc.w  $A3,$0E,Berzerker, -1
                   dc.w   -1              ;0x0C 0x3D The Crystal Crags 1
-SpecialBlocks_0D: dc.w   -1              ;0x0D 0x37 The Crystal Crags 2
+SpecialBlocks_0D: dc.w  $85,$22,Berzerker,Red_Stealth, -1
+                  dc.w   -1              ;0x0D 0x37 The Crystal Crags 2 (also $5C,$02,Berzerker,Red_Stealth -1 ?)
 SpecialBlocks_0E: dc.w  $4E,$0F,Berzerker, -1
                   dc.w   -1              ;0x0E 0x2C Dragonspike (also: 69,$02,Berzerker, -1 ?)
 SpecialBlocks_0F: dc.w  $02,$02,Berzerker, -1
                   dc.w   -1              ;0x0F 0x2B Stormwalk Mountain
-SpecialBlocks_10: dc.w   -1              ;0x10 0x13 Shishkaboss
+SpecialBlocks_10: dc.w  $27,$11,Red_Stealth,Berzerker,Iron_Knight,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w   -1              ;0x10 0x13 Shishkaboss
 SpecialBlocks_11: dc.w   -1              ;0x11 0x4C The Whispering Woods 1
 SpecialBlocks_12: dc.w  $9D,$1D,Berzerker, -1
                   dc.w  $48,$18,Iron_Knight, -1
@@ -29,6 +31,8 @@ SpecialBlocks_12: dc.w  $9D,$1D,Berzerker, -1
                   dc.w  $68,$05,Iron_Knight, -1
                   dc.w   -1              ;0x12 0x49 The Whispering Woods 2
 SpecialBlocks_13: dc.w  $02,$02,Red_Stealth,Iron_Knight, -1
+                  dc.w  $0E,$02,Red_Stealth, -1
+                  dc.w  $28,$1C,Red_Stealth, -1
                   dc.w   -1              ;0x13 0x14 Devil's Marsh 1
 SpecialBlocks_14: dc.w   -1              ;0x14 0x16 Devil's Marsh 2
 SpecialBlocks_15: dc.w  $3C,$17,Micromax, -1
@@ -40,15 +44,19 @@ SpecialBlocks_17: dc.w  $120,$0E,Skycutter, -1
                   dc.w   -1              ;0x17 0x3F Hoverboard Beach
 SpecialBlocks_18: dc.w  $EF,$02,Iron_Knight,Red_Stealth, -1
                   dc.w   -1              ;0x18 0x40 Pyramids of Peril
-SpecialBlocks_19: dc.w   -1              ;0x19 0x34 Madmaze Mountain
+SpecialBlocks_19: dc.w  $48,$4F,Micromax,Cyclone,Skycutter, -1
+                  dc.w  $35,$22,Micromax,Cyclone,Skycutter, -1
+                  dc.w  $24,$12,Red_Stealth,Iron_Knight, -1
+                  dc.w   -1              ;0x19 0x34 Madmaze Mountain
 SpecialBlocks_1A: dc.w   -1              ;0x1A 0x1C The Deadly Skyscrapers
 SpecialBlocks_1B: dc.w  $04,$24,Cyclone,Skycutter, -1
                   dc.w   -1              ;0x1B 0x27 Skydragon Castle 1
 SpecialBlocks_1C: dc.w  $00,$7D,Cyclone,Skycutter, -1
-                  dc.w  $22,$40,Cyclone,Skycutter, -1
+                  dc.w  $22,$40,Cyclone, -1
                   dc.w   -1              ;0x1C 0x21 Skydragon Castle 2
 SpecialBlocks_1D: dc.w   -1              ;0x1D 0x0D Coral Blade Grotto
-SpecialBlocks_1E: dc.w   -1              ;0x1E 0x6C Boomerang Bosses
+SpecialBlocks_1E: dc.w  $17,$02,Red_Stealth,Berzerker,Iron_Knight,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w   -1              ;0x1E 0x6C Boomerang Bosses
 SpecialBlocks_1F: dc.w   -1              ;0x1F 0x4F Woods of Despair 1
 SpecialBlocks_20: dc.w   -1              ;0x20 0x4D Woods of Despair 2
 SpecialBlocks_21: dc.w   -1              ;0x21 0x19 Forced Entry
@@ -61,11 +69,12 @@ SpecialBlocks_26: dc.w  $03,$30,Micromax,Cyclone,Skycutter, -1
                   dc.w   -1              ;0x26 0x35 Blizzard Mountain
 SpecialBlocks_27: dc.w  $01,$05,Iron_Knight,Red_Stealth,Micromax,Cyclone,Skycutter, -1
                   dc.w   -1              ;0x27 0x3E Caves of Ice
-SpecialBlocks_28: dc.w  $08,$66,Micromax,Skycutter,Cyclone, -1
+SpecialBlocks_28: dc.w  $08,$66,Micromax,Cyclone, -1
                   dc.w   -1              ;0x28 0x2F The Nightmare Peaks 1
 SpecialBlocks_29: dc.w  $29,$16,Cyclone,Skycutter,Micromax,Iron_Knight,Iron_Knight, -1
                   dc.w   -1              ;0x29 0x31 The Nightmare Peaks 2
-SpecialBlocks_2A: dc.w   -1              ;0x2A 0x74 Bagel Brothers
+SpecialBlocks_2A: dc.w  $0B,$15,Eyeclops, -1
+                  dc.w   -1              ;0x2A 0x74 Bagel Brothers (hidden blocks -> chance for good helmet)
 SpecialBlocks_2B: dc.w   -1              ;0x2B 0x3B Diamond Edge
 SpecialBlocks_2C: dc.w   -1              ;0x2C 0x5A The Hills Have Eyes
 SpecialBlocks_2D: dc.w  $02,$32,Berzerker,Micromax, -1
@@ -77,13 +86,20 @@ SpecialBlocks_2E: dc.w  $0A,$25,Micromax, -1
                   dc.w  $15,$25,Micromax, -1
                   dc.w  $1A,$25,Micromax, -1
                   dc.w  $1D,$25,Micromax, -1
+                  dc.w  $1A,$51,Micromax, -1
                   dc.w   -1              ;0x2E 0x3A Ice God's Vengeance
 SpecialBlocks_2F: dc.w   -1              ;0x2F 0x57 Beneath the Twisted Hills
-SpecialBlocks_30: dc.w   -1              ;0x30 0x10 Alien Isle
-SpecialBlocks_31: dc.w   -1              ;0x31 0x59 The Land Below
+SpecialBlocks_30: dc.w  $69,$1F,Red_Stealth,Berzerker,Iron_Knight,Skycutter,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w  $7A,$23,Red_Stealth,Berzerker,Iron_Knight,Skycutter,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w  $7E,$1E,Red_Stealth,Berzerker,Iron_Knight,Skycutter,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w   -1              ;0x30 0x10 Alien Isle
+SpecialBlocks_31: dc.w  $F5,$04,Skycutter,Cyclone,Micromax, -1
+                  dc.w   -1              ;0x31 0x59 The Land Below
 SpecialBlocks_32: dc.w  $186,$07,Skycutter,Cyclone, -1
                   dc.w   -1              ;0x32 0x38 The Final Marathon
-SpecialBlocks_33: dc.w   -1              ;0x33 0x05 Plethora
+SpecialBlocks_33: dc.w  $0D,$0C,Red_Stealth,Berzerker,Iron_Knight,Skycutter,Cyclone,Micromax,Eyeclops, -1
+                  dc.w  $1A,$0C,Red_Stealth,Berzerker,Iron_Knight,Cyclone,Micromax,Eyeclops, -1
+                  dc.w   -1              ;0x33 0x05 Plethora (Maniaxe and Juggernaut can't hurt the boss)
 SpecialBlocks_34: dc.w  $35,$36,Red_Stealth, -1
                   dc.w  $26,$7B,Red_Stealth,Iron_Knight, -1
                   dc.w   -1              ;0x34 0x30 The Pinnacle
@@ -99,15 +115,21 @@ SpecialBlocks_3A: dc.w  $05,$30,Berzerker, -1
                   dc.w  $4F,$01,Red_Stealth, -1
                   dc.w  $1A,$32,Micromax,Skycutter,Cyclone, -1
                   dc.w   -1              ;0x3A 0x03 Stairway to Oblivion
-SpecialBlocks_3B: dc.w   -1              ;0x3B 0x53 The Valley of Life
+SpecialBlocks_3B: dc.w  $5B,$25,Red_Stealth,Berzerker,Iron_Knight,Skycutter,Cyclone,Micromax,Juggernaut,Maniaxe,Eyeclops, -1
+                  dc.w   -1              ;0x3B 0x53 The Valley of Life
 SpecialBlocks_3C: dc.w   -1              ;0x3C 0x04 The Black Pit
 SpecialBlocks_3D: dc.w  $67,$02,Cyclone,Skycutter, -1
                   dc.w   -1              ;0x3D 0x36 Frosty Doom
 SpecialBlocks_3E: dc.w   -1              ;0x3E 0x15 Bloody Swamp
 SpecialBlocks_3F: dc.w   -1              ;0x3F 0x12 Scorpion Isle
 SpecialBlocks_40: dc.w   -1              ;0x40 0x22 Towers of Blood
-SpecialBlocks_41: dc.w   -1              ;0x41 0x41 The Crypt (playable version)
+SpecialBlocks_41: dc.w  $44,$42,Micromax,Skycutter,Cyclone, -1
+                  dc.w  $41,$17,Micromax, -1
+                  dc.w  $07,$16,Micromax, -1
+                  dc.w  $31,$0F,Micromax, -1
+                  dc.w   -1              ;0x41 0x41 The Crypt (playable version)
 SpecialBlocks_42: dc.w  $7F,$1A,Red_Stealth,Iron_Knight, -1
+                  dc.w  $59,$21,Red_Stealth,Iron_Knight, -1
                   dc.w   -1              ;0x42 0x17 Alien Twilight
 SpecialBlocks_43: dc.w   -1              ;0x43 0x4E Tunnels Beneath the Woods
 SpecialBlocks_44: dc.w   -1              ;0x44 0x58 Hills of Forever
@@ -120,8 +142,8 @@ SpecialBlocks_49: dc.w   -1              ;0x49 0x61 Elsewhere 1
 SpecialBlocks_4A: dc.w   -1              ;0x4A 0x5E Elsewhere 2
 SpecialBlocks_4B: dc.w   -1              ;0x4B 0x5F Elsewhere 3
 SpecialBlocks_4C: dc.w   -1              ;0x4C 0x60 Elsewhere 4
-SpecialBlocks_4D: dc.w  $0D,$14,Berzerker,Cyclone,Micromax,Red_Stealth,Juggernaut, -1
-                  dc.w   -1              ;0x4D 0x5D Elsewhere 5
+SpecialBlocks_4D: dc.w  $0D,$14,Berzerker,Cyclone,Juggernaut, -1
+                  dc.w   -1              ;0x4D 0x5D Elsewhere 5 (Micromax,Red_Stealth,Iron_Knight also work)
 SpecialBlocks_4E: dc.w   -1              ;0x4E 0x62 Elsewhere 6
 SpecialBlocks_4F: dc.w   -1              ;0x4F 0x64 Elsewhere 7
 SpecialBlocks_50: dc.w  $12,$29,Cyclone,Skycutter,Micromax, -1

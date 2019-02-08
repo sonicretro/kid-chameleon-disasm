@@ -55,13 +55,12 @@ LevelSelect_Input:
 	bclr	#0,(Ctrl_Pressed).w
 	beq.s	+	; UP pressed?
 	jsr	(sub_1BC26).l	; play selection sound
-	subq.w	#1,d3
+	addq.w	#1,d3
 +
-
 	bclr	#1,(Ctrl_Pressed).w
 	beq.s	+	; DOWN pressed?
 	jsr	(sub_1BC26).l	; play selection sound
-	addq.w	#1,d3
+	subq.w	#1,d3
 +
 	and.w	#$F,d3
 	; write the new selected digit
@@ -357,6 +356,8 @@ LengthSelect_Loop:
 
 ;LengthSelect_Exit:
 	move.w	(Options_Selected_Option).w,d7
+	addq.w	#1,d7
+	move.w	d7,Number_Bosses
 	;move.w	d7,(Current_Helmet).w
 	;lea	(unk_7EC2).l,a4	; helmet hitpoints
 	;move.b	(a4,d7.w),d7

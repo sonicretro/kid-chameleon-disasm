@@ -164,6 +164,41 @@ colid_kidleft = $24
 colid_kidbelow = $28
 colid_kidabove = $2C
 
+; enemy IDs
+enemyid_FireDemon	= $00
+enemyid_Diamond	= $01
+enemyid_Robot	= $03
+enemyid_Armadillo	= $04
+enemyid_TarMonster	= $05
+enemyid_Sphere	= $06
+enemyid_Archer	= $07
+enemyid_Orca	= $08
+enemyid_Crab	= $09
+enemyid_RockTank	= $0A
+enemyid_RockTank_shooting	= $0B
+enemyid_Dragon_flying	= $0C
+enemyid_Dragon	= $0D
+enemyid_Cloud	= $0E
+enemyid_UFO	= $0F
+enemyid_Goat	= $10
+enemyid_Ninja	= $11
+enemyid_Lion	= $12
+enemyid_Scorpion	= $13
+enemyid_SpinningTwins	= $14
+enemyid_Drip	= $16
+enemyid_Hand	= $17
+enemyid_Tornado	= $18
+enemyid_Fireball	= $19
+enemyid_Driller	= $1A
+enemyid_EmoRock	= $1B
+enemyid_MiniHoppingSkull	= $1C
+enemyid_BigHoppingSkull	= $1D
+enemyid_invalid1F	= $1F
+enemyid_HeadyMetal	= $20
+enemyid_Shiskaboss	= $22
+enemyid_BoomerangBosses	= $23
+enemyid_BagelBrothers	= $24
+
 ; Levels by number
 L_Blue_Lake_Woods_1 = 0
 L_Blue_Lake_Woods_2 = 1

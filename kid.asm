@@ -1648,7 +1648,7 @@ loc_E1E:
 	beq.w	loc_E3E
 	tst.b	$10(a5)
 	beq.w	loc_E3E
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#3,d0
 	bne.s	loc_E1E
 
@@ -2562,7 +2562,7 @@ loc_1466:
 	bne.s	loc_1488
 
 loc_147E:
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#3,d0
 	bne.s	loc_1466
 
@@ -2639,7 +2639,7 @@ loc_14EE:
 loc_1518:
 	lea	($FFFF4F18).l,a0
 	lea	($FFFF4F98).l,a1
-	lea	($FFFF4E98).l,a2
+	lea	(Palette_Buffer+$40).l,a2
 	lea	($FFFFF88C).w,a4
 	move.l	(a4),d7
 	bne.s	loc_1534
@@ -6147,7 +6147,7 @@ loc_60EE:
 	move.w	#0,($FFFFFADC).w
 	move.l	(LnkTo_Pal_7B86C).l,a0
 	move.w	(a0)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a1
+	lea	(Palette_Buffer+$32).l,a1
 	moveq	#6,d0
 
 loc_6136:
@@ -6165,7 +6165,7 @@ loc_613E:
 	sub.w	d7,($FFFFFADC).w
 	move.l	(LnkTo_Pal_7B85C).l,a0
 	move.w	(a0)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a1
+	lea	(Palette_Buffer+$32).l,a1
 	moveq	#6,d0
 
 loc_616C:
@@ -6583,7 +6583,7 @@ sub_6526:
 	clr.w	(Clocks_collected).w
 	sf	(NoHit_Bonus_Flag).w
 	sf	(NoPrize_Bonus_Flag).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 
 return_6550:
 	rts
@@ -7823,7 +7823,7 @@ loc_7508:
 	lea	off_80F2(pc),a1
 	add.w	(a1,d0.w),a0
 	move.l	(a0),a0
-	lea	($FFFF4EBA).l,a1
+	lea	(Palette_Buffer+$62).l,a1
 	moveq	#$B,d0
 
 loc_7526:
@@ -8978,7 +8978,7 @@ stru_808A:
 
 sub_80BC:
 
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$B,d7
 	move.w	#$FFF,d6
 
@@ -8998,7 +8998,7 @@ sub_80D0:
 	lea	(Data_Index).l,a4
 	add.w	off_80F2(pc,d7.w),a4
 	move.l	(a4),a4
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$B,d7
 
 loc_80E8:
@@ -9029,7 +9029,7 @@ sub_8106:
 	lea	(Data_Index).l,a4
 	add.w	off_8128(pc,d7.w),a4
 	move.l	(a4),a4
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$E,d7
 
 loc_811E:
@@ -15525,7 +15525,7 @@ Make_SpriteAttr_HUD:
 	move.w	#$80,d2
 	tst.b	($FFFFFB49).w
 	beq.s	loc_BE08
-	move.w	($FFFFFC24).w,d3
+	move.w	(Time_Frames).w,d3
 	cmpi.w	#$50,d3
 	ble.s	loc_BE06
 	moveq	#$50,d3
@@ -15816,7 +15816,7 @@ loc_C0C8:
 loc_C0CC:
 	jsr	(j_Hibernate_Object_1Frame).w
 	st	($FFFFFB49).w
-	st	($FFFFFB4A).w
+	st	(Background_NoScrollFlag).w
 	move.w	(Time_Seconds_low_digit).w,d0
 	move.w	(Time_Seconds_high_digit).w,d1
 	mulu.w	#$A,d1
@@ -15835,7 +15835,7 @@ loc_C0CC:
 
 loc_C10A:
 	move.b	d0,(Level_completion_time).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 	clr.b	(MurderWall_flag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -16513,7 +16513,7 @@ loc_D0BC:
 loc_D0C0:
 	jsr	(j_Hibernate_Object_1Frame).w
 	st	($FFFFFB49).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 	clr.b	(MurderWall_flag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -16529,14 +16529,14 @@ loc_D0C0:
 	jsr	(j_DecompressToVRAM).l
 	moveq	#$E,d0
 	lea	Pal_D02A(pc),a0
-	lea	($FFFF4E9A).l,a1
+	lea	(Palette_Buffer+$42).l,a1
 
 loc_D11C:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_D11C
 	moveq	#4,d0
 	lea	Pal_D048(pc),a0
-	lea	($FFFF4E7A).l,a1
+	lea	(Palette_Buffer+$22).l,a1
 
 loc_D12E:
 	move.w	(a0)+,(a1)+
@@ -23919,7 +23919,8 @@ loc_11B9A:
 	move.w	d1,(Level_Special_Effects).w
 	andi.w	#$F,d0
 	move.w	d0,(Background_theme).w
-	move.w	#%1010101000,d1	; bitmask telling which theme uses
+	move.w	#(1<<Hills)|(1<<Desert)|(1<<Mountain)|(1<<Forest),d1
+	;move.w	#%1010101000,d1	; bitmask telling which theme uses
 	btst	d0,d1		; which BG format
 	sne	(Background_format).w
 	beq.s	loc_11BD2
@@ -24062,8 +24063,8 @@ loc_11D0C:
 	move.l	(LnkTo_ThemeMappings_Index).l,a1
 	move.l	(a1,d7.w),(Addr_ThemeMappings).w
 	move.l	(a0)+,a1	; enemy	layout
-	move.l	(a1)+,($FFFFF8F6).w
-	move.l	a1,($FFFFF8F2).w
+	move.l	(a1)+,(Addr_EnemyLayout).w
+	move.l	a1,(Addr_EnemyLayoutHeader).w
 	move.l	(LnkTo_unk_7B8DC).l,a1
 	lea	(Block_Mappings).l,a2
 	moveq	#0,d1
@@ -24126,7 +24127,7 @@ loc_11DAC:
 	lea	Pal_12D26(pc),a1
 
 loc_11DB0:
-	lea	($FFFF4E5A).l,a2
+	lea	(Palette_Buffer+$2).l,a2
 	moveq	#$E,d1
 
 -	; loop to copy foreground palette into palette RAM
@@ -24179,7 +24180,7 @@ loc_11E12:
 
 loc_11E16:
 	move.w	(a1)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a2
+	lea	(Palette_Buffer+$32).l,a2
 	moveq	#6,d1
 
 -	; loop to copy foreground palette into palette RAM
@@ -25401,13 +25402,13 @@ loc_128BA:
 	add.w	d0,d0
 	add.w	d0,d0
 	move.l	(a3,d0.w),a3
-	cmpi.w	#7,(Background_theme).w	; mountain
+	cmpi.w	#Mountain,(Background_theme).w
 	beq.s	loc_12910
-	cmpi.w	#3,(Background_theme).w	; hill
+	cmpi.w	#Hills,(Background_theme).w
 	beq.w	loc_1295E
-	cmpi.w	#5,(Background_theme).w	; desert
+	cmpi.w	#Desert,(Background_theme).w
 	beq.w	loc_12988
-	;forest
+	;Forest
 	move.w	#$780,d0
 	move.l	(a3)+,a0
 	lea	($FFFF87B2).w,a1
@@ -25488,11 +25489,11 @@ loc_12988:	; desert
 
 
 sub_129AE:
-	cmpi.w	#9,(Background_theme).w
+	cmpi.w	#Forest,(Background_theme).w
 	bne.s	return_129CC
-	move.w	($FFFF4E88).l,d0
-	move.w	($FFFF4E8C).l,($FFFF4E88).l
-	move.w	d0,($FFFF4E8C).l
+	move.w	(Palette_Buffer+$30).l,d0
+	move.w	(Palette_Buffer+$34).l,(Palette_Buffer+$30).l
+	move.w	d0,(Palette_Buffer+$34).l
 
 return_129CC:
 	rts
@@ -25683,7 +25684,7 @@ loc_12E96:
 	bmi.w	loc_12ED8
 	subq.w	#2,d3
 	lea	Pal_12EEC+6(pc,d0.w),a0
-	lea	($FFFF4E5C).l,a1
+	lea	(Palette_Buffer+$4).l,a1
 	moveq	#$A,d0
 
 loc_12ED2:
@@ -27061,7 +27062,7 @@ loc_140D2:
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
 	lea	Pal_1408A(pc),a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#7,d0
 
 loc_140EE:
@@ -28360,11 +28361,11 @@ loc_14B2A:
 	subq.w	#1,d0
 	bne.s	loc_14B2A
 	moveq	#5,d0
-	move.w	($FFFF4E86).l,d5
-	move.w	($FFFF4E84).l,($FFFF4E86).l
-	move.w	($FFFF4E82).l,($FFFF4E84).l
-	move.w	($FFFF4E80).l,($FFFF4E82).l
-	move.w	d5,($FFFF4E80).l
+	move.w	(Palette_Buffer+$2E).l,d5
+	move.w	(Palette_Buffer+$2C).l,(Palette_Buffer+$2E).l
+	move.w	(Palette_Buffer+$2A).l,(Palette_Buffer+$2C).l
+	move.w	(Palette_Buffer+$28).l,(Palette_Buffer+$2A).l
+	move.w	d5,(Palette_Buffer+$28).l
 	bra.s	loc_14B2A
 ; End of function Animation_Geyser
 
@@ -28470,7 +28471,7 @@ loc_14C6A:
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
 	move.l	(LnkTo_Pal_7B8AC).l,a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
@@ -28506,7 +28507,7 @@ loc_14CEC:
 	move.l	(LnkTo_Pal_7B8CC).l,a0
 
 loc_14CF2:
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
@@ -28900,7 +28901,7 @@ loc_1AB26:
 	move.w	#$8120,d0
 	jsr	(j_DecompressToVRAM).l
 	lea	Pal_19C48(pc),a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#$F,d0
 
 loc_1AB40:
@@ -29558,7 +29559,7 @@ loc_1B1A4:
 
 loc_1B1E8:
 	bsr.w	sub_1B222
-	st	($FFFFFB4A).w
+	st	(Background_NoScrollFlag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1BAB0,4(a0)
@@ -31350,7 +31351,7 @@ loc_1C4BE:
 	dbf	d0,loc_1C4BE
 	tst.b	($FFFFFC82).w
 	beq.s	return_1C4E8
-	lea	($FFFF4E72).l,a1
+	lea	(Palette_Buffer+$1A).l,a1
 	lea	Pal_1C466(pc),a0
 	cmpi.b	#1,($FFFFFC82).w
 	beq.s	loc_1C4E0
@@ -31637,7 +31638,7 @@ loc_1C82C:
 	move.w	#$EEE,(a1)
 
 loc_1C84E:
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#$2F,d0
 
 loc_1C856:
@@ -32810,7 +32811,7 @@ loc_1D270:
 	lea	(MapEni_1E264).l,a0
 	lea	(Decompression_Buffer).l,a1
 	jsr	(j_EniDec).l
-	lea	($FFFF4E66).l,a1
+	lea	(Palette_Buffer+$E).l,a1
 	lea	Pal_1C92A(pc),a0
 	moveq	#8,d0
 
@@ -32916,7 +32917,7 @@ loc_1D418:
 	bsr.w	sub_1D7E6
 	bsr.w	sub_1D800
 	bsr.w	sub_1CDE0
-	move.l	#$EEE0EC0,($FFFF4EBA).l
+	move.l	#$EEE0EC0,(Palette_Buffer+$62).l
 	jsr	(j_Palette_to_VRAM).w
 	move.l	(Addr_PlatformLayout).w,a4
 	bsr.w	sub_1D7A8
@@ -33767,7 +33768,7 @@ loc_3001E:
 	subi.w	#$20,d0
 	move.w	d0,($FFFFFAA8).w
 	move.l	d7,-(sp)
-	bsr.w	sub_3043C
+	bsr.w	BackgroundScroll_ComputeShiftData
 	move.l	(sp)+,d7
 	move.l	d7,-(sp)
 	moveq	#$1C,d6
@@ -33825,7 +33826,7 @@ loc_300BA:
 	move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 	move.w	d0,(a6)
 	lsr.w	#2,d0
-	tst.b	($FFFFFB4A).w
+	tst.b	(Background_NoScrollFlag).w
 	beq.s	loc_300D2
 	moveq	#0,d0
 
@@ -34131,11 +34132,11 @@ loc_3038A:
 	beq.s	return_303B8
 	move.w	(Game_Mode).w,d0
 	beq.s	loc_3039C
-	addq.w	#1,($FFFFFC24).w
+	addq.w	#1,(Time_Frames).w
 
 loc_3039C:
-	bsr.w	sub_3043C
-	bsr.w	sub_304E8
+	bsr.w	BackgroundScroll_ComputeShiftData
+	bsr.w	BackgroundScroll_ComputeShiftLayers
 	tst.b	($FFFFFB49).w
 	bne.s	return_303B8
 	tst.b	(Background_format).w
@@ -34164,7 +34165,7 @@ loc_303D4:
 	move.w	4(a0),d3
 	move.l	(Addr_MapHeader).w,a0
 	move.l	$14(a0),a0
-	cmpi.w	#5,(Background_theme).w
+	cmpi.w	#Desert,(Background_theme).w
 	bne.s	loc_303EA
 	addq.w	#1,a0
 
@@ -34213,11 +34214,11 @@ return_3043A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_3043C:
+BackgroundScroll_ComputeShiftData:
 	lea	(Horiz_Scroll_Data).l,a0
 	move.w	(Background_width).w,d6
 	move.w	(Camera_X_pos).w,d4
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	add.w	d0,d0
 	moveq	#1,d3
 
@@ -34271,7 +34272,7 @@ loc_304A8:
 	add.l	d4,d5
 	dbf	d3,loc_3048C
 	rts
-; End of function sub_3043C
+; End of function BackgroundScroll_ComputeShiftData
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -34315,8 +34316,8 @@ loc_304E0:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_304E8:
-	tst.b	($FFFFFB4A).w
+BackgroundScroll_ComputeShiftLayers:
+	tst.b	(Background_NoScrollFlag).w
 	beq.s	loc_3050A
 	move.w	(Camera_X_pos).w,d2
 	neg.w	d2
@@ -34393,14 +34394,14 @@ loc_30592:
 
 loc_30598:
 	move.w	(Background_theme).w,d0
-	cmpi.w	#9,d0
-	beq.s	loc_305AC
-	cmpi.w	#5,d0
-	beq.w	loc_3069A
+	cmpi.w	#Forest,d0
+	beq.s	BackgroundScroll_ApplyForestWaterRipple
+	cmpi.w	#Desert,d0
+	beq.w	BackgroundScroll_ApplyDesertHeatRipple
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_305AC:
+BackgroundScroll_ApplyForestWaterRipple:
 	move.w	(Camera_Y_pos).w,d1
 	lsr.w	#2,d1
 	move.l	(Addr_MapHeader).w,a0
@@ -34435,8 +34436,8 @@ loc_305E6:
 	lea	2(a0,d0.w),a0
 	move.w	(a0),d3
 	subq.w	#1,d1
-	lea	unk_3061A(pc,d2.w),a1
-	move.w	($FFFFFC24).w,d5
+	lea	BackgroundScroll_ForestWaterRippleData(pc,d2.w),a1
+	move.w	(Time_Frames).w,d5
 	lsr.w	#2,d5
 	andi.w	#$3F,d5
 	lea	(a1,d5.w),a1
@@ -34453,7 +34454,8 @@ return_30618:
 	rts
 ; ---------------------------------------------------------------------------
 ;Water ripple data
-unk_3061A:	dc.b   0
+BackgroundScroll_ForestWaterRippleData:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -34583,7 +34585,7 @@ unk_3061A:	dc.b   0
 	dc.b   1
 ; ---------------------------------------------------------------------------
 
-loc_3069A:
+BackgroundScroll_ApplyDesertHeatRipple:
 	move.w	(Camera_Y_pos).w,d6
 	lsr.w	#2,d6
 	move.l	(Addr_MapHeader).w,a0
@@ -34617,11 +34619,11 @@ loc_306D4:
 	add.w	d0,d0
 	lea	2(a0,d0.w),a0
 	move.w	(a0),d3
-	move.w	($FFFFFC24).w,d5
+	move.w	(Time_Frames).w,d5
 	andi.w	#$30,d5
 	add.w	d2,d5
 	subq.w	#1,d1
-	lea	unk_30704(pc,d5.w),a1
+	lea	BackgroundScroll_DesertHeatRippleData(pc,d5.w),a1
 
 loc_306F4:
 	move.b	(a1)+,d4
@@ -34633,10 +34635,11 @@ loc_306F4:
 
 return_30702:
 	rts
-; End of function sub_304E8
+; End of function BackgroundScroll_ComputeShiftLayers
 
 ; ---------------------------------------------------------------------------
-unk_30704:	dc.b   0
+BackgroundScroll_DesertHeatRippleData:
+	dc.b   0
 	dc.b $FF
 	dc.b   0
 	dc.b   1
@@ -37520,8 +37523,8 @@ loc_31F9A:
 	dbf	d0,loc_31F9A
 	move.b	#$FF,($FFFFF940).w
 	move.l	#0,($FFFFF942).w
-	move.l	($FFFFF8F2).w,a0
-	move.l	($FFFFF8F6).w,a1
+	move.l	(Addr_EnemyLayoutHeader).w,a0
+	move.l	(Addr_EnemyLayout).w,a1
 	move.w	(Camera_X_pos).w,d1
 	move.b	#0,($FFFFF93F).w
 	move.w	(a0)+,d0
@@ -37543,11 +37546,11 @@ loc_31FD4:
 ; ---------------------------------------------------------------------------
 
 loc_31FE6:
-	move.l	a1,($FFFFF8F6).w
+	move.l	a1,(Addr_EnemyLayout).w
 	move.w	(a0),($FFFFF93A).w
 	suba.l	#8,a0
 	move.w	(a0),($FFFFF93C).w
-	move.l	a0,($FFFFF8F2).w
+	move.l	a0,(Addr_EnemyLayoutHeader).w
 	lea	(EnemyStatus_Table).w,a2
 	move.w	(a1)+,d7
 	andi.w	#$FF,d7
@@ -37585,7 +37588,7 @@ loc_32044:
 	dbf	d7,loc_3200A
 
 loc_3204E:
-	bsr.w	sub_36D0E
+	bsr.w	Load_EnemyArtPaletteToVRAM
 	rts
 ; ---------------------------------------------------------------------------
 ; check whether object is within range, i.e. close enough to the part of the
@@ -37711,24 +37714,25 @@ loc_32146:
 
 	movem.l	d0-d1/a0,-(sp)
 	moveq	#0,d1
-	move.l	($FFFFF8F2).w,a0
+	move.l	(Addr_EnemyLayoutHeader).w,a0
 	move.w	2(a0),d7
 	andi.w	#$FF,d7
-	cmp.w	d7,d0
+	cmp.w	d7,d0	; is it the enemy type from the first slot?
 	beq.s	loc_3216C
 	addq.w	#1,d1
 
 loc_3215E:
 	move.w	4(a0),d7
 	andi.w	#$FF,d7
-	cmp.w	d7,d0
+	cmp.w	d7,d0	; is it the enemy type from the second slot?
 	beq.s	loc_3216C
 	addq.w	#1,d1
 
 loc_3216C:
-	lea	unk_36FEA(pc),a0
+	; d1 is the slot this enemy type has been allocated
+	lea	EnemyArt_PaletteLines(pc),a0
 	move.b	(a0,d1.w),$11(a3)
-	lea	unk_36FEE(pc),a0
+	lea	EnemyArt_VRAMTileAddresses(pc),a0
 	add.w	d1,d1
 
 loc_3217C:
@@ -45506,7 +45510,7 @@ return_3682A:
 ; ---------------------------------------------------------------------------
 
 loc_3682C:
-	move.l	($FFFFF8F6).w,a1
+	move.l	(Addr_EnemyLayout).w,a1
 	move.w	(a1)+,d7
 	andi.w	#$FF,d7
 	move.w	d7,d6
@@ -46134,16 +46138,16 @@ loc_36D00:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_36D0E:
+Load_EnemyArtPaletteToVRAM:
 	moveq	#0,d7
-	move.l	($FFFFF8F2).w,a1
+	move.l	(Addr_EnemyLayoutHeader).w,a1	; pointer to enemy layout
 	addq.w	#2,a1
 
 loc_36D16:
 	move.w	(a1)+,d1
-	move.w	d1,d4
+	move.w	d1,d4	; enemy ID whose art/palette to load
 	cmpi.w	#$FFFF,d4
-	beq.w	loc_36E42
+	beq.w	loc_36E42	; blank entry
 	andi.w	#$FFF,d1
 	lsl.w	#3,d1
 	lea	EnemyLoad_Index(pc),a2
@@ -46166,84 +46170,87 @@ loc_36D52:
 	move.l	(a0,d2.w),a0
 	move.w	d7,d0
 	add.w	d0,d0
-	lea	unk_36E4E(pc),a2
+	lea	EnemyArt_VRAMAddresses(pc),a2
 	move.w	(a2,d0.w),d0
 	moveq	#0,d6
 	andi.w	#$FFF,d4
-	cmpi.w	#$12,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$1F,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$F,d4
-	beq.s	loc_36D9A
-	cmpi.w	#3,d4
-	beq.s	loc_36DFC
-	cmpi.w	#$20,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$22,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$23,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$24,d4
-	beq.s	loc_36D9A
-	bra.s	loc_36DAC
+	cmpi.w	#enemyid_Lion,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_invalid1F,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_UFO,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_Robot,d4
+	beq.s	Load_EnemyArtToVRAM
+	cmpi.w	#enemyid_HeadyMetal,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_Shiskaboss,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_BoomerangBosses,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#enemyid_BagelBrothers,d4
+	beq.s	Load_EnemyPaletteLong
+	bra.s	Load_EnemyPaletteNormal
 ; ---------------------------------------------------------------------------
 
-loc_36D9A:
-	lea	($FFFF4E9A).l,a2
+Load_EnemyPaletteLong:
+	; enemies with more palette entries
+	lea	(Palette_Buffer+$42).l,a2
 	moveq	#$E,d5
 
-loc_36DA2:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DA2
-	bra.w	loc_36DFC
+	dbf	d5,-
+	bra.w	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DAC:
+Load_EnemyPaletteNormal:
 	cmpi.w	#1,d7
-	beq.s	loc_36DCC
-	bge.s	loc_36DE4
-	lea	($FFFF4E7A).l,a2
+	beq.s	Load_EnemyPalette_SecondEnemy
+	bge.s	Load_EnemyPalette_ThirdEnemy
+	; first enemy type
+	lea	(Palette_Buffer+$22).l,a2
 	moveq	#6,d5
 
-loc_36DBC:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DBC
-	move.w	#0,($FFFF4E88).l
-	bra.s	loc_36DFC
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$30).l
+	bra.s	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DCC:
-	lea	($FFFF4E9A).l,a2
+Load_EnemyPalette_SecondEnemy:	; 2nd enemy type
+	lea	(Palette_Buffer+$42).l,a2
 	moveq	#6,d5
 
-loc_36DD4:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DD4
-	move.w	#0,($FFFF4EA8).l
-	bra.s	loc_36DFC
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$50).l
+	bra.s	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DE4:
-	lea	($FFFF4EAA).l,a2
+Load_EnemyPalette_ThirdEnemy:	; 3rd enemy type
+	lea	(Palette_Buffer+$52).l,a2
 	moveq	#6,d5
 
-loc_36DEC:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DEC
-	move.w	#0,($FFFF4EA8).l
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$50).l
 	moveq	#1,d6
 
-loc_36DFC:
+Load_EnemyArtToVRAM:
 	lea	(Data_Index).l,a0
-	move.l	(a0,d3.w),a0
+	move.l	(a0,d3.w),a0	; compressed art address
 	movem.l	d7/a1,-(sp)
 	tst.w	d7
 	bne.s	loc_36E2C
-	cmpi.w	#9,(Background_theme).w
+	; first enemy type
+	cmpi.w	#Forest,(Background_theme).w
 	bne.s	loc_36E2C
 	lea	unk_36E54(pc),a3
-	cmpi.w	#5,d4
+	cmpi.w	#enemyid_TarMonster,d4
 	bne.s	loc_36E24
 	lea	unk_36E64(pc),a3
 
@@ -46270,16 +46277,18 @@ loc_36E42:
 	cmpi.w	#3,d7
 	bne.w	loc_36D16
 	rts
-; End of function sub_36D0E
+; End of function Load_EnemyArtPaletteToVRAM
 
 ; ---------------------------------------------------------------------------
-unk_36E4E:	dc.b $5F ; _
-	dc.b $60 ; `
-	dc.b $81 ; 
-	dc.b $20
-	dc.b $A2 ; ¢
-	dc.b $E0 ; à
-unk_36E54:	dc.b   0
+; 36E4E
+; The games allows for three different enemies per level. Their art is loaded
+; into 3 slots in VRAM, starting at the following addresses:
+EnemyArt_VRAMAddresses:
+	dc.w $5F60
+	dc.w $8120
+	dc.w $A2E0
+unk_36E54:
+	dc.b   0
 	dc.b   1
 	dc.b   2
 	dc.b   3
@@ -46295,7 +46304,8 @@ unk_36E54:	dc.b   0
 	dc.b  $D
 	dc.b  $E
 	dc.b  $F
-unk_36E64:	dc.b   0
+unk_36E64:
+	dc.b   0
 	dc.b   1
 	dc.b   2
 	dc.b   3
@@ -46332,23 +46342,24 @@ unk_36E64:	dc.b   0
 
 
 sub_36E84:
-	move.l	($FFFFF8F2).w,a4
+	move.l	(Addr_EnemyLayoutHeader).w,a4
 	moveq	#0,d4
 	move.w	2(a4),d3
 	andi.w	#$FFF,d3
-	cmp.w	d3,d5
+	cmp.w	d3,d5	; is it the enemy type from the first slot?
 	beq.s	loc_36EA6
 	addq.w	#1,d4
 	move.w	4(a4),d3
 	andi.w	#$FFF,d3
-	cmp.w	d3,d5
+	cmp.w	d3,d5	; is it the enemy type from the second slot?
 	beq.s	loc_36EA6
 	addq.w	#1,d4
 
 loc_36EA6:
-	lea	unk_36FEA(pc),a4
+	; d4 is the slot this enemy type has been allocated
+	lea	EnemyArt_PaletteLines(pc),a4
 	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
+	lea	EnemyArt_VRAMTileAddresses(pc),a4
 	move.w	d4,$3E(a3)
 	add.w	d4,d4
 	move.w	(a4,d4.w),$24(a3)
@@ -46394,16 +46405,15 @@ EnemyLoad_Index:
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy22_Shiskaboss_Init	;22 - Shiskaboss (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy23_BoomerangBosses_Init	;23 - Boomerang bosses (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy24_BagelBrothers_Init	;24 - Bagel Brothers (one head)
-unk_36FEA:	dc.b   1
+EnemyArt_PaletteLines:
+	dc.b   1
 	dc.b   2
 	dc.b   2
 	dc.b   0
-unk_36FEE:	dc.b   2
-	dc.b $FB ; û
-	dc.b   4
-	dc.b   9
-	dc.b   5
-	dc.b $17
+EnemyArt_VRAMTileAddresses:
+	dc.w   $2FB
+	dc.w   $409
+	dc.w   $517
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -47397,7 +47407,7 @@ sub_379E8:
 	andi.w	#$1F,d2
 	move.w	d2,d7
 	add.w	d7,d7
-	move.w	(a2,d7.w),($FFFF4EB6).l
+	move.w	(a2,d7.w),(Palette_Buffer+$5E).l
 	rts
 ; End of function sub_379E8
 
@@ -51033,9 +51043,9 @@ loc_3A476:
 	beq.w	loc_3C0D2
 	bra.w	loc_3C026
 ; ---------------------------------------------------------------------------
-dword_3A482:	dc.l $FFFF4E7A
-	dc.l $FFFF4E9A
-	dc.l $FFFF4EAA
+dword_3A482:	dc.l Palette_Buffer+$22
+	dc.l Palette_Buffer+$42
+	dc.l Palette_Buffer+$52
 ; ---------------------------------------------------------------------------
 
 loc_3A48E:
@@ -52265,7 +52275,7 @@ loc_3B2E4:
 	move.w	#$A,d5
 	move.w	#$B,d6
 	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
+	move.l	(Addr_EnemyLayoutHeader).w,a4
 	moveq	#0,d4
 	move.w	2(a4),d3
 	andi.w	#$FFF,d3
@@ -52283,9 +52293,9 @@ loc_3B2E4:
 	addq.w	#1,d4
 
 loc_3B31E:
-	lea	unk_36FEA(pc),a4
+	lea	EnemyArt_PaletteLines(pc),a4
 	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
+	lea	EnemyArt_VRAMTileAddresses(pc),a4
 	add.w	d4,d4
 	move.w	(a4,d4.w),$24(a3)
 	move.w	d4,$3E(a3)
@@ -52468,7 +52478,7 @@ loc_3B56C:
 	move.w	#$A,d6
 	move.w	#$B,d5
 	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
+	move.l	(Addr_EnemyLayoutHeader).w,a4
 	moveq	#0,d4
 	move.w	2(a4),d3
 	andi.w	#$FFF,d3
@@ -52486,9 +52496,9 @@ loc_3B56C:
 	addq.w	#1,d4
 
 loc_3B5A6:
-	lea	unk_36FEA(pc),a4
+	lea	EnemyArt_PaletteLines(pc),a4
 	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
+	lea	EnemyArt_VRAMTileAddresses(pc),a4
 	add.w	d4,d4
 	move.w	(a4,d4.w),$24(a3)
 	move.w	d4,$3E(a3)
@@ -54621,7 +54631,7 @@ loc_3CD82:
 	move.w	#$D,d5
 	move.w	#$C,d6
 	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
+	move.l	(Addr_EnemyLayoutHeader).w,a4
 	moveq	#0,d4
 	move.w	2(a4),d3
 	andi.w	#$FFF,d3
@@ -54639,9 +54649,9 @@ loc_3CD82:
 	addq.w	#1,d4
 
 loc_3CDB8:
-	lea	unk_36FEA(pc),a4
+	lea	EnemyArt_PaletteLines(pc),a4
 	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
+	lea	EnemyArt_VRAMTileAddresses(pc),a4
 	add.w	d4,d4
 	move.w	(a4,d4.w),$24(a3)
 	move.w	d4,$3E(a3)
@@ -58674,7 +58684,7 @@ loc_3FB20:
 	move.l	d0,a0
 	tst.w	(Diamond_power_timer).w
 	bge.s	loc_3FB3E
-	move.w	($FFFFFC24).w,d1
+	move.w	(Time_Frames).w,d1
 	andi.w	#$F,d1
 	bne.s	loc_3FB3E
 	subq.w	#1,$24(a0)
@@ -59059,7 +59069,7 @@ loc_3FE04:
 	moveq	#6,d0
 	cmp.w	($FFFFF5C0).w,d0
 	ble.w	loc_3FE62
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#$F,d0
 	bne.s	loc_3FE62
 	addq.w	#1,($FFFFF5C0).w
@@ -59090,7 +59100,7 @@ loc_3FE62:
 	move.l	a5,d6
 	asr.l	#2,d6
 	suba.l	d6,a5
-	move.w	($FFFFFC24).w,d7
+	move.w	(Time_Frames).w,d7
 	andi.w	#7,d7
 	move.l	($FFFFF5A4).w,d0
 	bne.s	loc_3FE90

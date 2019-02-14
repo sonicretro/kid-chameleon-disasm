@@ -13,7 +13,9 @@ to get the actual VRAM addresses multiply by $20.
 2C5-2CF: numbers
 2CF-2F3: ?
 2F3-2FB: rubber block
-2FB-...: enemies
+2FB-409: enemy slot 1
+409-517: enemy slot 2
+517-625: enemy slot 3
 625-...: kid
 66E-676: juggernaut skull
 676-68E: eyeclops beam; pause menu when paused
@@ -27,3 +29,13 @@ to get the actual VRAM addresses multiply by $20.
 6FE-700: ?
 700-7B0: background plane map
 7B0-800: BG tiles
+
+
+Palette:
+
+16 colors: foreground/blocks
+ 8 colors: enemy 1
+ 8 colors: background
+ 8 colors: enemy 2
+ 8 colors: enemy 3
+16 colors: kid

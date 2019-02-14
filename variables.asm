@@ -58,6 +58,8 @@ Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
+Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
 Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
 Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
 Maniaxe_throwing_axe = $FFFFFA65 ; byte: flag
@@ -85,6 +87,7 @@ MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
 Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid    
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo
 Demo_Mode_flag = 	$FFFFFBC9	; byte (for input)
@@ -116,6 +119,7 @@ Time_SubSeconds = 	$FFFFFC1C	; word: Frames until next second countdown
 Time_Seconds_low_digit = $FFFFFC1E	; word
 Time_Seconds_high_digit = $FFFFFC20	; word
 Time_Minutes = 		$FFFFFC22	; word
+Time_Frames = 		$FFFFFC24	; word
 PlayerStart_X_pos = 	$FFFFFC2A	; word
 PlayerStart_Y_pos = 	$FFFFFC2C	; word
 Flag_X_pos = 		$FFFFFC2E	; word

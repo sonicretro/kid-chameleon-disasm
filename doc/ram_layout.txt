@@ -94,6 +94,8 @@ FFF8AE  long    Address of theme mappings
 FFF8BA  word    maximal camera X position (width in pixels - $140)
 FFF8BC  word    maximal camera Y position (height in pixels - $E0)
 FFF8D4  long    pointer to block list?
+FFF8F2  long    pointer to enemy layout
+FFF8F6  long    pointer to last two header bytes of enemy layout
 FFFA0A  word    terrain kid is standing on: 0 = normal, 1 = ice, 2 = rubber
 FFFA27  byte    flag: whether an UFO is shooting at the Kid
 FFFA6D  byte    flag whether kid is currently transforming
@@ -118,6 +120,7 @@ FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a
 FFFAD6  word    timer for storm background (counts down from 4, and if 0, display rain background)
 FFFB40	word	Level Special Effects: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 FFFB48	byte	background format (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+FFFB4A  byte    background scrolling flag: if set, don't scroll background.
 FFFB66  word    number of UFOs on screen
 FFFBC4	word	Pointer to current Keypress in Demo
 FFFBC9  byte    Demo Mode flag (for input)
@@ -141,10 +144,11 @@ FFFC12  word    offset for next random number
 FFFC14  long    random number word/long buffer
 FFFC18	word	Lives displayed on counter
 FFFC1A	word	number of diamonds from previous frame (displayed on counter?)
-FFFC1C	word	Time: Frames
+FFFC1C	word	Time: Subseconds (Frames)
 FFFC1E	word	Time: Seconds (1st digit)
 FFFC20	word	Time: Seconds (2nd digit)
 FFFC22	word	Time: Minutes
+FFFC24  word    Time: Frames (total)
 FFFC2A	word	player x start position
 FFFC2C	word	player y start position
 FFFC2E	word	flag x position
@@ -306,8 +310,8 @@ Object format for GfxObject from GfxObject RAM at FF2448:
  8: (word) ???lower word from value of a3 at allocation call; related to FFF866 etc
  A: (word) ?upper word from value of a3 at allocation call -- priority?
  C: (long) address of corresponding object (a5)
-10: (byte)
-11: (byte)
+10: (byte) priority flag: 0=low priority, 1=high priority, 2=depends on FFF896
+11: (byte) palette line
 12: (byte)
 13: (byte) flag
 14: (byte) flag: whether to move object (i.e. add vel to pos)
@@ -319,7 +323,7 @@ Object format for GfxObject from GfxObject RAM at FF2448:
 1A: (long) X position (16.16 fixed point)
 1E: (long) Y position (16.16 fixed point)
 22: (word) offset from DataIndex to current sprite (to be displayed)
-24: (word)
+24: (word) tile address to art in VRAM
 26: (long) X velocity (16.16 fixed point)
 2A: (long) Y velocity (16.16 fixed point)
 2E: (long) pointer to current anim_frame
@@ -342,7 +346,7 @@ Object format for GfxObject from GfxObject RAM at FF2448:
 3A: (word) bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
 3C: (byte) flag: whether to execute level collision
 3D: (byte) flag: whether to execute collision with the kid
-3E: (long) some x position relative to camera?
+3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
 42: (long) some y position relative to camera?
 46: ?
 48: (word)

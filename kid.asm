@@ -60,70 +60,71 @@ Default_Options = $00000000
 	include "macros.asm"
 ; ===========================================================================
 StartOfROM:
-	dc.l $FFFFF7FE
-	dc.l EntryPoint
-	dc.l loc_2D2
-	dc.l loc_2D8
-	dc.l loc_2DE
-	dc.l loc_2E4
-	dc.l loc_2EA
-	dc.l loc_2F0
-off_20:	dc.l loc_2F6
-	dc.l loc_2FC
-	dc.l loc_302
-	dc.l loc_308
-	dc.l loc_30E
-	dc.l loc_314
-	dc.l loc_31A
-	dc.l loc_320
-	dc.l loc_326
-	dc.l loc_32C
-	dc.l loc_332
-	dc.l loc_338
-	dc.l loc_33E
-	dc.l loc_344
-	dc.l loc_34A
-	dc.l loc_350
-	dc.l loc_358
-	dc.l loc_360
-	dc.l loc_368
-	dc.l loc_370
-	dc.l H_Int
-	dc.l loc_378
-	dc.l V_Int
-	dc.l EntryPoint
-	dc.l loc_388
-	dc.l loc_390
-	dc.l loc_398
-	dc.l loc_3A0
-	dc.l loc_3A8
-	dc.l loc_3B0
-	dc.l loc_3B8
-	dc.l loc_3C0
-	dc.l loc_3C8
-	dc.l loc_3D0
-	dc.l loc_3D8
-	dc.l loc_3E0
-	dc.l loc_3E8
-	dc.l loc_3F0
-	dc.l loc_3F8
-	dc.l loc_400
-	dc.l loc_408
-	dc.l loc_410
-	dc.l loc_418
-	dc.l loc_420
-	dc.l loc_428
-	dc.l loc_430
-	dc.l loc_438
-	dc.l loc_440
-	dc.l loc_448
-	dc.l loc_450
-	dc.l loc_458
-	dc.l loc_460
-	dc.l loc_468
-	dc.l loc_470
-	dc.l loc_478
-	dc.l loc_480
+Vectors:
+	dc.l Initial_stack	; Initial stack pointer value
+	dc.l EntryPoint		; Start of program
+	dc.l BusError		; Bus error
+	dc.l AddressError		; Address error (4)
+	dc.l IllegalInstruction        ; Illegal instruction
+	dc.l DivisionByZero        ; Division by zero
+	dc.l ChkException        ; CHK exception
+	dc.l TRAPVException        ; TRAPV exception (8)
+off_20:	dc.l PrivilegeViolation    ; Privilege violation
+	dc.l TraceException        ; TRACE exception
+	dc.l LineAEmulator        ; Line-A emulator
+	dc.l LineFEmulator        ; Line-F emulator (12)
+	dc.l Vector13        ; Unused (reserved)
+	dc.l Vector14        ; Unused (reserved)
+	dc.l Vector15        ; Unused (reserved)
+	dc.l Vector16        ; Unused (reserved) (16)	
+	dc.l Vector17        ; Unused (reserved)
+	dc.l Vector18        ; Unused (reserved)
+	dc.l Vector19        ; Unused (reserved)
+	dc.l Vector20        ; Unused (reserved) (20)
+	dc.l Vector21        ; Unused (reserved)
+	dc.l Vector22        ; Unused (reserved)
+	dc.l Vector23        ; Unused (reserved)
+	dc.l Vector24        ; Unused (reserved) (24)
+	dc.l SpuriousException        ; Spurious exception
+	dc.l IRQLevel1        ; IRQ level 1
+	dc.l IRQLevel2        ; IRQ level 2
+	dc.l IRQLevel3        ; IRQ level 3 (28)
+	dc.l H_Int          ; IRQ level 4 (horizontal retrace interrupt)
+	dc.l IRQLevel5        ; IRQ level 5
+	dc.l V_Int          ; IRQ level 6 (vertical retrace interrupt)
+	dc.l EntryPoint		; IRQ level 7 (32)
+	dc.l Trap00Exception        ; TRAP #00 exception
+	dc.l Trap01Exception        ; TRAP #01 exception
+	dc.l Trap02Exception        ; TRAP #02 exception
+	dc.l Trap03Exception        ; TRAP #03 exception (36)
+	dc.l Trap04Exception        ; TRAP #04 exception
+	dc.l Trap05Exception        ; TRAP #05 exception
+	dc.l Trap06Exception        ; TRAP #06 exception
+	dc.l Trap07Exception        ; TRAP #07 exception (40)
+	dc.l Trap08Exception        ; TRAP #08 exception
+	dc.l Trap09Exception        ; TRAP #09 exception
+	dc.l Trap10Exception        ; TRAP #10 exception
+	dc.l Trap11Exception        ; TRAP #11 exception (44)
+	dc.l Trap12Exception        ; TRAP #12 exception
+	dc.l Trap13Exception        ; TRAP #13 exception
+	dc.l Trap14Exception        ; TRAP #14 exception
+	dc.l Trap15Exception        ; TRAP #15 exception (48)
+	dc.l Vector49        ; Unused (reserved)
+	dc.l Vector50        ; Unused (reserved)
+	dc.l Vector51        ; Unused (reserved)
+	dc.l Vector52        ; Unused (reserved) (52)
+	dc.l Vector53        ; Unused (reserved)
+	dc.l Vector54        ; Unused (reserved)
+	dc.l Vector55        ; Unused (reserved)
+	dc.l Vector56        ; Unused (reserved) (56)
+	dc.l Vector57        ; Unused (reserved)
+	dc.l Vector58        ; Unused (reserved)
+	dc.l Vector59        ; Unused (reserved)
+	dc.l Vector60        ; Unused (reserved) (60)
+	dc.l Vector61        ; Unused (reserved)
+	dc.l Vector62        ; Unused (reserved)
+	dc.l Vector63        ; Unused (reserved)
+	dc.l Vector64        ; Unused (reserved) (64)
 ROM_Header:	dc.b "SEGA MEGA DRIVE "
 	dc.b "(C)SEGA 1991 DEC"
 	dc.b "KID CHAMELEON                                   "
@@ -274,8 +275,8 @@ j_sub_28FC: ;2B4
 j_sub_44B0: ;2B8
 	jmp	sub_44B0(pc)
 ; ===========================================================================
-j_sub_6526: ;2BC
-	jmp	sub_6526(pc)
+j_Init_Timer_and_Bonus_Flags: ;2BC
+	jmp	Init_Timer_and_Bonus_Flags(pc)
 ; ---------------------------------------------------------------------------
 	jmp	sub_8A4(pc)
 ; ===========================================================================
@@ -288,248 +289,248 @@ j_Do_Nothing: ;2C8
 j_sub_14C0: ;2CC
 	jmp	sub_14C0(pc)
 ; ---------------------------------------------------------------------------
-return_2D0:
+returnFromException:
 	rte
 ; ---------------------------------------------------------------------------
-loc_2D2:
+BusError:
 	move.w	#2,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2D8:
+AddressError:
 	move.w	#3,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2DE:
+IllegalInstruction:
 	move.w	#4,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2E4:
+DivisionByZero:
 	move.w	#5,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2EA:
+ChkException:
 	move.w	#6,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2F0:
+TRAPVException:
 	move.w	#7,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2F6:
+PrivilegeViolation:
 	move.w	#8,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2FC:
+TraceException:
 	move.w	#9,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_302:
+LineAEmulator:
 	move.w	#$A,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_308:
+LineFEmulator:
 	move.w	#$B,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_30E:
+Vector13:
 	move.w	#$C,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_314:
+Vector14:
 	move.w	#$D,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_31A:
+Vector15:
 	move.w	#$E,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_320:
+Vector16:
 	move.w	#$F,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_326:
+Vector17:
 	move.w	#$10,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_32C:
+Vector18:
 	move.w	#$11,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_332:
+Vector19:
 	move.w	#$12,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_338:
+Vector20:
 	move.w	#$13,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_33E:
+Vector21:
 	move.w	#$14,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_344:
+Vector22:
 	move.w	#$15,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_34A:
+Vector23:
 	move.w	#$16,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_350:
+Vector24:
 	move.w	#$17,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_358:
+SpuriousException:
 	move.w	#$18,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_360:
+IRQLevel1:
 	move.w	#$19,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_368:
+IRQLevel2:
 	move.w	#$1A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_370:
+IRQLevel3:
 	move.w	#$1B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_378:
+IRQLevel5:
 	move.w	#$1C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
 	move.w	#$1D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_388:
+Trap00Exception:
 	move.w	#$1E,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_390:
+Trap01Exception:
 	move.w	#$1F,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_398:
+Trap02Exception:
 	move.w	#$20,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3A0:
+Trap03Exception:
 	move.w	#$21,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3A8:
+Trap04Exception:
 	move.w	#$22,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3B0:
+Trap05Exception:
 	move.w	#$23,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3B8:
+Trap06Exception:
 	move.w	#$24,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3C0:
+Trap07Exception:
 	move.w	#$25,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3C8:
+Trap08Exception:
 	move.w	#$26,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3D0:
+Trap09Exception:
 	move.w	#$27,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3D8:
+Trap10Exception:
 	move.w	#$28,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3E0:
+Trap11Exception:
 	move.w	#$29,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3E8:
+Trap12Exception:
 	move.w	#$2A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3F0:
+Trap13Exception:
 	move.w	#$2B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3F8:
+Trap14Exception:
 	move.w	#$2C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_400:
+Trap15Exception:
 	move.w	#$2D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_408:
+Vector49:
 	move.w	#$2E,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_410:
+Vector50:
 	move.w	#$2F,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_418:
+Vector51:
 	move.w	#$30,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_420:
+Vector52:
 	move.w	#$31,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_428:
+Vector53:
 	move.w	#$32,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_430:
+Vector54:
 	move.w	#$33,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_438:
+Vector55:
 	move.w	#$34,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_440:
+Vector56:
 	move.w	#$35,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_448:
+Vector57:
 	move.w	#$36,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_450:
+Vector58:
 	move.w	#$37,d0
 loc_454:
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_458:
+Vector59:
 	move.w	#$38,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_460:
+Vector60:
 	move.w	#$39,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_468:
+Vector61:
 	move.w	#$3A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_470:
+Vector62:
 	move.w	#$3B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_478:
+Vector63:
 	move.w	#$3C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_480:
+Vector64:
 	move.w	#$3D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
 V_Int:
 	addq.l	#1,(V_Int_counter).w
@@ -562,184 +563,179 @@ unk_49C:	dc.b $14
 	dc.b   0
 	dc.b   0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 EntryPoint:
-	tst.l	($A10008).l
-	bne.s	loc_4BE
-	tst.w	($A1000C).l
+	tst.l	(HW_Port_1_Control-1).l	; test ports A and B control
+	bne.s	PortA_Ok	; If so, branch.
+	tst.w	(HW_Expansion_Control-1).l	; test port C control
 
-loc_4BE:
-	bne.s	loc_53C
-	lea	SetupValues(pc),a5
+PortA_Ok:
+	bne.s	PortC_OK ; skip the VDP and Z80 setup code if port A, B or C is ok...?
+	lea	SetupValues(pc),a5	; Load setup values array address.
 	movem.w	(a5)+,d5-d7
 	movem.l	(a5)+,a0-a4
-	move.b	-$10FF(a1),d0
-	andi.b	#$F,d0
-	beq.s	loc_4DE
-	move.l	#$53454741,$2F00(a1)
+	move.b	HW_Version-Z80_Bus_Request(a1),d0	; get hardware version
+	andi.b	#$F,d0	; Compare
+	beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
+	move.l	#'SEGA',Security_Addr-Z80_Bus_Request(a1) ; Satisfy the TMSS
 
-loc_4DE:
-	move.w	(a4),d0
-	moveq	#0,d0
-	move.l	d0,a6
-	move	a6,usp
-	moveq	#$17,d1
+SkipSecurity:
+	move.w	(a4),d0	; check if VDP works
+	moveq	#0,d0	; clear d0
+	move.l	d0,a6	; clear a6
+	move	a6,usp	; set usp to $0
+	moveq	#VDPInitValues_End-VDPInitValues-1,d1 ; run the following loop $18 times
 
-loc_4E8:
-	move.b	(a5)+,d5
-	move.w	d5,(a4)
-	add.w	d7,d5
-	dbf	d1,loc_4E8
-	move.l	(a5)+,(a4)
-	move.w	d0,(a3)
-	move.w	d7,(a1)
-	move.w	d7,(a2)
+VDPInitLoop:
+	move.b	(a5)+,d5	; add $8000 to value
+	move.w	d5,(a4)	; move value to VDP register
+	add.w	d7,d5	; next register
+	dbf	d1,VDPInitLoop
+	
+	move.l	(a5)+,(a4)	; set VRAM write mode
+	move.w	d0,(a3)	; clear the screen
+	move.w	d7,(a1)	; stop the Z80
+	move.w	d7,(a2)	; reset the Z80
 
-loc_4FA:
-	btst	d0,(a1)
-	bne.s	loc_4FA
-	moveq	#$25,d2
+WaitForZ80:
+	btst	d0,(a1)	; has the Z80 stopped?
+	bne.s	WaitForZ80	; if not, branch
+	moveq	#Z80StartupCodeEnd-Z80StartupCodeBegin-1,d2
 
-loc_500:
+Z80InitLoop:
 	move.b	(a5)+,(a0)+
-	dbf	d2,loc_500
+	dbf	d2,Z80InitLoop
+	
 	move.w	d0,(a2)
-	move.w	d0,(a1)
-	move.w	d7,(a2)
+	move.w	d0,(a1)	; start the Z80
+	move.w	d7,(a2)	; reset the Z80
 
-loc_50C:
-	move.l	d0,-(a6)
-	dbf	d6,loc_50C
-	move.l	(a5)+,(a4)
-	move.l	(a5)+,(a4)
-	moveq	#$1F,d3
+ClrRAMLoop:
+	move.l	d0,-(a6)	; clear 4 bytes of RAM
+	dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
+	move.l	(a5)+,(a4)	; set VDP display mode and increment mode
+	move.l	(a5)+,(a4)	; set VDP to CRAM write
+	moveq	#bytesToLcnt($80),d3	; set repeat times
 
-loc_518:
-	move.l	d0,(a3)
-	dbf	d3,loc_518
-	move.l	(a5)+,(a4)
-	moveq	#$13,d4
+ClrCRAMLoop:
+	move.l	d0,(a3)	; clear 2 palettes
+	dbf	d3,ClrCRAMLoop	; repeat until the entire CRAM is clear
+	move.l	(a5)+,(a4)	; set VDP to VSRAM write
+	moveq	#bytesToLcnt($50),d4	; set repeat times
 
-loc_522:
-	move.l	d0,(a3)
-	dbf	d4,loc_522
-	moveq	#3,d5
+ClrVSRAMLoop:
+	move.l	d0,(a3)	; clear 4 bytes of VSRAM.
+	dbf	d4,ClrVSRAMLoop	; repeat until the entire VSRAM is clear
+	moveq	#PSGInitValues_End-PSGInitValues-1,d5	; set repeat times
 
-loc_52A:
-	move.b	(a5)+,$11(a3)
-	dbf	d5,loc_52A
+PSGInitLoop:
+	move.b	(a5)+,PSG_input-VDP_data_port(a3) ; reset the PSG
+	dbf	d5,PSGInitLoop	; repeat for other channels
 	move.w	d0,(a2)
-	movem.l	(a6),d0-a6
-	move	#$2700,sr
+	movem.l	(a6),d0-a6	; clear all registers
+	move	#$2700,sr	; set the sr
 
-loc_53C:
-	bra.s	loc_5AA
-; END OF FUNCTION CHUNK	FOR Character_CheckCollision
+PortC_OK:
+	bra.s	GameProgram	; Branch to game program.
 ; ---------------------------------------------------------------------------
 SetupValues:
-	dc.w $8000
-	dc.w $3FFF
-	dc.w $100
-	dc.l $A00000
-	dc.l $A11100
-	dc.l $A11200
-	dc.l $C00000
-	dc.l $C00004
-	dc.b   4
-	dc.b $14
-	dc.b $30 ; 0
-	dc.b $3C ; <
-	dc.b   7
-	dc.b $6C ; l
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $81 ; 
-	dc.b $37 ; 7
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b $AF ; ¯
-	dc.b   1
-	dc.b $D9 ; Ù
-	dc.b $1F
-	dc.b $11
-	dc.b $27 ; '
-	dc.b   0
-	dc.b $21 ; !
-	dc.b $26 ; &
-	dc.b   0
-	dc.b $F9 ; ù
-	dc.b $77 ; w
-	dc.b $ED ; í
-	dc.b $B0 ; °
-	dc.b $DD ; Ý
-	dc.b $E1 ; á
-	dc.b $FD ; ý
-	dc.b $E1 ; á
-	dc.b $ED ; í
-	dc.b $47 ; G
-	dc.b $ED ; í
-	dc.b $4F ; O
-	dc.b $D1 ; Ñ
-	dc.b $E1 ; á
-	dc.b $F1 ; ñ
-	dc.b   8
-	dc.b $D9 ; Ù
-	dc.b $C1 ; Á
-	dc.b $D1 ; Ñ
-	dc.b $E1 ; á
-	dc.b $F1 ; ñ
-	dc.b $F9 ; ù
-	dc.b $F3 ; ó
-	dc.b $ED ; í
-	dc.b $56 ; V
-	dc.b $36 ; 6
-	dc.b $E9 ; é
-	dc.b $E9 ; é
-	dc.b $81 ; 
-	dc.b   4
-	dc.b $8F ; 
-	dc.b   2
-	dc.b $C0 ; À
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $9F ; Ÿ
-	dc.b $BF ; ¿
-	dc.b $DF ; ß
-	dc.b $FF
+	dc.w	$8000,bytesToLcnt($10000),$100
+
+	dc.l	Z80_RAM
+	dc.l	Z80_Bus_Request
+	dc.l	Z80_Reset
+	dc.l	VDP_data_port, VDP_control_port
+
+VDPInitValues:	; values for VDP registers
+	dc.b 4			; Command $8004 - HInt off, Enable HV counter read
+	dc.b $14		; Command $8114 - Display off, VInt off, DMA on, PAL off
+	dc.b $30		; Command $8230 - Scroll A Address $C000
+	dc.b $3C		; Command $833C - Window Address $F000
+	dc.b 7			; Command $8407 - Scroll B Address $E000
+	dc.b $6C		; Command $856C - Sprite Table Address $D800
+	dc.b 0			; Command $8600 - Null
+	dc.b 0			; Command $8700 - Background color Pal 0 Color 0
+	dc.b 0			; Command $8800 - Null
+	dc.b 0			; Command $8900 - Null
+	dc.b $FF		; Command $8AFF - Hint timing $FF scanlines
+	dc.b 0			; Command $8B00 - Ext Int off, VScroll full, HScroll full
+	dc.b $81		; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
+	dc.b $37		; Command $8D37 - HScroll Table Address $DC00
+	dc.b 0			; Command $8E00 - Null
+	dc.b 1			; Command $8F01 - VDP auto increment 1 byte
+	dc.b 1			; Command $9001 - 64x32 cell scroll size
+	dc.b 0			; Command $9100 - Window H left side, Base Point 0
+	dc.b 0			; Command $9200 - Window V upside, Base Point 0
+	dc.b $FF		; Command $93FF - DMA Length Counter $FFFF
+	dc.b $FF		; Command $94FF - See above
+	dc.b 0			; Command $9500 - DMA Source Address $0
+	dc.b 0			; Command $9600 - See above
+	dc.b $80		; Command $9780	- See above + VRAM fill mode
+VDPInitValues_End:
+
+	dc.l	vdpComm($0000,VRAM,DMA) ; value for VRAM write mode
+	
+	; Z80 instructions (not the sound driver; that gets loaded later)
+Z80StartupCodeBegin: ; loc_2CA:
+    if (*)+$26 < $10000
+    save
+    CPU Z80 ; start assembling Z80 code
+    phase 0 ; pretend we're at address 0
+	xor	a	; clear a to 0
+	ld	bc,((Z80_RAM_End-Z80_RAM)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
+	ld	de,zStartupCodeEndLoc+1	; initial destination address
+	ld	hl,zStartupCodeEndLoc	; initial source address
+	ld	sp,hl	; set the address the stack starts at
+	ld	(hl),a	; set first byte of the stack to 0
+	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
+	pop	ix	; clear ix
+	pop	iy	; clear iy
+	ld	i,a	; clear i
+	ld	r,a	; clear r
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ex	af,af'	; swap af with af'
+	exx		; swap bc/de/hl with their shadow registers too
+	pop	bc	; clear bc
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ld	sp,hl	; clear sp
+	di		; clear iff1 (for interrupt handler)
+	im	1	; interrupt handling mode = 1
+	ld	(hl),0E9h ; replace the first instruction with a jump to itself
+	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+zStartupCodeEndLoc:
+    dephase ; stop pretending
+	restore
+    padding off ; unfortunately our flags got reset so we have to set them again...
+    else ; due to an address range limitation I could work around but don't think is worth doing so:
+	message "Warning: using pre-assembled Z80 startup code."
+	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
+    endif
+Z80StartupCodeEnd:
+
+	dc.w	$8104	; value for VDP display mode
+	dc.w	$8F02	; value for VDP increment
+	dc.l	vdpComm($0000,CRAM,WRITE)	; value for CRAM write mode
+	dc.l	vdpComm($0000,VSRAM,WRITE)	; value for VSRAM write mode
+
+PSGInitValues:
+	dc.b	$9F,$BF,$DF,$FF	; values for PSG channel volumes
+PSGInitValues_End:
 ; ---------------------------------------------------------------------------
 
-loc_5AA:
-	tst.w	($C00004).l
-	move	#$2700,sr
+GameProgram:
+	tst.w	(VDP_control_port).l
+	move	#$2700,sr	; Initialise stack (already done in the init routine though
 	lea	($FFFFF7FE).w,sp
-	lea	($C00000).l,a6
+	lea	(VDP_data_port).l,a6
 	moveq	#$40,d0
-	move.b	d0,($A10009).l
-	move.b	d0,($A1000B).l
-	move.b	#$1F,($A1000D).l
-	move.b	#$7F,($A10007).l
+	move.b	d0,(HW_Port_1_Control).l
+	move.b	d0,(HW_Port_2_Control).l
+	move.b	#$1F,(HW_Expansion_Control).l
+	move.b	#$7F,(HW_Expansion_Data).l
 	lea	unk_49C(pc),a0
 	moveq	#$12,d0
 	move.w	#$8000,d1
@@ -761,13 +757,13 @@ loc_604:
 	dbf	d0,loc_604
 	move.l	d7,(Options_Suboption_2PController).w
 	cmpi.w	#5,d7
-    if Default_Options = 0
+  if Default_Options = 0
 	bls.s	loc_61C
 	move.l	#0,(Options_Suboption_2PController).w
-    else
+  else
 	nop	; not strictly necessary, but avoids shifting stuff
 	move.l	#Default_Options,(Options_Suboption_2PController).w
-    endif
+  endif
 
 loc_61C:
 	; clear entire	VRAM
@@ -6573,13 +6569,13 @@ loc_6504:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6526:
+Init_Timer_and_Bonus_Flags:
 	tst.b	($FFFFFC36).w
 	beq.w	return_6550
 	sf	($FFFFFC36).w
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
-	move.w	#3,(Time_Minutes).w
+	move.w	#3,(Time_Minutes).w	; Starting timer is 3 minutes
 	clr.w	(Clocks_collected).w
 	sf	(NoHit_Bonus_Flag).w
 	sf	(NoPrize_Bonus_Flag).w
@@ -6587,7 +6583,7 @@ sub_6526:
 
 return_6550:
 	rts
-; End of function sub_6526
+; End of function Init_Timer_and_Bonus_Flags
 
 ; ---------------------------------------------------------------------------
 word_6552:	dc.w $19
@@ -14836,7 +14832,11 @@ loc_B778:
 loc_B786:
 	moveq	#0,d7
 	tst.w	(Current_Helmet).w
+	
+	; Player dies if he doesn't have a helmet
 	beq.w	Death
+	
+	; Lose the helmet
 	st	(Check_Helmet_Change).w
 	clr.w	(Current_Helmet_Available).w
 	bra.s	loc_B73C
@@ -15603,12 +15603,15 @@ loc_BE74:
 loc_BE82:
 	move.b	d4,(Number_Sprites).w
 	move.l	a2,(Addr_NextSpriteSlot).w
+	
 	tst.b	(Currently_transforming).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left	; Time left does not decrease while transforming
 	tst.b	($FFFFFB4B).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
+	
+	; Handle the math for decreasing the time left
 	subq.w	#1,(Time_SubSeconds).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
 	move.w	#$3C,(Time_SubSeconds).w
 	subq.w	#1,(Time_Seconds_low_digit).w
 	bpl.s	loc_BEE8
@@ -15618,6 +15621,8 @@ loc_BE82:
 	move.w	#5,(Time_Seconds_high_digit).w
 	subq.w	#1,(Time_Minutes).w
 	bpl.s	loc_BEE8
+	
+	; No time left
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 	clr.w	(Time_Minutes).w
@@ -15641,7 +15646,7 @@ loc_BEE8:
 	moveq	#0,d7
 	bsr.w	sub_BD0A
 
-loc_BF12:
+End_Decrease_Time_Left:
 	tst.w	(Time_Minutes).w
 	bne.w	loc_BF2A
 	cmpi.w	#2,(Time_Seconds_high_digit).w
@@ -16673,7 +16678,7 @@ Continue_Screen:
 loc_D350:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D350
 	move.l	$44(a5),d0
 	beq.s	loc_D372
@@ -16700,12 +16705,12 @@ loc_D386:
 loc_D3AA:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D3AA
 	bra.w	loc_D3F0
 ; ---------------------------------------------------------------------------
 
-lose_continue:							; Losing a Continue
+Use_Continue:							; Using a Continue (it's lost afterwards
 	subq.w	#1,(Number_Continues).w
 	sf	(Check_Helmet_Change).w
 	sf	($FFFFFC29).w
@@ -21245,7 +21250,7 @@ diamond_pickup:
 	move.l	#stru_10D6E,d7
 	jsr	(j_Init_Animation).w
 	cmpi.w	#$63,(Number_Diamonds).w		; Check if more than max diamonds
-	bne.w	diamond_increment
+	bne.w	Increase_Diamonds
 	sf	$3C(a3)
 	st	$3D(a3)
 	move.l	(Addr_GfxObject_Kid).w,a4
@@ -21260,7 +21265,7 @@ diamond_pickup:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-diamond_increment:
+Increase_Diamonds:
 	move.l	$1A(a3),d0
 	sub.l	(Camera_X_pos).w,d0
 	move.l	d0,$3E(a3)
@@ -21407,14 +21412,16 @@ loc_FF92:
 
 loc_FFDE:
 	move.w	(Time_Minutes).w,d7
-	addq.w	#3,d7
-	cmpi.w	#$A,d7
-	blt.w	loc_FFF8
-	move.w	#$A,d7
+	addq.w	#3,d7	; Clocks are worth 3 minutes
+	cmpi.w	#10,d7
+	blt.w	+
+	
+	; If timer is above 10 minutes, reset it to 10 minutes
+	move.w	#10,d7
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 
-loc_FFF8:
++
 	move.w	d7,(Time_Minutes).w
 
 loc_FFFC:
@@ -23777,7 +23784,7 @@ Load_InGame:
 	jsr	(j_Initialize_Platforms).w
 	jsr	(j_sub_28FC).w
 	jsr	(j_sub_44B0).w
-	jsr	(j_sub_6526).w
+	jsr	(j_Init_Timer_and_Bonus_Flags).w
 	jsr	(j_StopMusic).l
 	move.l	#$F,-(sp)
 	jsr	(sub_E133C).l
@@ -52707,7 +52714,7 @@ stru_3B83C:
 	dc.b   0
 ; ---------------------------------------------------------------------------
 
-;loc_3B84A:
+;Trap06Exception4A:
 Enemy14_SpinningTwins_Init:
 	addi.w	#1,($FFFFFA06).w
 	jsr	(j_Hibernate_Object_1Frame).w

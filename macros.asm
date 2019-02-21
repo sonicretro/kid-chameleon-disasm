@@ -104,6 +104,10 @@ dma68kToVDP macro source,dest,length,type
 	move.w	(DMA_data_thunk).w,4(a6)
 	move.w	(DMA_data_thunk+2).w,4(a6)
     endm
+	
+; calculates initial loop counter value for a dbf loop
+; that writes n bytes total at 4 bytes per iteration
+bytesToLcnt function n,n>>2-1
 
 ; ---------------------------------------------------------------------------
 ; Z80 addresses

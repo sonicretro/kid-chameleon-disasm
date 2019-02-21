@@ -2,6 +2,8 @@
 ; Constants
 ; ---------------------------------------------------------------------------
 
+Initial_stack = $FFFFF7FE
+
 ; Background music
 bgm_Mountain = 0
 bgm_Desert = 1

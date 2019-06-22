@@ -871,3 +871,4 @@ FE976 FFFFA sound/GEMS_Sounddriver.bin
 144AA 144BA theme/palette_permutations/mountain_bg.bin
 144BA 144CA theme/palette_permutations/hill_bg.bin
 144CA 144DA theme/palette_permutations/hill_alt_bg.bin
+67D9C 681FC ingame/misc/unused_67D9C.bin

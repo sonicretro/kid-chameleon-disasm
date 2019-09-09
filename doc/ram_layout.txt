@@ -79,6 +79,7 @@ FFF854  long    Address of next available GfxObject slot
 FFF858  long    Address of first GfxObject in GfxObject_RAM
 FFF85C  word    Number of GfxObjects
 FFF85E  long    Pointer to GfxObject that belongs to the kid
+FFF866  long    Pointer to GfxObject that belongs to the kid's projectile (Maniaxe axe, Juggernaut skull, Red Stealth slash). 0 if none present.
 FFF890  byte    flag indicating palette has changed
 FFF89E  word    width in 16x16 blocks
 FFF89C  word    width in 8x8 tiles
@@ -100,6 +101,7 @@ FFFA0A  word    terrain kid is standing on: 0 = normal, 1 = ice, 2 = rubber
 FFFA27  byte    flag: whether an UFO is shooting at the Kid
 FFFA6D  byte    flag whether kid is currently transforming
 FFFA70  word    Telepad timer
+FFFA76  word    Cyclone y-acceleration
 FFFA7A  word    Kid hitbox left
 FFFA7C  word    Kid hitbox right
 FFFA7E  word    Kid hitbox top

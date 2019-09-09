@@ -12,6 +12,7 @@ EnemyStatus_Table = 	$FFFFF8FE	; ? bytes. 2 bytes per entry
 Platform_RAM =		$FFFFEDBA	; $264 bytes, $22 bytes per platform ($12 platforms)
 
 Diamond_power_timer = 	$FFFFF5BE	; word
+Initial_stack = 	$FFFFF7FE
 V_Int_counter = 	$FFFFF806	; word: number of frames since start of game
 Frame_Counter = 	$FFFFF808	; word: frame counter (adds 1 every frame)
 V_Int_Done = 		$FFFFF80A	; byte: Indicator that V-Int has occurred
@@ -44,6 +45,7 @@ Addr_NextFreeGfxObjectSlot = $FFFFF854	; long
 Addr_FirstGfxObjectSlot = $FFFFF858	; long
 Number_GfxObjects =	$FFFFF85C	; word
 Addr_GfxObject_Kid = 	$FFFFF85E	; long
+Addr_GfxObject_KidProjectile = 	$FFFFF866 ; long
 PaletteToDMA_Flag = 	$FFFFF890	; byte
 Level_width_blocks = 	$FFFFF89E	; word
 Level_width_tiles = 	$FFFFF89C	; word
@@ -61,15 +63,16 @@ Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
 Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
 Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
 Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
-Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
-Maniaxe_throwing_axe = $FFFFFA65 ; byte: flag
+Character_Movement =	$FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
+Maniaxe_throwing_axe =	$FFFFFA65 ; byte: flag
 Cyclone_flying =	$FFFFFA68 ; byte: flag
 Iron_Knight_block_breaker = $FFFFFA6B ; byte: flag
 Currently_transforming = $FFFFFA6D	; byte: flag
-Berzerker_charging = $FFFFFA6E ; byte: flag
+Berzerker_charging =	$FFFFFA6E ; byte: flag
 Red_Stealth_sword_swing = $FFFFFA6F ; byte: flag (FF = sideways, 7F strike downwards
 Telepad_timer = 	$FFFFFA70	; word
-Just_received_damage = $FFFFFA73 ; byte: flag
+Just_received_damage =	$FFFFFA73	; byte: flag
+Cyclone_YAcceleration =	$FFFFFA76	; word
 Kid_hitbox_left =	$FFFFFA7A	; word
 Kid_hitbox_right =	$FFFFFA7C	; word
 Kid_hitbox_top =	$FFFFFA7E	; word
@@ -170,5 +173,37 @@ Options_Suboption_Controls = $FFFFFDCA	; word: selected sub-option 2 in options 
 Options_Selected_Option = $FFFFFDCC	; word: currently selected option in options menu, also in level select
 Clocks_collected = 	$FFFFFDCE	; word
 
-
-
+; GfxObject RAM offsets
+; 0: (long) pointer to next objectData
+; 4: (long) ???address to some kind of gfxobject slot
+; 8: (word) ???lower word from value of a3 at allocation call; related to FFF866 etc
+; A: (word) ?upper word from value of a3 at allocation call -- priority?
+addr_parentobject = $C	; long: address of corresponding object (a5)
+priority = $10		; byte: priority flag: 0=low priority, 1=high priority, 2=depends on FFF896
+palette_line = $11	; byte
+;12: (byte)
+;13: (byte) flag
+is_moved = $14		; flag
+is_animated = $15	; flag
+x_direction = $16	; flag: horizontal direction.
+;17: (byte)
+;18: (byte) flag
+;19: (byte) flag
+x_pos = $1A		; long
+y_pos = $1E		; long
+addroffset_sprite = $22	; word
+vram_tile = $24		; word: tile address (index) to art in VRAM
+x_vel = $26		; long
+y_vel = $2A		; long
+addr_current_anim = $2E	; long: pointer to current anim_frame
+animation_timer = $32	; word
+;34
+collision_type = $38	; word
+object_meta = $3A	; word: bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
+has_level_collision = $3C; flag
+has_kid_collision = $3D	; flag
+;3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
+;42: (long) some y position relative to camera?
+;46: ?
+;48: (word)
+;4A: (word)

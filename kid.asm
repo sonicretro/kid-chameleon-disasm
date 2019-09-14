@@ -904,7 +904,7 @@ Mode_Level:
 	bsr.w	sub_21F8
 	tst.b	($FFFFFB49).w
 	bne.s	loc_80C
-	jsr	(sub_3F57E).l
+	jsr	(j_DiamondPower_Run).l
 	jsr	(j_sub_DFB0).l
 
 loc_7FC:
@@ -947,7 +947,7 @@ loc_83E:
 	bsr.w	Make_SpritesFromGfxObjects
 	tst.b	($FFFFFB49).w
 	bne.s	loc_892
-	jsr	(sub_3F582).l
+	jsr	(j_DiamondPower_CompileSprites).l
 	bsr.w	Make_SpritesFromPlatforms
 
 loc_892:
@@ -1641,7 +1641,7 @@ loc_E1E:
 	move.l	(a5),d0	; get address of next object
 	beq.s	loc_E58	; if 0, quit executing objects, we're done
 	move.l	d0,a5	; a5 is now address of object
-	tst.b	($FFFFFA2A).w
+	tst.b	(SamuraiHazeActive).w
 	beq.w	loc_E3E
 	tst.b	$10(a5)
 	beq.w	loc_E3E
@@ -2522,7 +2522,7 @@ loc_141A:
 
 ;sub_1444
 GfxObjects_MoveAndAnimate:
-	tst.b	($FFFFFA2A).w
+	tst.b	(SamuraiHazeActive).w
 	bne.s	loc_1462
 	lea	(Addr_FirstGfxObjectSlot).w,a3
 
@@ -3494,7 +3494,7 @@ loc_1CF2:
 
 loc_1D00:
 	addq.w	#2,sp
-	tst.b	($FFFFFA2B).w
+	tst.b	(KidIsInvulnerable).w
 	beq.w	return_1D32
 	move.w	$38(a0),d7
 	beq.w	return_1D32
@@ -7732,7 +7732,7 @@ sub_7428:
 	beq.w	return_7450
 	cmpi.w	#5,(Number_Diamonds).w
 	blt.s	return_7450
-	st	($FFFFFA29).w
+	st	(FiveWayShotReady).w
 
 return_7450:
 	rts
@@ -7986,7 +7986,7 @@ loc_7742:
 loc_7772:
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_779C
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_779C
 	addq.w	#1,($FFFFFB58).w
 	cmpi.w	#Micromax,(Current_Helmet).w
@@ -10233,7 +10233,7 @@ loc_8C70:
 	bne.w	loc_A426
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_8CB6
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_8CB6
 	addq.w	#1,($FFFFFB58).w
 	move.w	(Current_Helmet).w,d0
@@ -12928,7 +12928,7 @@ loc_A44A:
 	mulu.w	d1,d0
 	lsl.l	#4,d0
 	neg.l	d0
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	beq.w	loc_A466
 	addi.l	#$20000,d0
 
@@ -13540,7 +13540,7 @@ kid_flip:
 	beq.w	loc_ACB0
 	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_AC42
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_AC42
 	move.w	($FFFFFA78).w,d7
 	addq.w	#5,d7
@@ -24278,7 +24278,7 @@ loc_11EFA:
 	jsr	(j_sub_F06A).l
 	jsr	(j_loc_DF22).l
 	bsr.w	Init_SpriteAttr_HUD
-	jsr	(sub_3F57A).l
+	jsr	(j_Clear_DiamondPowerObjectRAM).l
 	move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 	move.w	#$7FF,d0
 
@@ -38467,7 +38467,7 @@ loc_32906:
 	moveq	#$A,d3
 	sf	d2
 	st	has_kid_collision(a3)
-	st	($FFFFFA28).w
+	st	(KidGrabbedByHand).w
 
 loc_3292E:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -38496,7 +38496,7 @@ loc_3294C:
 loc_32970:
 	move.w	#$100,$A(a3)
 	jsr	(j_sub_FF6).w
-	sf	($FFFFFA28).w
+	sf	(KidGrabbedByHand).w
 	move.w	#9,d6
 	move.w	#$E,d7
 	bsr.w	loc_3639E
@@ -38610,7 +38610,7 @@ loc_32A86:
 	beq.s	return_32A10
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	return_32A10
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	beq.w	loc_32906
 	rts
 ; ---------------------------------------------------------------------------
@@ -47411,7 +47411,7 @@ off_37A02:	dc.w LnkTo_unk_C8488-Data_Index
 
 
 sub_37A22:
-	tst.b	($FFFFF5B8).w
+	tst.b	(Diamond_power_active).w
 	beq.s	loc_37A3E
 	move.b	($FFFFF809).w,d7
 	andi.b	#8,d7
@@ -47538,7 +47538,7 @@ off_37AE0:	dc.w LnkTo_unk_C8488-Data_Index
 
 
 sub_37AF0:
-	tst.b	($FFFFF5B8).w
+	tst.b	(Diamond_power_active).w
 	beq.s	loc_37B0C
 	move.b	($FFFFF809).w,d6
 	andi.b	#8,d6
@@ -57979,83 +57979,78 @@ loc_3F406:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_3F57A:
-	jmp	sub_3F586(pc)
-; End of function sub_3F57A
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_3F57E:
-	jmp	power_start(pc)
-; End of function sub_3F57E
+;sub_3F57A:
+j_Clear_DiamondPowerObjectRAM:
+	jmp	Clear_DiamondPowerObjectRAM(pc)
+; End of function j_Clear_DiamondPowerObjectRAM
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_3F582:
-	jmp	loc_3F798(pc)
-; End of function sub_3F582
+;sub_3F57E:
+j_DiamondPower_Run:
+	jmp	DiamondPower_Run(pc)
+; End of function j_DiamondPower_Run
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
+;sub_3F582:
+j_DiamondPower_CompileSprites:
+	jmp	DiamondPower_CompileSprites(pc)
+; End of function j_DiamondPower_CompileSprites
 
-sub_3F586:
-	lea	($FFFFF5A4).w,a0
+
+; =============== S U B	R O U T	I N E =======================================
+
+;sub_3F586:
+Clear_DiamondPowerObjectRAM:
+	lea	(Addr_FirstDPObjectSlot).w,a0
 	lea	($FFFFF612).w,a1
-
-loc_3F58E:
+-
 	move.w	#0,(a0)+
 	cmp.w	a1,a0
-	blt.s	loc_3F58E
-; End of function sub_3F586
+	blt.s	-
+; End of function Clear_DiamondPowerObjectRAM
 
 
 ; =============== S U B	R O U T	I N E =======================================
+; initialize diamond power object slots
 
-
-sub_3F596:
+;sub_3F596:
+Initialize_DiamondPowerObjectSlots:
 	lea	($FFFFF2AC).w,a0
-	move.l	a0,($FFFFF5A8).w
+	move.l	a0,(Addr_NextFreeDPObjectSlot).w
 	moveq	#8,d0
-
-loc_3F5A0:
+-
 	lea	$4C(a0),a1
 	move.l	a1,4(a0)
 	move.l	a1,a0
-	dbf	d0,loc_3F5A0
+	dbf	d0,-
 	clr.l	4(a0)
-	clr.l	($FFFFF5A4).w
-	clr.l	($FFFFF5AC).w
+	clr.l	(Addr_FirstDPObjectSlot).w
+	clr.l	(Addr_LastDPObjectSlot).w
 	rts
-; End of function sub_3F596
+; End of function Initialize_DiamondPowerObjectSlots
 
 
 ; =============== S U B	R O U T	I N E =======================================
+; find new diamond power object slot (add it to the beginning of list)
 
-
-sub_3F5BC:
-	move.l	($FFFFF5A8).w,a0
-	move.l	4(a0),($FFFFF5A8).w
-	move.l	($FFFFF5A4).w,4(a0)
-	tst.l	($FFFFF5A4).w
-	bne.s	loc_3F5D6
-	move.l	a0,($FFFFF5AC).w
-
-loc_3F5D6:
-	move.l	a0,($FFFFF5A4).w
+;sub_3F5BC:
+Allocate_DiamondPowerObjectSlot:
+	move.l	(Addr_NextFreeDPObjectSlot).w,a0	; next free object slot
+	move.l	4(a0),(Addr_NextFreeDPObjectSlot).w	; the successor in the list become the next free object slot
+	move.l	(Addr_FirstDPObjectSlot).w,4(a0)	; previously first object slot becomes successor of our new object
+	tst.l	(Addr_FirstDPObjectSlot).w
+	bne.s	+			; if the first object slot was empty
+	move.l	a0,(Addr_LastDPObjectSlot).w	; then our new object is also the last object in the list
++
+	move.l	a0,(Addr_FirstDPObjectSlot).w	; our object is the first in the list, regardless
 	move.w	#1,8(a0)
 	move.w	#0,$38(a0)
 	rts
-; End of function sub_3F5BC
-
+; End of function Allocate_DiamondPowerObjectSlot
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -58072,32 +58067,32 @@ loc_3F5EC:
 ; ---------------------------------------------------------------------------
 
 loc_3F5F8:
-	cmp.l	($FFFFF5AC).w,a0
+	cmp.l	(Addr_LastDPObjectSlot).w,a0
 	bne.s	loc_3F610
 	cmpi.l	#$FFFFF5A0,a1
 	bne.s	loc_3F60C
-	clr.l	($FFFFF5AC).w
+	clr.l	(Addr_LastDPObjectSlot).w
 	bra.s	loc_3F610
 ; ---------------------------------------------------------------------------
 
 loc_3F60C:
-	move.l	a1,($FFFFF5AC).w
+	move.l	a1,(Addr_LastDPObjectSlot).w
 
 loc_3F610:
 	move.l	4(a0),4(a1)
-	move.l	($FFFFF5A8).w,4(a0)
-	move.l	a0,($FFFFF5A8).w
+	move.l	(Addr_NextFreeDPObjectSlot).w,4(a0)
+	move.l	a0,(Addr_NextFreeDPObjectSlot).w
 	move.l	a1,a0
-	tst.l	($FFFFF5A4).w
-	sne	($FFFFF5B8).w
+	tst.l	(Addr_FirstDPObjectSlot).w	; while we still have diamond power objects
+	sne	(Diamond_power_active).w	; set the diamond power flag.
 	beq.s	loc_3F62E
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_3F62E:
-	sf	($FFFFFA29).w
-	sf	($FFFFFA2A).w
-	sf	($FFFFFA2B).w
+	sf	(FiveWayShotReady).w
+	sf	(SamuraiHazeActive).w
+	sf	(KidIsInvulnerable).w
 	rts
 ; End of function sub_3F5E8
 
@@ -58106,12 +58101,12 @@ loc_3F62E:
 
 
 sub_3F63C:
-	clr.l	($FFFFF5A4).w
-	clr.l	($FFFFF5A8).w
-	sf	($FFFFF5B8).w
-	sf	($FFFFFA29).w
-	sf	($FFFFFA2A).w
-	sf	($FFFFFA2B).w
+	clr.l	(Addr_FirstDPObjectSlot).w
+	clr.l	(Addr_NextFreeDPObjectSlot).w
+	sf	(Diamond_power_active).w
+	sf	(FiveWayShotReady).w
+	sf	(SamuraiHazeActive).w
+	sf	(KidIsInvulnerable).w
 	rts
 ; End of function sub_3F63C
 
@@ -58119,113 +58114,119 @@ sub_3F63C:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-power_start:
+DiamondPower_Run:
 	move.l	#$FFFFF5C2,($FFFFF5B0).w
-	tst.b	($FFFFF5B8).w
-	bne.w	loc_3F71E
-	move.w	(Current_Helmet).w,d0		; Check if helmet ID is Juggernaut
-	cmpi.w	#5,d0
+	tst.b	(Diamond_power_active).w
+	bne.w	DiamondPower_Main_Execute
+	move.w	(Current_Helmet).w,d0	; Check if helmet ID is Juggernaut
+	cmpi.w	#Juggernaut,d0
 	bne.s	+
-	tst.b	($FFFFFA29).w
-	bne.w	five_way_shot
-	bra.s	power_fail
+	tst.b	(FiveWayShotReady).w
+	bne.w	DiamondPower_Init_FiveWayShot
+	bra.s	DiamondPower_rts
 ; ---------------------------------------------------------------------------
 
 +
 	move.b	(Ctrl_Held).w,d1
 	andi.b	#$C0,d1
 	cmpi.b	#$C0,d1
-	bne.s	power_fail
-	cmpi.w	#4,d0						; Check if Helmet ID is Eyeclops
-	bne.s	power_check
+	bne.s	DiamondPower_rts
+	cmpi.w	#Eyeclops,d0		; Check if Helmet ID is Eyeclops
+	bne.s	DiamondPower_Check
 
-power_fail:									; Basic return statement
+DiamondPower_rts:
 	rts
 ; ---------------------------------------------------------------------------
 
-power_check:									; Checks performed when a Diamond Power is input
+DiamondPower_Check:	; Checks performed when a Diamond Power is input
 	cmpi.w	#$14,(Number_Diamonds).w		; Compare diamonds to 20
-	blt.s	power_fail						; If <, return
+	blt.s	DiamondPower_rts			; If <, return
 	subi.w	#$14,(Number_Diamonds).w		; Subtract 20 from diamonds
 	move.w	(Current_Helmet).w,d0			; Helmet ID -> d0
 	cmpi.w	#$1E,(Number_Diamonds).w		; Compare diamonds to 30
-	blt.s	+									; If <, execute diamond power
+	blt.s	+					; If <, execute diamond power
 	subi.w	#$1E,(Number_Diamonds).w		; Subtract 30 from diamonds
-	addi.w	#$A,d0							; Add 10 to d0
+	addi.w	#$A,d0					; Add 10 to d0
 
-+												; Carry out Diamond Power
-	move.w	d0,($FFFFF5BA).w
++	; Initialize Diamond Power
+	move.w	d0,(Diamond_power_ID).w
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	off_3F6CE(pc,d0.w),a0
-	st	($FFFFF5B8).w
+	move.l	DiamondPower_Init_Index(pc,d0.w),a0
+	st	(Diamond_power_active).w
 	move.l	a0,-(sp)
-	bsr.w	sub_3F596
+	bsr.w	Initialize_DiamondPowerObjectSlots
 	move.l	(sp)+,a0
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-off_3F6CE:	; Looks like pointers to definitions of each diamond power
-	dc.l loc_3F7D0
-	dc.l loc_3FC78
-	dc.l loc_3FDF4
-	dc.l loc_3FC82
-	dc.l 0
-	dc.l five_way_shot
-	dc.l loc_3F7D0
-	dc.l loc_3FC78
-	dc.l loc_3F7D0
-	dc.l loc_3F8EE
-	dc.l loc_3F90C
-	dc.l loc_40206
-	dc.l loc_3FDE8
-	dc.l loc_3F90C
-	dc.l 0
-	dc.l five_way_shot
-	dc.l loc_3FB90
-	dc.l loc_3FFE4
-	dc.l loc_3FB94
-	dc.l loc_3F8D0
+;off_3F6CE:
+DiamondPower_Init_Index:	; Initialization code for each diamond power
+	; 20-diamond power
+	dc.l DiamondPower_Init_CircleOfDoom		; The_Kid - Circle of Doom
+	dc.l DiamondPower_Init_Invulnerability		; Skycutter - Invulnerability
+	dc.l DiamondPower_Init_SlashingRain		; Cyclone - Slashing Rain
+	dc.l DiamondPower_Init_SamuraiHaze		; Red_Stealth - Samurai Haze
+	dc.l 0						; Eyeclops - invalid
+	dc.l DiamondPower_Init_FiveWayShot		; Juggernaut - not accessed via this index
+	dc.l DiamondPower_Init_CircleOfDoom		; Iron_Knight - Circle of Doom
+	dc.l DiamondPower_Init_Invulnerability		; Berzerker - Invulnerability
+	dc.l DiamondPower_Init_CircleOfDoom		; Maniaxe - Circle of Doom
+	dc.l DiamondPower_Init_MiniSnake		; Micromax - Mini-Snake
+	; 50 diamond powers
+	dc.l DiamondPower_Init_DeathSnake		; The_Kid - Death Snake
+	dc.l DiamondPower_Init_DeathSnake2		; Skycutter - Death Snake
+	dc.l DiamondPower_Init_TrackingRain		; Cyclone - Tracking Rain
+	dc.l DiamondPower_Init_DeathSnake		; Red_Stealth - Death Snake
+	dc.l 0						; Eyeclops - invalid
+	dc.l DiamondPower_Init_FiveWayShot		; Juggernaut - not accessed via this index
+	dc.l DiamondPower_Init_ExtraHitPoint		; Iron_Knight - Extra Hit Point
+	dc.l DiamondPower_Init_WallOfDeath		; Berzerker - Wall of Death
+	dc.l DiamondPower_Init_ExtraLife		; Maniaxe - Extra Life
+	dc.l DiamondPower_Init_SwiftMiniSnake		; Micromax - Swift Mini-Snake
 ; ---------------------------------------------------------------------------
-
-loc_3F71E:
+;loc_3F71E:
+DiamondPower_Main_Execute:
 	move.l	(Addr_NextSpriteSlot).w,a2
 	moveq	#0,d2
 	move.b	(Number_Sprites).w,d2
 	move.l	($FFFFF5B0).w,a4
-	move.w	($FFFFF5BA).w,d0
+	move.w	(Diamond_power_ID).w,d0
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	off_3F748(pc,d0.w),a0
+	move.l	DiamondPower_Main_Index(pc,d0.w),a0
 	jsr	(a0)
 	move.l	a2,(Addr_NextSpriteSlot).w
 	move.b	d2,(Number_Sprites).w
 	move.l	a4,($FFFFF5B0).w
 	rts
 ; ---------------------------------------------------------------------------
-off_3F748:
-	dc.l loc_3F7FE
-	dc.l loc_3FD14
-	dc.l loc_3FE04
-	dc.l loc_3FD14
-	dc.l 0
-	dc.l loc_40138
-	dc.l loc_3F7FE
-	dc.l loc_3FD14
-	dc.l loc_3F7FE
-	dc.l loc_3F974
-	dc.l loc_3F974
-	dc.l loc_4020A
-	dc.l loc_3FE04
-	dc.l loc_3F974
-	dc.l 0
-	dc.l loc_40138
-	dc.l loc_3FBC4
-	dc.l loc_40012
-	dc.l loc_3FBC4
-	dc.l loc_3F974
+; off_3F748:
+DiamondPower_Main_Index:; Running code for each diamond power
+	; 20-diamond power
+	dc.l DiamondPower_Main_CircleOfDoom	; The_Kid - Circle of Doom
+	dc.l DiamondPower_Main_InvulnAndHaze	; Skycutter - Invulnerability
+	dc.l DiamondPower_Main_SlashingRain	; Cyclone - Slashing Rain
+	dc.l DiamondPower_Main_InvulnAndHaze	; Red_Stealth - Samurai Haze
+	dc.l 0					; Eyeclops - invalid
+	dc.l DiamondPower_Main_FiveWayShot	; Juggernaut - 5-Way Shot
+	dc.l DiamondPower_Main_CircleOfDoom	; Iron_Knight - Circle of Doom
+	dc.l DiamondPower_Main_InvulnAndHaze	; Berzerker - Invulnerability
+	dc.l DiamondPower_Main_CircleOfDoom	; Maniaxe - Circle of Doom
+	dc.l DiamondPower_Main_Snake		; Micromax - Mini-Snake
+	; 50 diamond powers
+	dc.l DiamondPower_Main_Snake		; The_Kid - Death Snake
+	dc.l DiamondPower_Main_Snake2		; Skycutter - Death Snake v2
+	dc.l DiamondPower_Main_SlashingRain	; Cyclone - Tracking Rain
+	dc.l DiamondPower_Main_Snake		; Red_Stealth - Death Snake
+	dc.l 0					; Eyeclops - invalid
+	dc.l DiamondPower_Main_FiveWayShot	; Juggernaut - 5-Way Shot
+	dc.l DiamondPower_Main_ExtraHPLife	; Iron_Knight - Extra Hit Point
+	dc.l DiamondPower_Main_WallOfDeath	; Berzerker - Wall of Death
+	dc.l DiamondPower_Main_ExtraHPLife	; Maniaxe - Extra Life
+	dc.l DiamondPower_Main_Snake		; Micromax - Swift Mini-Snake
 ; ---------------------------------------------------------------------------
-
-loc_3F798:
+;loc_3F798:
+DiamondPower_CompileSprites:
 	move.l	($FFFFF5B0).w,a0
 	lea	($FFFFF5C2).w,a1
 	cmp.l	a0,a1
@@ -58252,8 +58253,8 @@ loc_3F7AE:
 return_3F7CE:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3F7D0:
+;loc_3F7D0:
+DiamondPower_Init_CircleOfDoom:
 	moveq	#8,d1
 	move.l	#$10000,d2
 	divu.w	d1,d2
@@ -58265,7 +58266,7 @@ loc_3F7D0:
 	subq.w	#1,d1
 
 loc_3F7E6:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.l	d0,$3E(a0)
 	clr.w	$40(a0)
 	move.l	d3,$42(a0)
@@ -58274,13 +58275,13 @@ loc_3F7E6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3F7FE:
+DiamondPower_Main_CircleOfDoom:
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3F81A
 	rts
 ; ---------------------------------------------------------------------------
@@ -58373,64 +58374,46 @@ byte_3F8B4:	dc.b 0
 	dc.b   6
 	dc.b   6
 ; ---------------------------------------------------------------------------
-
-loc_3F8D0:
+;loc_3F8D0:
+DiamondPower_Init_SwiftMiniSnake:
 	moveq	#$10,d4
 	move.w	#$480,d5
-	lea	unk_3F8E2(pc),a2
+	lea	DiamondPower_InitData_SwiftMiniSnake(pc),a2
 	move.w	#$4B0,(Diamond_power_timer).w
-	bra.s	loc_3F91C
+	bra.s	DiamondPower_Init_Snake
 ; ---------------------------------------------------------------------------
-unk_3F8E2:	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
+;unk_3F8E2:
+DiamondPower_InitData_SwiftMiniSnake:	; diamond sizes?
+	dc.w   5,  4,  3,  2,  1,  1
 ; ---------------------------------------------------------------------------
-
-loc_3F8EE:
+;loc_3F8EE:
+DiamondPower_Init_MiniSnake:
 	moveq	#6,d4
 	move.w	#$300,d5
-	lea	unk_3F900(pc),a2
+	lea	DiamondPower_InitData_MiniSnake(pc),a2
 	move.w	#$1E0,(Diamond_power_timer).w
-	bra.s	loc_3F91C
+	bra.s	DiamondPower_Init_Snake
 ; ---------------------------------------------------------------------------
-unk_3F900:	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
+;unk_3F900:
+DiamondPower_InitData_MiniSnake:	; diamond sizes?
+	dc.w   4,  3,  2,  1,  1,  1
 ; ---------------------------------------------------------------------------
-
-loc_3F90C:
-
+;loc_3F90C:
+DiamondPower_Init_DeathSnake:
 	move.w	#$4B0,(Diamond_power_timer).w
-	lea	unk_3F968(pc),a2
+	lea	DiamondPower_InitData_DeathSnake(pc),a2
 	moveq	#6,d4
 	move.w	#$400,d5
 
-loc_3F91C:
+;loc_3F91C:
+DiamondPower_Init_Snake:
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	x_pos(a3),d6
 	move.w	y_pos(a3),d7
 	moveq	#5,d1
 
 loc_3F92A:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	cmpi.w	#5,d1
 	bne.s	loc_3F946
 	move.l	a0,($FFFFF5B4).w
@@ -58452,23 +58435,13 @@ loc_3F946:
 	dbf	d1,loc_3F92A
 	rts
 ; ---------------------------------------------------------------------------
-unk_3F968:	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
+;unk_3F968:
+DiamondPower_InitData_DeathSnake:	; diamond sizes?
+	dc.w   6,  6,  5,  4,  3,  2
 ; ---------------------------------------------------------------------------
 
-loc_3F974:
-
-	move.l	($FFFFF5A4).w,a1
+DiamondPower_Main_Snake:
+	move.l	(Addr_FirstDPObjectSlot).w,a1
 
 loc_3F978:
 	move.l	a1,a0
@@ -58655,7 +58628,7 @@ loc_3FAD4:
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FB20
 	rts
 ; ---------------------------------------------------------------------------
@@ -58707,13 +58680,13 @@ loc_3FB88:
 	bne.s	loc_3FB20
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FB90:
+;loc_3FB90:
+DiamondPower_Init_ExtraHitPoint:
 	moveq	#8,d2
 	bra.s	loc_3FB96
 ; ---------------------------------------------------------------------------
-
-loc_3FB94:
+;loc_3FB94:
+DiamondPower_Init_ExtraLife:
 	moveq	#7,d2
 
 loc_3FB96:
@@ -58721,7 +58694,7 @@ loc_3FB96:
 	moveq	#9,d1
 
 loc_3FB9A:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.l	#$400000,$3E(a0)
 	move.l	d3,$42(a0)
 	addi.l	#$199999,d3
@@ -58732,14 +58705,14 @@ loc_3FB9A:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3FBC4:
+DiamondPower_Main_ExtraHPLife:
 	addq.w	#1,(Diamond_power_timer).w
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FBE4
 	rts
 ; ---------------------------------------------------------------------------
@@ -58807,22 +58780,23 @@ loc_3FC56:
 	bne.w	loc_3FBE4
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FC78:
-	st	($FFFFFA2B).w
-	lea	unk_3FCEC(pc),a1
+;loc_3FC78:
+DiamondPower_Init_Invulnerability:
+	st	(KidIsInvulnerable).w
+	lea	DiamondPower_InitData_Invulnerability(pc),a1
 	bra.s	loc_3FC8A
 ; ---------------------------------------------------------------------------
-
-loc_3FC82:
-	st	($FFFFFA2A).w
-	lea	unk_3FCC4(pc),a1
+;loc_3FC82:
+DiamondPower_Init_SamuraiHaze:
+	st	(SamuraiHazeActive).w
+	lea	DiamondPower_InitData_SamuraiHaze(pc),a1
 
 loc_3FC8A:
+	; load 10 diamonds to circle around the kid
 	moveq	#9,d1
 
 loc_3FC8C:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	moveq	#0,d3
 	move.b	(a1)+,d3
 	move.w	d3,$3E(a0)
@@ -58840,92 +58814,36 @@ loc_3FC8C:
 	move.w	#$1E0,(Diamond_power_timer).w
 	rts
 ; ---------------------------------------------------------------------------
-unk_3FCC4:	dc.b  $C
-	dc.b $DC ; Ü
-	dc.b   0
-	dc.b   2
-	dc.b  $C
-	dc.b $DC ; Ü
-	dc.b $80 ; €
-	dc.b   2
-	dc.b  $C
-	dc.b   4
-	dc.b $80 ; €
-	dc.b   2
-	dc.b  $C
-	dc.b   4
-	dc.b   0
-	dc.b   2
-	dc.b $15
-	dc.b $E6 ; æ
-	dc.b $20
-	dc.b   2
-	dc.b $15
-	dc.b $E6 ; æ
-	dc.b $A0 ;  
-	dc.b   2
-	dc.b $15
-	dc.b $FA ; ú
-	dc.b $60 ; `
-	dc.b   2
-	dc.b $15
-	dc.b $FA ; ú
-	dc.b $E0 ; à
-	dc.b   2
-	dc.b $18
-	dc.b $F0 ; ð
-	dc.b $40 ; @
-	dc.b   2
-	dc.b $18
-	dc.b $F0 ; ð
-	dc.b $C0 ; À
-	dc.b   2
-unk_3FCEC:	dc.b  $C
-	dc.b $DC ; Ü
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $DC ; Ü
-	dc.b $80 ; €
-	dc.b   6
-	dc.b  $C
-	dc.b   4
-	dc.b $40 ; @
-	dc.b   6
-	dc.b  $C
-	dc.b   4
-	dc.b $C0 ; À
-	dc.b   6
-	dc.b $15
-	dc.b $E6 ; æ
-	dc.b $10
-	dc.b   6
-	dc.b $15
-	dc.b $E6 ; æ
-	dc.b $90 ; 
-	dc.b   6
-	dc.b $15
-	dc.b $FA ; ú
-	dc.b $30 ; 0
-	dc.b   6
-	dc.b $15
-	dc.b $FA ; ú
-	dc.b $B0 ; °
-	dc.b   6
-	dc.b $18
-	dc.b $F0 ; ð
-	dc.b $20
-	dc.b   6
-	dc.b $18
-	dc.b $F0 ; ð
-	dc.b $A0 ;  
-	dc.b   6
+;unk_3FCC4:
+DiamondPower_InitData_SamuraiHaze:	; initialization data for the 10 diamonds for Samurai Haze
+	dc.b  $C,-$24,   0,   2
+	dc.b  $C,-$24, $80,   2
+	dc.b  $C,   4, $80,   2
+	dc.b  $C,   4,   0,   2
+	dc.b $15,-$1A, $20,   2
+	dc.b $15,-$1A, $A0,   2
+	dc.b $15,  -6, $60,   2
+	dc.b $15,  -6, $E0,   2
+	dc.b $18,-$10, $40,   2
+	dc.b $18,-$10, $C0,   2
+;unk_3FCEC:
+DiamondPower_InitData_Invulnerability:	; initialization data for the 10 diamonds for Invulnerability diamonds
+	dc.b  $C,-$24,   0,   6
+	dc.b  $C,-$24, $80,   6
+	dc.b  $C,   4, $40,   6
+	dc.b  $C,   4, $C0,   6
+	dc.b $15,-$1A, $10,   6
+	dc.b $15,-$1A, $90,   6
+	dc.b $15,  -6, $30,   6
+	dc.b $15,  -6, $B0,   6
+	dc.b $18,-$10, $20,   6
+	dc.b $18,-$10, $A0,   6
 ; ---------------------------------------------------------------------------
 
-loc_3FD14:
+DiamondPower_Main_InvulnAndHaze:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Diamond_power_timer).w,d7
-	cmpi.w	#$FFE5,d7
+	cmpi.w	#-$1B,d7
 	bge.s	loc_3FD28
 	bsr.w	sub_3F63C
 	rts
@@ -58943,7 +58861,7 @@ loc_3FD2E:
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FD4C
 	rts
 ; ---------------------------------------------------------------------------
@@ -59027,14 +58945,14 @@ byte_3FDDC:	dc.b 1
 	dc.b   5
 	dc.b   5
 ; ---------------------------------------------------------------------------
-
-loc_3FDE8:
+;loc_3FDE8:
+DiamondPower_Init_TrackingRain:
 	st	($FFFFF5B9).w
 	move.w	#$708,(Diamond_power_timer).w
 	bra.s	loc_3FDFE
 ; ---------------------------------------------------------------------------
-
-loc_3FDF4:
+;loc_3FDF4:
+DiamondPower_Init_SlashingRain:
 	sf	($FFFFF5B9).w
 	move.w	#$2D0,(Diamond_power_timer).w
 
@@ -59043,7 +58961,7 @@ loc_3FDFE:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3FE04:
+DiamondPower_Main_SlashingRain:
 	subq.w	#1,(Diamond_power_timer).w
 	bmi.w	loc_3FE62
 	moveq	#6,d0
@@ -59057,7 +58975,7 @@ loc_3FE04:
 	lsl.w	#2,d7
 	divu.w	#$140,d7
 	swap	d7
-	jsr	sub_3F5BC(pc)
+	jsr	Allocate_DiamondPowerObjectSlot(pc)
 	move.w	(Camera_X_pos).w,d0
 	add.w	d7,d0
 	move.w	d0,$1A(a0)
@@ -59082,7 +59000,7 @@ loc_3FE62:
 	suba.l	d6,a5
 	move.w	(Time_Frames).w,d7
 	andi.w	#7,d7
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FE90
 	rts
 ; ---------------------------------------------------------------------------
@@ -59233,14 +59151,14 @@ loc_3FFDA:
 	bne.w	loc_3FE90
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FFE4:
+;loc_3FFE4:
+DiamondPower_Init_WallOfDeath:
 	moveq	#9,d1
 	moveq	#0,d2
 	moveq	#$D,d3
 
 loc_3FFEA:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.w	d2,$3E(a0)
 	move.w	d3,$40(a0)
 	sf	$42(a0)
@@ -59256,11 +59174,11 @@ loc_40006:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_40012:
+DiamondPower_Main_WallOfDeath:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Camera_X_pos).w,d3
 	move.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_40026
 	rts
 ; ---------------------------------------------------------------------------
@@ -59327,12 +59245,12 @@ loc_400B0:
 	rts
 ; ---------------------------------------------------------------------------
 
-five_way_shot:
+DiamondPower_Init_FiveWayShot:
 
-	st	($FFFFF5B8).w
+	st	(Diamond_power_active).w
 	subq.w	#5,(Number_Diamonds).w
-	bsr.w	sub_3F596
-	move.w	#5,($FFFFF5BA).w
+	bsr.w	Initialize_DiamondPowerObjectSlots
+	move.w	#5,(Diamond_power_ID).w
 	moveq	#4,d1
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$20,d4
@@ -59349,7 +59267,7 @@ loc_400DE:
 	lea	word_40124(pc),a5
 
 loc_400F4:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.w	#5,$24(a0)
 	move.w	d2,$3E(a0)
 	move.w	d3,$40(a0)
@@ -59364,7 +59282,7 @@ loc_40110:
 	dbf	d1,loc_400F4
 	move.w	#$50,(Diamond_power_timer).w
 	rts
-; End of function power_start
+; End of function DiamondPower_Run
 
 ; ---------------------------------------------------------------------------
 word_40124:	dc.w 6
@@ -59379,11 +59297,11 @@ word_40124:	dc.w 6
 	dc.w 4
 ; ---------------------------------------------------------------------------
 
-loc_40138:
+DiamondPower_Main_FiveWayShot:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Camera_X_pos).w,d3
 	move.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_4014C
 	rts
 ; ---------------------------------------------------------------------------
@@ -59463,13 +59381,13 @@ loc_401FC:
 	bne.w	loc_4014C
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_40206:
-	bra.w	loc_3F90C
+;loc_40206:
+DiamondPower_Init_DeathSnake2:
+	bra.w	DiamondPower_Init_DeathSnake
 ; ---------------------------------------------------------------------------
 
-loc_4020A:
-	bra.w	loc_3F974
+DiamondPower_Main_Snake2:
+	bra.w	DiamondPower_Main_Snake
 ; ---------------------------------------------------------------------------
 word_4020E:
 	dc.w	 0,$86EA

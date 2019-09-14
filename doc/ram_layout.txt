@@ -34,8 +34,8 @@ FFE9FA ?        Shooter Block Bullet RAM: ($27 objects), $C bytes per object
 FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
 FFEDBA ?        Platform RAM?: ($11 objects), $22 bytes per object
 FFF01E ?        
-FFF2B0 ?        Object RAM?
-FFF5A0 ?        Object RAM? - for collision purposes?
+FFF2AC FFF5B0   Diamond Power Object RAM: ($10 objects), $4C bytes per object
+FFF5B0 ?        Object RAM? - for collision purposes? stack space?
 ?      FFF7FE   Stack
 FFF7FE FFF862   ?
 FFF862 ?        Object RAM? - red stealth sword, axe, skull for collision purposes? - with pointers into GfxObject_RAM
@@ -54,6 +54,11 @@ FF98F2  BG tile layout buffer (plane map) for hail
 
 
 # Miscellaneous variables
+FFF5A4  long    Diamond Power Object RAM: Address of first object slot in list
+FFF5A8  long    Diamond Power Object RAM: Address of next free object slot
+FFF5AC  long    Diamond Power Object RAM: Address of last object slot in list
+FFF5B8  byte    flag: whether diamond power is active
+FFF5BA  word    ID of active diamond power (equals HelmetID for 20-diamonds, HelmetID+10 for 50-diamonds)
 FFF5BE	word	Diamond power timer
 FFF806	word	V-Int counter (number of frames since start of game)
 FFF80A	byte	Indicator that V-Int has occurred (flag)
@@ -99,6 +104,10 @@ FFF8F2  long    pointer to enemy layout
 FFF8F6  long    pointer to last two header bytes of enemy layout
 FFFA0A  word    terrain kid is standing on: 0 = normal, 1 = ice, 2 = rubber
 FFFA27  byte    flag: whether an UFO is shooting at the Kid
+FFFA28  byte    flag: whether hand is currently grabbing the Kid
+FFFA29  byte    flag: whether to initialize Juggernaut's 5-way shot
+FFFA2A  byte    flag: slow down objects (Samurai Haze)
+FFFA2B  byte    flag: Invulnerability for Kid
 FFFA6D  byte    flag whether kid is currently transforming
 FFFA70  word    Telepad timer
 FFFA76  word    Cyclone y-acceleration
@@ -377,6 +386,21 @@ Object format for Platform Objects from Platform RAM at FFEDBA:
 1F: (byte) 8ths byte from platform layout definition (ts bits)
 20: (word) Offset to platform in current platform layout
 
+
+Object format for Diamond Power Object from Diamond Power Object RAM at FFF2AC:
+ 0: 
+ 4: (long) pointer to next object in list
+ 8: (word)
+1A: (word) x_pos?
+1E: (word) y_pos?
+22: (word)
+24: (word) diamond size? (1 - small, 6 - largest)
+38: (word)
+3E: (word)
+40: (word) relative x pos from Kid?
+42: (word) relative y pos from Kid?
+46: (word)
+48: (word)
 
 Block List
 ----------

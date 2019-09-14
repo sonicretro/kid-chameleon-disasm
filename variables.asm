@@ -11,6 +11,11 @@ Level_Layout = 		$FFFFA652	; $41A0 bytes. 2 bytes per entry: block,skin (30 scre
 EnemyStatus_Table = 	$FFFFF8FE	; ? bytes. 2 bytes per entry
 Platform_RAM =		$FFFFEDBA	; $264 bytes, $22 bytes per platform ($12 platforms)
 
+Addr_FirstDPObjectSlot =	$FFFFF5A4	; long: Diamond Power Object RAM: Address of first object slot in list
+Addr_NextFreeDPObjectSlot =	$FFFFF5A8	; long: Diamond Power Object RAM: Address of next free object slot
+Addr_LastDPObjectSlot =	$FFFFF5AC	; long: Diamond Power Object RAM: Address of last object slot in list
+Diamond_power_active =	$FFFFF5B8	; byte: flag: whether diamond power is active
+Diamond_power_ID =	$FFFFF5BA	; word: ID of active diamond power (equals HelmetID for 20-diamonds, HelmetID+10 for 50-diamonds)
 Diamond_power_timer = 	$FFFFF5BE	; word
 Initial_stack = 	$FFFFF7FE
 V_Int_counter = 	$FFFFF806	; word: number of frames since start of game
@@ -63,6 +68,10 @@ Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
 Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
 Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
 Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
+KidGrabbedByHand =	$FFFFFA28	; byte: flag: whether hand is currently grabbing the Kid
+FiveWayShotReady =	$FFFFFA29	; byte: flag: whether to initialize Juggernaut's 5-way shot
+SamuraiHazeActive =	$FFFFFA2A	; byte: flag: slow down objects (Samurai Haze)
+KidIsInvulnerable =	$FFFFFA2B	; byte: flag: Invulnerability for Kid
 Character_Movement =	$FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
 Maniaxe_throwing_axe =	$FFFFFA65 ; byte: flag
 Cyclone_flying =	$FFFFFA68 ; byte: flag

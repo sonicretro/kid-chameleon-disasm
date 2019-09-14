@@ -114,11 +114,17 @@ If you only want to use walking dragons, but no flying dragons, you can put drag
 in the first slot, and put some other enemy in the second slot, which will then
 overwrite the flying dragon art.
 
+Rock tanks and shooting rock tanks use the same resources, so only one of them
+has to appear in the enemy layout header for both to be usable.
+
 Lions use up 3 art slots, and thus cannot be combined with other enemies.
 UFOs use up 2 art slots.
 
 Heady Metal uses up 2 art slots. The main part of the other bosses uses up
 2 slots. Boss eyes use up 1 slot.
+
+If a level features a murder wall or hail storm, the art will use up the
+first enemy slot, and thus one can only have two enemy types in that case.
 
 
 Background scrolling

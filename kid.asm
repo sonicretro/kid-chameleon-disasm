@@ -5769,19 +5769,20 @@ loc_468C:
 ArtUnc_4692:   binclude    "ingame/artunc/Life_icon_(3_frames).bin"
 ArtUnc_4812:   binclude    "ingame/artunc/Clock_icon_(3_frames).bin"
 ArtUnc_4992:   binclude    "ingame/artunc/Coin_continue_icon_(6_frames).bin"
+	align_dmasafe	(6*ANIART_FLAG_SIZE)
 ArtUnc_4C92:   binclude    "ingame/artunc/End_of_level_Flag_(6_frames).bin"
 ArtComp_5B92:   binclude    "ingame/artcomp/Horizontal_platform.bin"
 ArtComp_5C83:   binclude    "ingame/artcomp/Vertical_platform.bin"
 	align	2
 ; =============== S U B	R O U T	I N E =======================================
-
+ANIART_DIAMOND_SIZE	= $200
 
 sub_5D4A:
 	addi.l	#off_7B0AC,a0
 	move.l	(a0),d1
 	addq.l	#2,d1		; d1 = DMA source address
 	jsr	(j_Stop_z80).l
-	move.l	#$93009401,4(a6)	; DMA length: $200
+	move.l	#(($9300|((ANIART_DIAMOND_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_DIAMOND_SIZE>>9)),4(a6)	; DMA length
 	move.l	d1,d0
 	lsr.l	#1,d0
 	move.w	d0,d1
@@ -5811,7 +5812,7 @@ loc_5D6C:
 sub_5DA6:
 	move.l	a1,d1		; d1 = DMA source address
 	jsr	(j_Stop_z80).l
-	move.l	#$93409401,4(a6)	; DMA length: $280
+	move.l	#(($9300|((ANIART_FLAG_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_FLAG_SIZE>>9)),4(a6)	; DMA length
 	move.l	d1,d0
 	lsr.l	#1,d0
 	move.w	d0,d1
@@ -24358,6 +24359,7 @@ unk_1201E:
 	dc.b   bgm_City
 	dc.b   0
 ; ---------------------------------------------------------------------------
+ANIART_SHORE_SIZE = $2E0
 
 loc_1202A:
 	move.l	#LnkTo_unk_9784A,a0
@@ -24365,7 +24367,7 @@ loc_1202A:
 	addq.l	#2,d2		; d2 = DMA source address
 	jsr	(j_Stop_z80).l
 	lsr.l	#1,d2
-	move.l	#$93709401,4(a6)	; DMA length: $2E0
+	move.l	#(($9300|((ANIART_SHORE_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_SHORE_SIZE>>9)),4(a6)	; DMA length
 	move.w	#$9500,d4
 	move.b	d2,d4
 	move.w	d4,4(a6)
@@ -59932,12 +59934,16 @@ unk_9729F:  binclude    "theme/artcomp_bg/mountain_lightning.bin"
 unk_97381:  binclude    "theme/artcomp_bg/hill_alt.bin"
 	align	2
 
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_9784A:	dc.w	$17
 	binclude	"ingame/artunc/shore_1.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_97B2C:	dc.w	$17
 	binclude	"ingame/artunc/shore_2.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_97E0E:	dc.w	$17
 	binclude	"ingame/artunc/shore_3.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_980F0:	dc.w	$17
 	binclude	"ingame/artunc/shore_4.bin"
 
@@ -59955,12 +59961,17 @@ ArtComp_992E4_Blocks:
 ArtComp_99F34_IngameNumbers:  
 	binclude    "ingame/artcomp/HUD_numbers.bin"
 	align	2
+
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_99FCA:	dc.w	$10
 	binclude	"ingame/artunc/diamond_1.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A1CC:	dc.w	$10
 	binclude	"ingame/artunc/diamond_2.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A3CE:	dc.w	$10
 	binclude	"ingame/artunc/diamond_3.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A5D0:	dc.w	$10
 	binclude	"ingame/artunc/diamond_4.bin"
 
@@ -62381,7 +62392,6 @@ unk_BF714:  sprite_frame_unc    $17, $01, $2F, $0D, "ingame/artunc_kid/juggernau
 unk_BF89A:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_unknown_BF89A.bin"
 unk_BFAE0:  sprite_frame_unc    $17, $06, $30, $14, "ingame/artunc_kid/juggernaut_bottom_jumping_1.bin"
 unk_BFD26:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_bottom_jumping_2.bin"
-        align   $100	; DMA fails if crossing $20000 boundary
 unk_C0000:  sprite_frame_unc    $17, $04, $2F, $12, "ingame/artunc_kid/juggernaut_bottom_jumping_3.bin"
 unk_C0246:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_1.bin"
 unk_C03CC:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_2.bin"

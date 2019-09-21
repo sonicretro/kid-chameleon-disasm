@@ -31,6 +31,7 @@ HundredKTripDest_LevelID = $1F ; 100K trip destination level
 FirstElsewhere_LevelID = $49 ; from this level on name everything 'Elsewhere'.
 	; More specifically, all levels with a higher LevelID 
 	; use the title from the level with this LevelID.
+TotalNumberLevels = $69	; to tell the level select how many to display
 
 BagelBrothers_HitPointsPerHead = $1E
 BoomerangBoss_HitPointsPerHead = $1E
@@ -1350,7 +1351,7 @@ loc_B98:
 	bne.s	loc_BB6
 
 loc_BB2:
-	st	($FFFFFC37).w
+	st	(LevelSkip_Cheat).w
 
 loc_BB6:
 	jsr	(j_sub_914).w
@@ -2278,7 +2279,7 @@ loc_1292:
 return_129C:
 	rts
 ; ---------------------------------------------------------------------------
-
+; sprite in normal orientation (not x-flipped)
 loc_129E:
 	move.b	(a4)+,d0
 	ext.w	d0
@@ -2359,7 +2360,7 @@ loc_130E:
 return_1328:
 	rts
 ; ---------------------------------------------------------------------------
-
+; x-flipped sprite
 loc_132A:
 	bset	#3,($FFFFF830).w
 	move.b	(a4)+,d0
@@ -2460,44 +2461,31 @@ sub_13C0:
 	moveq	#0,d0
 	move.b	2(a0),d0
 	add.w	d0,d0
-	move.w	unk_13FA(pc,d0.w),d0
+	move.w	NumberTilesPerSpriteSize(pc,d0.w),d0
 	addq.w	#1,d0
 	add.w	d0,($FFFFF830).w
 	lea	8(a0),a0
 	rts
 ; ---------------------------------------------------------------------------
-unk_13FA:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b  $F
+	; number of tiles taken by each of the 16 different sprite sizes
+;unk_13FA:
+NumberTilesPerSpriteSize:
+	dc.w   0
+	dc.w   1
+	dc.w   2
+	dc.w   3
+	dc.w   1
+	dc.w   3
+	dc.w   5
+	dc.w   7
+	dc.w   2
+	dc.w   5
+	dc.w   8
+	dc.w  $B
+	dc.w   3
+	dc.w   7
+	dc.w  $B
+	dc.w  $F
 ; ---------------------------------------------------------------------------
 
 loc_141A:
@@ -2505,15 +2493,16 @@ loc_141A:
 	moveq	#0,d0
 	move.b	2(a0),d0
 	add.w	d0,d0
-	move.w	unk_13FA(pc,d0.w),d0
+	move.w	NumberTilesPerSpriteSize(pc,d0.w),d0
 	addq.w	#1,d0
 	add.w	d0,($FFFFF830).w
 	add.w	d0,($FFFFF83C).w
+	; add length and start address to DMA queue
 	move.w	d0,(a1)+
 	move.l	a4,(a1)+
 	lsl.w	#5,d0
-	add.w	d0,a4
-	lea	8(a0),a0
+	add.w	d0,a4	; end of art to be DMA'd
+	lea	8(a0),a0	; next slot in sprite table
 	rts
 ; End of function sub_13C0
 
@@ -7780,7 +7769,7 @@ loc_749C:
 loc_74B0:
 	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_7452
-	tst.b	($FFFFFC37).w
+	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_74C8
 	btst	#Button_B,(Ctrl_Held).w ; keyboard key (D) special
 	bne.w	loc_74E0
@@ -16771,7 +16760,7 @@ loc_D44C:
 ; START	OF FUNCTION CHUNK FOR Flagpole
 
 loc_D468:
-	tst.b	($FFFFFC37).w
+	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_D4CE
 	moveq	#2,d6
 	move.w	#$11C,d2
@@ -41050,11 +41039,10 @@ stru_33FC2:
 	anim_frame	  1, $23, LnkTo_unk_C81D0-Data_Index
 	dc.b   0
 	dc.b   0
-word_33FD4:	dc.w $1E
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b  $A
+word_33FD4:	; how hard the arrows home in on you. Smaller value = stronger
+	dc.w $1E	; 1 HP
+	dc.w $14	; 2 HP
+	dc.w  $A	; 3 HP
 ; ---------------------------------------------------------------------------
 
 ;loc_33FDA:
@@ -41069,7 +41057,7 @@ Enemy07_Archer_Init:
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	bsr.w	sub_36FF4
-	move.w	2(a0),d7
+	move.w	2(a0),d7	; hitpoints
 	add.w	d7,d7
 	move.w	word_33FD4(pc,d7.w),d7
 	move.w	d7,$4A(a5)
@@ -41355,7 +41343,7 @@ loc_342D6:
 	bne.s	loc_342D6
 	move.w	$4A(a5),d3
 	bsr.w	loc_34458
-	move.w	#$FFF2,d5
+	move.w	#-$E,d5
 	cmp.w	d2,d6
 	beq.w	loc_3432E
 	ble.w	loc_34308
@@ -51720,7 +51708,7 @@ Enemy01_Diamond_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.w	2(a4),$40(a3)	; hitpoints
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -51738,12 +51726,12 @@ loc_3AD16:
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
 	move.w	$40(a3),d7
-	addq.w	#2,d7
+	addq.w	#2,d7	; have at least 2 HP
 	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	bgt.s	loc_3AD7C
-	blt.s	loc_3AD4C
-	move.l	#$8000,$50(a5)
+	cmpi.w	#3,d7	; how many hitpoints?
+	bgt.s	loc_3AD7C	; more than 3
+	blt.s	loc_3AD4C	; 2 --> speed =$10000
+	move.l	#$8000,$50(a5)	; 3 --> speed =$18000
 
 loc_3AD4C:
 	addi.l	#$10000,$50(a5)
@@ -51756,7 +51744,7 @@ loc_3AD4C:
 	beq.w	loc_3C0D2
 	bra.w	loc_3C026
 ; ---------------------------------------------------------------------------
-
+; code for diamond with > 3 HP
 loc_3AD7C:
 	st	is_moved(a3)
 	st	has_level_collision(a3)
@@ -51868,7 +51856,7 @@ loc_3AEB2:
 	addi.l	#$4000,y_vel(a3)
 	bra.s	loc_3AEB2
 ; ---------------------------------------------------------------------------
-
+; code for diamond with <= 3 HP
 loc_3AEC4:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3AF14
@@ -54849,7 +54837,7 @@ loc_3D02A:
 	move.w	$3E(a0),$3E(a3)
 	move.w	$16(a0),x_direction(a3)
 	move.w	$24(a0),vram_tile(a3)
-	move.w	#$FFE4,d0
+	move.w	#-$1C,d0
 	tst.b	$16(a0)
 	beq.s	loc_3D070
 	neg.w	d0
@@ -58816,6 +58804,7 @@ loc_3FC8C:
 ; ---------------------------------------------------------------------------
 ;unk_3FCC4:
 DiamondPower_InitData_SamuraiHaze:	; initialization data for the 10 diamonds for Samurai Haze
+; radius, y_pos, phase, rotation speed
 	dc.b  $C,-$24,   0,   2
 	dc.b  $C,-$24, $80,   2
 	dc.b  $C,   4, $80,   2
@@ -59966,7 +59955,6 @@ ArtComp_992E4_Blocks:
 ArtComp_99F34_IngameNumbers:  
 	binclude    "ingame/artcomp/HUD_numbers.bin"
 	align	2
-
 unk_99FCA:	dc.w	$10
 	binclude	"ingame/artunc/diamond_1.bin"
 unk_9A1CC:	dc.w	$10
@@ -62137,7 +62125,6 @@ Pal_A2364:  binclude	"ingame/palette_enemy/UFO_3.bin"
 Pal_A2382:  binclude	"ingame/palette_enemy/Plethora.bin"
 Pal_A23A0:  binclude	"ingame/palette_enemy/Boss_Eyes.bin"
 Pal_A23AE:  binclude	"ingame/palette_enemy/Boss.bin"
-
 unk_A23CC:  sprite_frame_unc    $0B, $00, $17, $1F, "ingame/artunc_kid/kid_slope_7.bin"
 unk_A2552:  sprite_frame_unc    $0C, $FE, $16, $1E, "ingame/artunc_kid/kid_slope_8.bin"
 unk_A26D8:  sprite_frame_unc    $0A, $FF, $15, $20, "ingame/artunc_kid/kid_slope_9.bin"

@@ -7,7 +7,7 @@
 
 FF0000 FF0280	Sprite_Table: $280 bytes, 8 bytes per sprite ($50 sprites)
 FF0280 FF0500   ?
-FF0500 ?        DMA queue? Format: 6 bytes per entry. word: length, long: source address
+FF0500 ?        DMA queue? Format: 6 bytes per entry. word: length, long: source address.
 ?      FF0DA0	?
 FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
 FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
@@ -74,8 +74,11 @@ FFF81C	long	X camera position (16.16 fixed point)
 FFF820	long	Y camera position (16.16 fixed point)
 FFF824	long	X camera background position? (16.16 fixed point)
 FFF828	long	Y camera background position? (16.16 fixed point)
+FFF830  word    ?
 FFF832  long    Address of next available slot in Sprite_Table
 FFF836  byte    Number of sprites in Sprite_Table
+FFF838  long    Address of next empty slot in DMA queue
+FFF83C  word    Tile offset of next free destination in tile VRAM for DMA queue
 FFF83E  long    Address of next available Object slot
 FFF842  long    Address of first Object in Object_RAM
 FFF846  long    Address of currently executed Object
@@ -165,6 +168,7 @@ FFFC2C	word	player y start position
 FFFC2E	word	flag x position
 FFFC30	word	flag y position
 FFFC36  byte    flag: set if teleporting to different level, clear if teleporting to same level.
+FFFC37  byte    flag: enable level skipping by holding A+C+Start
 FFFC38	word	two player flag ?
 FFFC3B	byte	No Hit Bonus: 0 = retained, -1 = lost
 FFFC3C	byte	No Prize Bonus: 0 = retained, -1 = lost
@@ -308,8 +312,8 @@ Object format for objects from Object RAM at FF0DA0:
 3E: (long) pointer to subobject in FF2448?
 42: (byte) lower 6 bits: index in Enemy status table; bits 6&7: unknown flags.
 43: ?
-44: (long) (for enemies) address in enemy layout. (for platforms) corresponding platform object
-44-62: ?
+44: (long) for enemies: address in enemy layout. For platforms: corresponding platform object
+48-62: ?
 62: (long) some pointer to animation
 66: (long) some pointer to animation
 70-74: ?
@@ -323,12 +327,12 @@ Object format for GfxObject from GfxObject RAM at FF2448:
  C: (long) address of corresponding object (a5)
 10: (byte) priority flag: 0=low priority, 1=high priority, 2=depends on FFF896
 11: (byte) palette line
-12: (byte)
-13: (byte) flag
+12: (byte) flag: whether sprite art is uncompressed and thus DMA'd
+13: (byte) flag: whether to display the object
 14: (byte) flag: whether to move object (i.e. add vel to pos)
 15: (byte) flag: whether to animate object
 16: (byte) flag: horizontal direction
-17: (byte)
+17: (byte) flag
 18: (byte) flag
 19: (byte) flag
 1A: (long) X position (16.16 fixed point)
@@ -357,7 +361,8 @@ Object format for GfxObject from GfxObject RAM at FF2448:
 3A: (word) bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
 3C: (byte) flag: whether to execute level collision
 3D: (byte) flag: whether to execute collision with the kid
-3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
+3E: (word) for enemies: Enemy type VRAM slot. (long) other: some x position relative to camera? 
+40: (word) for enemies: Number of hitpoints.
 42: (long) some y position relative to camera?
 46: ?
 48: (word)
@@ -394,7 +399,7 @@ Object format for Diamond Power Object from Diamond Power Object RAM at FFF2AC:
 1A: (word) x_pos?
 1E: (word) y_pos?
 22: (word)
-24: (word) diamond size? (1 - small, 6 - largest)
+24: (word) sprite ID (1-6: small to large diamond, 7: ankh, 8: hitpoint)
 38: (word)
 3E: (word)
 40: (word) relative x pos from Kid?

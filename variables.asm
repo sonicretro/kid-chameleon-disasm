@@ -136,6 +136,7 @@ PlayerStart_X_pos = 	$FFFFFC2A	; word
 PlayerStart_Y_pos = 	$FFFFFC2C	; word
 Flag_X_pos = 		$FFFFFC2E	; word
 Flag_Y_pos = 		$FFFFFC30	; word
+LevelSkip_Cheat =	$FFFFFC37	; flag: enable level skipping by holding A+C+Start
 Two_player_flag = 	$FFFFFC38	; word
 NoHit_Bonus_Flag = 	$FFFFFC3B	; byte: 0 = retained, -1 = lost
 NoPrize_Bonus_Flag = 	$FFFFFC3C	; byte: 0 = retained, -1 = lost

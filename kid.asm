@@ -51119,11 +51119,11 @@ loc_3A586:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3A5A6
 	beq.s	loc_3A5D4
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3A5E4
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3A5E4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3A5D4
 	subq.w	#1,$44(a3)
 	bne.s	loc_3A5BE
@@ -51746,7 +51746,7 @@ loc_3AD4C:
 	beq.w	loc_3C0D2
 	bra.w	loc_3C026
 ; ---------------------------------------------------------------------------
-; code for diamond with > 3 HP
+; code for diamond with > 3 HP. Falls off ledges
 loc_3AD7C:
 	st	is_moved(a3)
 	st	has_level_collision(a3)
@@ -51764,28 +51764,28 @@ loc_3ADA4:
 	bsr.w	sub_3C3CE
 	move.w	collision_type(a3),d4
 	beq.w	loc_3AE78
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3ADFA
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.s	loc_3ADA4
-	cmpi.w	#4,d4
+	cmpi.w	#colid_rightwall,d4
 	beq.w	loc_3AE3E
-	cmpi.w	#8,d4
+	cmpi.w	#colid_leftwall,d4
 	beq.w	loc_3AE3E
-	cmpi.w	#$10,d4
+	cmpi.w	#colid_ceiling,d4
 	beq.s	loc_3AE3E
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3AE4A
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	beq.w	loc_3AE68
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.w	loc_3AE84
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.w	loc_3AE84
 	bra.s	loc_3ADA4
 ; ---------------------------------------------------------------------------
 
-loc_3ADFA:
+loc_3ADFA:	; lose a hit point
 	subq.w	#1,$44(a3)
 	beq.s	loc_3AE28
 	sf	is_moved(a3)
@@ -51858,17 +51858,18 @@ loc_3AEB2:
 	addi.l	#$4000,y_vel(a3)
 	bra.s	loc_3AEB2
 ; ---------------------------------------------------------------------------
-; code for diamond with <= 3 HP
+; code for diamond with <= 3 HP. Doesn't fall off ledges.
 loc_3AEC4:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3AF14
 	bmi.s	loc_3AEE6
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3AF24
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3AF24
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3AF14
+	; lose a hit point
 	subq.w	#1,$44(a3)
 	bne.w	loc_3AEF8
 
@@ -51876,7 +51877,7 @@ loc_3AEE6:
 	move.l	#stru_3ACC4,d7
 	jsr	(j_Init_Animation).w
 	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
+	bra.w	loc_3C46E	; delete enemy
 ; ---------------------------------------------------------------------------
 
 loc_3AEF8:
@@ -51889,6 +51890,9 @@ loc_3AEF8:
 
 loc_3AF14:
 	clr.w	collision_type(a3)
+	; Use direction specific routine that takes care of movement and in
+	; particular turns the enemy around when close to a ledge.
+	; At the end, this routine jumps back to (a0).
 	tst.b	x_direction(a3)
 	beq.w	loc_3C0FA
 	bra.w	loc_3C04E
@@ -51984,11 +51988,11 @@ loc_3B048:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3B0BE
 	bmi.s	loc_3B094
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.w	loc_3B180
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.w	loc_3B180
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3B0BE
 	cmpi.w	#(LnkTo_unk_C7C4E-Data_Index),addroffset_sprite(a3)
 	beq.s	loc_3B0BE
@@ -52139,19 +52143,19 @@ loc_3B1C6:
 loc_3B1DA:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3B218
-	cmpi.w	#4,d4
+	cmpi.w	#colid_rightwall,d4
 	beq.s	loc_3B24C
-	cmpi.w	#8,d4
+	cmpi.w	#colid_leftwall,d4
 	beq.s	loc_3B24C
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3B1F8
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	bne.s	loc_3B1A6
 
 loc_3B1F8:
 	tst.l	x_vel(a3)
 	bmi.s	loc_3B212
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3B24C
 
 loc_3B204:
@@ -52926,11 +52930,11 @@ loc_3BB5A:
 
 loc_3BB6E:
 	move.w	collision_type(a3),d4
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.s	loc_3BB8A
-	cmpi.w	#4,d4
+	cmpi.w	#colid_rightwall,d4
 	beq.s	loc_3BB94
-	cmpi.w	#8,d4
+	cmpi.w	#colid_leftwall,d4
 	beq.s	loc_3BB94
 	clr.w	collision_type(a3)
 	bra.s	loc_3BB2C
@@ -52960,13 +52964,13 @@ loc_3BBC4:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3BBE6
 	bmi.w	loc_3BC56
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.s	loc_3BC34
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3BC34
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3BBF6
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3BBF6
 
 loc_3BBE6:
@@ -53226,7 +53230,7 @@ loc_3BF02:
 	beq.s	loc_3BF66
 	bmi.s	loc_3BF1C
 	clr.w	collision_type(a3)
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.s	loc_3BF66
 	subi.w	#1,$44(a3)
 	bne.s	loc_3BF4E
@@ -54157,13 +54161,13 @@ loc_3C824:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3C87E
 	beq.w	loc_3C91A
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3C848
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3C898
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3C898
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.w	loc_3C91A
 
 loc_3C848:
@@ -54258,7 +54262,7 @@ loc_3C954:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	collision_type(a3),d4
 	beq.s	loc_3C954
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	bne.s	loc_3C954
 	sf	has_level_collision(a3)
 	sf	is_moved(a3)
@@ -54390,13 +54394,13 @@ loc_3CB14:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3CB64
 	beq.w	loc_3CBF6
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3CB38
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3CB76
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3CB76
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.w	loc_3CBF6
 
 loc_3CB38:
@@ -54682,13 +54686,13 @@ loc_3CE9A:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3CEE4
 	beq.w	loc_3CF4C
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3CEBE
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3CF0E
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3CF0E
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.w	loc_3CF4C
 
 loc_3CEBE:
@@ -54780,13 +54784,13 @@ loc_3CFAE:
 	move.w	collision_type(a3),d4
 	bmi.w	loc_3CE9A
 	beq.s	loc_3CFE4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3CFDA
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.s	loc_3CFDA
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3CFD4
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	bne.s	loc_3CFE4
 
 loc_3CFD4:
@@ -54967,13 +54971,13 @@ loc_3D194:
 loc_3D21E:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3D268
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3D23E
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3D27E
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3D27E
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.w	loc_3D2BC
 
 loc_3D23E:
@@ -55074,25 +55078,25 @@ loc_3D35A:
 	bsr.w	sub_3E8BA
 	move.w	collision_type(a3),d4
 	beq.s	loc_3D3B4
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.w	loc_3D420
-	cmpi.w	#4,d4
+	cmpi.w	#colid_rightwall,d4
 	beq.w	loc_3D40C
-	cmpi.w	#8,d4
+	cmpi.w	#colid_leftwall,d4
 	beq.w	loc_3D40C
-	cmpi.w	#$10,d4
+	cmpi.w	#colid_ceiling,d4
 	beq.w	loc_3D47A
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3D3DE
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	beq.s	loc_3D3DE
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.w	loc_3D472
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3D472
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.w	loc_3D4DE
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.w	loc_3D4DE
 
 loc_3D3B4:
@@ -55172,11 +55176,11 @@ loc_3D496:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1800,y_vel(a3)
 	move.w	collision_type(a3),d4
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.s	loc_3D4BC
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3D4BC
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	bne.s	loc_3D496
 
 loc_3D4BC:
@@ -55824,13 +55828,13 @@ loc_3DCB0:
 	move.w	collision_type(a3),d4
 	beq.w	loc_3DD5C
 	bmi.s	loc_3DCF4
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3DD0E
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3DD0E
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3DCD4
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	bne.w	loc_3DD5C
 
 loc_3DCD4:
@@ -56163,9 +56167,9 @@ loc_3E078:
 loc_3E09E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	collision_type(a3),d4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.w	loc_3E318
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3E318
 	clr.w	collision_type(a3)
 	cmpi.w	#(LnkTo_unk_C7E78-Data_Index),addroffset_sprite(a3)
@@ -56192,9 +56196,9 @@ loc_3E0DA:
 loc_3E0F4:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	collision_type(a3),d4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.w	loc_3E318
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3E318
 	clr.w	collision_type(a3)
 	tst.b	$18(a3)
@@ -56240,11 +56244,11 @@ loc_3E192:
 	bsr.w	sub_3E2CE
 	move.w	collision_type(a3),d4
 	beq.s	loc_3E1C2
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	ble.w	loc_3E260
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.s	loc_3E1B4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3E1C2
 
 loc_3E1B4:
@@ -56330,7 +56334,7 @@ loc_3E2A8:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3E2C0
 	clr.w	collision_type(a3)
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	ble.s	loc_3E266
 
 loc_3E2C0:
@@ -56378,9 +56382,9 @@ loc_3E318:
 	move.w	collision_type(a3),d4
 	bmi.s	loc_3E378
 	beq.s	loc_3E356
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.s	loc_3E32C
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3E356
 
 loc_3E32C:
@@ -57100,20 +57104,20 @@ loc_3EAAC:
 loc_3EAB2:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EA88
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	bge.w	loc_3F1B8
-	cmpi.w	#8,d4
+	cmpi.w	#colid_leftwall,d4
 	ble.w	loc_3F1AA
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.w	loc_3EFEC
-	cmpi.w	#$10,d4
+	cmpi.w	#colid_ceiling,d4
 	beq.w	loc_3F1A2
 
 loc_3EAD8:
 	sf	is_moved(a3)
 	sf	is_animated(a3)
 	sf	has_level_collision(a3)
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	bne.w	loc_3ED6C
 	bsr.w	sub_3F366
 	tst.w	x_vel(a3)
@@ -57132,15 +57136,15 @@ loc_3EB0E:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EB78
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EB60
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EB60
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EB56
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EB56
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EB78
 
 loc_3EB40:
@@ -57179,15 +57183,15 @@ loc_3EB92:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EBFC
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EBE4
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EBE4
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EBDA
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EBDA
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EBFC
 
 loc_3EBC4:
@@ -57240,15 +57244,15 @@ loc_3EC48:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3ECB2
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EC9A
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EC9A
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EC90
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EC90
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3ECB2
 
 loc_3EC7A:
@@ -57287,15 +57291,15 @@ loc_3ECCC:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3ED36
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3ED1E
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3ED1E
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3ED14
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3ED14
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3ED36
 
 loc_3ECFE:
@@ -57353,15 +57357,15 @@ loc_3ED8E:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EDF8
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EDE0
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EDE0
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EDD6
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EDD6
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EDF8
 
 loc_3EDC0:
@@ -57400,15 +57404,15 @@ loc_3EE12:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EE7C
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EE64
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EE64
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EE5A
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EE5A
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EE7C
 
 loc_3EE44:
@@ -57461,15 +57465,15 @@ loc_3EEC8:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EF32
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EF1A
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EF1A
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EF10
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EF10
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EF32
 
 loc_3EEFA:
@@ -57508,15 +57512,15 @@ loc_3EF4C:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3EFB6
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3EF9E
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3EF9E
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3EF94
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3EF94
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3EFB6
 
 loc_3EF7E:
@@ -57573,15 +57577,15 @@ loc_3F00A:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3F074
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3F05C
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3F05C
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3F052
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3F052
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3F074
 
 loc_3F03C:
@@ -57634,15 +57638,15 @@ loc_3F0A8:
 	bsr.w	sub_3F29A
 	move.w	collision_type(a3),d4
 	beq.s	loc_3F112
-	cmpi.w	#$2C,d4
+	cmpi.w	#colid_kidabove,d4
 	beq.w	loc_3F0FA
-	cmpi.w	#$1C,d4
+	cmpi.w	#colid_hurt,d4
 	beq.s	loc_3F0FA
-	cmpi.w	#$24,d4
+	cmpi.w	#colid_kidleft,d4
 	beq.s	loc_3F0F0
-	cmpi.w	#$20,d4
+	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3F0F0
-	cmpi.w	#$28,d4
+	cmpi.w	#colid_kidbelow,d4
 	bne.s	loc_3F112
 
 loc_3F0DA:
@@ -57754,11 +57758,11 @@ loc_3F200:
 	move.w	collision_type(a3),d4
 	beq.s	loc_3F200
 	clr.w	collision_type(a3)
-	cmpi.w	#$C,d4
+	cmpi.w	#colid_floor,d4
 	beq.w	loc_3F158
-	cmpi.w	#$14,d4
+	cmpi.w	#colid_slopeup,d4
 	beq.s	loc_3F22A
-	cmpi.w	#$18,d4
+	cmpi.w	#colid_slopedown,d4
 	bne.s	loc_3F200
 
 loc_3F22A:

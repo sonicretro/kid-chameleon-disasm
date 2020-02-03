@@ -107,7 +107,9 @@ Each level can feature 3 different types of enemies. Each type is allocated
 one of 3 VRAM slots for art, and one of 3 slots for palettes. Most enemies
 use 7 colors (1 slot), however some use 15 colors and thus use up 2 palette slots
 (in that case they always use up slots 2 and 3).
-These enemies are: UFO, Robot (can share palette), Lion, Bosses.
+These enemies are: UFO, Robot (those two can share palette), Lion, Bosses.
+For these you don't want to put any other enemies in slots 2 or 3 or they will
+overwrite these palettes.
 
 Dragons fill up two consecutive art slots, thus they must never go in the 3rd slot.
 If you only want to use walking dragons, but no flying dragons, you can put dragons
@@ -123,7 +125,7 @@ UFOs use up 2 art slots.
 Heady Metal uses up 2 art slots. The main part of the other bosses uses up
 2 slots. Boss eyes use up 1 slot.
 
-If a level features a murder wall or hail storm, the art will use up the
+If a level features a murder wall, geysers or hail storm, the art will use up the
 first enemy slot, and thus one can only have two enemy types in that case.
 
 
@@ -161,11 +163,13 @@ This table consists of 32-bit pointers to background chunk definitions.
 
 For type 1 themes, a background chunk definition consists of 2 words
 (x_size and y_size), followed by x_size*y_size bytes.
-Each such byte is the ID for a 8x8 art tile, which together make a chunk
-of dimensions x_size X y_size.
+Each such byte defines an 8x8 art tile, with the lower 7 bits being
+the ID of the tile (within the background art) and the top bit being
+a flag indicating whether to horizontally flip the file.
+Together this makes a chunk of dimensions x_size * y_size.
 
 For type 2 themes, a background chunk definition consists of a Enigma
-compressed plane map.
+compressed plane map of width 64 tiles.
 
 
 The type 1 level background format defines how a background is composed of 

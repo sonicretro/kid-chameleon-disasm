@@ -928,8 +928,6 @@ loc_80C:
 	bsr.w	GfxObjects_Collision
 	lea	(Addr_GfxObject_KidProjectile).w,a2
 	bsr.w	GfxObjects_Collision
-
-loc_83E:
 	move.b	(Just_received_damage).w,($FFFFFC28).w
 	move.b	($FFFFFA75).w,($FFFFFA74).w
 	sf	($FFFFFA75).w
@@ -1371,8 +1369,6 @@ loc_BB6:
 	cmpi.w	#$3F2,d7
 	blt.w	loc_C22
 	move.w	#0,(Game_Mode).w
-
-loc_BFE:
 	sf	(Demo_Mode_flag).w
 	st	($FFFFFBCE).w
 	st	($FFFFFC36).w
@@ -14475,7 +14471,7 @@ sub_B43A:
 	move.w	(Current_LevelID).w,d5
 	subq.w	#WarpCheatStart_LevelID,d5
 	bne.w	loc_B482
-	cmpi.l	#$9D3005F,d4
+	cmpi.l	#$9D3005F,d4 ; ; x-pos=09D3 y-pos=005F in number of pixels (RAM 0xFA2C.w 0xFA2E.w)
 	bne.w	loc_B482
 	btst	#Button_A,(Ctrl_Held).w ; keyboard key (S) jump
 	beq.w	loc_B482
@@ -38831,12 +38827,12 @@ Enemy19_Fireball_BounceFloorCeiling:
 
 loc_32CE4:
 	move.l	d7,y_vel(a3)
-	cmpi.w	#5,($FFFFFB44).w
+	cmpi.w	#5,(Number_of_Fire_Trails).w
 	bge.w	return_32D06
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_33128,4(a0)
-	addq.w	#1,($FFFFFB44).w
+	addq.w	#1,(Number_of_Fire_Trails).w
 
 return_32D06:
 	rts
@@ -38857,12 +38853,12 @@ Enemy19_Fireball_SlopeUp:
 	move.l	d7,y_vel(a3)
 	add.l	d7,x_pos(a3)
 	add.l	d6,y_pos(a3)
-	cmpi.w	#5,($FFFFFB44).w
+	cmpi.w	#5,(Number_of_Fire_Trails).w
 	bge.s	return_32D06
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_330D0,4(a0)
-	addq.w	#1,($FFFFFB44).w
+	addq.w	#1,(Number_of_Fire_Trails).w
 	st	$44(a0)
 	move.w	addroffset_sprite(a3),d7
 	asr.w	#1,d7
@@ -38917,12 +38913,12 @@ Enemy19_Fireball_SlopeDown:
 	neg.l	d6
 	add.l	d7,x_pos(a3)
 	add.l	d6,y_pos(a3)
-	cmpi.w	#5,($FFFFFB44).w
+	cmpi.w	#5,(Number_of_Fire_Trails).w
 	bge.w	return_32D06
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_330D0,4(a0)
-	addq.w	#1,($FFFFFB44).w
+	addq.w	#1,(Number_of_Fire_Trails).w
 	sf	$44(a0)
 	move.w	addroffset_sprite(a3),d7
 	asr.w	#1,d7
@@ -39317,7 +39313,7 @@ loc_33110:
 	bne.s	loc_33110
 
 loc_33120:
-	subq.w	#1,($FFFFFB44).w
+	subq.w	#1,(Number_of_Fire_Trails).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -39365,7 +39361,7 @@ loc_331BA:
 	bne.s	loc_331BA
 
 loc_331CA:
-	subq.w	#1,($FFFFFB44).w
+	subq.w	#1,(Number_of_Fire_Trails).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -45468,9 +45464,9 @@ unk_3680C:	dc.b   0
 Manage_EnemyLoading:
 	tst.b	($FFFFFB6A).w
 	bne.s	return_3682A
-	cmpi.w	#$10,(Game_Mode).w
+	cmpi.w	#$10,(Game_Mode).w ; intro video
 	bne.s	loc_3682C
-	cmpi.w	#$15,(Current_LevelID).w
+	cmpi.w	#$15,(Current_LevelID).w ; load enemies in Knight's Isle for intor video
 	beq.s	loc_3682C
 
 return_3682A:
@@ -50969,27 +50965,27 @@ loc_3A3D2:
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7
+	move.w	$40(a3),d7 ; enemy index type 0, 1 or 2?
 	addq.w	#3,d7
 	move.w	d7,$44(a3)
 	cmpi.w	#4,d7
 	blt.s	loc_3A414
 	beq.s	loc_3A40C
-	move.l	#$8000,$50(a5)
+	move.l	#$8000,$50(a5) ; movement speed type 3 and add (type 2 and type 1)
 
 loc_3A40C:
-	addi.l	#$8000,$50(a5)
+	addi.l	#$8000,$50(a5) ; movement speed type 2 and add (type 1)
 
 loc_3A414:
-	addi.l	#$8000,$50(a5)
+	addi.l	#$8000,$50(a5) ; movement speed type 1
 	move.w	#$20,$4A(a5)
 	move.w	#$B,$48(a5)
-	tst.b	($FFFFFB50).w
+	tst.b	(Fire_Demon).w
 	bne.s	loc_3A444
 	move.w	#$A000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3A48E,4(a0)
-	addi.b	#1,($FFFFFB50).w
+	addi.b	#1,(Fire_Demon).w
 
 loc_3A444:
 	move.l	#loc_3A542,a0
@@ -51002,7 +50998,7 @@ loc_3A444:
 ; ---------------------------------------------------------------------------
 
 loc_3A464:
-	move.l	#stru_3A31A,d7
+	move.l	#stru_3A31A,d7 ; fire trail
 	jsr	(j_Init_Animation).w
 	move.l	#stru_3A31A,$62(a5)
 
@@ -51039,7 +51035,7 @@ loc_3A4B8:
 loc_3A4C2:
 	move.w	#3,-(sp)
 	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
+	tst.b	(Fire_Demon).w
 	beq.s	loc_3A53E
 	move.l	a3,a1
 	move.l	a2,a0
@@ -51050,7 +51046,7 @@ loc_3A4D6:
 	dbf	d0,loc_3A4D6
 	move.w	#3,-(sp)
 	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
+	tst.b	(Fire_Demon).w
 	beq.s	loc_3A53E
 	move.l	a3,a1
 	move.l	a2,a0
@@ -51062,7 +51058,7 @@ loc_3A4F6:
 	dbf	d0,loc_3A4F6
 	move.w	#3,-(sp)
 	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
+	tst.b	(Fire_Demon).w
 	beq.s	loc_3A53E
 	move.l	a3,a1
 	move.l	a2,a0
@@ -51074,7 +51070,7 @@ loc_3A516:
 	dbf	d0,loc_3A516
 	move.w	#3,-(sp)
 	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
+	tst.b	(Fire_Demon).w
 	beq.s	loc_3A53E
 	move.l	a3,a1
 	move.l	a2,a0
@@ -51106,18 +51102,18 @@ loc_3A55C:
 	bne.s	loc_3A586
 
 loc_3A564:
-	cmpi.w	#7,($FFFFFB44).w
+	cmpi.w	#7,(Number_of_Fire_Trails).w
 	bge.w	loc_3A586
 	exg	a0,a4
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3A63C,4(a0)
 	exg	a0,a4
-	addq.w	#1,($FFFFFB44).w
+	addq.w	#1,(Number_of_Fire_Trails).w
 
 loc_3A586:
 	move.w	collision_type(a3),d4
-	bmi.s	loc_3A5A6
+	bmi.s	loc_3A5A6 ; fire demon death
 	beq.s	loc_3A5D4
 	cmpi.w	#colid_kidright,d4
 	beq.s	loc_3A5E4
@@ -51125,14 +51121,14 @@ loc_3A586:
 	beq.s	loc_3A5E4
 	cmpi.w	#colid_hurt,d4
 	bne.s	loc_3A5D4
-	subq.w	#1,$44(a3)
+	subq.w	#1,$44(a3) ; remove one hitpoint from enemy
 	bne.s	loc_3A5BE
 
-loc_3A5A6:
+loc_3A5A6: ; fire demon death
 	move.l	#stru_3A378,d7
 	jsr	(j_Init_Animation).w
 	jsr	(j_sub_105E).w
-	subi.b	#1,($FFFFFB50).w
+	subi.b	#1,(Fire_Demon).w
 	bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
@@ -51207,7 +51203,7 @@ loc_3A63C:
 	andi.w	#$7000,d5
 	cmpi.w	#$6000,d5
 	bne.w	loc_3A6DA
-	andi.w	#$7000,d7
+	andi.w	#$7000,d7 ; fire trail
 	cmpi.w	#$6000,d7
 	bne.w	loc_3A6DA
 
@@ -51219,7 +51215,7 @@ loc_3A6CA:
 	bne.s	loc_3A6CA
 
 loc_3A6DA:
-	subq.w	#1,($FFFFFB44).w
+	subq.w	#1,(Number_of_Fire_Trails).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 stru_3A6E2:

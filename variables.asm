@@ -97,8 +97,10 @@ MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphd
 MurderWall_speed = 	$FFFFFAC8	; long
 MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
-Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid    
+Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
+Number_of_Fire_Trails = $FFFFFB44	; word: max number of trails active on screen
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each kill
 Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo

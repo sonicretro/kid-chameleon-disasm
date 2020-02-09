@@ -50965,19 +50965,19 @@ loc_3A3D2:
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7 ; enemy index type 0, 1 or 2?
+	move.w	$40(a3),d7 ; enemy hitpoints
 	addq.w	#3,d7
 	move.w	d7,$44(a3)
 	cmpi.w	#4,d7
 	blt.s	loc_3A414
 	beq.s	loc_3A40C
-	move.l	#$8000,$50(a5) ; movement speed type 3 and add (type 2 and type 1)
+	move.l	#$8000,$50(a5) ; movement speed 3 hitpoint and higher also add (speeds below)
 
 loc_3A40C:
-	addi.l	#$8000,$50(a5) ; movement speed type 2 and add (type 1)
+	addi.l	#$8000,$50(a5) ; movement speed 2 hitpoint also add (speeds below)
 
 loc_3A414:
-	addi.l	#$8000,$50(a5) ; movement speed type 1
+	addi.l	#$8000,$50(a5) ; movement speed 1 hitpoint
 	move.w	#$20,$4A(a5)
 	move.w	#$B,$48(a5)
 	tst.b	(Fire_Demon).w
@@ -51724,7 +51724,7 @@ loc_3AD16:
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7
+	move.w	$40(a3),d7 ; enemy hitpoints
 	addq.w	#2,d7	; have at least 2 HP
 	move.w	d7,$44(a3)
 	cmpi.w	#3,d7	; how many hitpoints?

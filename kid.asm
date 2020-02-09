@@ -50991,14 +50991,14 @@ loc_3A444:
 	move.l	#loc_3A542,a0
 	cmpi.w	#5,d7
 	bne.s	loc_3A464
-	move.l	#stru_3A334,d7
+	move.l	#stru_3A334,d7 ; walking sprite
 	jsr	(j_Init_Animation).w
 	move.l	#stru_3A334,$62(a5)
 	bra.s	loc_3A476
 ; ---------------------------------------------------------------------------
 
 loc_3A464:
-	move.l	#stru_3A31A,d7 ; fire trail
+	move.l	#stru_3A31A,d7 ; walking sprite
 	jsr	(j_Init_Animation).w
 	move.l	#stru_3A31A,$62(a5)
 
@@ -51007,7 +51007,8 @@ loc_3A476:
 	beq.w	loc_3C0D2
 	bra.w	loc_3C026
 ; ---------------------------------------------------------------------------
-dword_3A482:	dc.l Palette_Buffer+$22
+dword_3A482:
+	dc.l Palette_Buffer+$22
 	dc.l Palette_Buffer+$42
 	dc.l Palette_Buffer+$52
 ; ---------------------------------------------------------------------------
@@ -51189,7 +51190,7 @@ loc_3A63C:
 	move.w	$3A(a0),object_meta(a3)
 	move.w	$24(a0),vram_tile(a3)
 	move.b	$11(a0),palette_line(a3)
-	move.l	#stru_3A622,d7
+	move.l	#stru_3A622,d7 ; fire trail sprite
 	jsr	(j_Init_Animation).w
 	move.w	#$96,d3
 	moveq	#8,d7
@@ -51203,7 +51204,7 @@ loc_3A63C:
 	andi.w	#$7000,d5
 	cmpi.w	#$6000,d5
 	bne.w	loc_3A6DA
-	andi.w	#$7000,d7 ; fire trail
+	andi.w	#$7000,d7
 	cmpi.w	#$6000,d7
 	bne.w	loc_3A6DA
 

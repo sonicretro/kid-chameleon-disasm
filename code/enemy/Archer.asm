@@ -5,13 +5,13 @@
 	exg	a1,a3
 	move.l	a3,$36(a5)
 	move.l	a1,$3A(a5)
-	move.l	$44(a5),a0
+	move.l	enemy_hitpoints(a5),a0 ; from "level\enemy\*.bin"
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	bsr.w	sub_36FF4
-	move.w	2(a0),d7	; hitpoints
-	add.w	d7,d7
-	move.w	word_33FD4(pc,d7.w),d7
+	move.w	2(a0),d7	; select number of hitpoints
+	add.w	d7,d7	; create offset for table arrow_accuracy
+	move.w	arrow_accuracy(pc,d7.w),d7 ; table is inside "kid.asm"
 	move.w	d7,$4A(a5)
 	st	$13(a3)
 	st	is_moved(a3)
@@ -211,7 +211,7 @@ loc_341BE:
 	move.w	#$14,d3
 	move.w	#0,$22(a1)
 	move.w	#3,d7
-	addq.w	#1,($FFFFFB46).w
+	addq.w	#1,(Number_of_Arrows).w
 	move.w	#$8000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_34266,4(a0)
@@ -251,7 +251,7 @@ loc_34248:
 	bsr.w	Object_CheckInRange
 	bsr.w	loc_34128
 	dbf	d3,loc_34248
-	cmpi.w	#2,($FFFFFB46).w
+	cmpi.w	#2,(Number_of_Arrows).w
 	bge.w	loc_3408C
 	bra.w	loc_341BE
 ; ---------------------------------------------------------------------------
@@ -325,7 +325,7 @@ loc_3432E:
 ; ---------------------------------------------------------------------------
 
 loc_34336:
-	subq.w	#1,($FFFFFB46).w
+	subq.w	#1,(Number_of_Arrows).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 

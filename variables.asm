@@ -99,6 +99,7 @@ MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
 Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 Number_of_Fire_Trails = $FFFFFB44	; word: max number of trails active on screen
+Number_of_Arrows = $FFFFFB46	; word: number of arrows on screen
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
 Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each kill
 Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
@@ -216,6 +217,7 @@ has_level_collision = $3C; flag
 has_kid_collision = $3D	; flag
 ;3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
 ;42: (long) some y position relative to camera?
+enemy_hitpoints = $44		; long
 ;46: ?
 ;48: (word)
 ;4A: (word)

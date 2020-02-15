@@ -27,7 +27,7 @@
 	move.w	$48(a5),$44(a5)
 
 loc_35908:
-	bsr.w	Enemy_HandleAcceleration
+	bsr.w	Enemy_HandleAcceleration ; this code is defined in "code/enemy/UFO.asm"
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Object_CheckInRange
 	bsr.w	loc_35948

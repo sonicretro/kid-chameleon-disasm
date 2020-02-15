@@ -37758,8 +37758,8 @@ byte_321BC: ; also part of tar monster, hitpoints
 	dc.b 6
 	dc.b 0
 ; ---------------------------------------------------------------------------
-Enemy05_TarMonster_Init: include "code/enemy/05.asm"
-stru_326EE: include "ingame/anim/enemy/05.asm"
+Enemy05_TarMonster_Init: include "code/enemy/Tar_Monster.asm"
+stru_326EE: include "ingame/anim/enemy/Tar_Monster.asm"
 ; ---------------------------------------------------------------------------
 
 unk_3276A:	; depends on whether 0, 1 or 2 hitpoints (or is the palette?)
@@ -37776,8 +37776,8 @@ unk_3276A:	; depends on whether 0, 1 or 2 hitpoints (or is the palette?)
 	dc.l -$6000
 ; ---------------------------------------------------------------------------
 
-Enemy17_Hand_Init: include "code/enemy/17.asm"
-stru_32B50: include "ingame/anim/enemy/17.asm"
+Enemy17_Hand_Init: include "code/enemy/Hand.asm"
+stru_32B50: include "ingame/anim/enemy/Hand.asm"
 ; ---------------------------------------------------------------------------
 
 unk_32BA6:	; hit point specific value pairs.
@@ -37791,7 +37791,7 @@ unk_32BA6:	; hit point specific value pairs.
 	dc.l -$50000
 ; ---------------------------------------------------------------------------
 
-Enemy19_Fireball_Init: include "code/enemy/19.asm" ; include anim is inside the enemy code
+Enemy19_Fireball_Init: include "code/enemy/Fireball.asm" ; include anim is inside the enemy code
 ; ---------------------------------------------------------------------------
 
 loc_331D2:
@@ -37940,8 +37940,8 @@ unk_33338:
 	dc.w $FF00
 	dc.w $FFFF
 
-Enemy16_Drip_Init: include "code/enemy/16.asm"
-stru_33DA0: include "ingame/anim/enemy/16.asm"
+Enemy16_Drip_Init: include "code/enemy/Drips.asm"
+stru_33DA0: include "ingame/anim/enemy/Drips.asm"
 ; ---------------------------------------------------------------------------
 
 word_33FD4:	; how hard the arrows home in on you. Smaller value = stronger
@@ -37949,7 +37949,7 @@ word_33FD4:	; how hard the arrows home in on you. Smaller value = stronger
 	dc.w $14	; 2 HP
 	dc.w  $A	; 3 HP
 
-Enemy07_Archer_Init: include "code/enemy/07.asm"
+Enemy07_Archer_Init: include "code/enemy/Archer.asm"
 ; ---------------------------------------------------------------------------
 
 unk_34554:	dc.b $FF
@@ -38110,11 +38110,11 @@ off_345F6:
 	dc.w LnkTo_unk_C762E-Data_Index
 	dc.w LnkTo_unk_C7636-Data_Index
 	
-stru_34600: include "ingame/anim/enemy/0C.asm"
-Enemy0C_Dragon_flying_Init: include "code/enemy/0C.asm"
+stru_34600: include "ingame/anim/enemy/Dragon_Flying.asm"
+Enemy0C_Dragon_flying_Init: include "code/enemy/Dragon_Flying.asm"
 ; ---------------------------------------------------------------------------
 
-stru_34C7E: include "ingame/anim/enemy/0F.asm"
+stru_34C7E: include "ingame/anim/enemy/UFO.asm"
 
 unk_34D48: ; also part of ufo
 	dc.b $FF
@@ -38144,7 +38144,7 @@ unk_34D48: ; also part of ufo
 ;d3
 ; ---------------------------------------------------------------------------
 
-Enemy0F_UFO_Init: include "code/enemy/0F.asm"
+Enemy0F_UFO_Init: include "code/enemy/UFO.asm"
 ; ---------------------------------------------------------------------------
 
 loc_35056:
@@ -39135,7 +39135,7 @@ unk_3588C: ; also part of tornado
 	dc.b $FF
 	dc.b $FF
 
-Enemy18_Tornado_Init: include "code/enemy/18.asm"
+Enemy18_Tornado_Init: include "code/enemy/Tornado.asm"
 
 ; ---------------------------------------------------------------------------
 unk_35A0C:	dc.b   0
@@ -39398,7 +39398,7 @@ unk_35A0C:	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   1
-stru_35B10: include "ingame/anim/enemy/18.asm"
+stru_35B10: include "ingame/anim/enemy/Tornado.asm"
 ; ---------------------------------------------------------------------------
 
 dword_35B38: ; also part of cload
@@ -39406,12 +39406,12 @@ dword_35B38: ; also part of cload
 	dc.l $FFFFB000
 	dc.l $FFFF9000
 
-Enemy0E_Cloud_Init: include "code/enemy/0E.asm"
-stru_35EA0: include "ingame/anim/enemy/0E.asm"
+Enemy0E_Cloud_Init: include "code/enemy/Cloud.asm"
+stru_35EA0: include "ingame/anim/enemy/Cloud.asm"
 ; ---------------------------------------------------------------------------
 
-Enemy06_Sphere_Init: include "code/enemy/06.asm"
-stru_36174: include "ingame/anim/enemy/06.asm"
+Enemy06_Sphere_Init: include "code/enemy/Sphere.asm"
+stru_36174: include "ingame/anim/enemy/Sphere.asm"
 ; ---------------------------------------------------------------------------
 
 word_361A2:	dc.w $50;also part of emo rock
@@ -39425,12 +39425,12 @@ word_361A4:	dc.w $2000
 	dc.b $40 ; @
 	dc.b   0
 	
-Enemy1B_EmoRock_Init: include "code/enemy/1B.asm"
-stru_363FE: include "ingame/anim/enemy/1B.asm"
+Enemy1B_EmoRock_Init: include "code/enemy/Emo_Rock.asm"
+stru_363FE: include "ingame/anim/enemy/Emo_Rock.asm"
 ; ---------------------------------------------------------------------------
 
-Enemy1D_BigHoppingSkull_Init: include "code/enemy/1D.asm"
-stru_367AE: include "ingame/anim/enemy/1D.asm"
+Enemy1D_BigHoppingSkull_Init: include "code/enemy/Big_Hopping_Skull.asm"
+stru_367AE: include "ingame/anim/enemy/Big_Hopping_Skull.asm"
 
 unk_3680C: ; not sure if this is part of bighoppingskull
 	dc.b   0
@@ -44882,36 +44882,36 @@ stru_3A308:
 	dc.b $11
 ; ---------------------------------------------------------------------------
 
-stru_3A31A: include "ingame/anim/enemy/00.asm"
-Enemy00_FireDemon_Init: include "code/enemy/00.asm"
+stru_3A31A: include "ingame/anim/enemy/Fire_Demon.asm"
+Enemy00_FireDemon_Init: include "code/enemy/Fire_Demon.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3A6E2: include "ingame/anim/enemy/03.asm"
-Enemy03_Robot_Init: include "code/enemy/03.asm"
+stru_3A6E2: include "ingame/anim/enemy/Robot.asm"
+Enemy03_Robot_Init: include "code/enemy/Robot.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3ACA8: include "ingame/anim/enemy/01.asm"
-Enemy01_Diamond_Init: include "code/enemy/01.asm"
+stru_3ACA8: include "ingame/anim/enemy/Crystal.asm"
+Enemy01_Diamond_Init: include "code/enemy/Crystal.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3AF62: include "ingame/anim/enemy/09.asm"
-Enemy09_Crab_Init: include "code/enemy/09.asm"
+stru_3AF62: include "ingame/anim/enemy/Crab.asm"
+Enemy09_Crab_Init: include "code/enemy/Crab.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3B270: include "ingame/anim/enemy/0A.asm"
-Enemy0A_RockTank_Init: include "code/enemy/0A.asm"
+stru_3B270: include "ingame/anim/enemy/Tank.asm"
+Enemy0A_RockTank_Init: include "code/enemy/Tank.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3B4CA: include "ingame/anim/enemy/0B.asm"
-Enemy0B_RockTank_shooting_Init: include "code/enemy/0B.asm"
+stru_3B4CA: include "ingame/anim/enemy/Tank_Shooting.asm"
+Enemy0B_RockTank_shooting_Init: include "code/enemy/Tank_Shooting.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3B7F0: include "ingame/anim/enemy/14.asm"
-Enemy14_SpinningTwins_Init: include "code/enemy/14.asm"
+stru_3B7F0: include "ingame/anim/enemy/Spinning_Twins.asm"
+Enemy14_SpinningTwins_Init: include "code/enemy/Spinning_Twins.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3BCB2: include "ingame/anim/enemy/1A.asm"
-Enemy1A_Driller_Init: include "code/enemy/1A.asm"
+stru_3BCB2: include "ingame/anim/enemy/Driller.asm"
+Enemy1A_Driller_Init: include "code/enemy/Driller.asm"
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -45664,15 +45664,15 @@ loc_3C618:
 	rts
 ; ---------------------------------------------------------------------------
 
-stru_3C632: include "ingame/anim/enemy/04.asm"
-Enemy04_Armadillo_Init: include "code/enemy/04.asm"
+stru_3C632: include "ingame/anim/enemy/Armadillo.asm"
+Enemy04_Armadillo_Init: include "code/enemy/Armadillo.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3C97C: include "ingame/anim/enemy/10.asm"
-Enemy10_Goat_Init: include "code/enemy/10.asm"
+stru_3C97C: include "ingame/anim/enemy/Goat.asm"
+Enemy10_Goat_Init: include "code/enemy/Goat.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3CC5E: include "ingame/anim/enemy/0D.asm"
+stru_3CC5E: include "ingame/anim/enemy/Dragon.asm"
 ; ---------------------------------------------------------------------------
 
 loc_3CD16:
@@ -45687,23 +45687,23 @@ loc_3CD16:
 	bra.w	loc_3CD70
 ; ---------------------------------------------------------------------------
 
-Enemy0D_Dragon_Init: include "code/enemy/0D.asm"
+Enemy0D_Dragon_Init: include "code/enemy/Dragon.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3D0A2: include "ingame/anim/enemy/08.asm"
-Enemy08_Orca_Init: include "code/enemy/08.asm"
+stru_3D0A2: include "ingame/anim/enemy/Orca.asm"
+Enemy08_Orca_Init: include "code/enemy/Orca.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3D4EA: include "ingame/anim/enemy/11.asm"
-Enemy11_Ninja_Init: include "code/enemy/11.asm"
+stru_3D4EA: include "ingame/anim/enemy/Ninja.asm"
+Enemy11_Ninja_Init: include "code/enemy/Ninja.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3DB60: include "ingame/anim/enemy/13.asm"
-Enemy13_Scorpion_Init: include "code/enemy/13.asm"
+stru_3DB60: include "ingame/anim/enemy/Scorpion.asm"
+Enemy13_Scorpion_Init: include "code/enemy/Scorpion.asm"
 ; ---------------------------------------------------------------------------
 
-stru_3DEDA: include "ingame/anim/enemy/12.asm"
-Enemy12_Lion_Init: include "code/enemy/12.asm"
+stru_3DEDA: include "ingame/anim/enemy/Lion.asm"
+Enemy12_Lion_Init: include "code/enemy/Lion.asm"
 ; ---------------------------------------------------------------------------
 
 loc_3E7CA:
@@ -45889,8 +45889,8 @@ loc_3E98A:
 
 ; ---------------------------------------------------------------------------
 
-stru_3E98E: include "ingame/anim/enemy/1C.asm"
-Enemy1C_MiniHoppingSkull_Init: include "code/enemy/1C.asm"
+stru_3E98E: include "ingame/anim/enemy/Mini_Hopping_Skull.asm"
+Enemy1C_MiniHoppingSkull_Init: include "code/enemy/Mini_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 ; filler
     rept 368

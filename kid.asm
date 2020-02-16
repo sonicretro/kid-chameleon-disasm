@@ -37944,12 +37944,8 @@ Enemy16_Drip_Init: include "code/enemy/Drips.asm"
 stru_33DA0: include "ingame/anim/enemy/Drips.asm"
 ; ---------------------------------------------------------------------------
 
-arrow_accuracy:
-	dc.w $1E	; 1 HP
-	dc.w $14	; 2 HP
-	dc.w  $A	; 3 HP
-
-Enemy07_Archer_Init: include "code/enemy/Archer.asm"
+;Enemy07_Archer_Init:
+        include "code/enemy/Archer.asm"
 ; ---------------------------------------------------------------------------
 
 unk_34554:	dc.b $FF

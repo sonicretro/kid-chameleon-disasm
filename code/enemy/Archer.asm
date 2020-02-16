@@ -1,4 +1,10 @@
+arrow_accuracy:
+	dc.w $1E	; 1 HP
+	dc.w $14	; 2 HP
+	dc.w  $A	; 3 HP
+
 ;loc_33FDA:
+Enemy07_Archer_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	jsr	loc_32188(pc)
@@ -11,13 +17,13 @@
 	bsr.w	sub_36FF4
 	move.w	2(a0),d7	; select number of hitpoints
 	add.w	d7,d7	; create offset for table arrow_accuracy
-	move.w	arrow_accuracy(pc,d7.w),d7 ; table is inside "kid.asm"
+	move.w	arrow_accuracy(pc,d7.w),d7 ; this table is inside "kid.asm"
 	move.w	d7,$4A(a5)
 	st	$13(a3)
 	st	is_moved(a3)
 	sf	x_direction(a3)
 	move.b	#0,priority(a3)
-	move.w	#7,d0
+	move.w	#enemyid_Archer,d0 ; #7 sprite id of enemy?
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	sf	$19(a3)
@@ -27,7 +33,7 @@
 	st	$13(a1)
 	move.b	#0,$10(a1)
 	exg	a1,a3
-	move.w	#7,d0
+	move.w	#enemyid_Archer,d0 ; #7 sprite id of enemy arrow?
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	exg	a1,a3
@@ -48,7 +54,7 @@ loc_3408C:
 	bsr.w	Object_CheckInRange
 	bsr.w	loc_34128
 	sf	x_direction(a3)
-	lea	unk_34102(pc),a2
+	lea	Shooting_Vertical(pc),a2
 	subi.w	#$1E,y_pos(a3)
 	bsr.w	loc_34458
 	addi.w	#$1E,y_pos(a3)
@@ -61,88 +67,52 @@ loc_3408C:
 loc_340C0:
 	cmpi.w	#$D,d6
 	ble.w	loc_3419A
-	lea	unk_340DC(pc),a2
+	lea	Shooting_Horizontal(pc),a2
 	cmpi.w	#$14,d6
 	ble.w	loc_3419A
 	st	x_direction(a3)
 	bra.w	loc_3419A
 ; ---------------------------------------------------------------------------
-unk_340DC:	dc.b   0
-	dc.b  $D
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b  $C
-	dc.b $90 ; 
-	dc.b $FF
-	dc.b $F2 ; ò
-	dc.b $FF
-	dc.b $EF ; ï
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $94 ; ”
-	dc.b $FF
-	dc.b $F5 ; õ
-	dc.b $FF
-	dc.b $EF ; ï
-	dc.b   0
-	dc.b  $C
-	dc.b  $C
-	dc.b $98 ; ˜
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b $FF
-	dc.b $EF ; ï
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b $9C ; œ
-	dc.b $FF
-	dc.b $F2 ; ò
-	dc.b $FF
-	dc.b $EF ; ï
-	dc.b $FF
-	dc.b $FF
-unk_34102:	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b $64 ; d
-	dc.b  $C
-	dc.b $80 ; €
-	dc.b $FF
-	dc.b $F2 ; ò
-	dc.b $FF
-	dc.b $E2 ; â
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $84 ; „
-	dc.b $FF
-	dc.b $F5 ; õ
-	dc.b $FF
-	dc.b $E5 ; å
-	dc.b   0
-	dc.b  $C
-	dc.b  $C
-	dc.b $88 ; ˆ
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b $8C ; Œ
-	dc.b $FF
-	dc.b $F2 ; ò
-	dc.b $FF
-	dc.b $E2 ; â
-	dc.b $FF
-	dc.b $FF
+Shooting_Horizontal:
+	dc.w    $D ; shooting direction left facing
+	dc.w     0 ; shooting direction right facing
+	dc.w   $64 ; delay between tension bow?
+	dc.w  $C90 ; standing normal enemy sprite
+	dc.w $FFF2 ; standing normal arrow x position
+	dc.w $FFEF ; standing normal arrow y position
+	dc.w     6
+	dc.w  $C94
+	dc.w $FFF5
+	dc.w $FFEF
+	dc.w    $C
+	dc.w  $C98
+	dc.w $FFF8
+	dc.w $FFEF
+	dc.w     0
+	dc.w  $C9C
+	dc.w $FFF2
+	dc.w $FFEF
+	dc.w $FFFF
+Shooting_Vertical:
+	dc.w    $A ; shooting direction left facing
+	dc.w     3 ; shooting direction right facing
+	dc.w   $64 ; delay between tension bow?
+	dc.w  $C80 ; standing normal enemy sprite
+	dc.w $FFF2 ; standing normal arrow x position
+	dc.w $FFE2 ; standing normal arrow y position
+	dc.w     6
+	dc.w  $C84
+	dc.w $FFF5
+	dc.w $FFE5
+	dc.w    $C
+	dc.w  $C88
+	dc.w $FFF8
+	dc.w $FFE8
+	dc.w     0
+	dc.w  $C8C
+	dc.w $FFF2
+	dc.w $FFE2
+	dc.w $FFFF
 ; ---------------------------------------------------------------------------
 
 loc_34128:

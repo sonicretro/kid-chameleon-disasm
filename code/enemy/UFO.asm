@@ -1,4 +1,33 @@
+unk_34D48:
+	dc.b $FF
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $FF
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $FF
+	dc.b $FF
+; ---------------------------------------------------------------------------
+;$44(a5)	word counter
+;$46(a5)	flag whether UFO is shooting
+;$47(a5)	flag ?
+;$4C(a5)	flag ?
+;$4D(a5)	flag ?
+;$4E(a5)	flag ?
+;$4F(a5)	flag ?
+;$50(a5)	flag whether UFO is on screen
+;d0	x acceleration
+;d1
+;d2	y acceleration
+;d3
+; ---------------------------------------------------------------------------
+
 ;loc_34D54:
+Enemy0F_UFO_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

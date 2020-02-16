@@ -1,4 +1,15 @@
+unk_32BA6:	; hit point specific value pairs.
+		; first value: gravity
+		; second value: maximum upwards speed.
+	dc.l $1000
+	dc.l -$30000
+	dc.l $2000
+	dc.l -$40000
+	dc.l $3000
+	dc.l -$50000
+
 ;loc_32BBE:
+Enemy19_Fireball_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

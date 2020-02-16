@@ -1,4 +1,10 @@
+dword_35B38:
+	dc.l $FFFFD000
+	dc.l $FFFFB000
+	dc.l $FFFF9000
+
 ;loc_35B44:
+Enemy0E_Cloud_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

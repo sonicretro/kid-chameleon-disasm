@@ -11,7 +11,7 @@ Enemy07_Archer_Init:
 	exg	a1,a3
 	move.l	a3,$36(a5)
 	move.l	a1,$3A(a5)
-	move.l	enemy_hitpoints(a5),a0 ; from "level\enemy\*.bin"
+	move.l	current_hp(a5),a0
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -23,7 +23,7 @@ Enemy07_Archer_Init:
 	st	is_moved(a3)
 	sf	x_direction(a3)
 	move.b	#0,priority(a3)
-	move.w	#enemyid_Archer,d0 ; #7 sprite id of enemy?
+	move.w	#enemyid_Archer,d0 ; sprite id (enemy)
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	sf	$19(a3)
@@ -33,7 +33,7 @@ Enemy07_Archer_Init:
 	st	$13(a1)
 	move.b	#0,$10(a1)
 	exg	a1,a3
-	move.w	#enemyid_Archer,d0 ; #7 sprite id of enemy arrow?
+	move.w	#enemyid_Archer,d0 ; sprite id (enemy holding arrow)
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	exg	a1,a3
@@ -244,7 +244,7 @@ loc_34266:
 	st	$13(a3)
 	st	is_moved(a3)
 	move.b	#0,priority(a3)
-	move.w	#7,d0
+	move.w	#enemyid_Archer,d0 ; sprite id (enemy arrow)
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	sf	$19(a3)
@@ -434,7 +434,8 @@ byte_3437D:	dc.b 0
 	dc.b   0
 	dc.b $20
 	dc.b   0
-off_343EA:	dc.w LnkTo_unk_C81F8-Data_Index
+off_343EA:
+	dc.w LnkTo_unk_C81F8-Data_Index
 	dc.w LnkTo_unk_C8200-Data_Index
 	dc.w LnkTo_unk_C8208-Data_Index
 	dc.w LnkTo_unk_C8210-Data_Index
@@ -447,7 +448,8 @@ off_343EA:	dc.w LnkTo_unk_C81F8-Data_Index
 	dc.w LnkTo_unk_C8248-Data_Index
 	dc.w LnkTo_unk_C8250-Data_Index
 	dc.w LnkTo_unk_C8258-Data_Index
-unk_34404:	dc.b   0
+unk_34404:
+	dc.b   0
 	dc.b   1
 	dc.b   1
 	dc.b   2

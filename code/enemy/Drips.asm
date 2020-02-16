@@ -1,4 +1,14 @@
+stru_33332:
+	anim_frame	1, 1, LnkTo_unk_C7B96-Data_Index
+	dc.b 0
+	dc.b 0
+unk_33338:
+	dc.w 0
+	dc.w $FF00
+	dc.w $FFFF
+
 ;loc_3333E:
+Enemy16_Drip_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

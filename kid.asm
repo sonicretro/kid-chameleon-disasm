@@ -37752,46 +37752,16 @@ loc_321B2:
 	move.l	(sp)+,a0
 	rts
 ; ---------------------------------------------------------------------------
-byte_321BC: ; also part of tar monster, hitpoints
-	dc.b 2
-	dc.b 4
-	dc.b 6
-	dc.b 0
-; ---------------------------------------------------------------------------
-Enemy05_TarMonster_Init: include "code/enemy/Tar_Monster.asm"
+
+	include "code/enemy/Tar_Monster.asm"
 stru_326EE: include "ingame/anim/enemy/Tar_Monster.asm"
 ; ---------------------------------------------------------------------------
 
-unk_3276A:	; depends on whether 0, 1 or 2 hitpoints (or is the palette?)
-	dc.w $40	; range in front of hand in which it will detect the kid
-	dc.w   1
-	dc.l -$3000	; walking velocity
-
-	dc.w $50
-	dc.w   2
-	dc.l -$4800
-
-	dc.w $64
-	dc.w   3
-	dc.l -$6000
-; ---------------------------------------------------------------------------
-
-Enemy17_Hand_Init: include "code/enemy/Hand.asm"
+	include "code/enemy/Hand.asm"
 stru_32B50: include "ingame/anim/enemy/Hand.asm"
 ; ---------------------------------------------------------------------------
 
-unk_32BA6:	; hit point specific value pairs.
-		; first value: gravity
-		; second value: maximum upwards speed.
-	dc.l $1000
-	dc.l -$30000
-	dc.l $2000
-	dc.l -$40000
-	dc.l $3000
-	dc.l -$50000
-; ---------------------------------------------------------------------------
-
-Enemy19_Fireball_Init: include "code/enemy/Fireball.asm" ; include anim is inside the enemy code
+	include "code/enemy/Fireball.asm" ; include anim is inside the enemy code
 ; ---------------------------------------------------------------------------
 
 loc_331D2:
@@ -37931,21 +37901,12 @@ loc_3330E:
 	andi.w	#$7000,d7
 	rts
 ; ---------------------------------------------------------------------------
-stru_33332: ; also part of drips
-	anim_frame	1, 1, LnkTo_unk_C7B96-Data_Index
-	dc.b 0
-	dc.b 0
-unk_33338:
-	dc.w 0
-	dc.w $FF00
-	dc.w $FFFF
 
-Enemy16_Drip_Init: include "code/enemy/Drips.asm"
+	include "code/enemy/Drips.asm"
 stru_33DA0: include "ingame/anim/enemy/Drips.asm"
 ; ---------------------------------------------------------------------------
 
-;Enemy07_Archer_Init:
-        include "code/enemy/Archer.asm"
+	include "code/enemy/Archer.asm"
 ; ---------------------------------------------------------------------------
 
 unk_34554:	dc.b $FF
@@ -38111,36 +38072,7 @@ Enemy0C_Dragon_flying_Init: include "code/enemy/Dragon_Flying.asm"
 ; ---------------------------------------------------------------------------
 
 stru_34C7E: include "ingame/anim/enemy/UFO.asm"
-
-unk_34D48: ; also part of ufo
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-; ---------------------------------------------------------------------------
-;$44(a5)	word counter
-;$46(a5)	flag whether UFO is shooting
-;$47(a5)	flag ?
-;$4C(a5)	flag ?
-;$4D(a5)	flag ?
-;$4E(a5)	flag ?
-;$4F(a5)	flag ?
-;$50(a5)	flag whether UFO is on screen
-;d0	x acceleration
-;d1
-;d2	y acceleration
-;d3
-; ---------------------------------------------------------------------------
-
-Enemy0F_UFO_Init: include "code/enemy/UFO.asm"
+	include "code/enemy/UFO.asm"
 ; ---------------------------------------------------------------------------
 
 loc_35056:
@@ -39397,31 +39329,15 @@ unk_35A0C:	dc.b   0
 stru_35B10: include "ingame/anim/enemy/Tornado.asm"
 ; ---------------------------------------------------------------------------
 
-dword_35B38: ; also part of cload
-	dc.l $FFFFD000
-	dc.l $FFFFB000
-	dc.l $FFFF9000
-
-Enemy0E_Cloud_Init: include "code/enemy/Cloud.asm"
+	include "code/enemy/Cloud.asm"
 stru_35EA0: include "ingame/anim/enemy/Cloud.asm"
 ; ---------------------------------------------------------------------------
 
 Enemy06_Sphere_Init: include "code/enemy/Sphere.asm"
 stru_36174: include "ingame/anim/enemy/Sphere.asm"
 ; ---------------------------------------------------------------------------
-
-word_361A2:	dc.w $50;also part of emo rock
-word_361A4:	dc.w $2000
-	dc.b   0
-	dc.b $3C ; <
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $40 ; @
-	dc.b   0
 	
-Enemy1B_EmoRock_Init: include "code/enemy/Emo_Rock.asm"
+	include "code/enemy/Emo_Rock.asm"
 stru_363FE: include "ingame/anim/enemy/Emo_Rock.asm"
 ; ---------------------------------------------------------------------------
 

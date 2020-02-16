@@ -1,4 +1,18 @@
+unk_3276A:	; depends on whether 0, 1 or 2 hitpoints (or is the palette?)
+	dc.w $40	; range in front of hand in which it will detect the kid
+	dc.w   1
+	dc.l -$3000	; walking velocity
+
+	dc.w $50
+	dc.w   2
+	dc.l -$4800
+
+	dc.w $64
+	dc.w   3
+	dc.l -$6000
+
 ;loc_32782:
+Enemy17_Hand_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

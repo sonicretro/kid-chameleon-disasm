@@ -1,4 +1,16 @@
+word_361A2:	dc.w $50
+word_361A4:	dc.w $2000
+	dc.b   0
+	dc.b $3C
+	dc.b $30
+	dc.b   0
+	dc.b   0
+	dc.b $28
+	dc.b $40
+	dc.b   0
+
 ;loc_361AE:
+Enemy1B_EmoRock_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0

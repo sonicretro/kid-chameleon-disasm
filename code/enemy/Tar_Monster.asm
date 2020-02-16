@@ -1,4 +1,11 @@
+byte_321BC:
+	dc.b 2
+	dc.b 4
+	dc.b 6
+	dc.b 0
+
 ;loc_321C0:
+Enemy05_TarMonster_Init:
 	move.l	#$1000002,a3
 
 loc_321C6:

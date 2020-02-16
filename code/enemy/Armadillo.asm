@@ -2,8 +2,8 @@
 	addi.w	#1,($FFFFFA06).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.l	current_hp(a5),a4
+	move.w	2(a4),enemy_hp(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -15,16 +15,16 @@
 
 loc_3C718:
 	st	$13(a3)
-	move.w	#4,d5
+	move.w	#enemyid_Armadillo,d5 ; sprite id (enemy)
 	move.w	d5,object_meta(a3)
 	bsr.w	sub_36E84
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7
+	move.w	enemy_hp(a3),d7
 	addq.w	#1,d7
-	move.w	d7,$44(a3)
+	move.w	d7,current_hp(a3)
 	cmpi.w	#2,d7
-	blt.s	loc_3C766
-	beq.s	loc_3C756
+	blt.s	loc_3C766 ;   less than 2 hitpoints 8000 speed
+	beq.s	loc_3C756 ; equal than 2 hitpoints 18000 speed
 	move.w	#1,$4C(a5)
 	move.l	#$10000,$50(a5)
 	addi.l	#$10000,$5E(a5)

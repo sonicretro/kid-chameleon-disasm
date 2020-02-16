@@ -217,7 +217,8 @@ has_level_collision = $3C; flag
 has_kid_collision = $3D	; flag
 ;3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
 ;42: (long) some y position relative to camera?
-enemy_hitpoints = $44		; long
+enemy_hp = $40		; word
+current_hp = $44		; long
 ;46: ?
 ;48: (word)
 ;4A: (word)

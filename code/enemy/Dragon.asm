@@ -1,9 +1,21 @@
-;loc_3CD46:
-	addi.w	#1,($FFFFFA06).w
+loc_3CD16:;this first label comes from flaying dragon
+	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	move.b	$48(a5),x_direction(a3)
+	move.w	$4A(a5),$40(a3)
+	st	$5C(a5)
+	bra.w	loc_3CD70
+
+;loc_3CD46:
+Enemy0D_Dragon_Init:
+	addi.w	#1,(Number_of_Enemy).w
+	move.l	#$1000002,a3
+	jsr	(j_Load_GfxObjectSlot).w
+	move.l	current_hp(a5),a4
+	move.w	2(a4),enemy_hp(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -45,9 +57,9 @@ loc_3CDB8:
 	move.w	d4,$3E(a3)
 	st	$13(a3)
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7
+	move.w	enemy_hp(a3),d7
 	addq.w	#1,d7
-	move.w	d7,$44(a3)
+	move.w	d7,current_hp(a3)
 	cmpi.w	#3,d7
 	bne.s	loc_3CDFC
 	move.l	#$10000,$50(a5)

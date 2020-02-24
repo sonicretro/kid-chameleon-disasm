@@ -1,10 +1,10 @@
 ;Trap06Exception4A:
-	addi.w	#1,($FFFFFA06).w
+	addi.w	#1,(Number_of_Enemy).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.l	current_hp(a5),a4
+	move.w	2(a4),enemy_hp(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -196,7 +196,7 @@ loc_3BA74:
 	move.w	#$B,$48(a5)
 	move.w	#$14,object_meta(a3)
 	move.w	#(LnkTo_unk_C7CDE-Data_Index),addroffset_sprite(a3)
-	addi.w	#1,($FFFFFA06).w
+	addi.w	#1,(Number_of_Enemy).w
 	st	has_level_collision(a3)
 	st	is_moved(a3)
 	tst.w	$44(a4)
@@ -329,7 +329,7 @@ loc_3BC34:
 ; START	OF FUNCTION CHUNK FOR sub_3C3CE
 
 loc_3BC56:
-	subi.w	#1,($FFFFFA06).w
+	subi.w	#1,(Number_of_Enemy).w
 	cmpi.b	#$A,$5B(a5)
 	beq.s	loc_3BC78
 	move.l	#stru_3B83C,d7

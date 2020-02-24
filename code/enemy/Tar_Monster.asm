@@ -1,4 +1,4 @@
-byte_321BC:
+Hitpoints_Enemy_05:
 	dc.b 2
 	dc.b 4
 	dc.b 6
@@ -10,9 +10,9 @@ Enemy05_TarMonster_Init:
 
 loc_321C6:
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
+	move.l	current_hp(a5),a0
 	move.w	2(a0),d3
-	move.b	byte_321BC(pc,d3.w),d3
+	move.b	Hitpoints_Enemy_05(pc,d3.w),d3
 	ext.w	d3
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)

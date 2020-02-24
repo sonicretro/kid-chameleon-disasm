@@ -1,11 +1,11 @@
 ;loc_364A0:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
+	move.l	current_hp(a5),a0
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	move.w	($FFFFF93C).w,$3E(a3)
-	move.w	($FFFFF93A).w,$40(a3)
+	move.w	(EnemyHeader7D).w,$40(a3)
 	addi.w	#$40,$3E(a3)
 	subi.w	#$40,$40(a3)
 	st	has_level_collision(a3)
@@ -13,22 +13,22 @@
 	st	x_direction(a3)
 	st	is_moved(a3)
 	move.b	#0,priority(a3)
-	move.w	#$1D,d0
+	move.w	#enemyid_BigHoppingSkull,d0 ; loaded sprite id
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	move.l	(Addr_GfxObject_Kid).w,a2
 	move.w	#(LnkTo_unk_C7FC0-Data_Index),addroffset_sprite(a3)
-	move.w	2(a0),d0
+	move.w	2(a0),d0 ; load enemy hitpoints
 	cmpi.w	#0,d0
-	bne.s	loc_3650E
-	move.w	#2,d2
+	bne.s	loc_3650E ; give enemy 1 hitpoint
+	move.w	#2,d2 ; give enemy 2 hitpoints
 	bra.s	loc_3651E
 ; ---------------------------------------------------------------------------
 
 loc_3650E:
 	cmpi.w	#1,d0
-	bne.s	loc_3651A
-	move.w	#3,d2
+	bne.s	loc_3651A ; give enemy 4 hitpoints
+	move.w	#3,d2 ; give enemy 3 hitpoints
 	bra.s	loc_3651E
 ; ---------------------------------------------------------------------------
 
@@ -232,7 +232,8 @@ loc_36720:
 	not.b	x_direction(a3)
 	rts
 ; ---------------------------------------------------------------------------
-off_36736:	dc.l loc_366EC
+off_36736: ; jumping directions
+	dc.l loc_366EC
 	dc.l loc_366EC
 	dc.l loc_36580
 	dc.l loc_366E6

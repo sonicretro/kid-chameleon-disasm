@@ -1,9 +1,9 @@
 ;loc_3C9F8:
-	addi.w	#1,($FFFFFA06).w
+	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.l	current_hp(a5),a4
+	move.w	2(a4),enemy_hp(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	move.l	(Addr_GfxObject_Kid).w,a4
@@ -18,9 +18,9 @@ loc_3CA30:
 	move.w	d5,object_meta(a3)
 	bsr.w	sub_36E84
 	move.b	#0,priority(a3)
-	move.w	$40(a3),d7
+	move.w	enemy_hp(a3),d7
 	addq.w	#3,d7
-	move.w	d7,$44(a3)
+	move.w	d7,current_hp(a3)
 	cmpi.w	#4,d7
 	blt.s	loc_3CA7E
 	beq.s	loc_3CA6E

@@ -13,7 +13,7 @@ word_361A4:	dc.w $2000
 Enemy1B_EmoRock_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
+	move.l	current_hp(a5),a0
 	move.w	2(a0),d7
 	add.w	d7,d7
 	add.w	d7,d7

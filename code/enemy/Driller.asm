@@ -2,8 +2,8 @@
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
+	move.l	current_hp(a5),a4
+	move.w	2(a4),enemy_hp(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -22,9 +22,9 @@ loc_3BD2A:
 	move.b	#0,priority(a3)
 	move.w	#$10,$4A(a5)
 	move.w	#$C,$48(a5)
-	move.w	$40(a3),d7
+	move.w	enemy_hp(a3),d7
 	addi.w	#2,d7
-	move.w	d7,$44(a3)
+	move.w	d7,current_hp(a3)
 	cmpi.w	#3,d7
 	blt.s	loc_3BD74
 	beq.s	loc_3BD6C
@@ -37,7 +37,7 @@ loc_3BD74:
 	addi.l	#$8000,$50(a5)
 	move.l	#stru_3BCB2,d7
 	jsr	(j_Init_Animation).w
-	addi.w	#1,($FFFFFA06).w
+	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,$3A(a5)

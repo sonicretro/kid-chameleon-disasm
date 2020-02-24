@@ -37538,7 +37538,7 @@ loc_31FD4:
 
 loc_31FE6:
 	move.l	a1,(Addr_EnemyLayout).w
-	move.w	(a0),($FFFFF93A).w
+	move.w	(a0),(EnemyHeader7D).w
 	suba.l	#8,a0
 	move.w	(a0),($FFFFF93C).w
 	move.l	a0,(Addr_EnemyLayoutHeader).w
@@ -45407,7 +45407,7 @@ loc_3C4A8:
 
 loc_3C4C0:
 	moveq	#0,d0
-	subi.w	#1,($FFFFFA06).w
+	subi.w	#1,(Number_of_Enemy).w
 	move.b	$42(a5),d0
 	bpl.s	loc_3C4E6
 	btst	#6,d0
@@ -45585,21 +45585,7 @@ Enemy10_Goat_Init: include "code/enemy/Goat.asm"
 ; ---------------------------------------------------------------------------
 
 stru_3CC5E: include "ingame/anim/enemy/Dragon.asm"
-; ---------------------------------------------------------------------------
-
-loc_3CD16:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.w	$44(a5),x_pos(a3)
-	move.w	$46(a5),y_pos(a3)
-	move.b	$48(a5),x_direction(a3)
-	move.w	$4A(a5),$40(a3)
-	st	$5C(a5)
-	bra.w	loc_3CD70
-; ---------------------------------------------------------------------------
-
-Enemy0D_Dragon_Init: include "code/enemy/Dragon.asm"
+	include "code/enemy/Dragon.asm"
 ; ---------------------------------------------------------------------------
 
 stru_3D0A2: include "ingame/anim/enemy/Orca.asm"
@@ -45777,7 +45763,7 @@ loc_3E94E:
 
 loc_3E956:
 	moveq	#0,d0
-	subi.w	#1,($FFFFFA06).w
+	subi.w	#1,(Number_of_Enemy).w
 	move.b	$42(a5),d0
 	bpl.s	loc_3E97C
 	btst	#6,d0

@@ -30,7 +30,7 @@ unk_34D48:
 Enemy0F_UFO_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
+	move.l	current_hp(a5),a0
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	bsr.w	sub_36FF4

@@ -1303,3 +1303,6 @@ unk_33D90:	dc.b $1A
 	dc.b   0
 	dc.b $10
 	dc.b  $C
+
+;stru_33DA0: 
+	include "ingame/anim/enemy/Drips.asm"

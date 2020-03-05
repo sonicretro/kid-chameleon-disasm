@@ -1,4 +1,4 @@
-;stru_3BCB2:
+stru_3BCB2:
 	anim_frame	  1,   9, LnkTo_unk_C80E0-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C80E8-Data_Index
 	dc.b   2

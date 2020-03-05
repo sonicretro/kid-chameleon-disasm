@@ -384,3 +384,6 @@ loc_32B3E:
 	andi.w	#$4000,d7
 	tst.w	d4
 	rts
+
+;stru_32B50: 
+	include "ingame/anim/enemy/Hand.asm"

@@ -564,7 +564,8 @@ byte_33081:	dc.b 8
 	dc.b  $A
 	dc.b   0
 	dc.b   8
-stru_330A8: include "ingame/anim/enemy/Fireball.asm"
+;stru_330A8: 
+	include "ingame/anim/enemy/Fireball.asm"
 ; ---------------------------------------------------------------------------
 
 loc_330D0:

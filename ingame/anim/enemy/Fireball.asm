@@ -1,4 +1,4 @@
-;stru_330A8:
+stru_330A8:
 	anim_frame	  1,   6, LnkTo_unk_C7966-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C796E-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7976-Data_Index

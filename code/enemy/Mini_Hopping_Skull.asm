@@ -1,4 +1,8 @@
+;stru_3E98E: 
+	include "ingame/anim/enemy/Mini_Hopping_Skull.asm"
+
 ;loc_3E9C8:
+Enemy1C_MiniHoppingSkull_Init: 
 	move.l	(Addr_GfxObject_Kid).w,a0
 	move.l	current_hp(a5),a1
 

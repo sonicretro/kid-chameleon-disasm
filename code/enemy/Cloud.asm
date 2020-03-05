@@ -323,3 +323,6 @@ loc_35E8A:
 
 loc_35E9C:
 	jmp	(j_Delete_CurrentObject).w
+; ---------------------------------------------------------------------------
+;stru_35EA0: 
+	include "ingame/anim/enemy/Cloud.asm"

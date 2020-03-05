@@ -1,4 +1,4 @@
-;stru_3DEDA:
+stru_3DEDA:
 	anim_frame	  1,   7, LnkTo_unk_C7E88-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7E90-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7E98-Data_Index

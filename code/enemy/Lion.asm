@@ -1,4 +1,8 @@
+;stru_3DEDA: 
+	include "ingame/anim/enemy/Lion.asm"
+
 ;loc_3DF56:
+Enemy12_Lion_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
@@ -748,3 +752,186 @@ loc_3E7C0:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_3E8BA
 	jmp	(a0)
+
+
+loc_3E7CA:
+	bsr.w	sub_36BD6
+	tst.w	d5
+	bne.w	loc_3E94E
+	move.l	x_pos(a3),d0
+	move.l	d0,d1
+	sub.l	x_vel(a3),d1
+	move.l	d1,d2
+	swap	d0
+	swap	d1
+	sub.w	d0,d1
+	neg.w	d1
+	move.w	d0,d3
+	sub.w	$48(a5),d3
+	andi.w	#$F,d3
+	cmp.w	d1,d3
+	bcc.s	loc_3E80C
+	tst.w	d6
+	beq.w	loc_3E80C
+	sub.w	d3,d0
+	swap	d0
+	clr.w	d0
+	move.l	d0,x_pos(a3)
+	clr.l	x_vel(a3)
+	bra.s	loc_3E812
+; ---------------------------------------------------------------------------
+
+loc_3E80C:
+	move.l	d2,x_pos(a3)
+	move.l	d2,d0
+
+loc_3E812:
+	move.l	y_pos(a3),d0
+	move.l	d0,d1
+	add.l	y_vel(a3),d1
+	move.l	d1,d2
+	swap	d0
+	swap	d1
+	sub.w	d0,d1
+	bge.s	loc_3E84E
+	neg.w	d1
+	move.w	d0,d3
+	sub.w	$4A(a5),d3
+	andi.w	#$F,d3
+	cmp.w	d1,d3
+	bcc.s	loc_3E896
+	bsr.w	sub_36CB8
+	beq.w	loc_3E896
+	sub.w	d3,d0
+	swap	d0
+	clr.w	d0
+	move.l	d0,y_pos(a3)
+	clr.l	y_vel(a3)
+	bra.s	loc_3E89A
+; ---------------------------------------------------------------------------
+
+loc_3E84E:
+	move.w	d0,d3
+	neg.w	d3
+	andi.w	#$F,d3
+	cmp.w	d1,d3
+	bcc.s	loc_3E896
+	bsr.w	sub_36C6A
+	beq.w	loc_3E896
+	add.w	d3,d0
+	swap	d0
+	clr.w	d0
+	move.l	d0,y_pos(a3)
+	sf	$5C(a5)
+	bclr	#7,object_meta(a3)
+	move.l	$5E(a5),$50(a5)
+	cmpi.w	#$A,$42(a3)
+	beq.s	loc_3E88A
+	move.w	#$FF88,$42(a3)
+
+loc_3E88A:
+	move.l	$62(a5),d7
+	jsr	(j_Init_Animation).w
+	bra.w	loc_3E546
+; ---------------------------------------------------------------------------
+
+loc_3E896:
+	move.l	d2,y_pos(a3)
+
+loc_3E89A:
+	move.l	y_vel(a3),d0
+	addi.l	#$4000,d0
+	cmpi.l	#$180000,d0
+	blt.s	loc_3E8B2
+	move.l	#$180000,d0
+
+loc_3E8B2:
+	move.l	d0,y_vel(a3)
+	bra.w	loc_3E7C0
+
+; =============== S U B	R O U T	I N E =======================================
+
+
+sub_3E8BA:
+	cmpi.w	#$FFE0,x_pos(a3)
+	ble.s	loc_3E920
+	cmpi.w	#$FFE0,y_pos(a3)
+	ble.s	loc_3E920
+	move.w	(Level_width_pixels).w,d7
+	addi.w	#$20,d7
+	cmp.w	x_pos(a3),d7
+	blt.s	loc_3E920
+	move.w	(Level_height_blocks).w,d7
+	addi.w	#$20,d7
+	cmp.w	y_pos(a3),d7
+	blt.s	loc_3E920
+	cmpi.w	#$A,(Number_Objects).w
+	ble.s	return_3E91E
+	cmpi.w	#$14,(Number_Objects).w
+	ble.s	loc_3E924
+	move.w	x_pos(a3),d0
+	sub.w	(Camera_X_pos).w,d0
+	cmpi.w	#$FEFC,d0
+	blt.s	loc_3E920
+	cmpi.w	#$244,d0
+	bgt.s	loc_3E920
+	move.w	y_pos(a3),d0
+	sub.w	(Camera_Y_pos).w,d0
+	cmpi.w	#$FEFC,d0
+	blt.s	loc_3E920
+	cmpi.w	#$1E4,d0
+	bgt.s	loc_3E920
+
+return_3E91E:
+	rts
+; ---------------------------------------------------------------------------
+
+loc_3E920:
+	bra.w	loc_3E956
+; ---------------------------------------------------------------------------
+
+loc_3E924:
+	move.w	x_pos(a3),d0
+	sub.w	(Camera_X_pos).w,d0
+	cmpi.w	#$FE5C,d0
+	blt.s	loc_3E920
+	cmpi.w	#$2E4,d0
+	bgt.s	loc_3E920
+	move.w	y_pos(a3),d0
+	sub.w	(Camera_Y_pos).w,d0
+	cmpi.w	#$FE5C,d0
+	blt.s	loc_3E920
+	cmpi.w	#$284,d0
+	bgt.s	loc_3E920
+	rts
+; ---------------------------------------------------------------------------
+
+loc_3E94E:
+	move.w	#$FFFF,collision_type(a3)
+	jmp	(a0)
+; ---------------------------------------------------------------------------
+
+loc_3E956:
+	moveq	#0,d0
+	subi.w	#1,($FFFFFA06).w
+	move.b	$42(a5),d0
+	bpl.s	loc_3E97C
+	btst	#6,d0
+	beq.s	loc_3E98A
+	andi.w	#$3F,d0
+	add.w	d0,d0
+	lea	(EnemyStatus_Table).w,a0
+	subi.w	#$400,(a0,d0.w)
+	bra.s	loc_3E98A
+; ---------------------------------------------------------------------------
+
+loc_3E97C:
+	add.w	d0,d0
+	lea	(EnemyStatus_Table).w,a0
+	move.w	#$2168,d7
+	move.w	d7,(a0,d0.w)
+
+loc_3E98A:
+	jmp	(j_Delete_CurrentObject).w
+; End of function sub_3E8BA
+

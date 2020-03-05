@@ -1,4 +1,8 @@
+;stru_3B4CA: 
+	include "ingame/anim/enemy/Tank_Shooting.asm"
+
 ;loc_3B530:
+Enemy0B_RockTank_shooting_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

@@ -1,4 +1,4 @@
-;stru_33DA0:
+stru_33DA0:
 	anim_frame	  1,   8, LnkTo_unk_C7A1E-Data_Index
 	anim_frame	  1,   8, LnkTo_unk_C7A26-Data_Index
 	anim_frame	  1,   8, LnkTo_unk_C7A2E-Data_Index

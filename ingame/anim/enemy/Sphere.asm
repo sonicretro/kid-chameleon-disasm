@@ -1,4 +1,4 @@
-;stru_36174:	; sphere normal?
+stru_36174:	; sphere normal?
 	anim_frame	  1,   9, LnkTo_unk_C8120-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C8128-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C8130-Data_Index

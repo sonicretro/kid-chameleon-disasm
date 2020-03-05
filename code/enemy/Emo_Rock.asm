@@ -215,3 +215,6 @@ loc_363E0:
 loc_363FA:
 	moveq	#1,d7
 	rts
+
+;stru_363FE: 
+	include "ingame/anim/enemy/Emo_Rock.asm"

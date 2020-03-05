@@ -487,3 +487,7 @@ loc_326DC:
 	move.l	d6,x_vel(a3)
 	move.l	d7,y_vel(a3)
 	rts
+
+;stru_326EE: 
+	include "ingame/anim/enemy/Tar_Monster.asm"
+

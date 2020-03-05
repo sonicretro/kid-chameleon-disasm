@@ -1,4 +1,4 @@
-;stru_35B10:
+stru_35B10:
 	anim_frame	  1,   5, LnkTo_unk_C784E-Data_Index
 	anim_frame	  1,   5, LnkTo_unk_C7856-Data_Index
 	anim_frame	  1,   5, LnkTo_unk_C785E-Data_Index

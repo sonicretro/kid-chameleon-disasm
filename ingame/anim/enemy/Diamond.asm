@@ -1,4 +1,4 @@
-;stru_3ACA8:
+stru_3ACA8:
 	anim_frame	  1,   6, LnkTo_unk_C8160-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C8168-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C8170-Data_Index

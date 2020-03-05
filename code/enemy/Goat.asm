@@ -1,4 +1,8 @@
+;stru_3C97C: 
+	include "ingame/anim/enemy/Goat.asm"
+
 ;loc_3C9F8:
+Enemy10_Goat_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

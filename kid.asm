@@ -37757,16 +37757,14 @@ loc_321B2:
 	move.l	(sp)+,a0
 	rts
 ; ---------------------------------------------------------------------------
-
+;Enemy05_TarMonster_Init:
 	include "code/enemy/Tar_Monster.asm"
-stru_326EE: include "ingame/anim/enemy/Tar_Monster.asm"
 ; ---------------------------------------------------------------------------
-
+;Enemy17_Hand_Init:
 	include "code/enemy/Hand.asm"
-stru_32B50: include "ingame/anim/enemy/Hand.asm"
 ; ---------------------------------------------------------------------------
-
-	include "code/enemy/Fireball.asm" ; include anim is inside the enemy code
+;Enemy19_Fireball_Init:
+	include "code/enemy/Fireball.asm"
 ; ---------------------------------------------------------------------------
 
 loc_331D2:
@@ -37906,11 +37904,10 @@ loc_3330E:
 	andi.w	#$7000,d7
 	rts
 ; ---------------------------------------------------------------------------
-
+;Enemy16_Drip_Init:
 	include "code/enemy/Drips.asm"
-stru_33DA0: include "ingame/anim/enemy/Drips.asm"
 ; ---------------------------------------------------------------------------
-
+;Enemy07_Archer_Init:
 	include "code/enemy/Archer.asm"
 ; ---------------------------------------------------------------------------
 
@@ -38058,6 +38055,7 @@ unk_34554:	dc.b $FF
 	dc.b   3
 	dc.b $D8 ; Ø
 	dc.b $F1 ; ñ
+
 stru_345E4: ; fireball and flying dragon?
 	anim_frame	  1,   2, LnkTo_unk_E0F2E-Data_Index
 	anim_frame	  1,   2, LnkTo_unk_E0F36-Data_Index
@@ -38065,1291 +38063,30 @@ stru_345E4: ; fireball and flying dragon?
 	anim_frame	  1,   2, LnkTo_unk_E0F46-Data_Index
 	dc.b 0
 	dc.b 0
-off_345F6:
-	dc.w LnkTo_unk_C75FE-Data_Index
-	dc.w LnkTo_unk_C7616-Data_Index
-	dc.w LnkTo_unk_C761E-Data_Index
-	dc.w LnkTo_unk_C762E-Data_Index
-	dc.w LnkTo_unk_C7636-Data_Index
-	
-stru_34600: include "ingame/anim/enemy/Dragon_Flying.asm"
-Enemy0C_Dragon_flying_Init: include "code/enemy/Dragon_Flying.asm"
-; ---------------------------------------------------------------------------
 
-stru_34C7E: include "ingame/anim/enemy/UFO.asm"
+;Enemy0C_Dragon_flying_Init:
+	include "code/enemy/Dragon_Flying.asm"
+; ---------------------------------------------------------------------------
+;Enemy0F_UFO_Init:
 	include "code/enemy/UFO.asm"
 ; ---------------------------------------------------------------------------
-
-loc_35056:
-	move.w	collision_type(a3),d7
-	bmi.w	loc_35070
-	beq.w	return_3506E
-	subq.w	#4,d7
-	clr.w	collision_type(a3)
-	move.l	(a4,d7.w),a4
-	jmp	(a4)
+;Enemy18_Tornado_Init: 
+	include "code/enemy/Tornado.asm"
 ; ---------------------------------------------------------------------------
-
-return_3506E:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35070:
-	clr.w	collision_type(a3)
-	rts
-; ---------------------------------------------------------------------------
-;loc_35076
-Enemy0F_UFO_ExecCollisionBehavior:
-	lea	Enemy0F_UFO_CollisionBehaviors(pc),a4
-	bra.s	loc_35056
-; ---------------------------------------------------------------------------
-;off_3507C
-Enemy0F_UFO_CollisionBehaviors:
-	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceUpSlope
-	dc.l Enemy0F_UFO_BounceDownSlope
-	dc.l Enemy0F_UFO_Hurt	; hit by e.g. projectile
-	dc.l return_350A8	; touching kid
-	dc.l return_350A8	; touching kid
-	dc.l return_350A8	; touching kid
-	dc.l Enemy0F_UFO_Hurt	; kid jumped on top
-; ---------------------------------------------------------------------------
-
-return_350A8:
-	rts
-; ---------------------------------------------------------------------------
-;loc_350AA
-Enemy0F_UFO_BounceUpSlope:
-	bsr.w	loc_350F2
-	move.l	#-$10000,d7
-	move.l	d7,x_vel(a3)
-	move.l	d7,y_vel(a3)
-	move.l	#$800,d7
-	move.l	d7,d0
-	move.l	d7,d2
-	moveq	#0,d1
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-;loc_350CC
-Enemy0F_UFO_BounceDownSlope:
-	bsr.w	loc_350F2
-	move.l	#$10000,d7
-	move.l	d7,x_vel(a3)
-	neg.l	d7
-	move.l	d7,y_vel(a3)
-	move.l	#$800,d7
-	move.l	d7,d2
-	neg.l	d7
-	move.l	d7,d0
-	moveq	#0,d1
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-
-loc_350F2:
-	move.l	x_vel(a3),d7
-	sub.l	d7,x_pos(a3)
-	move.l	y_vel(a3),d7
-	sub.l	d7,y_pos(a3)
-	rts
-; ---------------------------------------------------------------------------
-;loc_35104
-Enemy0F_UFO_BounceWall:
-	moveq	#0,d1
-	move.l	x_vel(a3),d7
-	neg.l	d7
-	move.l	d7,x_vel(a3)
-	bmi.w	loc_35120
-	tst.l	d0
-	bmi.w	return_35128
-	neg.l	d0
-	bra.w	return_35128
-; ---------------------------------------------------------------------------
-
-loc_35120:
-	tst.l	d0
-	bpl.w	return_35128
-	neg.l	d0
-
-return_35128:
-	rts
-; ---------------------------------------------------------------------------
-;loc_3512A
-Enemy0F_UFO_BounceFloorCeil:
-	moveq	#0,d3
-	move.l	y_vel(a3),d7
-	neg.l	d7
-	move.l	d7,y_vel(a3)
-	bmi.w	loc_35146
-	tst.l	d2
-	bmi.w	return_3514E
-	neg.l	d2
-	bra.w	return_3514E
-; ---------------------------------------------------------------------------
-
-loc_35146:
-	tst.l	d2
-	bpl.w	return_3514E
-	neg.l	d2
-
-return_3514E:
-	rts
-; ---------------------------------------------------------------------------
-;loc_35150
-Enemy0F_UFO_Hurt:
-	tst.b	$47(a5)
-	beq.w	loc_351EE
-	tst.b	$50(a5)
-	beq.w	loc_35174
-	subq.w	#1,(Number_UFOs_OnScreen).w
-	bne.w	loc_35174
-	move.l	d0,-(sp)
-	moveq	#sfx_UFO_hovering,d0
-	jsr	(j_PlaySound2).l
-	move.l	(sp)+,d0
-
-loc_35174:
-	tst.b	$46(a5)
-	beq.w	loc_35180
-	sf	(Some_UFO_Shooting).w
-
-loc_35180:
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_355E2,4(a0)	; UFO Driver?
-	move.w	#$FFFF,$46(a0)
-	move.w	x_vel(a3),$44(a0)
-	sf	$13(a1)
-	st	is_moved(a3)
-	move.l	#$30000,y_vel(a3)
-	move.l	#stru_34CA0,d7
-	jsr	(j_Init_Animation).w
-
-loc_351B6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	beq.s	loc_351B6
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-unk_351C4:	dc.b $FF
-	dc.b $FB ; û
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $FF
-	dc.b $FA ; ú
-	dc.b $FF
-	dc.b $FB ; û
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $FF
-	dc.b $F9 ; ù
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $FF
-	dc.b $FA ; ú
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FA ; ú
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FA ; ú
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_351EE:
-	lea	unk_351C4(pc),a4
-
-loc_351F2:
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_354DA,4(a0)
-	moveq	#0,d7
-	move.w	(a4)+,d7
-	beq.w	loc_35228
-	swap	d7
-	asr.l	#1,d7
-	move.l	x_vel(a3),d6
-	asr.l	#1,d6
-	add.l	d6,d7
-	move.l	d7,$44(a0)
-	moveq	#0,d7
-	move.w	(a4)+,d7
-	swap	d7
-	asr.l	#1,d7
-	move.l	d7,$48(a0)
-	bra.s	loc_351F2
-; ---------------------------------------------------------------------------
-
-loc_35228:
-	st	$47(a5)
-	jsr	loc_32188(pc)
-	move.l	a1,$3A(a5)
-	move.w	#$F,d0
-	exg	a1,a3
-	move.w	d0,object_meta(a3)
-	jsr	loc_32146(pc)
-	move.l	#stru_34D02,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	st	$13(a1)
-	sf	$19(a1)
-	sf	$14(a1)
-	sf	$3C(a1)
-	move.b	#1,$10(a1)
-	move.l	#stru_34C92,d7
-	jsr	(j_Init_Animation).w
-	addi.l	#$40000,y_vel(a3)
-	move.l	#$FFFFF400,d2
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35280:
-	bsr.w	loc_320E2
-	bne.w	loc_3528A
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3528A:
-	tst.b	$50(a5)
-	beq.w	loc_352A6
-	subq.w	#1,(Number_UFOs_OnScreen).w
-	bne.w	loc_352A6
-	move.l	d0,-(sp)
-	moveq	#sfx_UFO_hovering,d0
-	jsr	(j_PlaySound2).l
-	move.l	(sp)+,d0
-
-loc_352A6:
-	tst.b	$46(a5)
-	beq.w	loc_352B2
-	sf	(Some_UFO_Shooting).w
-
-loc_352B2:
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_352D2
-	btst	#6,d0
-	beq.s	loc_352E0
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_352E0
-; ---------------------------------------------------------------------------
-
-loc_352D2:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_352E0:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-Enemy0F_UFO_SpeedToPos:
-	move.l	x_vel(a3),d7
-	add.l	d7,x_pos(a3)
-	move.l	y_vel(a3),d7
-	add.l	d7,y_pos(a3)
-	tst.b	$47(a5)
-	beq.w	return_35324
-	move.b	x_direction(a3),$16(a1)
-	move.w	y_pos(a3),d7
-	subi.w	#$B,d7
-	move.w	d7,$1E(a1)
-	move.w	#4,d6
-	tst.b	$16(a1)
-	beq.s	loc_3531A
-	neg.w	d6
-
-loc_3531A:
-	move.w	x_pos(a3),d7
-	sub.w	d6,d7
-	move.w	d7,$1A(a1)
-
-return_35324:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35326:
-	jsr	(j_Get_RandomNumber_byte).w
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	x_pos(a3),d6
-	eor.b	d6,d7
-	andi.w	#$F,d7
-	asl.w	#4,d7
-	lea	unk_35344(pc),a4
-	add.w	d7,a4
-	bra.w	loc_35444
-; ---------------------------------------------------------------------------
-; each entry is 4 longs
-unk_35344:
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; ô
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; ô
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; ô
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; ô
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; ð
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_35444:
-	st	x_direction(a3)
-	move.l	(a4)+,d1
-	bpl.w	loc_35452
-	sf	x_direction(a3)
-
-loc_35452:
-	move.l	(a4)+,d3
-	move.l	(a4)+,d0
-	bne.w	loc_3546E
-	move.l	#$C00,d0
-	tst.l	x_vel(a3)
-	bmi.w	loc_35496
-	neg.l	d0
-	bra.w	loc_35496
-; ---------------------------------------------------------------------------
-
-loc_3546E:
-	move.l	x_vel(a3),d7
-	bmi.w	loc_35488
-	tst.l	d1
-	bmi.w	loc_35496
-	cmp.l	d7,d1
-	bge.w	loc_35496
-	neg.l	d0
-	bra.w	loc_35496
-; ---------------------------------------------------------------------------
-
-loc_35488:
-	tst.l	d1
-	bpl.w	loc_35496
-	cmp.l	d7,d1
-	ble.w	loc_35496
-	neg.l	d0
-
-loc_35496:
-	move.l	(a4)+,d2
-	bne.w	loc_354B0
-	move.l	#$C00,d2
-	tst.l	y_vel(a3)
-	bmi.w	return_354D8
-	neg.l	d2
-	bra.w	return_354D8
-; ---------------------------------------------------------------------------
-
-loc_354B0:
-	move.l	y_vel(a3),d7
-	bmi.w	loc_354CA
-	tst.l	d3
-	bmi.w	return_354D8
-	cmp.l	d7,d3
-	bge.w	return_354D8
-	neg.l	d2
-	bra.w	return_354D8
-; ---------------------------------------------------------------------------
-
-loc_354CA:
-	tst.l	d3
-	bpl.w	return_354D8
-	cmp.l	d7,d3
-	ble.w	return_354D8
-	neg.l	d2
-
-return_354D8:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_354DA:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.l	$44(a5),x_vel(a3)
-	move.l	$48(a5),y_vel(a3)
-	move.w	$1A(a0),x_pos(a3)
-	subi.w	#$B,x_pos(a3)
-	tst.b	x_direction(a3)
-	beq.w	loc_35512
-	addi.w	#$16,x_pos(a3)
-
-loc_35512:
-	move.w	$1E(a0),y_pos(a3)
-	subi.w	#$18,y_pos(a3)
-	st	$13(a3)
-	st	is_moved(a3)
-	sf	has_level_collision(a3)
-	sf	$19(a3)
-	move.b	#1,priority(a3)
-	move.w	#$F,d0
-	move.w	d0,object_meta(a3)
-	jsr	loc_32146(pc)
-	move.w	#(LnkTo_unk_C8408-Data_Index),addroffset_sprite(a3)
-	move.w	#5,d0
-
-loc_3554A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	subq.w	#1,d0
-	bne.s	loc_3555A
-	not.b	x_direction(a3)
-	move.w	#$A,d0
-
-loc_3555A:
-	addi.l	#$3000,y_vel(a3)
-	tst.b	$19(a3)
-	beq.s	loc_3554A
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-;loc_3556C
-Enemy0F_UFOBeam_Init:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),x_pos(a3)
-	move.w	$1E(a0),y_pos(a3)
-	addi.w	#$A,y_pos(a3)
-	st	$13(a3)
-	st	is_moved(a3)
-	st	has_level_collision(a3)
-	move.b	#1,priority(a3)
-	move.w	#$F,d0
-	move.w	d0,object_meta(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	move.w	#(LnkTo_unk_C83A0-Data_Index),addroffset_sprite(a3)
-	move.l	#$30000,y_vel(a3)
-	subi.w	#4,x_pos(a3)
-	tst.b	$16(a0)
-	beq.w	Enemy0F_UFOBeam_Loop
-	addi.w	#8,x_pos(a3)
-
-;loc_355D4
-Enemy0F_UFOBeam_Loop:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	collision_type(a3)
-	beq.s	Enemy0F_UFOBeam_Loop
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_355E2:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),x_pos(a3)
-	move.w	$1E(a0),y_pos(a3)
-	subi.w	#$B,y_pos(a3)
-	move.b	$16(a0),x_direction(a3)
-	move.w	$46(a5),y_vel(a3)
-	move.w	$44(a5),x_vel(a3)
-	st	$13(a3)
-	st	$13(a3)
-	st	is_moved(a3)
-	st	has_level_collision(a3)
-	st	has_kid_collision(a3)
-	sf	$19(a3)
-	move.b	#1,priority(a3)
-	move.w	#$F,d0
-	move.w	d0,object_meta(a3)
-	jsr	loc_32146(pc)
-	move.l	#stru_34CD0,d7
-	jsr	(j_Init_Animation).w
-
-loc_3564C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#1,d0
-	bsr.w	Object_CheckInRange
-	addi.l	#$2000,y_vel(a3)
-	lea	(off_3569E).l,a4
-	moveq	#1,d0
-	bsr.w	loc_35762
-	bra.s	loc_3564C
-; ---------------------------------------------------------------------------
-
-loc_3566C:
-	move.l	#$FFFF8000,x_vel(a3)
-	tst.b	x_direction(a3)
-	beq.w	loc_35680
-	neg.l	x_vel(a3)
-
-loc_35680:
-	sf	has_kid_collision(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	lea	(off_356B6).l,a4
-	moveq	#0,d0
-	bsr.w	loc_35762
-	bsr.w	loc_35724
-	bra.s	loc_35680
-; ---------------------------------------------------------------------------
-off_3569E:	dc.l loc_357FA
-	dc.l loc_357FA
-	dc.l loc_3581E
-	dc.l loc_35810
-	dc.l loc_35838
-	dc.l loc_35864
-off_356B6:	dc.l loc_356CE
-	dc.l loc_356CE
-	dc.l loc_3571E
-	dc.l loc_3571E
-	dc.l loc_356F2
-	dc.l loc_356F2
-; ---------------------------------------------------------------------------
-
-loc_356CE:
-
-	move.l	x_vel(a3),d7
-	neg.l	d7
-	move.l	d7,x_vel(a3)
-	lsl.l	#2,d7
-	add.l	d7,x_pos(a3)
-	not.b	x_direction(a3)
-	rts
-; ---------------------------------------------------------------------------
-word_356E4:	dc.w $FFFF
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $FF
-	dc.b $FB ; û
-	dc.b $FF
-	dc.b $FA ; ú
-	dc.b $FF
-	dc.b $F9 ; ù
-; ---------------------------------------------------------------------------
-
-loc_356F2:
-
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$2F,d7
-	cmpi.w	#$A,d7
-	bgt.s	loc_356CE
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#6,d7
-	move.w	word_356E4(pc,d7.w),d7
-	move.w	d7,y_vel(a3)
-	move.l	x_vel(a3),d7
-	asl.l	#1,d7
-	move.l	d7,x_vel(a3)
-	bra.w	loc_3564C
-; ---------------------------------------------------------------------------
-
-loc_3571E:
-	addq.w	#4,sp
-	bra.w	loc_35680
-; ---------------------------------------------------------------------------
-
-loc_35724:
-	move.w	x_pos(a3),d7
-	subi.w	#$F,d7
-	tst.b	x_direction(a3)
-	beq.w	loc_35738
-	addi.w	#$1E,d7
-
-loc_35738:
-	move.w	y_pos(a3),d6
-	addi.w	#8,d6
-	lea	($FFFF4A04).l,a4
-	lsr.w	#4,d6
-	add.w	d6,d6
-	move.w	(a4,d6.w),a4
-	lsr.w	#4,d7
-	add.w	d7,d7
-	add.w	d7,a4
-	move.w	(a4),d7
-	andi.w	#$7000,d7
-	cmpi.w	#$6000,d7
-	bne.s	loc_356F2
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35762:
-	move.w	collision_type(a3),d7
-	beq.s	return_357C0
-	bmi.w	loc_357C2
-	clr.w	collision_type(a3)
-	cmpi.w	#$2C,d7
-	beq.s	loc_357C2
-	cmpi.w	#$1C,d7
-	beq.s	loc_357C2
-	bgt.w	loc_35788
-	subq.w	#4,d7
-	move.l	(a4,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-loc_35788:
-	cmpi.w	#$28,d7
-	bge.w	return_357C0
-	tst.b	(Berzerker_charging).w
-	beq.w	return_357C0
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	$26(a4),d7
-	asr.l	#1,d7
-	move.l	d7,x_vel(a3)
-	move.l	#$FFFC0000,y_vel(a3)
-	sf	has_level_collision(a3)
-	move.l	#stru_34CAE,d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_357E6
-; ---------------------------------------------------------------------------
-
-return_357C0:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_357C2:
-	clr.l	y_vel(a3)
-	clr.l	x_vel(a3)
-	sf	has_level_collision(a3)
-	move.l	#stru_34CAE,d7
-	jsr	(j_Init_Animation).w
-	tst.w	d0
-	bne.w	loc_357E6
-	jsr	(j_sub_105E).w
-
-loc_357E2:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_357E6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$4000,y_vel(a3)
-	tst.b	$19(a3)
-	beq.s	loc_357E6
-	bra.s	loc_357E2
-; ---------------------------------------------------------------------------
-
-loc_357FA:
-	move.l	x_vel(a3),d7
-	neg.l	d7
-	move.l	d7,x_vel(a3)
-	lsl.l	#2,d7
-	add.l	d7,x_pos(a3)
-	not.b	x_direction(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35810:
-	move.l	y_vel(a3),d7
-	neg.l	d7
-	asr.l	#1,d7
-	move.l	d7,y_vel(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3581E:
-	addq.w	#4,sp
-	clr.l	y_vel(a3)
-	clr.w	$20(a3)
-	addi.w	#8,y_pos(a3)
-	andi.w	#$FFF0,y_pos(a3)
-	bra.w	loc_3566C
-; ---------------------------------------------------------------------------
-
-loc_35838:
-	move.l	#-$10000,x_vel(a3)
-	move.l	#-$10000,y_vel(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	x_vel(a3),d7
-	neg.l	d7
-	asr.l	#1,d7
-	move.l	y_vel(a3),d6
-	neg.l	d6
-	asr.w	#1,d6
-	move.l	d6,x_vel(a3)
-	move.l	d7,y_vel(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35864:
-	move.l	#$10000,x_vel(a3)
-	move.l	#-$10000,y_vel(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	x_vel(a3),d7
-	move.l	y_vel(a3),d6
-	asr.l	#1,d7
-	asr.l	#1,d6
-	move.l	d6,x_vel(a3)
-	move.l	d7,y_vel(a3)
-	rts
-; ---------------------------------------------------------------------------
-unk_3588C: ; also part of tornado
-	dc.b   0
-	dc.b $3C ; <
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $FF
-
-Enemy18_Tornado_Init: include "code/enemy/Tornado.asm"
-
-; ---------------------------------------------------------------------------
-unk_35A0C:	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; €
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-stru_35B10: include "ingame/anim/enemy/Tornado.asm"
-; ---------------------------------------------------------------------------
-
+;Enemy0E_Cloud_Init:
 	include "code/enemy/Cloud.asm"
-stru_35EA0: include "ingame/anim/enemy/Cloud.asm"
 ; ---------------------------------------------------------------------------
-
-Enemy06_Sphere_Init: include "code/enemy/Sphere.asm"
-stru_36174: include "ingame/anim/enemy/Sphere.asm"
+;Enemy06_Sphere_Init: 
+	include "code/enemy/Sphere.asm"
 ; ---------------------------------------------------------------------------
-	
+;Enemy1B_EmoRock_Init:	
 	include "code/enemy/Emo_Rock.asm"
-stru_363FE: include "ingame/anim/enemy/Emo_Rock.asm"
+; ---------------------------------------------------------------------------
+;Enemy1D_BigHoppingSkull_Init: 
+	include "code/enemy/Big_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 
-Enemy1D_BigHoppingSkull_Init: include "code/enemy/Big_Hopping_Skull.asm"
-stru_367AE: include "ingame/anim/enemy/Big_Hopping_Skull.asm"
-
-unk_3680C: ; not sure if this is part of bighoppingskull
+unk_3680C:
 	dc.b   0
 	dc.b $F0 ; ð
 	dc.b   1
@@ -39359,7 +38096,6 @@ unk_3680C: ; not sure if this is part of bighoppingskull
 	dc.b   3
 	dc.b $C0 ; À
 ; ---------------------------------------------------------------------------
-; not 100% sure about this one
 ;loc_36814
 Manage_EnemyLoading:
 	tst.b	($FFFFFB6A).w
@@ -40281,7 +39017,7 @@ EnemyArt_VRAMTileAddresses:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; used by most enemies
 sub_36FF4:
 	clr.w	d5
 	move.b	($FFFFFAD2).w,d5
@@ -44738,7 +43474,7 @@ loc_3A28A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; used by boss
 sub_3A292:
 	swap	d1
 	move.w	collision_type(a3),d7
@@ -44799,37 +43535,29 @@ stru_3A308:
 	dc.b $11
 ; ---------------------------------------------------------------------------
 
-stru_3A31A: include "ingame/anim/enemy/Fire_Demon.asm"
-Enemy00_FireDemon_Init: include "code/enemy/Fire_Demon.asm"
+;Enemy00_FireDemon_Init: 
+	include "code/enemy/Fire_Demon.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3A6E2: include "ingame/anim/enemy/Robot.asm"
-Enemy03_Robot_Init: include "code/enemy/Robot.asm"
+;Enemy03_Robot_Init: 
+	include "code/enemy/Robot.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3ACA8: include "ingame/anim/enemy/Crystal.asm"
-Enemy01_Diamond_Init: include "code/enemy/Crystal.asm"
+;Enemy01_Diamond_Init: 
+	include "code/enemy/Diamond.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3AF62: include "ingame/anim/enemy/Crab.asm"
-Enemy09_Crab_Init: include "code/enemy/Crab.asm"
+;Enemy09_Crab_Init: 
+	include "code/enemy/Crab.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3B270: include "ingame/anim/enemy/Tank.asm"
-Enemy0A_RockTank_Init: include "code/enemy/Tank.asm"
+;Enemy0A_RockTank_Init: 
+	include "code/enemy/Tank.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3B4CA: include "ingame/anim/enemy/Tank_Shooting.asm"
-Enemy0B_RockTank_shooting_Init: include "code/enemy/Tank_Shooting.asm"
+;Enemy0B_RockTank_shooting_Init: 
+	include "code/enemy/Tank_Shooting.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3B7F0: include "ingame/anim/enemy/Spinning_Twins.asm"
-Enemy14_SpinningTwins_Init: include "code/enemy/Spinning_Twins.asm"
+;Enemy14_SpinningTwins_Init: 
+	include "code/enemy/Spinning_Twins.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3BCB2: include "ingame/anim/enemy/Driller.asm"
-Enemy1A_Driller_Init: include "code/enemy/Driller.asm"
-
+;Enemy1A_Driller_Init: 
+	include "code/enemy/Driller.asm"
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -44918,7 +43646,7 @@ loc_3C044:
 	bsr.w	sub_3C3CE
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-
+; Code used by Crab, Diamond, Driller, Fire_Demon, Robot, Spinning_Twins, Tank, Tank_Shooting
 loc_3C04E:
 	bsr.w	sub_3C4F8
 	bsr.w	sub_36972
@@ -44992,7 +43720,7 @@ loc_3C0F0:
 	bsr.w	sub_3C3CE
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-
+; Code used by Crab, Diamond, Driller, Fire_Demon, Robot, Spinning_Twins, Tank, Tank_Shooting
 loc_3C0FA:
 	bsr.w	sub_3C4F8
 	bsr.w	sub_36A58
@@ -45308,11 +44036,8 @@ return_3C3CC:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; Used by Diamond, Fire_Demon, Spinning_Twins
 sub_3C3CE:
-
-; FUNCTION CHUNK AT 0003BC56 SIZE 0000005C BYTES
-
 	bsr.s	sub_3C352
 	cmpi.w	#$FFE0,x_pos(a3)
 	ble.s	loc_3C436
@@ -45439,12 +44164,6 @@ loc_3C4F4:
 
 
 sub_3C4F8:
-
-; FUNCTION CHUNK AT 0003A9D2 SIZE 0000001E BYTES
-; FUNCTION CHUNK AT 0003AA18 SIZE 0000019E BYTES
-; FUNCTION CHUNK AT 0003C026 SIZE 00000164 BYTES
-; FUNCTION CHUNK AT 0003C266 SIZE 000000EC BYTES
-
 	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
 	cmpi.w	#$B,d7
@@ -45580,220 +44299,29 @@ loc_3C618:
 ; ---------------------------------------------------------------------------
 	rts
 ; ---------------------------------------------------------------------------
-
-stru_3C632: include "ingame/anim/enemy/Armadillo.asm"
-Enemy04_Armadillo_Init: include "code/enemy/Armadillo.asm"
+;Enemy04_Armadillo_Init: 
+	include "code/enemy/Armadillo.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3C97C: include "ingame/anim/enemy/Goat.asm"
-Enemy10_Goat_Init: include "code/enemy/Goat.asm"
+;Enemy10_Goat_Init: 
+	include "code/enemy/Goat.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3CC5E: include "ingame/anim/enemy/Dragon.asm"
+;Enemy0D_Dragon_Init: 
 	include "code/enemy/Dragon.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3D0A2: include "ingame/anim/enemy/Orca.asm"
-Enemy08_Orca_Init: include "code/enemy/Orca.asm"
+;Enemy08_Orca_Init: 
+	include "code/enemy/Orca.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3D4EA: include "ingame/anim/enemy/Ninja.asm"
-Enemy11_Ninja_Init: include "code/enemy/Ninja.asm"
+;Enemy11_Ninja_Init: 
+	include "code/enemy/Ninja.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3DB60: include "ingame/anim/enemy/Scorpion.asm"
-Enemy13_Scorpion_Init: include "code/enemy/Scorpion.asm"
+;Enemy13_Scorpion_Init: 
+	include "code/enemy/Scorpion.asm"
 ; ---------------------------------------------------------------------------
-
-stru_3DEDA: include "ingame/anim/enemy/Lion.asm"
-Enemy12_Lion_Init: include "code/enemy/Lion.asm"
+;Enemy12_Lion_Init: 
+	include "code/enemy/Lion.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3E7CA:
-	bsr.w	sub_36BD6
-	tst.w	d5
-	bne.w	loc_3E94E
-	move.l	x_pos(a3),d0
-	move.l	d0,d1
-	sub.l	x_vel(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$48(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E80C
-	tst.w	d6
-	beq.w	loc_3E80C
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,x_pos(a3)
-	clr.l	x_vel(a3)
-	bra.s	loc_3E812
-; ---------------------------------------------------------------------------
-
-loc_3E80C:
-	move.l	d2,x_pos(a3)
-	move.l	d2,d0
-
-loc_3E812:
-	move.l	y_pos(a3),d0
-	move.l	d0,d1
-	add.l	y_vel(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	bge.s	loc_3E84E
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$4A(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E896
-	bsr.w	sub_36CB8
-	beq.w	loc_3E896
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,y_pos(a3)
-	clr.l	y_vel(a3)
-	bra.s	loc_3E89A
-; ---------------------------------------------------------------------------
-
-loc_3E84E:
-	move.w	d0,d3
-	neg.w	d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E896
-	bsr.w	sub_36C6A
-	beq.w	loc_3E896
-	add.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,y_pos(a3)
-	sf	$5C(a5)
-	bclr	#7,object_meta(a3)
-	move.l	$5E(a5),$50(a5)
-	cmpi.w	#$A,$42(a3)
-	beq.s	loc_3E88A
-	move.w	#$FF88,$42(a3)
-
-loc_3E88A:
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E546
-; ---------------------------------------------------------------------------
-
-loc_3E896:
-	move.l	d2,y_pos(a3)
-
-loc_3E89A:
-	move.l	y_vel(a3),d0
-	addi.l	#$4000,d0
-	cmpi.l	#$180000,d0
-	blt.s	loc_3E8B2
-	move.l	#$180000,d0
-
-loc_3E8B2:
-	move.l	d0,y_vel(a3)
-	bra.w	loc_3E7C0
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3E8BA:
-	cmpi.w	#$FFE0,x_pos(a3)
-	ble.s	loc_3E920
-	cmpi.w	#$FFE0,y_pos(a3)
-	ble.s	loc_3E920
-	move.w	(Level_width_pixels).w,d7
-	addi.w	#$20,d7
-	cmp.w	x_pos(a3),d7
-	blt.s	loc_3E920
-	move.w	(Level_height_blocks).w,d7
-	addi.w	#$20,d7
-	cmp.w	y_pos(a3),d7
-	blt.s	loc_3E920
-	cmpi.w	#$A,(Number_Objects).w
-	ble.s	return_3E91E
-	cmpi.w	#$14,(Number_Objects).w
-	ble.s	loc_3E924
-	move.w	x_pos(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FEFC,d0
-	blt.s	loc_3E920
-	cmpi.w	#$244,d0
-	bgt.s	loc_3E920
-	move.w	y_pos(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FEFC,d0
-	blt.s	loc_3E920
-	cmpi.w	#$1E4,d0
-	bgt.s	loc_3E920
-
-return_3E91E:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3E920:
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3E924:
-	move.w	x_pos(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3E920
-	cmpi.w	#$2E4,d0
-	bgt.s	loc_3E920
-	move.w	y_pos(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3E920
-	cmpi.w	#$284,d0
-	bgt.s	loc_3E920
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3E94E:
-	move.w	#$FFFF,collision_type(a3)
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E956:
-	moveq	#0,d0
-	subi.w	#1,(Number_of_Enemy).w
-	move.b	$42(a5),d0
-	bpl.s	loc_3E97C
-	btst	#6,d0
-	beq.s	loc_3E98A
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3E98A
-; ---------------------------------------------------------------------------
-
-loc_3E97C:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_3E98A:
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3E8BA
-
-; ---------------------------------------------------------------------------
-
-stru_3E98E: include "ingame/anim/enemy/Mini_Hopping_Skull.asm"
-Enemy1C_MiniHoppingSkull_Init: include "code/enemy/Mini_Hopping_Skull.asm"
+;Enemy1C_MiniHoppingSkull_Init: 
+	include "code/enemy/Mini_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 ; filler
     rept 368

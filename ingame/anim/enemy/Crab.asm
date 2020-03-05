@@ -1,4 +1,4 @@
-;stru_3AF62:
+stru_3AF62:
 	anim_frame	  1,   8, LnkTo_unk_C7C1E-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7C26-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7C2E-Data_Index

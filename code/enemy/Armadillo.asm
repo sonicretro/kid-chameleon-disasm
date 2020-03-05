@@ -1,4 +1,8 @@
+;stru_3C632: 
+	include "ingame/anim/enemy/Armadillo.asm"
+
 ;loc_3C6DC:
+Enemy04_Armadillo_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

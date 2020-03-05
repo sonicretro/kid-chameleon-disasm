@@ -1,4 +1,8 @@
+;stru_3D4EA: 
+	include "ingame/anim/enemy/Ninja.asm"
+
 ;loc_3D518:
+Enemy11_Ninja_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

@@ -1,4 +1,4 @@
-;stru_3B7F0:
+stru_3B7F0:
 	anim_frame	  1,   6, LnkTo_unk_C7D36-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7D3E-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7D46-Data_Index

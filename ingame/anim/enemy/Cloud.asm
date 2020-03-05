@@ -1,4 +1,4 @@
-;stru_35EA0:
+stru_35EA0:
 	anim_frame	  1,  $B, LnkTo_unk_C78B6-Data_Index
 	anim_frame	  1,  $B, LnkTo_unk_C78BE-Data_Index
 	anim_frame	  1,  $B, LnkTo_unk_C78C6-Data_Index

@@ -1,4 +1,7 @@
+;stru_3ACA8: 
+	include "ingame/anim/enemy/Diamond.asm"
 ;loc_3ACDA:
+Enemy01_Diamond_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

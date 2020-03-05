@@ -1,4 +1,8 @@
+;stru_3BCB2: 
+	include "ingame/anim/enemy/Driller.asm"
+
 ;loc_3BCF0:
+Enemy1A_Driller_Init: 
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

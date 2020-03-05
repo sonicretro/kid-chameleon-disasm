@@ -1,4 +1,7 @@
-;Trap06Exception4A:
+;stru_3B7F0: 
+	include "ingame/anim/enemy/Spinning_Twins.asm"
+
+Enemy14_SpinningTwins_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3

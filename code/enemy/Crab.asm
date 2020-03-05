@@ -1,4 +1,8 @@
+;stru_3AF62: 
+	include "ingame/anim/enemy/Crab.asm"
+
 ;loc_3AF96:
+Enemy09_Crab_Init: 
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

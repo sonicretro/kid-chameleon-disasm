@@ -1,4 +1,4 @@
-;stru_3C97C:
+stru_3C97C:
 	anim_frame	  1,   8, LnkTo_unk_C7C9E-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7CA6-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7CAE-Data_Index

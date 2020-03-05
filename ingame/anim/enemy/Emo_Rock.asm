@@ -1,4 +1,4 @@
-;stru_363FE:
+stru_363FE:
 	anim_frame	  1, $14, LnkTo_unk_C7F40-Data_Index
 	anim_frame	  1,  $F, LnkTo_unk_C7F58-Data_Index
 	anim_frame	  1,  $F, LnkTo_unk_C7F60-Data_Index

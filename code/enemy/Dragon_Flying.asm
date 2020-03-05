@@ -1,4 +1,15 @@
+off_345F6:
+	dc.w LnkTo_unk_C75FE-Data_Index
+	dc.w LnkTo_unk_C7616-Data_Index
+	dc.w LnkTo_unk_C761E-Data_Index
+	dc.w LnkTo_unk_C762E-Data_Index
+	dc.w LnkTo_unk_C7636-Data_Index
+
+;stru_34600: 
+	include "ingame/anim/enemy/Dragon_Flying.asm"
+
 ;loc_34664:
+Enemy0C_Dragon_flying_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	current_hp(a5),a0

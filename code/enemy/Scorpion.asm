@@ -1,4 +1,8 @@
+;stru_3DB60: 
+	include "ingame/anim/enemy/Scorpion.asm"
+
 ;loc_3DB9C:
+Enemy13_Scorpion_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

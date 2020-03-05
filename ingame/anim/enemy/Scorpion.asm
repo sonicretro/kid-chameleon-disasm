@@ -1,4 +1,4 @@
-;stru_3DB60:
+stru_3DB60:
 	anim_frame	  1,   6, LnkTo_unk_C7DDE-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7DE6-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7DEE-Data_Index

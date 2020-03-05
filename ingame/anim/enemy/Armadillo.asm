@@ -1,4 +1,4 @@
-;stru_3C632:
+stru_3C632:
 	anim_frame	  1,  $B, LnkTo_unk_C76EE-Data_Index
 	anim_frame	  1,  $B, LnkTo_unk_C76F6-Data_Index
 	anim_frame	  1,  $B, LnkTo_unk_C76FE-Data_Index

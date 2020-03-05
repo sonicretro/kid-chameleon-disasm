@@ -1,4 +1,4 @@
-;stru_367AE:
+stru_367AE:
 	anim_frame	1, $50, LnkTo_unk_C7FC0-Data_Index
 	dc.b   0
 	dc.b   0

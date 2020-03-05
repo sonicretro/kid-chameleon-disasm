@@ -1,4 +1,5 @@
 ;loc_364A0:
+Enemy1D_BigHoppingSkull_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	current_hp(a5),a0
@@ -279,3 +280,6 @@ loc_36798:
 	move.w	#$FFFF,x_vel(a3)
 	sf	x_direction(a3)
 	rts
+
+;stru_367AE: 
+	include "ingame/anim/enemy/Big_Hopping_Skull.asm"

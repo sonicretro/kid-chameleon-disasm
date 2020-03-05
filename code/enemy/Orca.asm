@@ -1,4 +1,8 @@
+;stru_3D0A2: 
+	include "ingame/anim/enemy/Orca.asm"
+
 ;loc_3D158:
+Enemy08_Orca_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

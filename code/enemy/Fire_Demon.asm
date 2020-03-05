@@ -1,4 +1,9 @@
+;stru_3A31A: 
+	include "ingame/anim/enemy/Fire_Demon.asm"
+
+
 ;loc_3A392:
+Enemy00_FireDemon_Init: 
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

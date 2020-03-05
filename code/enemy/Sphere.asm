@@ -1,4 +1,5 @@
 ;loc_35EF2
+Enemy06_Sphere_Init: 
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w	; --> loads an object data slot at a3
 	move.l	current_hp(a5),a0	; address to position in enemy layout
@@ -235,3 +236,6 @@ loc_36164:
 	move.l	y_vel(a3),x_vel(a3)
 	move.l	d7,y_vel(a3)
 	bra.s	loc_360F4
+
+;stru_36174: 
+	include "ingame/anim/enemy/Sphere.asm"

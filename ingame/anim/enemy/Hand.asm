@@ -1,4 +1,4 @@
-;stru_32B50:
+stru_32B50:
 	anim_frame	1, 1, LnkTo_unk_C79DE-Data_Index
 	dc.b   0
 	dc.b   0

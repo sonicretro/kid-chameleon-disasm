@@ -1,4 +1,4 @@
-;stru_326EE:
+stru_326EE:
 	anim_frame	1, 3, LnkTo_unk_C7816-Data_Index
 	anim_frame	1, 3, LnkTo_unk_C77D6-Data_Index
 stru_326F6:

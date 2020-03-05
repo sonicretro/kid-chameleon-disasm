@@ -1,4 +1,4 @@
-;stru_3A31A:
+stru_3A31A:
 	anim_frame	  1,   6, LnkTo_unk_C771E-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C7726-Data_Index
 	anim_frame	  1,   6, LnkTo_unk_C772E-Data_Index

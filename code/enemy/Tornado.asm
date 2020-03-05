@@ -1,4 +1,19 @@
+unk_3588C: ; also part of tornado
+	dc.b   0
+	dc.b $3C ; <
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $28 ; (
+	dc.b $FF
+	dc.b   0
+	dc.b   0
+	dc.b $1E
+	dc.b $FF
+	dc.b $FF
+
 ;loc_35898:
+Enemy18_Tornado_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	current_hp(a5),a0
@@ -138,3 +153,268 @@ loc_35A02:
 	move.l	a0,a4
 	addi.w	#$10,a0
 	bra.w	loc_35444
+
+; ---------------------------------------------------------------------------
+unk_35A0C:	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b $FF
+	dc.b $FE ; þ
+	dc.b $80 ; €
+	dc.b   0
+	dc.b   0
+	dc.b   1
+	dc.b $80 ; €
+	dc.b   0
+	dc.b $FF
+	dc.b $FF
+	dc.b $E8 ; è
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b $18
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b   0
+	dc.b   1
+; ---------------------------------------------------------------------------
+;stru_35B10: 
+	include "ingame/anim/enemy/Tornado.asm"

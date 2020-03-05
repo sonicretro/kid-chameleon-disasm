@@ -1,4 +1,7 @@
-loc_3CD16:;this first label comes from flaying dragon
+;stru_3CC5E: 
+	include "ingame/anim/enemy/Dragon.asm"
+; ---------------------------------------------------------------------------
+loc_3CD16: ;this first label comes from flaying dragon
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
@@ -8,9 +11,10 @@ loc_3CD16:;this first label comes from flaying dragon
 	move.w	$4A(a5),$40(a3)
 	st	$5C(a5)
 	bra.w	loc_3CD70
+; ---------------------------------------------------------------------------
 
 ;loc_3CD46:
-Enemy0D_Dragon_Init:
+Enemy0D_Dragon_Init: 
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w

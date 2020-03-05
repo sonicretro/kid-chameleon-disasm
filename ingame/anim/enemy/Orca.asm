@@ -1,4 +1,4 @@
-;stru_3D0A2:
+stru_3D0A2:
 	anim_frame	  1,   9, LnkTo_unk_C766E-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C7676-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C767E-Data_Index

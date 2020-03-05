@@ -1,4 +1,4 @@
-;stru_3CC5E:
+stru_3CC5E:
 	anim_frame	  1,   9, LnkTo_unk_C7596-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C759E-Data_Index
 	anim_frame	  1,   9, LnkTo_unk_C75A6-Data_Index

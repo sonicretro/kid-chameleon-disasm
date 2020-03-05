@@ -3469,7 +3469,7 @@ loc_1CDE:
 
 loc_1CE4:
 	move.w	#colid_kidabove,d7
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_1D4C
 
 loc_1CF2:
@@ -3961,7 +3961,7 @@ loc_2156:
 loc_216A:
 	cmpi.w	#6,($FFFFFA56).w
 	beq.w	loc_200C
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.w	loc_200C
 	bra.s	loc_2156
 ; End of function sub_1FA2
@@ -4571,7 +4571,7 @@ loc_266A:
 loc_2672:
 	cmp.w	d5,d4
 	blt.w	loc_26D4
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_2686
 	move.w	a2,($FFFFFA96).w
 
@@ -4625,7 +4625,7 @@ loc_26FE:
 	addi.l	#$4000,d7
 	move.l	d7,$2A(a0)
 	st	($FFFFFAA5).w
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.w	loc_2590
 
 loc_271A:
@@ -6107,7 +6107,7 @@ loc_60E0:
 ; ---------------------------------------------------------------------------
 
 loc_60EE:
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bgt.s	loc_6172
 	cmpi.w	#Mountain,(Background_theme).w
 	bne.s	loc_6172
@@ -6151,7 +6151,7 @@ loc_616C:
 loc_6172:
 	cmpi.w	#$834,d6 ; Timer: 0x0834, decimal 2100/60=35 seconds (triggers snow)
 	bls.s	loc_61C2
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	return_61C0
 	cmpi.w	#$873,(Frame_Counter).w ; Timer: 0x0873, decimal 2163/60=36 seconds (triggers ice balls)
 	bls.s	return_61C0
@@ -6788,8 +6788,8 @@ loc_6A76:
 	dbf	d5,loc_6A1E
 
 loc_6A84:
-	bclr	#Up,(Ctrl_Pressed).w
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	move.b	#0,(Pause_Option).w
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$68,d0
@@ -6820,7 +6820,7 @@ loc_6A84:
 Game_Paused_Loop:
 	jsr	(j_WaitForVint).w
 	jsr	(j_ReadJoypad).w
-	bclr	#Up,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
 	beq.s	loc_6B0E
 	; up pressed
 	tst.b	(Pause_Option).w
@@ -6835,7 +6835,7 @@ Game_Paused_Loop:
 ; ---------------------------------------------------------------------------
 
 loc_6B0E:
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	beq.s	Game_Paused_ChkStart
 	; down pressed
 	tst.b	(Pause_Option).w
@@ -6848,7 +6848,7 @@ loc_6B0E:
 	addi.b	#1,(Pause_Option).w
 
 Game_Paused_ChkStart:
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	Game_Paused_Loop
 	; start pressed
 	tst.b	(Pause_Option).w
@@ -7712,9 +7712,9 @@ loc_7420:
 sub_7428:
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	return_7450
-	btst	#Start,(Ctrl_Held).w ; keyboard key (Enter) start
+	btst	#Button_Start,(Ctrl_Held).w ; keyboard key (Enter) start
 	beq.s	return_7450
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	return_7450
 	cmpi.w	#5,(Number_Diamonds).w
 	blt.s	return_7450
@@ -7764,15 +7764,15 @@ loc_749C:
 	not.b	(Ctrl_A_Held).w
 
 loc_74B0:
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_7452
 	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_74C8
-	btst	#Button_B,(Ctrl_Held).w ; keyboard key (D) special
+	btst	#Button_C,(Ctrl_Held).w ; keyboard key (D) special
 	bne.w	loc_74E0
 
 loc_74C8:
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	bne.s	loc_7452
 	tst.b	($FFFFFB56).w
 	beq.w	loc_7452
@@ -7781,7 +7781,7 @@ loc_74C8:
 ; ---------------------------------------------------------------------------
 
 loc_74E0:
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	loc_7452
 	addq.w	#1,(Current_LevelID).w
 	clr.w	($FFFFFBCC).w
@@ -7848,7 +7848,7 @@ loc_75C0:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_75D4:
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
@@ -7889,9 +7889,9 @@ loc_7650:
 	move.w	#0,($FFFFFB58).w
 
 loc_7664:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_7772
 	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_76B0
@@ -8072,7 +8072,7 @@ loc_787E:
 loc_7886:
 	bsr.w	sub_8ED0
 	beq.w	loc_789C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -9078,7 +9078,7 @@ loc_818A:
 loc_819A:
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
@@ -9133,7 +9133,7 @@ loc_81FA:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8218:
-	move.w	#Crawling,(Character_Movement).w
+	move.w	#MoveID_Crawling,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
@@ -9149,7 +9149,7 @@ loc_8218:
 	bne.s	loc_825C
 
 loc_8252:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E16
 ; ---------------------------------------------------------------------------
 
@@ -9177,10 +9177,10 @@ loc_8298:
 	bsr.w	sub_B41C
 
 loc_829C:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_82BA
-	move.w	#Walking,(Character_Movement).w
+	move.w	#MoveID_Walking,(Character_Movement).w
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -9194,7 +9194,7 @@ loc_82BA:
 
 loc_82CA:
 	clr.w	($FFFFF8F0).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E3E
 ; ---------------------------------------------------------------------------
 
@@ -9240,7 +9240,7 @@ loc_833E:
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10178,7 +10178,7 @@ stru_8BDE:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8BF0:
-	move.w	#Walking,(Character_Movement).w
+	move.w	#MoveID_Walking,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Character_CheckCollision
@@ -10215,7 +10215,7 @@ loc_8C26:
 	move.l	(sp)+,d0
 
 loc_8C70:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_8CB6
@@ -10230,13 +10230,13 @@ loc_8C70:
 	bsr.w	sub_7A10
 	bne.w	loc_8CB6
 	move.l	x_vel(a3),d0
-	move.w	#Crawling,(Character_Movement).w
+	move.w	#MoveID_Crawling,(Character_Movement).w
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; ---------------------------------------------------------------------------
 
 loc_8CB6:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_8D72
 	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_8CF8
@@ -10317,7 +10317,7 @@ loc_8DA0:
 loc_8DD4:
 	bsr.w	sub_8ED0
 	beq.w	loc_8DEA
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10334,7 +10334,7 @@ loc_8DF6:
 ; ---------------------------------------------------------------------------
 
 loc_8DFC:
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10353,7 +10353,7 @@ loc_8E16:
 	bne.w	loc_8E3E
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_8E3E
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10373,7 +10373,7 @@ loc_8E5A:
 	bmi.w	loc_8E74
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.s	loc_8E4E
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -10423,7 +10423,7 @@ sub_8ED0:
 	move.w	d7,a4
 	move.w	x_pos(a3),d7
 	move.w	($FFFFFA78).w,d6
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_8EFA
 	moveq	#7,d6
 	cmpi.w	#The_Kid,(Current_Helmet).w
@@ -10619,7 +10619,7 @@ loc_908C:
 	sub.w	d7,d4
 	neg.w	d4
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	beq.w	loc_90C0
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_90C0
@@ -10818,7 +10818,7 @@ sub_922C:
 	add.w	d7,a4
 	move.w	y_pos(a3),d7
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	beq.w	loc_9288
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_9288
@@ -10867,7 +10867,7 @@ loc_92BC:
 loc_92DE:
 	tst.b	(Berzerker_charging).w
 	beq.s	loc_92AA
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.s	loc_92AA
 
 loc_92EC:
@@ -11462,14 +11462,14 @@ loc_97BE:
 ; ---------------------------------------------------------------------------
 
 loc_97D4:
-	cmpi.w	#Standingstill,(Character_Movement).w
+	cmpi.w	#MoveID_Standingstill,(Character_Movement).w
 	bne.w	loc_97E8
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 	bra.w	loc_97FE
 ; ---------------------------------------------------------------------------
 
 loc_97E8:
-	cmpi.w	#Walking,(Character_Movement).w
+	cmpi.w	#MoveID_Walking,(Character_Movement).w
 	bne.w	loc_97FE
 	lea	(off_9826).l,a0
 	add.w	d2,a0
@@ -11660,7 +11660,7 @@ loc_998A:
 	add.w	d6,d6
 	move.l	($FFFFF862).w,a2
 	move.w	off_99FE(pc,d6.w),d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_99A6
 	move.w	#(LnkTo_unk_A94AC-Data_Index),d7
 
@@ -12339,7 +12339,7 @@ unk_9EE4:	dc.b   0
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_9F18:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_B580
 	move.l	#$40000,d1
 	move.l	x_vel(a3),d0
@@ -12695,7 +12695,7 @@ loc_A276:
 	move.l	#$FFFFC000,y_vel(a3)
 
 loc_A28A:
-	move.w	#Wall_Climbing,(Character_Movement).w
+	move.w	#MoveID_Wall_Climbing,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -12706,7 +12706,7 @@ loc_A28A:
 	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 	bne.w	loc_A6F8
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
 	tst.b	x_direction(a3)
 	beq.w	loc_A2E2
@@ -12756,7 +12756,7 @@ loc_A338:
 	cmpi.w	#2,d7
 	bge.s	loc_A330
 	bsr.w	sub_78E8
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_75D4
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
@@ -12767,7 +12767,7 @@ Get_RandomNumber_wordC:
 	moveq	#0,d6
 	move.w	(Cyclone_YAcceleration).w,d7
 	addi.w	#$80,d7
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A382
 	move.l	d0,-(sp)
 	moveq	#sfx_Iron_Knight_wall_climbing,d0
@@ -13070,7 +13070,7 @@ loc_A5AE:
 loc_A5EA:
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	move.w	d7,a4
 	clr.l	($FFFFFA98).w
 	move.b	($FFFFFAA3).w,($FFFFFA72).w
@@ -13129,7 +13129,7 @@ loc_A69E:
 ; ---------------------------------------------------------------------------
 
 loc_A6AE:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A6F4
 	move.l	#$FFFC0000,y_vel(a3)
 	move.l	#$FFFE0000,d7
@@ -13155,7 +13155,7 @@ loc_A6F4:
 
 loc_A6F8:
 	sf	($FFFFFA66).w
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
 	move.w	#$5A,(Telepad_timer).w
@@ -13212,7 +13212,7 @@ loc_A76A:
 
 loc_A7B4:
 	move.w	(Current_Helmet).w,d7
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A7F8
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_A7F8
@@ -13236,7 +13236,7 @@ loc_A7E8:
 ; ---------------------------------------------------------------------------
 
 loc_A7F8:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A8D6
 	cmpi.w	#8,d7
 	bne.w	loc_A830
@@ -13357,8 +13357,8 @@ loc_A94E:
 	bsr.w	sub_AF7A
 	bne.w	loc_A762
 	bsr.w	sub_DB22
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_A984
 	move.l	d0,-(sp)
@@ -13390,8 +13390,8 @@ loc_A9AA:
 ; ---------------------------------------------------------------------------
 
 loc_A9BE:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	bsr.w	sub_DB22
 	move.w	d7,a4
 	move.l	x_vel(a3),d7
@@ -13415,11 +13415,11 @@ loc_A9E4:
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	*+4
 
 loc_AA22:
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -13442,7 +13442,7 @@ loc_AA22:
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 
 loc_AA8E:
 	move.w	y_pos(a3),($FFFFFB5C).w
@@ -13522,7 +13522,7 @@ kid_flip:
 	bsr.w	sub_7428
 	bsr.w	sub_AF10
 	beq.w	loc_AD34
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_ACB0
 	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_AC42
@@ -13584,7 +13584,7 @@ loc_ABF0:
 	move.l	(sp)+,d0
 	jsr	(j_sub_105E).w
 	clr.l	y_vel(a3)
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -13626,7 +13626,7 @@ loc_ACA4:
 ; ---------------------------------------------------------------------------
 
 loc_ACB0:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_AD2C
 	cmpi.w	#Cyclone,(Current_Helmet).w
 	bne.w	loc_ACCC
@@ -14207,7 +14207,7 @@ loc_B20E:
 loc_B214:	; Cyclone is flying
 	move.w	(Cyclone_YAcceleration).w,d7
 	addi.w	#$400,d7
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_B23A
 	; flying button was pressed
 	subi.w	#$3000,d7
@@ -14466,14 +14466,14 @@ sub_B43A:
 	swap	d4
 	move.w	y_pos(a3),d4
 	move.w	($FFFFFA78).w,d1
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_B4A0
 	move.w	(Current_LevelID).w,d5
 	subq.w	#WarpCheatStart_LevelID,d5
 	bne.w	loc_B482
 	cmpi.l	#$9D3005F,d4 ; ; x-pos=09D3 y-pos=005F in number of pixels (RAM 0xFA2C.w 0xFA2E.w)
 	bne.w	loc_B482
-	btst	#Button_A,(Ctrl_Held).w ; keyboard key (S) jump
+	btst	#Button_B,(Ctrl_Held).w ; keyboard key (S) jump
 	beq.w	loc_B482
 	move.w	#WarpCheatDest_LevelID,(Current_LevelID).w
 	move.w	#colid_kidbelow,collision_type(a3)
@@ -14642,7 +14642,7 @@ loc_B5F6:
 	addq.w	#1,y_pos(a3)
 	st	has_level_collision(a3)
 	sf	(Cyclone_flying).w
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -14721,7 +14721,7 @@ loc_B69E:
 ; ---------------------------------------------------------------------------
 
 Jump_On_Enemy:
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	Check_for_recent_damge
 	move.l	d0,-(sp)
 	moveq	#sfx_Jump_on_enemy,d0
@@ -15054,8 +15054,8 @@ loc_B9A2:
 	clr.w	$20(a3)
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB08
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	has_level_collision(a3)
 	sf	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
@@ -15111,8 +15111,8 @@ loc_BA5A:
 	clr.w	$20(a3)
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB30
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	has_level_collision(a3)
 	st	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
@@ -17450,7 +17450,7 @@ sub_DFB0:
 	move.w	y_pos(a3),d6
 	move.w	($FFFFFAB6).w,d7
 	move.w	d6,($FFFFFAB6).w
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_EAE4
 	move.w	(Current_Helmet).w,d0
 	lea	unk_E246(pc),a5
@@ -24234,9 +24234,9 @@ loc_11EC4:
 	lea	Palette_Permutation_Identity(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
 	move.l	$2C(a1),a0
-	cmpi.w	#Storm,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm,(Level_Special_Effects).w
 	beq.s	loc_11EEA
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	loc_11EF2
 
 loc_11EEA:
@@ -27937,7 +27937,7 @@ word_14710:
 	dc.w   $96
 ; ---------------------------------------------------------------------------
 
-Lava_Geyser:
+Obj_Lava_Geyser:
 	move.w	$16(a5),d0	;x
 	move.w	$18(a5),d1	;y
 	move.w	$1A(a5),d2	;height ($8000 = small fireball)
@@ -28453,7 +28453,7 @@ loc_14C5E:
 loc_14C6A:
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Lava_Geyser,4(a0)
+	move.l	#Obj_Lava_Geyser,4(a0)
 	move.l	(a4)+,$16(a0)
 	move.w	(a4)+,$1A(a0)
 	dbf	d0,loc_14C6A
@@ -29197,7 +29197,7 @@ loc_1AE20:
 loc_1AE2E:
 
 	jsr	(j_Hibernate_Object_1Frame).w
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_1AE2E
 	move.w	#$C,(Game_Mode).w
 	st	($FFFFFBCE).w
@@ -31860,7 +31860,7 @@ OptionScreen_Input:
 
 ; FUNCTION CHUNK AT 0001CBC4 SIZE 00000014 BYTES
 
-	bclr	#Up,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
 	beq.w	loc_1CBF2
 	tst.w	(Options_Selected_Option).w
 	beq.w	loc_1CBF2
@@ -31869,7 +31869,7 @@ OptionScreen_Input:
 
 loc_1CBF2:
 				; OptionScreen_Input+Ej
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	beq.w	loc_1CC0E
 	cmpi.w	#3,(Options_Selected_Option).w
 	beq.w	loc_1CC0E
@@ -31878,7 +31878,7 @@ loc_1CBF2:
 
 loc_1CC0E:
 				; OptionScreen_Input+2Aj
-	bclr	#Right,(Ctrl_Pressed).w
+	bclr	#Button_Left,(Ctrl_Pressed).w
 	beq.w	loc_1CC2A
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -31895,7 +31895,7 @@ loc_1CC22:
 ; ---------------------------------------------------------------------------
 
 loc_1CC2A:
-	bclr	#Left,(Ctrl_Pressed).w
+	bclr	#Button_Right,(Ctrl_Pressed).w
 	beq.w	return_1CC86
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -45951,8 +45951,8 @@ DiamondPower_Run:
 
 +
 	move.b	(Ctrl_Held).w,d1
-	andi.b	#$C0,d1
-	cmpi.b	#$C0,d1
+	andi.b	#Button_Start_mask|Button_A_mask,d1
+	cmpi.b	#Button_Start_mask|Button_A_mask,d1
 	bne.s	DiamondPower_rts
 	cmpi.w	#Eyeclops,d0		; Check if Helmet ID is Eyeclops
 	bne.s	DiamondPower_Check

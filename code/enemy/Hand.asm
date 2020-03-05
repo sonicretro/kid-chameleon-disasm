@@ -305,7 +305,7 @@ loc_32A70:
 ; ---------------------------------------------------------------------------
 
 loc_32A86:
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	beq.s	return_32A10
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	return_32A10

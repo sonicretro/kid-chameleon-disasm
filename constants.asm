@@ -103,27 +103,37 @@ sfx_Tar_Monster_shoots = $5E
 sfx_Robot_jumping_on = $5F
 
 ; Weather
-Lava = 1
-Storm = 2
-Storm_and_Hail = 3
+WeatherID_Lava = 1
+WeatherID_Storm = 2
+WeatherID_Storm_and_Hail = 3
 
 ; Character movement
-Standingstill = 0
-Crawling = 1
-Walking = 2
-Jump = 3
-Wall_Climbing = 4
-Up_Down_Hill = 5
+MoveID_Standingstill = 0
+MoveID_Crawling = 1
+MoveID_Walking = 2
+MoveID_Jump = 3
+MoveID_Wall_Climbing = 4
+MoveID_Up_Down_Hill = 5
 
 ; Keystrokes
-Up = 0
-Down = 1
-Right = 2
-Left = 3
-Button_A = 4 ; S (jump)
-Button_B = 5 ; D (special)
-Button_C = 6 ; A (run)
-Start = 7 ; Enter
+Button_Up = 0
+Button_Down = 1
+Button_Left = 2
+Button_Right = 3
+Button_B = 4 ; jump
+Button_C = 5 ; special
+Button_A = 6 ; run
+Button_Start = 7
+
+Button_Up_mask		=	1<<Button_Up	; $01
+Button_Down_mask	=	1<<Button_Down	; $02
+Button_Left_mask	=	1<<Button_Left	; $04
+Button_Right_mask	=	1<<Button_Right	; $08
+Button_B_mask		=	1<<Button_B	; $10
+Button_C_mask		=	1<<Button_C	; $20
+Button_A_mask		=	1<<Button_A	; $40
+Button_Start_mask	=	1<<Button_Start	; $80
+
 
 ; Characters
 The_Kid = 0

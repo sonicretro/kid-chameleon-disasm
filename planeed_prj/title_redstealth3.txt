@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/title.bin
+Mapping File:	../scenes/mapeni/2EBD4.bin
+Art File:	../scenes/artcomp/Red_Stealth_transformation_from_intro.bin
+Palette Length:	64
+Palette Offset: 0
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	18
+y-Size:	20
+Tile Offset: 0

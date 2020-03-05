@@ -207,6 +207,7 @@ FFFC72	word	Player 2 - Transformation number
 FFFC74	word	Player 2 - Continues
 FFFC76	word	Player 2 - Extra hit point slots
 FFFC78	long	Player 2 - Score
+FFFC82  byte    Transformation on title. 0: red stealth. 1: maniaxe. 2: juggernaut.
 FFFDC8	byte	selected sub-option 1 in options menu (flag). 2 Players: One controller = 0, Two = -1
 FFFDC9	byte	selected sub-option 3 in options menu (flag). Speed: Normal = 0, Fast = -1
 FFFDCA	word	selected sub-option 2 in options menu: Controls (0-5)

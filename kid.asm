@@ -29597,13 +29597,13 @@ loc_1B258:
 	bsr.w	sub_1B532
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1BAC2,4(a0)
+	move.l	#Obj_TitleMenu,4(a0)	; Title menu object
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_1B5BC,4(a0)
+	move.l	#Obj_TitleTextKid,4(a0)	; Object for Kid text on title screen
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1B6A0,4(a0)
+	move.l	#Obj_TitleTextChameleon,4(a0)	; Object loading Chameleon text on title screen
 	rts
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -29973,8 +29973,8 @@ Load_TitleArt:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_1B5BC:
+;sub_1B5BC:
+Obj_TitleTextKid:
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.w	#$A5,y_pos(a3)
@@ -30016,7 +30016,7 @@ loc_1B610:
 loc_1B64C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bra.s	loc_1B64C
-; End of function sub_1B5BC
+; End of function Obj_TitleTextKid
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -30047,8 +30047,8 @@ stru_1B68A:
 	dc.b   2
 	dc.b $15
 ; ---------------------------------------------------------------------------
-
-loc_1B6A0:
+;loc_1B6A0:
+Obj_TitleTextChameleon:
 	moveq	#0,d2
 
 loc_1B6A2:
@@ -30519,8 +30519,8 @@ loc_1BAB4:
 	dbf	d0,loc_1BAB4
 	bra.s	loc_1BAEA
 ; ---------------------------------------------------------------------------
-
-loc_1BAC2:
+;loc_1BAC2:
+Obj_TitleMenu:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1BB10,4(a0)
@@ -30936,8 +30936,11 @@ loc_1BF8A:
 ; End of function sub_1BF24
 
 ; ---------------------------------------------------------------------------
-off_1BFB0:	dc.l unk_2F7D0
+; Each entry is a pointer to Enigma compressed mappings and width in tiles.
+off_1BFB0:
+	dc.l unk_2F7D0
 	dc.w $12
+	; Red Stealth
 	dc.l unk_2EACE
 	dc.w $12
 	dc.l unk_2EB32
@@ -30952,6 +30955,7 @@ off_1BFB0:	dc.l unk_2F7D0
 	dc.w $12
 	dc.l unk_2EF2C
 	dc.w $11
+	; Maniaxe
 	dc.l unk_2F306
 	dc.w $10
 	dc.l unk_2F374
@@ -30966,6 +30970,7 @@ off_1BFB0:	dc.l unk_2F7D0
 	dc.w $10
 	dc.l unk_2F76A
 	dc.w $E
+	; Juggernaut
 	dc.l unk_2EF92
 	dc.w $10
 	dc.l unk_2EFFE

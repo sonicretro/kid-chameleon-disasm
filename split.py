@@ -407,7 +407,7 @@ for lev in range(Number_Levels):
     if bgtheme in [3,5,7,9]: # layered
         if background not in backgroundlayered_addrs:
             backgroundlayered_addrs[background] = lev
-        linfo.write("background/{:02X}_layered.bin ".format(backgroundlayered_addrs[background]))
+        linfo.write("background/{:02X}.bin ".format(backgroundlayered_addrs[background]))
     else:
         if background not in background_addrs:
             btype = btoi(background, 1)
@@ -448,7 +448,7 @@ for i in range(len(backgroundlayered_addrs)-1):
     addr = backgroundlayered_addrs[i][0]
     lev = backgroundlayered_addrs[i][1]
     next_addr = backgroundlayered_addrs[i+1][0]
-    with open("level/background/{:02X}_layered.bin".format(lev), "wb") as out:
+    with open("level/background/{:02X}.bin".format(lev), "wb") as out:
         out.write(b[addr:next_addr])
 
 # create an .asm file with the speed and path bonuses

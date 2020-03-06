@@ -17130,7 +17130,9 @@ sub_D8BE:
 
 ; ---------------------------------------------------------------------------
 unk_D8E8:	include	"level/pathbonus.asm"
+	align	2
 unk_D934:	include	"level/speedbonus.asm"
+	align	2
 ; ---------------------------------------------------------------------------
 
 loc_D980:
@@ -45902,12 +45904,16 @@ MapOrder_Index:
 	align 2
 
 	include "level/mapheader_definitions.asm"
+	align	2
 
 	include "level/foreground_includes.asm"
+	align	2
 
 	include "level/background_includes.asm"
+	;align	2	; Block layouts aren't aligned in the original.
 
 	include "level/block_includes.asm"
+	align	2
 
 	include "level/enemy_includes.asm"
 ; ---------------------------------------------------------------------------
@@ -45915,6 +45921,8 @@ MapOrder_Index:
     rept 534
 	dc.b	$FF
     endm
+
+	align	2
 ; ---------------------------------------------------------------------------
 MainAddr_Index:	dc.l ThemeArtFront_Index 
 LnkTo_ThemeArtBack_Index:	dc.l ThemeArtBack_Index 
@@ -46839,6 +46847,7 @@ unk_9B6E0:	dc.b   0
 	dc.b   9
 	dc.b $38 ; 8
 	dc.b $E3 ; ã
+	align	2
 
 unk_9B83C:  binclude	"theme/bg_chunks/sky_00.bin"
 	align	2

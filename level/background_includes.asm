@@ -154,27 +154,27 @@ BackgroundLayout_79:  dc.w    $8000
     dc.l    $0
     dc.l    BackgroundLayout_00
 
-BackgroundLayout_2B_31_62:  binclude    "level/background/2B_layered.bin" ; also used by 31 62
-BackgroundLayout_2C:  binclude    "level/background/2C_layered.bin" ;
-BackgroundLayout_2D_2F:  binclude    "level/background/2D_layered.bin" ; also used by 2F
-BackgroundLayout_2E:  binclude    "level/background/2E_layered.bin" ;
-BackgroundLayout_30:  binclude    "level/background/30_layered.bin" ;
-BackgroundLayout_33:  binclude    "level/background/33_layered.bin" ;
-BackgroundLayout_34:  binclude    "level/background/34_layered.bin" ;
-BackgroundLayout_4A_6C_6D_7B:  binclude    "level/background/4A_layered.bin" ; also used by 6C 6D 7B
-BackgroundLayout_32_4D_4E_6E_7A:  binclude    "level/background/32_layered.bin" ; also used by 4D 4E 6E 7A
-BackgroundLayout_49_4B:  binclude    "level/background/49_layered.bin" ; also used by 4B
-BackgroundLayout_4C:  binclude    "level/background/4C_layered.bin" ;
-BackgroundLayout_4F:  binclude    "level/background/4F_layered.bin" ;
-BackgroundLayout_59:  binclude    "level/background/59_layered.bin" ;
-BackgroundLayout_53_55:  binclude    "level/background/53_layered.bin" ; also used by 55
-BackgroundLayout_56_5C:  binclude    "level/background/56_layered.bin" ; also used by 5C
-BackgroundLayout_54:  binclude    "level/background/54_layered.bin" ;
-BackgroundLayout_57_5A:  binclude    "level/background/57_layered.bin" ; also used by 5A
-BackgroundLayout_58:  binclude    "level/background/58_layered.bin" ;
-BackgroundLayout_64_78:  binclude    "level/background/64_layered.bin" ; also used by 78
-BackgroundLayout_40_76:  binclude    "level/background/40_layered.bin" ; also used by 76
-BackgroundLayout_7C:  binclude    "level/background/7C_layered.bin" ;
-BackgroundLayout_7D:  binclude    "level/background/7D_layered.bin" ;
-BackgroundLayout_47_77:  binclude    "level/background/47_layered.bin" ; also used by 77
-BackgroundLayout_09:  binclude    "level/background/09_layered.bin" ;
+BackgroundLayout_2B_31_62:  binclude    "level/background/2B.bin" ; also used by 31 62
+BackgroundLayout_2C:  binclude    "level/background/2C.bin" ;
+BackgroundLayout_2D_2F:  binclude    "level/background/2D.bin" ; also used by 2F
+BackgroundLayout_2E:  binclude    "level/background/2E.bin" ;
+BackgroundLayout_30:  binclude    "level/background/30.bin" ;
+BackgroundLayout_33:  binclude    "level/background/33.bin" ;
+BackgroundLayout_34:  binclude    "level/background/34.bin" ;
+BackgroundLayout_4A_6C_6D_7B:  binclude    "level/background/4A.bin" ; also used by 6C 6D 7B
+BackgroundLayout_32_4D_4E_6E_7A:  binclude    "level/background/32.bin" ; also used by 4D 4E 6E 7A
+BackgroundLayout_49_4B:  binclude    "level/background/49.bin" ; also used by 4B
+BackgroundLayout_4C:  binclude    "level/background/4C.bin" ;
+BackgroundLayout_4F:  binclude    "level/background/4F.bin" ;
+BackgroundLayout_59:  binclude    "level/background/59.bin" ;
+BackgroundLayout_53_55:  binclude    "level/background/53.bin" ; also used by 55
+BackgroundLayout_56_5C:  binclude    "level/background/56.bin" ; also used by 5C
+BackgroundLayout_54:  binclude    "level/background/54.bin" ;
+BackgroundLayout_57_5A:  binclude    "level/background/57.bin" ; also used by 5A
+BackgroundLayout_58:  binclude    "level/background/58.bin" ;
+BackgroundLayout_64_78:  binclude    "level/background/64.bin" ; also used by 78
+BackgroundLayout_40_76:  binclude    "level/background/40.bin" ; also used by 76
+BackgroundLayout_7C:  binclude    "level/background/7C.bin" ;
+BackgroundLayout_7D:  binclude    "level/background/7D.bin" ;
+BackgroundLayout_47_77:  binclude    "level/background/47.bin" ; also used by 77
+BackgroundLayout_09:  binclude    "level/background/09.bin" ;

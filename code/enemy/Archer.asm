@@ -11,7 +11,7 @@ Enemy07_Archer_Init:
 	exg	a1,a3
 	move.l	a3,$36(a5)
 	move.l	a1,$3A(a5)
-	move.l	current_hp(a5),a0
+	move.l	$44(a5),a0
 	move.w	4(a0),x_pos(a3)
 	move.w	6(a0),y_pos(a3)
 	bsr.w	sub_36FF4

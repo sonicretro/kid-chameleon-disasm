@@ -5,8 +5,8 @@ Enemy01_Diamond_Init:
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	current_hp(a5),a4
-	move.w	2(a4),enemy_hp(a3)	; hitpoints
+	move.l	$44(a5),a4
+	move.w	2(a4),enemy_level(a3)	; hitpoints
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -23,7 +23,7 @@ loc_3AD16:
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
-	move.w	enemy_hp(a3),d7 ; enemy hitpoints
+	move.w	enemy_level(a3),d7 ; enemy hitpoints
 	addq.w	#2,d7	; have at least 2 HP
 	move.w	d7,current_hp(a3)
 	cmpi.w	#3,d7	; how many hitpoints?

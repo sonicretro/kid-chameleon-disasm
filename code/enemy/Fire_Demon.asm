@@ -7,8 +7,8 @@ Enemy00_FireDemon_Init:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	current_hp(a5),a4
-	move.w	2(a4),enemy_hp(a3)
+	move.l	$44(a5),a4
+	move.w	2(a4),enemy_level(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -27,7 +27,7 @@ loc_3A3D2:
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)
 	move.b	#0,priority(a3)
-	move.w	enemy_hp(a3),d7 ; enemy hitpoints
+	move.w	enemy_level(a3),d7 ; enemy hitpoints
 	addq.w	#3,d7
 	move.w	d7,$44(a3)
 	cmpi.w	#4,d7

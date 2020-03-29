@@ -2,7 +2,7 @@
 Enemy06_Sphere_Init: 
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w	; --> loads an object data slot at a3
-	move.l	current_hp(a5),a0	; address to position in enemy layout
+	move.l	$44(a5),a0	; address to position in enemy layout
 	move.w	4(a0),x_pos(a3)	; x position
 	move.w	6(a0),y_pos(a3)	; y position
 	bsr.w	sub_36FF4	; FFFAD2 x_pos adjustment

@@ -6,8 +6,8 @@ Enemy08_Orca_Init:
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	current_hp(a5),a4
-	move.w	2(a4),enemy_hp(a3)
+	move.l	$44(a5),a4
+	move.w	2(a4),enemy_level(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4
@@ -24,7 +24,7 @@ loc_3D194:
 	bsr.w	sub_36E84
 	move.b	#0,priority(a3)
 	move.l	#$8000,$50(a5)
-	move.l	#$8000,$5E(a5)
+	move.l	#$8000,$5E(a5)	; Orca walking speed
 	move.w	#$1B,$4A(a5)
 	move.w	#$E,$48(a5)
 	move.w	#$12C,$6E(a5)

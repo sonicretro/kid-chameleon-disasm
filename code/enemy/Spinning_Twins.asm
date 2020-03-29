@@ -6,8 +6,8 @@ Enemy14_SpinningTwins_Init:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	current_hp(a5),a4
-	move.w	2(a4),enemy_hp(a3)
+	move.l	$44(a5),a4
+	move.w	2(a4),enemy_level(a3)
 	move.w	4(a4),x_pos(a3)
 	move.w	6(a4),y_pos(a3)
 	bsr.w	sub_36FF4

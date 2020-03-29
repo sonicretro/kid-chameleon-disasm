@@ -11,8 +11,8 @@ FF0500 ?        DMA queue? Format: 6 bytes per entry. word: length, long: source
 ?      FF0DA0	?
 FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
 FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
-FF3B24 ?        Block list.
-?      FF4A04   ?
+FF3B24 FF43BC   Block list: 8/16/10 bytes per prize/ghost-group/teleporter block
+FF43BC FF4A04   something to write a block onto VRAM plane mappings (10 bytes per entry, 1 control word + 2 data longs)?
 FF4A04 FF4B80	List of pointers (words) to beginning of each row in Level_Layout, including 2 above the top and 8 below the bottom (at FF9E32 FFA652)
 FF4B80 FF4D5C   List of pointers (words) to beginning of each row in Level foreground layout
 FF4D5C FF4E58   List of pointers (words) to beginning of each row in background buffer
@@ -408,21 +408,36 @@ Object format for Diamond Power Object from Diamond Power Object RAM at FFF2AC:
 46: (word)
 48: (word)
 
-Block List
+
+Block List (FF3B24-?)
 ----------
 
-Starts at FF3B24
+One entry per prize block, teleporter block and ghost block group.
+Other block types are not present here.
 
-One entry per block. 3 words header, plus data dependent on block type.
-Header:
-0  pointer to corresponding block in Level_Layout RAM
-2  ?
-4  block type
-6  data dependent on block type
+# Prize block (8 bytes)
+word: address of block in Level_layout RAM
+word: xpos (in blocks)
+word: ypos (in blocks)
+byte: bit 7: disguised flag
+byte: bits 0-3: content ID.
 
-type dependent data:
-Prize block: 
-1 word:  prize ID
+# Ghost block group (16 bytes)
+word: timer value (time until appear/disappear)
+byte: bit 7: ?
+byte: mapping frame (0=solid, 3=vanished, 1/2/4/5=in between?)
+word: amount of time block is solid
+word: amount of time block is vanished
+word: address of block in Level_layout RAM
+word: xpos (in blocks)
+word: ypos (in blocks)
+byte: bits 0-3: number of blocks in group
+byte: bit 0: 0=horizontal group, 1=vertical group
 
-Ghost block:
-5 words:  ?, ?, ?, ?, ?
+# Teleport (10 bytes)
+word: address of block in Level_layout RAM
+word: xpos (in blocks)
+word: ypos (in blocks)
+byte: destination map id
+byte: destination ypos (in blocks)
+word: destination xpos (in blocks)

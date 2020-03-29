@@ -5223,9 +5223,9 @@ SoftPlatform_BounceLoop:
 	bsr.w	SoftPlatform_Move
 	move.l	$E(a3),d7
 	subi.l	#$7000,d7
-	cmpi.l	#$FFFE8000,d7
+	cmpi.l	#-$18000,d7
 	bgt.w	+
-	move.l	#$FFFE8000,d7
+	move.l	#-$18000,d7
 +
 	move.l	d7,$E(a3)
 	cmp.w	6(a3),d0	;compare to original y pos
@@ -5282,7 +5282,7 @@ TrapPlatformDown_MoveLoop:
 	addi.l	#$4000,d7
 	cmpi.l	#$40000,d7
 	blt.w	+
-	move.l	#$20000,d7
+	move.l	#$20000,d7	; this is a bug. Should be $40000
 +
 	move.l	d7,$E(a3)
 	move.w	6(a3),d7
@@ -27032,7 +27032,7 @@ Pal_1408A:
 Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
-	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced keyboard key (Enter) starty
+	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entry
 	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_140BE
 	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1

@@ -10,7 +10,7 @@ Enemy05_TarMonster_Init:
 
 loc_321C6:
 	jsr	(j_Load_GfxObjectSlot).w
-	move.l	current_hp(a5),a0
+	move.l	$44(a5),a0
 	move.w	2(a0),d3
 	move.b	Hitpoints_Enemy_05(pc,d3.w),d3
 	ext.w	d3

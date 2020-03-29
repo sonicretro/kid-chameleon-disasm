@@ -4,7 +4,7 @@
 ;loc_3E9C8:
 Enemy1C_MiniHoppingSkull_Init: 
 	move.l	(Addr_GfxObject_Kid).w,a0
-	move.l	current_hp(a5),a1
+	move.l	$44(a5),a1
 
 loc_3E9D0:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -22,7 +22,7 @@ loc_3E9D0:
 	addi.w	#1,(Number_of_Enemy).w
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	2(a1),enemy_hp(a3)
+	move.w	2(a1),enemy_level(a3)
 	move.w	4(a1),x_pos(a3)
 	move.w	6(a1),y_pos(a3)
 	bsr.w	sub_36FF4

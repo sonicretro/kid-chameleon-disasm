@@ -14,7 +14,7 @@ Enemy1D_BigHoppingSkull_Init:
 	st	x_direction(a3)
 	st	is_moved(a3)
 	move.b	#0,priority(a3)
-	move.w	#enemyid_BigHoppingSkull,d0 ; loaded sprite id
+	move.w	#objid_BigHoppingSkull,d0 ; loaded sprite id
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	move.l	(Addr_GfxObject_Kid).w,a2

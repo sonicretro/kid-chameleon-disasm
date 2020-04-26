@@ -805,14 +805,14 @@ loc_65C:
 	clr.w	(Player_1_Helmet).w
 	move.w	#2,(Player_1_Hitpoints).w
 	move.w	#3,(Player_1_Continues).w
-	move.w	#$FFFF,($FFFFFC84).w
+	move.w	#$FFFF,(Player_1_OneTimePrizes).w
 	move.w	(MapHeader_BaseAddress).l,(Player_2_LevelID).w
 	move.w	#3,(Player_2_Lives).w
 	clr.l	(Player_2_Score).w
 	clr.w	(Player_2_Helmet).w
 	move.w	#2,(Player_2_Hitpoints).w
 	move.w	#3,(Player_2_Continues).w
-	move.w	#$FFFF,($FFFFFD26).w
+	move.w	#$FFFF,(Player_2_OneTimePrizes).w
 	bsr.w	sub_6E24
 
 
@@ -961,7 +961,7 @@ loc_892:
 sub_8A4:
 
 	lea	(Player_1_Lives).w,a0
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_8B4
 	lea	(Player_2_Lives).w,a0
 
@@ -981,7 +981,7 @@ loc_8BA:
 
 sub_8C2:
 	lea	(Player_1_Lives).w,a0
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_8D2
 	lea	(Player_2_Lives).w,a0
 
@@ -1328,7 +1328,7 @@ sub_B52:
 ReadJoypad:
 	tst.b	(Options_Suboption_2PController).w
 	beq.w	loc_B8C
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_B8C
 	move.b	(Ctrl_Held).w,(Ctrl_2_Held).w
 	move.b	(Ctrl_Pressed).w,(Ctrl_2_Pressed).w
@@ -1412,7 +1412,7 @@ loc_C4E:
 	move.b	(Ctrl_2).w,(Ctrl_2_Held).w
 	tst.b	(Options_Suboption_2PController).w
 	beq.w	loc_C9C
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_C9C
 	move.b	(Ctrl_2_Held).w,(Ctrl_Held).w
 	move.b	(Ctrl_2_Pressed).w,(Ctrl_Pressed).w
@@ -2603,8 +2603,8 @@ loc_14EE:
 	swap	d0
 	dbf	d2,loc_14EE
 	moveq	#$F,d4
-	lea	($FFFF4ED8).l,a0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_2).l,a0
+	lea	(Palette_Buffer_3).l,a1
 	lea	(Palette_Buffer).l,a2
 	tst.l	d7
 	beq.s	loc_1518
@@ -2612,8 +2612,8 @@ loc_14EE:
 	bsr.s	sub_1536
 
 loc_1518:
-	lea	($FFFF4F18).l,a0
-	lea	($FFFF4F98).l,a1
+	lea	(Palette_Buffer_2+$40).l,a0
+	lea	(Palette_Buffer_3+$40).l,a1
 	lea	(Palette_Buffer+$40).l,a2
 	lea	($FFFFF88C).w,a4
 	move.l	(a4),d7
@@ -2684,16 +2684,15 @@ loc_158E:
 
 sub_1596:
 	lea	4(a6),a5
-	move.l	($FFFFF8B2).w,d0
+	move.l	(FGUpdateQueueCustom_NextSlot).w,d0
 	beq.s	loc_15D2
 	move.l	d0,a0
 	move.w	#$FFFF,(a0)
 	moveq	#0,d1
 	move.w	#$4000,d2
 	move.w	#$80,d3
-	lea	($FFFF43BC).l,a0
+	lea	(FGPlane_UpdateQueueCustom).l,a0
 	bra.s	loc_15C8
-; ---------------------------------------------------------------------------
 
 loc_15B8:
 	or.w	d2,d0
@@ -2709,16 +2708,16 @@ loc_15C8:
 	move.w	(a0)+,d0
 	bpl.s	loc_15B8
 	moveq	#0,d0
-	move.l	d0,($FFFFF8B2).w
+	move.l	d0,(FGUpdateQueueCustom_NextSlot).w
 
 loc_15D2:
-	move.l	($FFFFF8B6).w,d0
+	move.l	(FGUpdateQueueCell_NextSlot).w,d0
 	beq.w	loc_1686
-	cmpi.w	#$47A6,d0
+	cmpi.w	#FGPlane_UpdateQueueCell&$FFFF,d0
 	beq.w	loc_1686
 	move.l	d0,a0
 	move.w	#$FFFF,(a0)
-	lea	($FFFF47A6).l,a0
+	lea	(FGPlane_UpdateQueueCell).l,a0
 	move.l	(Addr_ThemeMappings).w,a1
 	lea	(Block_Mappings).l,a2
 	move.w	(Camera_X_pos).w,d4
@@ -2753,6 +2752,7 @@ loc_1614:
 	move.w	d3,(a5)
 	move.w	(a0)+,d0
 	bmi.s	loc_165E
+	; cell has no block in it
 	andi.w	#$FF,d0
 	lsl.w	#3,d0
 	move.l	(a1,d0.w),(a6)
@@ -2766,6 +2766,7 @@ loc_1614:
 ; ---------------------------------------------------------------------------
 
 loc_165E:
+	; cell has block in it
 	andi.w	#$FF,d0
 	lsl.w	#3,d0
 	move.l	(a2,d0.w),(a6)
@@ -2785,11 +2786,11 @@ loc_167A:
 
 loc_1680:
 	moveq	#0,d0
-	move.l	d0,($FFFFF8B6).w
+	move.l	d0,(FGUpdateQueueCell_NextSlot).w
 
 loc_1686:
-	move.l	#$FFFF43BC,($FFFFF8B2).w
-	move.l	#$FFFF47A6,($FFFFF8B6).w
+	move.l	#FGPlane_UpdateQueueCustom,(FGUpdateQueueCustom_NextSlot).w
+	move.l	#FGPlane_UpdateQueueCell,(FGUpdateQueueCell_NextSlot).w
 	rts
 ; End of function sub_1596
 
@@ -4016,8 +4017,8 @@ loc_21B8:
 	bge.s	loc_21B8
 	move.w	#$20,$38(a0)
 	move.w	$A(a2),$A(a3)
-	move.w	($FFFFF8CC).w,$A(a2)
-	move.w	a2,($FFFFF8CC).w
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a2)
+	move.w	a2,(Addr_NextFreeShooterObjectSlot).w
 
 loc_21F2:
 	movem.l	(sp)+,d0-d4/a0-a4
@@ -4144,8 +4145,8 @@ loc_22D2:
 loc_22FE:
 	move.w	#colid_hurt,$38(a2)	; hurt by shooter block bullet
 	move.w	$A(a0),$A(a1)
-	move.w	($FFFFF8CC).w,$A(a0)
-	move.w	a0,($FFFFF8CC).w
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
 	move.w	a1,a0
 	bra.w	loc_226E
 ; ---------------------------------------------------------------------------
@@ -4803,14 +4804,14 @@ loc_2876:	; special platform
 Pal_FadeOut:
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_28A6:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_28A6
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_28B8:
 	move.w	d1,(a0)+
@@ -6061,42 +6062,46 @@ sub_6048:
 	move.b	#$7F,($FFFFF88B).w
 	move.b	#$80,($FFFFF888).w
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	move.w	#$1F,d0
 
 loc_607A:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_607A
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_3).l,a1
 	move.w	#$1F,d0
 
 loc_6090:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_6090
-	move.l	($FFFFFADE).w,a0
-	lea	($FFFF4F8A).l,a1
+	move.l	($FFFFFADE).w,a0	; saved storm palette
+	lea	(Palette_Buffer_3+$32).l,a1
 	moveq	#6,d0
 	cmpi.w	#Mountain,(Foreground_theme).w
 	beq.s	loc_60C0
 
 loc_60AA:
+	; load storm palette for other themes
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_60AA
-	move.w	#0,($FFFF4F58).l
+	; background color is set to 0
+	move.w	#0,(Palette_Buffer_3).l
 	subq.w	#4,($FFFFFADA).w
 	bra.w	loc_61C2
 ; ---------------------------------------------------------------------------
 
 loc_60C0:
-	move.w	(a0)+,($FFFF4F58).l
-
+	; load the storm background palette for Mountain
+	; first color goes to a special slot
+	move.w	(a0)+,(Palette_Buffer_3).l
 loc_60C6:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_60C6
+	; load the storm foreground palette for Mountain
 	move.w	#$FFFF,($FFFFF888).w
 	move.l	(LnkTo_Pal_7B774).l,a0
-	lea	($FFFF4F5A).l,a1
+	lea	(Palette_Buffer_3+2).l,a1
 	moveq	#$E,d0
 
 loc_60E0:
@@ -7671,14 +7676,14 @@ sub_73D0:
 	sf	(PaletteToDMA_Flag).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_73E2:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_73E2
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_73F4:
 	move.w	d1,(a0)+
@@ -7933,7 +7938,7 @@ loc_76E4:
 	bne.w	loc_7772
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
 	st	(Maniaxe_throwing_axe).w
@@ -8742,7 +8747,7 @@ loc_7E90:
 	clr.l	x_vel(a3)
 	clr.l	y_vel(a3)
 	sf	(Currently_transforming).w
-	lea	($FFFF4ED8).l,a4
+	lea	(Palette_Buffer_2).l,a4
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
@@ -9967,8 +9972,8 @@ loc_89A8:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_89D2:
+;sub_89D2:
+ManiaxeAxe_Init:
 	move.w	($FFFFFA56).w,d0
 	move.w	#6,-(sp)
 	jsr	(j_Hibernate_Object).w
@@ -10031,12 +10036,12 @@ loc_8A84:
 	lea	($FFFF4A04).l,a4
 	move.w	(a4,d6.w),a4
 	add.w	d7,a4
-	move.w	(a4),d7
-	andi.w	#$7000,d7
+	move.w	(a4),d7	; address of underlying cell in Level_layout
+	andi.w	#$7000,d7	; collision bits
 	cmpi.w	#$6000,d7
 	beq.w	loc_8ACC
-	bsr.w	sub_8AF6
-	bne.w	loc_8AF2
+	bsr.w	ManiaxeAxe_CheckOutOfBounds
+	bne.w	loc_8AF2	; axe is out of bounds from the screen
 	tst.w	collision_type(a3)
 	beq.s	loc_8A52
 
@@ -10048,7 +10053,7 @@ loc_8ABC:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_8ACC:
+loc_8ACC:	; axe hit solid block
 	clr.w	x_vel(a3)
 	clr.b	$12(a3)
 	clr.b	palette_line(a3)
@@ -10062,13 +10067,13 @@ loc_8ACC:
 
 loc_8AF2:
 	jmp	(j_Delete_CurrentObject).w
-; End of function sub_89D2
+; End of function ManiaxeAxe_Init
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_8AF6:
+;sub_8AF6:
+ManiaxeAxe_CheckOutOfBounds:
 	move.w	x_pos(a3),d7
 	move.w	(Camera_X_pos).w,d6
 	subi.w	#$10,d6
@@ -10092,7 +10097,7 @@ sub_8AF6:
 loc_8B32:
 	moveq	#1,d7
 	rts
-; End of function sub_8AF6
+; End of function ManiaxeAxe_CheckOutOfBounds
 
 ; ---------------------------------------------------------------------------
 stru_8B36:
@@ -10244,7 +10249,7 @@ loc_8CB6:
 	bne.w	loc_8D72
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
 	clr.l	x_vel(a3)
@@ -10715,7 +10720,7 @@ sub_914A:
 	asr.w	#4,d7
 	sub.w	d5,d7
 	exg	d5,d7
-	dc.l	$51EF0000	; bindary for opcode _sf	0(sp)
+	dc.l	$51EF0000	; binary for opcode _sf	0(sp)
 	sf	1(sp)
 
 loc_9188:
@@ -10750,13 +10755,13 @@ loc_91C0:
 	asr.w	#6,d7
 	cmpi.w	#$18,d7
 	bne.s	loc_919E
-	dc.l	$50EF0000	; bindary for opcode _st	0(sp)
+	dc.l	$50EF0000	; binary for opcode _st	0(sp)
 	move.l	a4,-(sp)
 	movem.w	d0-d7,-(sp)
 	move.l	a4,d3
 	subq.w	#2,d3
 	moveq	#0,d6
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	tst.l	y_vel(a3)
 	bpl.w	loc_91F6
 	moveq	#2,d6
@@ -10831,7 +10836,7 @@ sub_922C:
 loc_9288:
 	asr.w	#4,d7
 	sub.w	d7,d5
-	dc.l	$51EF0000	; bindary for opcode _sf	0(sp)
+	dc.l	$51EF0000	; binary for opcode _sf	0(sp)
 	sf	1(sp)
 
 loc_9294:
@@ -10858,9 +10863,9 @@ loc_92BC:
 	beq.s	loc_92AA
 	andi.w	#$F00,d7
 	asr.w	#6,d7
-	cmpi.w	#$18,d7
+	cmpi.w	#$18,d7	; drill block?
 	bne.w	loc_92DE
-	dc.l	$50EF0000	; bindary for opcode _st	0(sp)
+	dc.l	$50EF0000	; binary for opcode _st	0(sp)
 	bra.w	loc_92EC
 ; ---------------------------------------------------------------------------
 
@@ -10877,7 +10882,7 @@ loc_92EC:
 	move.l	(a2,d7.w),a2
 	move.l	a4,d3
 	moveq	#3,d6
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	tst.l	x_vel(a3)
 	bpl.w	loc_930E
 	moveq	#1,d6
@@ -10911,9 +10916,10 @@ loc_9338:
 	addq.w	#2,sp
 	rts
 ; ---------------------------------------------------------------------------
-off_933E:	dc.l j_sub_10E86
-	dc.l j_sub_10E86
-	dc.l j_sub_10F44
+off_933E:	; interaction for each block type
+	dc.l j_Block_LoadSmashBits
+	dc.l j_Block_LoadSmashBits
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_937E
 	dc.l return_937E
 	dc.l j_loc_111F4
@@ -13024,7 +13030,7 @@ loc_A556:
 	move.l	d7,x_vel(a3)
 	move.l	d7,y_vel(a3)
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	add.w	d2,d1
@@ -13054,7 +13060,7 @@ loc_A5AE:
 	neg.l	d7
 	move.l	d7,x_vel(a3)
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	sub.w	d2,d1
@@ -13245,7 +13251,7 @@ loc_A7F8:
 	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B60,d7
 	jsr	(j_Init_Animation).w
 
@@ -13642,7 +13648,7 @@ loc_ACCC:
 	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B60,d7
 	jsr	(j_Init_Animation).w
 	bra.w	loc_AD2C
@@ -13929,7 +13935,7 @@ loc_AF96:
 	move.l	a2,-(sp)
 	bsr.w	sub_BBE2
 	beq.w	loc_AFCA
-	cmpi.w	#$14,d7
+	cmpi.w	#$14,d7	; block ID > 5?
 	bgt.w	loc_AFCA
 	moveq	#0,d6
 	move.l	off_AFD8(pc,d7.w),a4
@@ -13960,9 +13966,10 @@ sub_AFD4:
 ; End of function sub_AFD4
 
 ; ---------------------------------------------------------------------------
-off_AFD8:	dc.l loc_AFF0
+off_AFD8:	; interaction for each block type
+	dc.l loc_AFF0
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l sub_AFD4
 	dc.l sub_AFD4
 	dc.l j_loc_110D0
@@ -13970,10 +13977,10 @@ off_AFD8:	dc.l loc_AFF0
 
 loc_AFF0:
 	moveq	#2,d6
-	jmp	(j_sub_10E86).l
+	jmp	(j_Block_LoadSmashBits).l
 ; ---------------------------------------------------------------------------
 	moveq	#2,d6
-	jmp	(j_sub_10F44).l
+	jmp	(j_IceBlock_SmashAndLoadBullets).l
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -13995,7 +14002,7 @@ loc_B01E:
 	bclr	#$F,d7
 	beq.w	loc_B080
 	move.w	a4,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	moveq	#0,d6
 	andi.w	#$F00,d7
 	asr.w	#6,d7
@@ -14009,9 +14016,10 @@ loc_B01E:
 return_B056:
 	rts
 ; ---------------------------------------------------------------------------
-off_B058:	dc.l loc_B070
+off_B058:	; interaction for each block type
+	dc.l loc_B070
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_B056
 	dc.l return_B056
 	dc.l j_loc_110D0
@@ -14019,10 +14027,10 @@ off_B058:	dc.l loc_B070
 
 loc_B070:
 	moveq	#2,d6
-	jmp	(j_sub_10E86).l
+	jmp	(j_Block_LoadSmashBits).l
 ; ---------------------------------------------------------------------------
 	moveq	#2,d6
-	jmp	(j_sub_10F44).l
+	jmp	(j_IceBlock_SmashAndLoadBullets).l
 ; ---------------------------------------------------------------------------
 
 loc_B080:
@@ -14660,7 +14668,8 @@ Character_CheckCollision:
 	bclr	#$E,d5
 	clr.w	object_meta(a3)
 	cmpi.w	#$64,d5
-	bge.w	loc_B8E6
+	bge.w	CharacterCollision_TouchPrize
+	; interaction with an enemy or similar
 	subq.w	#4,d7
 	move.l	off_B640(pc,d7.w),a4
 	jmp	(a4)
@@ -14670,17 +14679,17 @@ return_B63E:
 	rts
 ; ---------------------------------------------------------------------------
 off_B640:
-	dc.l Crushed_to_Death
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l Check_for_recent_damge
-	dc.l loc_B678	; kid right of enemy
-	dc.l loc_B678	; kid left of enemy
+	dc.l Crushed_to_Death		; rightwall - shouldn't happen here
+	dc.l loc_B672			; leftwall  - shouldn't happen here
+	dc.l loc_B672			; floor   - shouldn't happen here
+	dc.l loc_B672			; ceiling - shouldn't happen here
+	dc.l loc_B672			; slopeup  - shouldn't happen here
+	dc.l loc_B672			; slopedown - shouldn't happen here
+	dc.l Check_for_recent_damge	; hurt by enemy
+	dc.l loc_B678			; kid right of enemy
+	dc.l loc_B678			; kid left of enemy
 	dc.l Check_for_recent_damge	; kid below enemy
-	dc.l Jump_On_Enemy	; kid above enemy
+	dc.l Jump_On_Enemy		; kid above enemy
 ; ---------------------------------------------------------------------------
 
 Crushed_to_Death:
@@ -14689,7 +14698,6 @@ Crushed_to_Death:
 ; ---------------------------------------------------------------------------
 
 loc_B672:
-
 	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 	bra.s	loc_B672 ; Restart current level not losing a live and time doesn't reset?!
@@ -14915,7 +14923,7 @@ loc_B894:
 	beq.w	loc_B8D0
 	tst.w	(Player_2_Lives).w
 	bne.w	loc_B8BA
-	sf	($FFFFFC39).w
+	sf	(Current_player).w
 
 loc_B8A8:
 	tst.b	($FFFFFC29).w
@@ -14928,14 +14936,14 @@ loc_B8BA:
 	tst.b	($FFFFFC29).w
 	bne.w	loc_B8DE
 	move.w	#8,(Game_Mode).w
-	not.b	($FFFFFC39).w
+	not.b	(Current_player).w
 	bra.w	loc_B8DE
 ; ---------------------------------------------------------------------------
 
 loc_B8D0:
 	tst.w	(Player_2_Lives).w
 	beq.w	loc_B8E2
-	st	($FFFFFC39).w
+	st	(Current_player).w
 	bra.s	loc_B8A8
 ; ---------------------------------------------------------------------------
 
@@ -14946,10 +14954,10 @@ loc_B8DE:
 loc_B8E2:
 	jmp	(j_EntryPoint).w
 ; ---------------------------------------------------------------------------
-
-loc_B8E6:
-	bgt.w	Assign_ID_to_Helmet
-	st	(NoPrize_Bonus_Flag).w
+;loc_B8E6:
+CharacterCollision_TouchPrize:
+	bgt.w	CharacterCollision_TouchSpecialPrize ; not a diamond
+	st	(NoPrize_Bonus_Flag).w	; diamond
 	rts
 ; ---------------------------------------------------------------------------
 word_B8F0:
@@ -14965,10 +14973,10 @@ word_B8F0:
 	dc.w	 9
 	dc.w	$A
 ; ---------------------------------------------------------------------------
-
-Assign_ID_to_Helmet:
+;Assign_ID_to_Helmet
+CharacterCollision_TouchSpecialPrize:
 	cmpi.w	#$90,d5
-	bge.w	loc_B93A ; No helmet prize continue other
+	bge.w	CharacterCollision_TouchNonHelmetPrize
 	st	(NoPrize_Bonus_Flag).w
 	move.w	d5,d7
 	subi.w	#$68,d7
@@ -14977,17 +14985,18 @@ Assign_ID_to_Helmet:
 	st	(Check_Helmet_Change).w
 	rts
 ; ---------------------------------------------------------------------------
-off_B926:
-	dc.l Ankh
-	dc.l Clock
-	dc.l Coin
-	dc.l loc_B972
-	dc.l Flagpole
+;off_B926:
+CharacterCollision_NonHelmetPrize_Index:
+	dc.l CharacterCollision_TouchAnkh
+	dc.l CharacterCollision_TouchClock
+	dc.l CharacterCollision_TouchCoin
+	dc.l CharacterCollision_TouchUnknownPrize
+	dc.l CharacterCollision_TouchFlagpole
 ; ---------------------------------------------------------------------------
-
-loc_B93A:
+;loc_B93A:
+CharacterCollision_TouchNonHelmetPrize:
 	subi.w	#$90,d5
-	move.l	off_B926(pc,d5.w),a4
+	move.l	CharacterCollision_NonHelmetPrize_Index(pc,d5.w),a4
 	jmp	(a4)
 ; End of function Character_CheckCollision
 
@@ -14995,7 +15004,7 @@ loc_B93A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Ankh:
+CharacterCollision_TouchAnkh:
 	st	(NoPrize_Bonus_Flag).w
 	move.l	d0,-(sp)
 	moveq	#sfx_Ankh_prize,d0
@@ -15008,14 +15017,14 @@ Ankh:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Clock:
+CharacterCollision_TouchClock:
 	st	(NoPrize_Bonus_Flag).w
 	rts
 ; End of function Clock
 
 ; ---------------------------------------------------------------------------
 
-Coin:
+CharacterCollision_TouchCoin:
 	st	(NoPrize_Bonus_Flag).w
 	addq.w	#1,(Number_Continues).w
 	move.l	d0,-(sp)
@@ -15024,8 +15033,8 @@ Coin:
 	move.l	(sp)+,d0
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_B972:
+;loc_B972:
+CharacterCollision_TouchUnknownPrize:
 	st	(NoPrize_Bonus_Flag).w
 	rts
 ; ---------------------------------------------------------------------------
@@ -15059,7 +15068,7 @@ loc_B9A2:
 	sf	has_level_collision(a3)
 	sf	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	add.w	d2,d1
@@ -15116,7 +15125,7 @@ loc_BA5A:
 	sf	has_level_collision(a3)
 	st	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	sub.w	d2,d1
@@ -15209,9 +15218,10 @@ loc_BB74:
 ; End of function sub_BB54
 
 ; ---------------------------------------------------------------------------
-off_BB80:	dc.l j_sub_10E86
+off_BB80:	; interaction for each block type
+	dc.l j_Block_LoadSmashBits
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_BBC0
 	dc.l return_BBC0
 	dc.l j_loc_110D0
@@ -15256,7 +15266,7 @@ return_BBE0:
 sub_BBE2:
 	move.w	($FFFFFB6C).w,d3
 	move.w	d3,a4
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	move.w	x_pos(a3),d7
 	asr.w	#4,d7
 	cmp.w	d1,d7
@@ -15505,7 +15515,7 @@ Make_SpriteAttr_HUD:
 	moveq	#0,d1
 	move.b	HelmetHitpoint_Table(pc,d2.w),d1
 	add.w	(Extra_hitpoint_slots).w,d1
-	move.w	#$80,d2
+	move.w	#$80,d2	; x-position of first hitpoint sprites
 	tst.b	($FFFFFB49).w
 	beq.s	loc_BE08
 	move.w	(Time_Frames).w,d3
@@ -15517,7 +15527,7 @@ loc_BE06:
 	sub.w	d3,d2
 
 loc_BE08:
-	move.w	#$A4,d3
+	move.w	#$A4,d3	; y-position of first hitpoint sprites
 
 loc_BE0C:
 	addq.w	#1,d4
@@ -15639,9 +15649,9 @@ End_Decrease_Time_Left:
 
 loc_BF2A:
 	move.w	(Number_Lives).w,d0
-	cmpi.w	#$64,d0
+	cmpi.w	#100,d0
 	blt.s	life_display
-	moveq	#$63,d0
+	moveq	#99,d0
 	move.w	d0,(Number_Lives).w
 
 life_display:							; Lives display
@@ -15752,10 +15762,7 @@ return_C046:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Flagpole:
-
-; FUNCTION CHUNK AT 0000D468 SIZE 0000042C BYTES
-
+CharacterCollision_TouchFlagpole:
 	jsr	(j_StopMusic).l
 	st	($FFFFFB4B).w
 	lea	(Addr_FirstObjectSlot).w,a0
@@ -15862,19 +15869,19 @@ loc_C190:
 	dbf	d1,loc_C186
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_C1AA:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_C1AA
 	moveq	#$E,d0
 	lea	Pal_D00C(pc),a0
-	lea	($FFFF4F9A).l,a1
+	lea	(Palette_Buffer_3+$42).l,a1
 
 loc_C1BC:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_C1BC
-	clr.w	($FFFF4F58).l
+	clr.w	(Palette_Buffer_3).l
 	move.w	#$100,($FFFFF876).w
 	bra.s	loc_C1DC
 ; ---------------------------------------------------------------------------
@@ -15910,7 +15917,7 @@ loc_C1EE:
 
 loc_C21E:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	($FFFFF8B2).w,a0
+	move.l	(FGUpdateQueueCustom_NextSlot).w,a0
 	moveq	#$C,d7
 
 loc_C228:
@@ -15918,12 +15925,12 @@ loc_C228:
 	bmi.s	Score_Board
 	tst.w	d7
 	bge.s	loc_C228
-	move.l	a0,($FFFFF8B2).w
+	move.l	a0,(FGUpdateQueueCustom_NextSlot).w
 	bra.s	loc_C21E
 ; ---------------------------------------------------------------------------
 
 Score_Board:
-	move.l	a0,($FFFFF8B2).w
+	move.l	a0,(FGUpdateQueueCustom_NextSlot).w
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.l	#bgm_Score_Board,d0
@@ -16248,9 +16255,9 @@ loc_C48C:
 	moveq	#0,d7
 	moveq	#0,d2
 	move.l	$60(a5),d6
-	cmpi.l	#$98967F,d6
+	cmpi.l	#9999999,d6
 	ble.s	loc_C4AE
-	move.l	#$98967F,d6
+	move.l	#9999999,d6
 
 loc_C4AE:
 	move.l	(a4)+,a0
@@ -16531,13 +16538,13 @@ loc_D12E:
 	dbf	d0,loc_D12E
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D142:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D142
 	moveq	#$1F,d0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_3).l,a1
 
 loc_D150:
 	clr.l	(a1)+
@@ -16598,7 +16605,7 @@ loc_D17E:
 	move.w	#$36,$68(a0)
 	move.w	#8,$6C(a0)
 	move.l	a0,$48(a5)
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.s	loc_D25E
 	move.w	#$FD8,$44(a0)
 
@@ -16714,13 +16721,13 @@ loc_D3F0:
 	clr.w	($FFFFFBCC).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D40A:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D40A
 	moveq	#$3F,d0
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D418:
 	move.w	#0,(a0)+
@@ -16953,13 +16960,13 @@ loc_D702:
 	jsr	(j_Hibernate_Object).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D718:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D718
 	moveq	#$3F,d0
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D726:
 	move.w	#0,(a0)+
@@ -16997,14 +17004,14 @@ loc_D77E:
 	add.l	d4,(Score).w
 	move.l	d5,d6
 	add.l	d4,d6
-	cmpi.l	#$98967F,(Score).w ; Score 99.999.99
+	cmpi.l	#9999999,(Score).w ; Score 99.999.99
 	blt.s	loc_D79E
-	move.l	#$98967F,d6 ; Score 99.999.99
+	move.l	#9999999,d6 ; Score 99.999.99
 	move.l	d6,(Score).w
 
 loc_D79E:
-	divu.w	#$C350,d5 ; Score 50.000
-	divu.w	#$C350,d6 ; Score 50.000
+	divu.w	#50000,d5 ; Score 50.000
+	divu.w	#50000,d6 ; Score 50.000
 	cmp.w	d5,d6
 	beq.s	loc_D7CE
 	addq.w	#1,(Number_Lives).w
@@ -17060,14 +17067,14 @@ End_Credits:
 	jsr	(j_Hibernate_Object).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D84E:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D84E
 	moveq	#$3F,d0
 	moveq	#0,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D85E:
 	move.w	d1,(a0)+
@@ -17184,8 +17191,8 @@ loc_D9EA:
 	st	($FFFFFB49).w
 	moveq	#$3F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
-	lea	($FFFF4F58).l,a2
+	lea	(Palette_Buffer_2).l,a1
+	lea	(Palette_Buffer_3).l,a2
 
 loc_DA16:
 	move.w	(a0)+,d1
@@ -17335,21 +17342,21 @@ j_sub_F06A:	;sub_DEDA
 j_sub_DFB0:	;sub_DEDE
 	jmp	sub_DFB0(pc)
 ; ---------------------------------------------------------------------------
-j_loc_DF22: ;DEE2
-	jmp	loc_DF22(pc)
+j_Initialize_EvanescShooterObjectSlots: ;DEE2
+	jmp	Initialize_EvanescShooterObjectSlots(pc)
 ; ---------------------------------------------------------------------------
-	jmp	sub_DF68(pc)
+	jmp	EvanescentBlock_Trigger(pc)
 ; ---------------------------------------------------------------------------
-j_sub_FACE: ;DEEA
-	jmp	sub_FACE(pc)
+j_Get_XY_From_LevelLayoutAddress: ;DEEA
+	jmp	Get_XY_From_LevelLayoutAddress(pc)
 ; ---------------------------------------------------------------------------
-j_sub_10E86: ;DEEE
-	jmp	sub_10E86(pc)
+j_Block_LoadSmashBits: ;DEEE
+	jmp	Block_LoadSmashBits(pc)
 ; ---------------------------------------------------------------------------
 	jmp	return_FAFC(pc)
 ; ---------------------------------------------------------------------------
-j_sub_10F44: ;DEF6
-	jmp	sub_10F44(pc)
+j_IceBlock_SmashAndLoadBullets: ;DEF6
+	jmp	IceBlock_SmashAndLoadBullets(pc)
 ; ---------------------------------------------------------------------------
 j_loc_1002E: ;DEFA
 	jmp	loc_1002E(pc)
@@ -17380,10 +17387,10 @@ j_loc_FAFE: ;DF16
 	jmp	return_10DA2(pc)
 ; ---------------------------------------------------------------------------
 
-loc_DF22:
+Initialize_EvanescShooterObjectSlots:
 	bsr.w	sub_EABC
-	lea	($FFFFE90A).w,a0
-	move.w	a0,($FFFFF8C8).w
+	lea	(EvanescObject_RAM).w,a0
+	move.w	a0,(Addr_NextFreeEvanescObjectSlot).w
 	moveq	#$12,d0
 
 loc_DF30:
@@ -17392,9 +17399,9 @@ loc_DF30:
 	move.l	a1,a0
 	dbf	d0,loc_DF30
 	clr.w	$A(a0)
-	clr.w	($FFFFF8C6).w
-	lea	($FFFFE9FA).w,a0
-	move.w	a0,($FFFFF8CC).w
+	clr.w	(Addr_FirstEvanescObjectSlot).w
+	lea	(ShooterObject_RAM).w,a0
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
 	moveq	#$26,d0
 
 loc_DF50:
@@ -17403,27 +17410,26 @@ loc_DF50:
 	move.l	a1,a0
 	dbf	d0,loc_DF50
 	clr.w	$A(a0)
-	clr.w	($FFFFF8CA).w
+	clr.w	(Addr_FirstShooterObjectSlot).w
 	rts
-; End of function j_loc_DF22
+; End of function j_Initialize_EvanescShooterObjectSlots
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_DF68:
-
+;sub_DF68:
+EvanescentBlock_Trigger:
 	move.l	d0,-(sp)
 	moveq	#sfx_Evanescent_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	swap	d1
-	move.w	($FFFFF8C8).w,d1
+	move.w	(Addr_NextFreeEvanescObjectSlot).w,d1
 	beq.s	return_DFAE
 	move.w	d1,a3
-	move.w	$A(a3),($FFFFF8C8).w
-	move.w	($FFFFF8C6).w,$A(a3)
-	move.w	a3,($FFFFF8C6).w
+	move.w	$A(a3),(Addr_NextFreeEvanescObjectSlot).w
+	move.w	(Addr_FirstEvanescObjectSlot).w,$A(a3)
+	move.w	a3,(Addr_FirstEvanescObjectSlot).w
 	swap	d1
 	move.w	d3,(a3)+
 	move.w	d1,(a3)+
@@ -17440,7 +17446,7 @@ sub_DF68:
 
 return_DFAE:
 	rts
-; End of function sub_DF68
+; End of function EvanescentBlock_Trigger
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -18110,12 +18116,12 @@ sub_E446:
 	move.w	d5,(a0)+
 	move.w	d2,(a0)+
 	move.w	#$12C,(a0)+
-	move.l	($FFFFF8B6).w,a0
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
 	move.w	d2,(a2)
 	move.w	d1,(a0)+
 	move.w	d5,(a0)+
 	move.w	d2,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 
 loc_E48E:
 	addq.w	#1,d5
@@ -18918,7 +18924,7 @@ loc_EA5A:
 	bne.s	loc_EA72
 	move.w	2(a2),d1
 	move.w	4(a2),d2
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.b	#$20,(a1)
 
 loc_EA72:
@@ -19048,15 +19054,15 @@ loc_EB62:
 	dbf	d1,loc_EB48
 
 loc_EB6E:
-	bra.w	loc_EC22
+	bra.w	LoadBulletsFromEvanescentBlock
 ; ---------------------------------------------------------------------------
 
 loc_EB72:
 	move.w	a1,d3
 	subq.w	#2,d3
-	bsr.w	sub_FACE
-	bsr.w	sub_DF68
-	bra.w	loc_EC22
+	bsr.w	Get_XY_From_LevelLayoutAddress
+	bsr.w	EvanescentBlock_Trigger
+	bra.w	LoadBulletsFromEvanescentBlock
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
 	dc.b   0
@@ -19222,14 +19228,15 @@ loc_EB72:
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
 
-loc_EC22:
-	move.l	($FFFFF8B6).w,a1
+;loc_EC22:
+LoadBulletsFromEvanescentBlock:
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 	moveq	#0,d0
 	move.b	(Number_Sprites).w,d0
 	move.w	d0,a5
-	move.w	($FFFFF8C6).w,d0
-	beq.w	loc_EDDA
+	move.w	(Addr_FirstEvanescObjectSlot).w,d0
+	beq.w	Process_ShooterObjects
 	move.w	(Camera_X_pos).w,d4
 	lsr.w	#4,d4
 	move.w	d4,d6
@@ -19252,17 +19259,19 @@ loc_EC52:
 	lsl.w	#4,d2
 	addq.w	#8,d2
 	move.w	6(a0),d3
+	; for each direction d4, check whether to load a bullet
 	move.w	#3,d4
 
 loc_EC76:
 	btst	d4,d3
 	beq.s	loc_EC9E
-	move.w	($FFFFF8CC).w,d5
+	; load bullet for this direction
+	move.w	(Addr_NextFreeShooterObjectSlot).w,d5
 	beq.s	loc_ECA2
 	move.w	d5,a3
-	move.w	$A(a3),($FFFFF8CC).w
-	move.w	($FFFFF8CA).w,$A(a3)
-	move.w	a3,($FFFFF8CA).w
+	move.w	$A(a3),(Addr_NextFreeShooterObjectSlot).w
+	move.w	(Addr_FirstShooterObjectSlot).w,$A(a3)
+	move.w	a3,(Addr_FirstShooterObjectSlot).w
 	move.w	(a0),(a3)+
 	move.w	d1,(a3)+
 	move.w	d2,(a3)+
@@ -19281,10 +19290,10 @@ loc_ECA6:
 	cmpi.w	#$16,d0
 	bne.s	loc_ED04
 	move.w	$A(a0),d0
-	move.w	($FFFFF8C6).w,a3
+	move.w	(Addr_FirstEvanescObjectSlot).w,a3
 	cmp.w	a0,a3
 	bne.s	loc_ECC4
-	move.w	$A(a0),($FFFFF8C6).w
+	move.w	$A(a0),(Addr_FirstEvanescObjectSlot).w
 	bra.s	loc_ECD8
 ; ---------------------------------------------------------------------------
 
@@ -19300,11 +19309,11 @@ loc_ECD2:
 	move.w	$A(a0),$A(a3)
 
 loc_ECD8:
-	move.w	($FFFFF8C8).w,$A(a0)
-	move.w	a0,($FFFFF8C8).w
+	move.w	(Addr_NextFreeEvanescObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeEvanescObjectSlot).w
 	tst.w	d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
 unk_ECEC:	dc.b   0
@@ -19339,7 +19348,7 @@ loc_ED04:
 	bne.s	loc_ED16
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_ED16:
@@ -19403,13 +19412,13 @@ loc_ED98:
 	move.w	d1,(a1)+
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.s	loc_EDDA
+	bra.s	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_EDB0:
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_EDBC:
@@ -19423,8 +19432,9 @@ loc_EDBC:
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
 
-loc_EDDA:
-	move.w	($FFFFF8CA).w,d0
+;loc_EDDA:
+Process_ShooterObjects:
+	move.w	(Addr_FirstShooterObjectSlot).w,d0
 	beq.w	loc_F05A
 	move.w	(Camera_X_pos).w,d4
 	move.w	d4,d6
@@ -19435,31 +19445,33 @@ loc_EDDA:
 	subq.w	#8,d5
 	addi.w	#$140,d7
 
-loc_EDFA:
+;loc_EDFA:
+Process_ShooterObjects_Loop:
 	move.w	d0,a0
 	move.w	6(a0),d0
-	beq.s	loc_EE62
+	beq.s	Process_ShooterObject_MovingUp
 	subq.w	#2,d0
-	beq.w	loc_EF0C
-	bpl.w	loc_EEBC
+	beq.w	Process_ShooterObject_MovingDown
+	bpl.w	Process_ShooterObject_MovingLeft
+
+;Process_ShooterObject_MovingRight:
 	move.w	2(a0),d0
 	addq.w	#4,d0
 	cmp.w	(Level_width_pixels).w,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
-	bgt.s	loc_EE2A
+	bgt.s	loc_EE2A	; this branch always happens except in the first 2 frames of the object's existence
 	bne.s	loc_EE52
 	addq.w	#2,(a0)
 	bra.s	loc_EE52
-; ---------------------------------------------------------------------------
 
 loc_EE2A:
 	cmpi.w	#4,d0
 	bne.s	loc_EE38
 	moveq	#0,d0
-	move.w	d0,8(a0)
-	addq.w	#2,(a0)
+	move.w	d0,8(a0)	; reset to 0 every 4th frame
+	addq.w	#2,(a0)		; update Level_Layout offset every 4th frame
 
 loc_EE38:
 	move.w	(a0),a4
@@ -19467,21 +19479,21 @@ loc_EE38:
 	btst	#$E,d1
 	beq.s	loc_EE52
 	cmpi.w	#2,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	andi.w	#$3000,d1
-	bne.w	loc_EFA0
+	bne.w	ShooterObject_InteractLevelLayout
 
 loc_EE52:
 	addq.w	#4,2(a0)
 	moveq	#0,d1
 	moveq	#-$4,d2
-	move.w	#$8A96,d3
-	bra.w	loc_EF62
+	move.w	#$8A96,d3	; tile offset+flags in VRAM
+	bra.w	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EE62:
+;loc_EE62:
+Process_ShooterObject_MovingUp:
 	cmpi.w	#4,4(a0)
-	ble.w	loc_EFA0
+	ble.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EE80
@@ -19489,7 +19501,6 @@ loc_EE62:
 	move.w	(Level_width_tiles).w,d1
 	sub.w	d1,(a0)
 	bra.s	loc_EEAC
-; ---------------------------------------------------------------------------
 
 loc_EE80:
 	cmpi.w	#4,d0
@@ -19505,28 +19516,27 @@ loc_EE92:
 	btst	#$E,d1
 	beq.s	loc_EEAC
 	cmpi.w	#2,d0
-	blt.w	loc_EFA0
+	blt.w	ShooterObject_InteractLevelLayout
 	andi.w	#$2000,d1
-	bne.w	loc_EFA0
+	bne.w	ShooterObject_InteractLevelLayout
 
 loc_EEAC:
 	subq.w	#4,4(a0)
 	moveq	#-$4,d1
 	moveq	#-8,d2
 	move.w	#$8295,d3
-	bra.w	loc_EF62
+	bra.w	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EEBC:
+;loc_EEBC:
+Process_ShooterObject_MovingLeft:
 	cmpi.w	#4,2(a0)
-	ble.w	loc_EFA0
+	ble.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EED6
 	bne.s	loc_EEFE
 	subq.w	#2,(a0)
 	bra.s	loc_EEFE
-; ---------------------------------------------------------------------------
 
 loc_EED6:
 	cmpi.w	#4,d0
@@ -19541,23 +19551,23 @@ loc_EEE4:
 	btst	#$E,d1
 	beq.s	loc_EEFE
 	cmpi.w	#2,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	andi.w	#$1000,d1
-	beq.w	loc_EFA0
+	beq.w	ShooterObject_InteractLevelLayout
 
 loc_EEFE:
 	subq.w	#4,2(a0)
 	moveq	#-8,d1
 	moveq	#-$4,d2
 	move.w	#$8296,d3
-	bra.s	loc_EF62
+	bra.s	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EF0C:
+;loc_EF0C:
+Process_ShooterObject_MovingDown:
 	move.w	4(a0),d0
 	addq.w	#4,d0
 	cmp.w	(Level_height_blocks).w,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EF2E
@@ -19565,7 +19575,6 @@ loc_EF0C:
 	move.w	(Level_width_tiles).w,d1
 	add.w	d1,(a0)
 	bra.s	loc_EF56
-; ---------------------------------------------------------------------------
 
 loc_EF2E:
 	cmpi.w	#4,d0
@@ -19581,9 +19590,9 @@ loc_EF40:
 	btst	#$E,d1
 	beq.s	loc_EF56
 	cmpi.w	#2,d0
-	bge.s	loc_EFA0
+	bge.s	ShooterObject_InteractLevelLayout
 	andi.w	#$2000,d1
-	bne.s	loc_EFA0
+	bne.s	ShooterObject_InteractLevelLayout
 
 loc_EF56:
 	addq.w	#4,4(a0)
@@ -19591,7 +19600,8 @@ loc_EF56:
 	moveq	#0,d2
 	move.w	#$9295,d3
 
-loc_EF62:
+;loc_EF62:
+Process_ShooterObject_MakeSprite:
 	add.w	2(a0),d1
 	cmp.w	d4,d1
 	blt.s	loc_EF94
@@ -19606,26 +19616,28 @@ loc_EF62:
 	addi.w	#$80,d1
 	sub.w	(Camera_Y_pos).w,d2
 	addi.w	#$80,d2
-	move.w	d2,(a2)+
+	; Write it into the Sprite_Table
+	move.w	d2,(a2)+	; y pos + shape (1x1 tile)
 	addq.w	#1,a5
-	move.w	a5,(a2)+
-	move.w	d3,(a2)+
-	move.w	d1,(a2)+
+	move.w	a5,(a2)+	; link to next
+	move.w	d3,(a2)+	; tile offset+flags in VRAM
+	move.w	d1,(a2)+	; x_pos
 
 loc_EF94:
 	move.w	$A(a0),d0
-	bne.w	loc_EDFA
+	bne.w	Process_ShooterObjects_Loop
 	bra.w	loc_F05A
 ; ---------------------------------------------------------------------------
 
-loc_EFA0:
+;loc_EFA0:
+ShooterObject_InteractLevelLayout:
+	; first delete the object from the object list
 	move.w	$A(a0),d0
-	move.w	($FFFFF8CA).w,a3
+	move.w	(Addr_FirstShooterObjectSlot).w,a3
 	cmp.w	a0,a3
 	bne.s	loc_EFB4
-	move.w	$A(a0),($FFFFF8CA).w
+	move.w	$A(a0),(Addr_FirstShooterObjectSlot).w
 	bra.s	loc_EFC8
-; ---------------------------------------------------------------------------
 
 loc_EFB4:
 	move.w	$A(a3),d1
@@ -19633,81 +19645,84 @@ loc_EFB4:
 	beq.w	loc_EFC2
 	move.w	d1,a3
 	bra.s	loc_EFB4
-; ---------------------------------------------------------------------------
 
 loc_EFC2:
 	move.w	$A(a0),$A(a3)
 
 loc_EFC8:
-	move.w	($FFFFF8CC).w,$A(a0)
-	move.w	a0,($FFFFF8CC).w
-	move.b	(a4),d1
-	bpl.w	loc_F054
+	; now interact with the level layout
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
+	move.b	(a4),d1	; upper byte of entry in Level_layout
+	bpl.w	ShooterObject_InteractBlock_None	; if top bit clear, do nothing
 	andi.w	#$F,d1
 	add.w	d1,d1
-	move.w	off_EFEA(pc,d1.w),a3
-	addi.l	#off_EFEA,a3
+	move.w	ShooterObject_InteractBlock_Index(pc,d1.w),a3
+	addi.l	#ShooterObject_InteractBlock_Index,a3
 	jmp	(a3)
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
-off_EFEA:	dc.w loc_F00A-off_EFEA
-	dc.w loc_F00A-off_EFEA
-	dc.w loc_F02A-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F00A-off_EFEA
-	dc.w loc_F04A-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
+;off_EFEA:
+ShooterObject_InteractBlock_Index:
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Ice-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Evanescent-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
 ; ---------------------------------------------------------------------------
-
-loc_F00A:
+;loc_F00A:
+ShooterObject_InteractBlock_Smash:
 	move.w	d6,-(sp)
 	move.w	a4,d3
 	move.w	6(a0),d6
-	move.l	a1,($FFFFF8B6).w
-	bsr.w	sub_FACE
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
+	bsr.w	Get_XY_From_LevelLayoutAddress
 	eori.w	#2,d6
-	bsr.w	sub_10E86
-	move.l	($FFFFF8B6).w,a1
+	bsr.w	Block_LoadSmashBits
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	(sp)+,d6
-	bra.s	loc_F054
+	bra.s	ShooterObject_InteractBlock_None
 ; ---------------------------------------------------------------------------
-
-loc_F02A:
+;loc_F02A:
+ShooterObject_InteractBlock_Ice:
 	move.w	d6,-(sp)
 	move.w	a4,d3
 	move.w	6(a0),d6
-	move.l	a1,($FFFFF8B6).w
-	bsr.w	sub_FACE
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
+	bsr.w	Get_XY_From_LevelLayoutAddress
 	eori.w	#2,d6
-	bsr.w	sub_10F44
-	move.l	($FFFFF8B6).w,a1
+	bsr.w	IceBlock_SmashAndLoadBullets
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	(sp)+,d6
-	bra.s	loc_F054
+	bra.s	ShooterObject_InteractBlock_None
 ; ---------------------------------------------------------------------------
-
-loc_F04A:
+;loc_F04A:
+ShooterObject_InteractBlock_Evanescent:
 	move.w	a4,d3
-	bsr.w	sub_FACE
-	bsr.w	sub_DF68
+	bsr.w	Get_XY_From_LevelLayoutAddress
+	bsr.w	EvanescentBlock_Trigger
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
 
-loc_F054:
+;loc_F054:
+ShooterObject_InteractBlock_None:
 	tst.w	d0
-	bne.w	loc_EDFA
+	bne.w	Process_ShooterObjects_Loop
 
 loc_F05A:
 	move.w	a5,d0
 	move.b	d0,(Number_Sprites).w
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
@@ -19961,7 +19976,7 @@ loc_F25C:
 	lsr.w	#4,d5
 	move.w	d5,d7
 	addi.w	#$E,d7
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 	move.w	#$500,d0
 	move.b	(Number_Sprites).w,d0
@@ -19981,7 +19996,7 @@ loc_F28C:
 loc_F2A2:
 	move.w	a5,d0
 	move.b	d0,(Number_Sprites).w
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 
 loc_F2B0:
@@ -19998,7 +20013,8 @@ loc_F2B6:
 	move.l	off_F2CE(pc,d0.w),a3
 	jmp	(a3)
 ; ---------------------------------------------------------------------------
-off_F2CE:	dc.l loc_F2EE
+off_F2CE:
+	dc.l loc_F2EE
 	dc.l loc_F2F8
 	dc.l loc_F386
 	dc.l loc_F386
@@ -20537,7 +20553,7 @@ sub_F730:
 	move.w	#$500,d7
 	move.b	(Number_Sprites).w,d7
 	move.l	($FFFFF8DA).w,a0
-	move.l	($FFFFF8B2).w,a1
+	move.l	(FGUpdateQueueCustom_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 
 loc_F76C:
@@ -20953,7 +20969,7 @@ loc_FAA6:
 
 loc_FAC0:
 	move.b	d7,(Number_Sprites).w
-	move.l	a1,($FFFFF8B2).w
+	move.l	a1,(FGUpdateQueueCustom_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 
 return_FACC:
@@ -20962,9 +20978,14 @@ return_FACC:
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_FACE:
+; input:
+;	d3: address somewhere within Level_Layout
+; output:
+;	d1: x pos (in blocks) in level layout
+;	d2: y pos (in blocks) in level layout
+; ---------------------------------------------------------------------------
+;sub_FACE:
+Get_XY_From_LevelLayoutAddress:
 	moveq	#0,d1
 	move.w	d3,d1
 	subi.w	#Level_Layout&$FFFF,d1
@@ -20973,10 +20994,10 @@ sub_FACE:
 	swap	d1
 	lsr.w	#1,d1
 	rts
-; End of function sub_FACE
+; End of function Get_XY_From_LevelLayoutAddress
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_FAE2:
 	move.l	a0,-(sp)
@@ -21014,7 +21035,7 @@ loc_FAFE:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21032,11 +21053,11 @@ sub_FB3E:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
@@ -21127,7 +21148,7 @@ loc_FBDA:
 	move.b	#$88,$1F(a3)
 	move.w	#$2C3,$18(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_FB3E
 
@@ -21213,8 +21234,8 @@ stru_FD4C:
 	dc.b 0
 	dc.b 0
 ; ---------------------------------------------------------------------------
-
-diamond_pickup:
+;diamond_pickup:
+PrizeDiamondCollected_Init:
 	tst.b	$19(a3)
 	bne.s	+
 	moveq	#sfx_Diamond_prize,d0
@@ -21300,8 +21321,8 @@ Increase_Diamonds:
 +
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_FE7A:
+;loc_FE7A:
+PrizeAnkhCollected_Init:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,priority(a3)
@@ -21345,8 +21366,8 @@ loc_FEFE:
 	addq.w	#1,(Number_Lives).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_FF1E:
+;loc_FF1E
+PrizeClockCollected_Init:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#1,priority(a3)
@@ -21429,7 +21450,7 @@ loc_1001E:
 	dbf	d3,loc_1000A
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_1002E:
 	move.l	d0,-(sp)
@@ -21454,7 +21475,7 @@ loc_1002E:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21474,11 +21495,11 @@ sub_1007A:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
@@ -21546,7 +21567,7 @@ loc_10120:
 	move.w	#$1FFF,a0
 	move.l	#$FF0004,a1
 	jsr	(j_sub_E02).w
-	move.l	#loc_10330,4(a0)
+	move.l	#Prize_Init,4(a0)
 	move.w	d1,$44(a0)
 	move.w	d2,$46(a0)
 	ext.l	d3
@@ -21583,13 +21604,13 @@ loc_101D8:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
 
 loc_10200:
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
@@ -21673,27 +21694,28 @@ stru_102DE:
 	anim_frame	  1,   4, LnkTo_unk_E0F46-Data_Index
 	dc.b 0
 	dc.b 0
-off_102F0:	; code to load prize object from prize block
-	dc.l loc_10354	; 0 - Diamond
-	dc.l loc_10A90	; 1 - 10000 points
-	dc.l loc_10436	; 2 - Helmet (skycutter)
-	dc.l loc_10480	; 3 - Helmet (cyclone)
-	dc.l loc_104CA	; 4 - Helmet (red stealth)
-	dc.l loc_10514	; 5 - Helmet (eyeclops)
-	dc.l loc_1055E	; 6 - Helmet (juggernaut)
-	dc.l loc_105A8	; 7 - Helmet (iron knight)
-	dc.l loc_105F2	; 8 - Helmet (berzerker)
-	dc.l loc_1063C	; 9 - Helmet (maniaxe)
-	dc.l loc_10686	; A - Helmet (micromax)
-	dc.l loc_10706	; B - 1-up
-	dc.l loc_1076C	; C - Time
-	dc.l loc_107F2	; D - Continue
-	dc.l loc_108CA	; E - 10 diamonds
-	dc.l loc_10354	; F - Same as 0
+;off_102F0:
+Prize_Init_Index:	; code to load prize object from prize block
+	dc.l PrizeDiamond_Init		; 0 - Diamond
+	dc.l Prize10000Points_Init	; 1 - 10000 points
+	dc.l PrizeHelmetSkycutter_Init	; 2 - Helmet (skycutter)
+	dc.l PrizeHelmetCyclone_Init	; 3 - Helmet (cyclone)
+	dc.l PrizeHelmetRedStealth_Init	; 4 - Helmet (red stealth)
+	dc.l PrizeHelmetEyeclops_Init	; 5 - Helmet (eyeclops)
+	dc.l PrizeHelmetJuggernaut_Init	; 6 - Helmet (juggernaut)
+	dc.l PrizeHelmetIronKnight_Init	; 7 - Helmet (iron knight)
+	dc.l PrizeHelmetBerzerker_Init	; 8 - Helmet (berzerker)
+	dc.l PrizeHelmetManiaxe_Init	; 9 - Helmet (maniaxe)
+	dc.l PrizeHelmetMicromax_Init	; A - Helmet (micromax)
+	dc.l PrizeAnkh_Init		; B - 1-up
+	dc.l PrizeClock_Init		; C - Time
+	dc.l PrizeContinue_Init		; D - Continue
+	dc.l Prize10Diamonds_Init	; E - 10 diamonds
+	dc.l PrizeDiamond_Init		; F - Same as 0
 ; ---------------------------------------------------------------------------
-
 ; load prize object from prize block.
-loc_10330:
+;loc_10330:
+Prize_Init:
 	move.l	$36(a5),a3
 	clr.w	object_meta(a3)
 	move.l	$48(a5),d2
@@ -21710,15 +21732,14 @@ loc_10344:
 	addq.w	#6,a1
 	move.w	(a1),d7
 	asl.w	#2,d7
-	move.l	off_102F0(pc,d7.w),a4
+	move.l	Prize_Init_Index(pc,d7.w),a4
 	jmp	(a4)
 ; End of function sub_1007A
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_10848
+; START	OF FUNCTION CHUNK FOR OneTimePrize_CheckCollected
 
-loc_10354:
-
+PrizeDiamond_Init:
 	sf	is_moved(a3)
 	st	$13(a3)
 	move.b	#0,palette_line(a3)
@@ -21788,20 +21809,20 @@ loc_10404:
 	beq.s	loc_10396
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#diamond_pickup,4(a0)
+	move.l	#PrizeDiamondCollected_Init,4(a0)
 	move.w	x_pos(a3),$44(a0)
 	move.w	y_pos(a3),$46(a0)
 
 loc_10430:
 	jmp	(j_Delete_CurrentObject).w
-; END OF FUNCTION CHUNK	FOR sub_10848
+; END OF FUNCTION CHUNK	FOR OneTimePrize_CheckCollected
 ; ---------------------------------------------------------------------------
 
 loc_10434:
 	bra.s	loc_10434
 ; ---------------------------------------------------------------------------
 
-loc_10436:
+PrizeHelmetSkycutter_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D02).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21827,7 +21848,7 @@ loc_1047C:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10480:
+PrizeHelmetCyclone_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E34).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21853,7 +21874,7 @@ loc_104C6:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_104CA:
+PrizeHelmetRedStealth_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DBC).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21879,7 +21900,7 @@ loc_10510:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10514:
+PrizeHelmetEyeclops_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DF8).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21905,7 +21926,7 @@ loc_1055A:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1055E:
+PrizeHelmetJuggernaut_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E70).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21931,7 +21952,7 @@ loc_105A4:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_105A8:
+PrizeHelmetIronKnight_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1EAC).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21957,7 +21978,7 @@ loc_105EE:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_105F2:
+PrizeHelmetBerzerker_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D80).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -21983,7 +22004,7 @@ loc_10638:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1063C:
+PrizeHelmetManiaxe_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1CA2).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22009,7 +22030,7 @@ loc_10682:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10686:
+PrizeHelmetMicromax_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D44).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22072,8 +22093,8 @@ stru_10700:
 	dc.b 5
 ; ---------------------------------------------------------------------------
 
-loc_10706:
-	bsr.w	sub_10848
+PrizeAnkh_Init:
+	bsr.w	OneTimePrize_CheckCollected
 	move.w	#$90,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C08,d7
@@ -22097,7 +22118,7 @@ loc_10738:
 	beq.s	loc_1071E
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_FE7A,4(a0)
+	move.l	#PrizeAnkhCollected_Init,4(a0)
 	move.w	x_pos(a3),$44(a0)
 	move.w	y_pos(a3),$46(a0)
 
@@ -22105,7 +22126,7 @@ loc_10768:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1076C:
+PrizeClock_Init:
 	move.w	#$94,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C18,d7
@@ -22138,7 +22159,7 @@ loc_107B0:
 	beq.s	loc_10796
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_FF1E,4(a0)
+	move.l	#PrizeClockCollected_Init,4(a0)
 	move.w	x_pos(a3),$44(a0)
 	move.w	y_pos(a3),$46(a0)
 
@@ -22152,8 +22173,8 @@ loc_107EE:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_107F2:
-	bsr.w	sub_10848
+PrizeContinue_Init:
+	bsr.w	OneTimePrize_CheckCollected
 	move.w	#$98,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C28,d7
@@ -22184,30 +22205,30 @@ loc_10838:
 	jmp	(j_Delete_CurrentObject).w
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_10848:
-
-; FUNCTION CHUNK AT 00010354 SIZE 000000E0 BYTES
-
-	lea	($FFFFFC84).w,a0
-	tst.b	($FFFFFC39).w
+; For ankhs, continues, 10 diamonds and 10000 points check whether they have
+; already been found. If yes, load a diamond instead. If no, indicate that
+; they have been found so that next time a simple diamond will spawn instead.
+;sub_10848
+OneTimePrize_CheckCollected:
+	lea	(Player_1_OneTimePrizes).w,a0
+	tst.b	(Current_player).w
 	beq.s	loc_10856
-	lea	($FFFFFD26).w,a0
+	lea	(Player_2_OneTimePrizes).w,a0
 
 loc_10856:
 	tst.w	(a0)
 	bpl.s	loc_1086A
+	; This is first prize ever collected. Clear the array.
 	lea	2(a0),a1
 	moveq	#$27,d0
 	moveq	#0,d1
 	move.w	d1,(a0)
-
-loc_10864:
+-
 	move.l	d1,(a1)+
-	dbf	d0,loc_10864
+	dbf	d0,-
 
 loc_1086A:
+	; Check the array for our prize.
 	move.w	#$27,d0
 	move.w	$4A(a5),d1
 	lea	2(a0),a1
@@ -22217,16 +22238,20 @@ loc_10876:
 	bne.s	loc_10886
 	move.w	(Current_LevelID).w,d2
 	cmp.w	2(a1),d2
-	beq.w	loc_10354
+	beq.w	PrizeDiamond_Init	; We found the prize (same level and address)
+	; we called this as bsr, so now we have an extra entry on the stack if
+	; we take this branch? Could this cause a stack overflow if done too many times?
 
 loc_10886:
 	addq.w	#4,a1
 	dbf	d0,loc_10876
+	; Not found, so add our new prize (level and address) to the array.
 	move.w	(a0),d0
 	move.w	d0,d1
 	addq.w	#1,d1
 	cmpi.w	#$28,d1
 	blt.s	loc_1089A
+	; more than $28 prizes collected, overwrite the oldest ones now
 	moveq	#0,d1
 
 loc_1089A:
@@ -22235,7 +22260,7 @@ loc_1089A:
 	move.w	$4A(a5),2(a0,d0.w)
 	move.w	(Current_LevelID).w,4(a0,d0.w)
 	rts
-; End of function sub_10848
+; End of function OneTimePrize_CheckCollected
 
 ; ---------------------------------------------------------------------------
 byte_108AC:	dc.b 0
@@ -22270,8 +22295,8 @@ byte_108AC:	dc.b 0
 	dc.b   9
 ; ---------------------------------------------------------------------------
 
-loc_108CA:
-	bsr.w	sub_10848
+Prize10Diamonds_Init:
+	bsr.w	OneTimePrize_CheckCollected
 	move.l	x_pos(a3),$6C(a5)
 	move.l	y_pos(a3),$70(a5)
 	jsr	(j_loc_1078).w
@@ -22468,25 +22493,25 @@ unk_10A7A:	dc.b   0
 	dc.b   0
 ; ---------------------------------------------------------------------------
 
-loc_10A90:
-	bsr.w	sub_10848
+Prize10000Points_Init:
+	bsr.w	OneTimePrize_CheckCollected
 	move.l	(Score).w,d0
 	move.l	d0,d1
-	addi.l	#$2710,d1
-	cmpi.l	#$98967F,d1
+	addi.l	#10000,d1
+	cmpi.l	#9999999,d1
 	blt.s	loc_10AAE
-	move.l	#$98967F,d1
+	move.l	#9999999,d1
 
 loc_10AAE:
 	move.l	d1,(Score).w
-	divu.w	#$C350,d0
-	divu.w	#$C350,d1
+	divu.w	#50000,d0
+	divu.w	#50000,d1
 	cmp.w	d0,d1
 	beq.s	loc_10AC2
 	addq.w	#1,(Number_Lives).w
 
 loc_10AC2:
-	cmpi.l	#$186A0,(Score).w
+	cmpi.l	#100000,(Score).w
 	blt.s	loc_10AE0
 	cmpi.w	#HundredKTripStart_LevelID,(Current_LevelID).w
 	bne.s	loc_10AE0
@@ -22796,7 +22821,7 @@ stru_10D80:
 	dc.b 2
 	dc.b $21
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 return_10DA2:
 	rts
@@ -22822,7 +22847,7 @@ loc_10DA4:
 
 return_10DE2:
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -22884,34 +22909,33 @@ loc_10E0A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_10E86:
-
+;sub_10E86:
+Block_LoadSmashBits:
 	move.l	d0,-(sp)
 	moveq	#sfx_Destroy_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d4/a0-a1,-(sp)
-	move.w	d3,a0
-	or.b	#$F,(a0)
+	move.w	d3,a0	; address in Level_layout
+	or.b	#$F,(a0)	; set the 4 "block" bits to $F
 	move.w	#$2001,a0
 	move.l	#$FF0004,a1
-	jsr	(j_sub_E02).w
+	jsr	(j_sub_E02).w	; allocate an object + gfxobject slot
 	move.l	#sub_10EDA,4(a0)
 	move.w	d1,$44(a0)
 	move.w	d2,$46(a0)
 	ext.l	d3
 	move.l	d3,$48(a0)
 	move.w	d6,$4C(a0)
-	move.w	d1,d4
-	lsl.w	#4,d4
+	move.w	d1,d4	; xpos in blocks
+	lsl.w	#4,d4	; xpos in pixels
 	move.w	d4,$1A(a1)
-	move.w	d2,d4
-	lsl.w	#4,d4
+	move.w	d2,d4	; ypos in blocks
+	lsl.w	#4,d4	; ypos in pixels
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; End of function sub_10E86
+; End of function Block_LoadSmashBits
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -22922,7 +22946,7 @@ sub_10EDA:
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d6
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
 	move.b	#0,palette_line(a3)
@@ -22935,17 +22959,14 @@ sub_10EDA:
 	beq.s	loc_10F20
 	addq.w	#4,y_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F1A:
 	subq.w	#4,y_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F20:
 	subq.w	#4,x_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F26:
 	addq.w	#4,x_pos(a3)
@@ -22962,14 +22983,13 @@ loc_10F2A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_10F44:
-
+;sub_10F44:
+IceBlock_SmashAndLoadBullets:
 	move.l	d0,-(sp)
 	moveq	#sfx_Prize_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	bsr.w	sub_11006
+	bsr.w	IceBlock_LoadBullets
 	movem.l	d4/a0-a1,-(sp)
 	move.w	d3,a0
 	or.b	#$F,(a0)
@@ -22990,7 +23010,7 @@ sub_10F44:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; End of function sub_10F44
+; End of function IceBlock_SmashAndLoadBullets
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -23001,7 +23021,7 @@ sub_10F9C:
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d6
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
 	move.b	#0,palette_line(a3)
@@ -23014,17 +23034,14 @@ sub_10F9C:
 	beq.s	loc_10FE2
 	addq.w	#4,y_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FDC:
 	subq.w	#4,y_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FE2:
 	subq.w	#4,x_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FE8:
 	addq.w	#4,x_pos(a3)
@@ -23041,41 +23058,42 @@ loc_10FEC:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_11006:
+;sub_11006:
+IceBlock_LoadBullets:
 	movem.l	d1-d2/d4/a0-a1,-(sp)
-	eori.w	#2,d6
+	eori.w	#2,d6	; bits 0-1: direction; bit 2: ?
 	move.w	d3,a0
 	tst.w	d6
 	bne.s	loc_11020
+	; up
 	tst.w	d2
 	beq.w	loc_11080
 	suba.w	(Level_width_tiles).w,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_11020:
 	cmpi.w	#2,d6
 	bge.s	loc_11036
+	; right
 	move.w	d1,d4
 	addq.w	#1,d4
 	cmp.w	(Level_width_blocks).w,d4
 	bge.w	loc_11080
 	addq.w	#2,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_11036:
 	bne.s	loc_1104A
+	; down
 	move.w	d2,d4
 	addq.w	#1,d4
 	cmp.w	(Level_height_pixels).w,d4
 	bge.w	loc_11080
 	add.w	(Level_width_tiles).w,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_1104A:
+	; left
 	tst.w	d1
 	beq.w	loc_11080
 	subq.w	#2,a0
@@ -23089,67 +23107,40 @@ loc_11052:
 	addq.w	#8,d2
 	move.w	d6,d4
 	lsl.w	#3,d4
-	lea	unk_1108A(pc,d4.w),a1
-	bsr.s	sub_110AA
+	lea	IceBlock_BulletPosOffset_Index(pc,d4.w),a1
+	bsr.s	IceBlock_LoadSingleBullet
 	add.w	(a1)+,d1
 	add.w	(a1)+,d2
-	bsr.s	sub_110AA
+	bsr.s	IceBlock_LoadSingleBullet
 	subq.w	#1,-2(a0)
 	add.w	(a1)+,d1
 	add.w	(a1)+,d2
-	bsr.s	sub_110AA
+	bsr.s	IceBlock_LoadSingleBullet
 	subq.w	#1,-2(a0)
 
 loc_11080:
 	eori.w	#2,d6
 	movem.l	(sp)+,d1-d2/d4/a0-a1
 	rts
-; End of function sub_11006
+; End of function IceBlock_LoadBullets
 
 ; ---------------------------------------------------------------------------
-unk_1108A:	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b $FF
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $F8 ; ø
+IceBlock_BulletPosOffset_Index:	; x and y offsets of 2nd and 3rd bullet
+	dc.w -4,  4,  8,  0	; up
+	dc.w -4, -4,  0,  8	; right
+	dc.w  4, -4, -8,  0	; down
+	dc.w  4,  4,  0, -8	; left
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_110AA:
-	move.w	($FFFFF8CC).w,d4
+;sub_110AA:
+IceBlock_LoadSingleBullet:
+	move.w	(Addr_NextFreeShooterObjectSlot).w,d4
 	beq.s	return_110CE
 	move.w	d4,a0
-	move.w	$A(a0),($FFFFF8CC).w
-	move.w	($FFFFF8CA).w,$A(a0)
-	move.w	a0,($FFFFF8CA).w
+	move.w	$A(a0),(Addr_NextFreeShooterObjectSlot).w
+	move.w	(Addr_FirstShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_FirstShooterObjectSlot).w
 	move.w	d3,(a0)+
 	move.w	d1,(a0)+
 	move.w	d2,(a0)+
@@ -23158,10 +23149,10 @@ sub_110AA:
 
 return_110CE:
 	rts
-; End of function sub_110AA
+; End of function IceBlock_LoadSingleBullet
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_110D0:
 	move.l	d0,-(sp)
@@ -23189,7 +23180,7 @@ loc_1110E:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23206,11 +23197,11 @@ sub_11120:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
@@ -23272,7 +23263,7 @@ stru_111CE:
 	dc.b 0
 	dc.b 0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_111F4:
 	movem.l	d4/a0-a2,-(sp)
@@ -23345,7 +23336,7 @@ loc_1125C:
 loc_11296:
 	movem.l	(sp)+,d4/a0-a2
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23354,7 +23345,7 @@ sub_1129C:
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
 	move.b	#0,palette_line(a3)
@@ -23429,7 +23420,7 @@ loc_11358:
 ; End of function sub_1129C
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_11364:
 	move.l	d0,-(sp)
@@ -23461,7 +23452,7 @@ loc_11364:
 loc_113BA:
 	movem.l	(sp)+,d0/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23488,7 +23479,7 @@ loc_113F4:
 	bsr.w	sub_11530
 	addq.w	#1,d2
 	add.w	(Level_width_tiles).w,a1
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	addi.w	#$10,y_pos(a3)
 	move.w	#$F,d0
 
@@ -23500,7 +23491,7 @@ loc_1141E:
 ; End of function sub_113C0
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 return_1142E:
 	rts
@@ -23556,7 +23547,7 @@ loc_11474:
 loc_11496:
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23590,7 +23581,7 @@ sub_114C0:
 	bsr.w	sub_11530
 	move.w	#8,-(sp)
 	jsr	(j_Hibernate_Object).w
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_114C0
 
@@ -23624,27 +23615,30 @@ loc_1152C:
 
 
 sub_11530:
-	move.l	($FFFFF8B6).w,a0
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
 	move.w	d0,(a1)
 	move.w	d1,(a0)+
 	move.w	d2,(a0)+
 	move.w	d0,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 	rts
 ; End of function sub_11530
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_11542:
+; d1: x pos
+; d2: y pos
+; a1: pointer into Level_Layout
+; ---------------------------------------------------------------------------
+;sub_11542:
+EraseBlockFromLevelLayout:
 	move.w	d2,d0
 	add.w	d0,d0
 	lea	($FFFF4BB8).l,a0
 	move.w	(a0,d0.w),a0
 	addi.l	#$FF0000,a0
 	moveq	#0,d0
-	move.b	(a0,d1.w),d0
+	move.b	(a0,d1.w),d0	; skin(?) of cell entry in Level_Layout
 	move.w	d1,-(sp)
 	move.w	(Foreground_theme).w,d1
 	add.w	d1,d1
@@ -23652,18 +23646,18 @@ sub_11542:
 	move.l	(LnkTo_ThemeCollision_Index).l,a0
 	move.l	(a0,d1.w),a0
 	moveq	#0,d1
-	move.b	(a0,d0.w),d1
+	move.b	(a0,d0.w),d1	; collision ID of cell
 	ror.w	#4,d1
-	or.w	d1,d0
+	or.w	d1,d0	; lower 8 bits: skin, upper 4: collision
 	move.w	(sp)+,d1
-	move.l	($FFFFF8B6).w,a0
-	move.w	d0,(a1)
-	move.w	d1,(a0)+
-	move.w	d2,(a0)+
-	move.w	d0,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
+	move.w	d0,(a1)	; update cell entry in Level_Layout with collision
+	move.w	d1,(a0)+	; x pos
+	move.w	d2,(a0)+	; y pos
+	move.w	d0,(a0)+	; updated cell value
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 	rts
-; End of function sub_11542
+; End of function EraseBlockFromLevelLayout
 
 ; ---------------------------------------------------------------------------
 ; filler
@@ -24264,7 +24258,7 @@ loc_11EFA:
 	bsr.w	sub_12B8C
 	bsr.w	sub_12C24
 	jsr	(j_sub_F06A).l
-	jsr	(j_loc_DF22).l
+	jsr	(j_Initialize_EvanescShooterObjectSlots).l
 	bsr.w	Init_SpriteAttr_HUD
 	jsr	(j_Clear_DiamondPowerObjectRAM).l
 	move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
@@ -27248,17 +27242,18 @@ Init_SpriteAttr_HUD:
 ; End of function Init_SpriteAttr_HUD
 
 ; ---------------------------------------------------------------------------
+; Default parameters for HUD elements (first two entries are x and y pos)
 unk_1427C:
-	sprite_attr $1A1, $8D, 1, 1, $8231, $1
-	sprite_attr $190, $90, 0, 0, $00BC, $2
-	sprite_attr $198, $90, 0, 0, $00BC, $3
-	sprite_attr  $88, $90, 0, 0, $00BC, $4
-	sprite_attr  $90, $90, 0, 0, $86C4, $5
-	sprite_attr  $95, $90, 0, 0, $00BC, $6
-	sprite_attr  $9D, $90, 0, 0, $00BC, $7
-	sprite_attr $1A0, $A2, 1, 1, $86F2, $8
-	sprite_attr $190, $A4, 0, 0, $00BC, $9
-	sprite_attr $198, $A4, 0, 0, $00BC, $A
+	sprite_attr $1A1, $8D, 1, 1, $8231, $1	; ankh sumbol
+	sprite_attr $190, $90, 0, 0, $00BC, $2	; number lives
+	sprite_attr $198, $90, 0, 0, $00BC, $3	; x in front of ankh
+	sprite_attr  $88, $90, 0, 0, $00BC, $4	; minutes
+	sprite_attr  $90, $90, 0, 0, $86C4, $5	; colon
+	sprite_attr  $95, $90, 0, 0, $00BC, $6	; seconds upper digit
+	sprite_attr  $9D, $90, 0, 0, $00BC, $7	; seconds lower digit
+	sprite_attr $1A0, $A2, 1, 1, $86F2, $8	; diamond symbol
+	sprite_attr $190, $A4, 0, 0, $00BC, $9	; number diamonds
+	sprite_attr $198, $A4, 0, 0, $00BC, $A	; x in front of diamond
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -29169,7 +29164,7 @@ loc_1AD80:
 	st	$13(a1)
 	move.b	#1,$11(a1)
 	move.b	#$81,d7
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.s	loc_1ADEA
 	addi.b	#1,d7
 
@@ -29612,9 +29607,6 @@ loc_1B258:
 
 
 sub_1B2A4:
-
-; FUNCTION CHUNK AT 0001C4B2 SIZE 00000038 BYTES
-
 	move.w	#$1820,d0
 	move.l	#byte_2A756,a0
 	jsr	(j_DecompressToVRAM).l
@@ -29823,7 +29815,7 @@ loc_1B45A:
 	move.w	#$39,-(sp)
 	jsr	(j_Hibernate_Object).w
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	moveq	#$3F,d0
 
 loc_1B470:
@@ -29835,7 +29827,7 @@ loc_1B470:
 	bsr.w	sub_1BF24
 	bsr.w	sub_1B532
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	moveq	#$3F,d0
 
 loc_1B494:
@@ -30486,7 +30478,7 @@ loc_1BA60:
 	sf	($FFFFFBCE).w
 	moveq	#$3F,d0
 	move.w	#$AAA,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_1BA82:
 	move.w	d1,(a0)+
@@ -31229,7 +31221,7 @@ byte_1C1F4:	dc.b 0
 sub_1C204:
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_1C210:
 	move.w	d1,(a0)+
@@ -31370,7 +31362,7 @@ return_1C4E8:
 
 
 sub_1C4EA:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C28A(pc),a0
 	moveq	#$32,d0
 
@@ -31385,7 +31377,7 @@ loc_1C4F6:
 
 
 sub_1C4FE:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C2F0(pc),a0
 	moveq	#$22,d0
 
@@ -31400,7 +31392,7 @@ loc_1C50A:
 
 
 sub_1C512:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C346(pc),a0
 	moveq	#$3F,d0
 
@@ -31409,7 +31401,7 @@ loc_1C51E:
 	dbf	d0,loc_1C51E
 	tst.b	($FFFFFC82).w
 	beq.s	return_1C548
-	lea	($FFFF4F3A).l,a1
+	lea	(Palette_Buffer_2+$62).l,a1
 	lea	Pal_1C3C6(pc),a0
 	cmpi.b	#1,($FFFFFC82).w
 	beq.s	loc_1C540
@@ -38776,21 +38768,21 @@ loc_36D52:
 	move.w	(a2,d0.w),d0
 	moveq	#0,d6
 	andi.w	#$FFF,d4
-	cmpi.w	#enemyid_Lion,d4
+	cmpi.w	#objid_Lion,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_invalid1F,d4
+	cmpi.w	#objid_invalid1F,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_UFO,d4
+	cmpi.w	#objid_UFO,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_Robot,d4
+	cmpi.w	#objid_Robot,d4
 	beq.s	Load_EnemyArtToVRAM
-	cmpi.w	#enemyid_HeadyMetal,d4
+	cmpi.w	#objid_HeadyMetal,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_Shiskaboss,d4
+	cmpi.w	#objid_Shiskaboss,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_BoomerangBosses,d4
+	cmpi.w	#objid_BoomerangBosses,d4
 	beq.s	Load_EnemyPaletteLong
-	cmpi.w	#enemyid_BagelBrothers,d4
+	cmpi.w	#objid_BagelBrothers,d4
 	beq.s	Load_EnemyPaletteLong
 	bra.s	Load_EnemyPaletteNormal
 ; ---------------------------------------------------------------------------
@@ -38852,7 +38844,7 @@ Load_EnemyArtToVRAM:
 	cmpi.w	#Forest,(Background_theme).w
 	bne.s	loc_36E2C
 	lea	unk_36E54(pc),a3
-	cmpi.w	#enemyid_TarMonster,d4
+	cmpi.w	#objid_TarMonster,d4
 	bne.s	loc_36E24
 	lea	unk_36E64(pc),a3
 
@@ -43566,14 +43558,14 @@ stru_3A308:
 sub_3BF72:
 	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.w	loc_3BFD4
 	move.l	$3A(a5),a4
 	move.w	x_pos(a3),x_pos(a4)
 	move.w	y_pos(a3),y_pos(a4)
 	move.w	$46(a4),d4
 	sub.w	d4,y_pos(a4)
-	cmpi.w	#3,d7
+	cmpi.w	#objid_Robot,d7
 	beq.s	loc_3BFA8
 
 loc_3BFA0:
@@ -43991,12 +43983,12 @@ sub_3C352:
 	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
 	clr.w	d6
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.s	loc_3C372
 	addi.w	#1,d6
-	cmpi.w	#$A,d7
+	cmpi.w	#objid_RockTank,d7
 	beq.s	loc_3C372
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	bne.s	return_3C3CC
 
 loc_3C372:
@@ -44107,14 +44099,14 @@ loc_3C46E:
 	clr.w	d6
 	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$14,d7
+	cmpi.w	#objid_SpinningTwins,d7
 	beq.w	loc_3BC56
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.s	loc_3C494
 	addq.w	#1,d6
-	cmpi.w	#$A,d7
+	cmpi.w	#objid_RockTank,d7
 	beq.s	loc_3C494
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	bne.s	loc_3C4C0
 
 loc_3C494:
@@ -44163,14 +44155,14 @@ loc_3C4F4:
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
+; used by robot
 
 sub_3C4F8:
 	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	beq.s	loc_3C50E
-	cmpi.w	#3,d7
+	cmpi.w	#objid_Robot,d7
 	beq.s	loc_3C538
 	rts
 ; ---------------------------------------------------------------------------

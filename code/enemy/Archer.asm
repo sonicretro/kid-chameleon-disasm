@@ -23,7 +23,7 @@ Enemy07_Archer_Init:
 	st	is_moved(a3)
 	sf	x_direction(a3)
 	move.b	#0,priority(a3)
-	move.w	#enemyid_Archer,d0 ; loaded sprite id
+	move.w	#objid_Archer,d0 ; loaded sprite id
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	sf	$19(a3)
@@ -33,7 +33,7 @@ Enemy07_Archer_Init:
 	st	$13(a1)
 	move.b	#0,$10(a1)
 	exg	a1,a3
-	move.w	#enemyid_Archer,d0 ; loaded sprite id (enemy holding arrow)
+	move.w	#objid_Archer,d0 ; loaded sprite id (enemy holding arrow)
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	exg	a1,a3
@@ -244,7 +244,7 @@ loc_34266:
 	st	$13(a3)
 	st	is_moved(a3)
 	move.b	#0,priority(a3)
-	move.w	#enemyid_Archer,d0 ; loaded sprite id (arrow)
+	move.w	#objid_Archer,d0 ; loaded sprite id (arrow)
 	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	sf	$19(a3)

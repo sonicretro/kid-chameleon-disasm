@@ -12,12 +12,14 @@ FF0500 ?        DMA queue? Format: 6 bytes per entry. word: length, long: source
 FF0DA0 FF2448	Object RAM: $74 bytes per object, $32 slots.
 FF2448 FF3B24	GfxObject RAM: $16DC bytes, $4C bytes per object ($4D objects)
 FF3B24 FF43BC   Block list: 8/16/10 bytes per prize/ghost-group/teleporter block
-FF43BC FF4A04   something to write a block onto VRAM plane mappings (10 bytes per entry, 1 control word + 2 data longs)?
+FF43BC FF47A6   Queue with 2x2 cells to write onto FG plane map in VRAM (10 bytes per entry: 1 word VDP control command, 2 words data)
+FF47A6 FF4A04   Queue with 2x2 cells to write onto FG plane map in VRAM (6 bytes per entry: 1 word xpos, 1 word ypos, 1 word in format of Level_Layout cell)
 FF4A04 FF4B80	List of pointers (words) to beginning of each row in Level_Layout, including 2 above the top and 8 below the bottom (at FF9E32 FFA652)
 FF4B80 FF4D5C   List of pointers (words) to beginning of each row in Level foreground layout
 FF4D5C FF4E58   List of pointers (words) to beginning of each row in background buffer
 FF4E58 FF4ED8	Palette_Buffer: $80 bytes
-FF4ED8 FF4FD8	more palette buffers?
+FF4ED8 FF4F58	more palette buffers?
+FF4F58 FF4FD8   more palette buffers?
 FF4FD8 FF503A	?
 FF503A FF52C2	Block_Mappings: $288 bytes
 FF52C2 FF7392	Level foreground layout: $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
@@ -29,7 +31,7 @@ FF9CB2 FF9E32   ? -- in Final Marathon, this RAM up to FFA652 is filled with bac
 FF9E32 FFA652   2 rows of tiles, 1 above the top, 1 below bottom of the levels (same format as Level_Layout) -- top: solid, bottom: non solid
 FFA652 FFE7F2	Level_Layout: $41A0 bytes. 2 bytes per entry: 1 bit ?, 3 bits collision, 4 bits block, 8 bits skin (30 screens of $118 entries each)
 FFE7F2 ?		Object RAM?: ($13 objects), $E bytes per object
-FFE90A ?        Object RAM?: ($13 objects), $C bytes per object
+FFE90A ?        Disappearing evanescent block RAM: ($13 objects), $C bytes per object
 FFE9FA ?        Shooter Block Bullet RAM: ($27 objects), $C bytes per object
 FFEBDA ?        Object RAM?: ($27 objects), $C bytes per object
 FFEDBA ?        Platform RAM?: ($11 objects), $22 bytes per object
@@ -100,8 +102,20 @@ FFF8A8  word    background height
 FFF8AA  word    Foreground theme (also determines music)
 FFF8AC  word    Background theme
 FFF8AE  long    Address of theme mappings
+FFF8B2  long    pointer to next free space in FF43BC array
+FFF8B6  long    pointer to next free space in FF47A6 array (FGPlane_UpdateQueue)
 FFF8BA  word    maximal camera X position (width in pixels - $140)
 FFF8BC  word    maximal camera Y position (height in pixels - $E0)
+FFF8BE  word    ?  (related to FFE7F2 RAM)
+FFF8C0  word    ?  (related to FFE7F2 RAM)
+FFF8C2  word    Address of first object in FFE7F2 RAM
+FFF8C4  word    Address of next free object in FFE7F2 RAM
+FFF8C6  word    Address of first object in Disappearing evanescent block RAM
+FFF8C8  word    Address of next free object in Disappearing evanescent block RAM
+FFF8CA  word    Address of first object in shooter block RAM
+FFF8CC  word    Address of next free object in shooter block RAM
+FFF8CA  word    Address of first object in FFEBDA RAM
+FFF8CC  word    Address of next free object in FFEBDA RAM
 FFF8D4  long    pointer to block list?
 FFF8F2  long    pointer to enemy layout
 FFF8F6  long    pointer to last two header bytes of enemy layout
@@ -111,6 +125,7 @@ FFFA28  byte    flag: whether hand is currently grabbing the Kid
 FFFA29  byte    flag: whether to initialize Juggernaut's 5-way shot
 FFFA2A  byte    flag: slow down objects (Samurai Haze)
 FFFA2B  byte    flag: Invulnerability for Kid
+FFFA34          array with number of enemies active of each type?
 FFFA6D  byte    flag whether kid is currently transforming
 FFFA70  word    Telepad timer
 FFFA76  word    Cyclone y-acceleration
@@ -132,6 +147,9 @@ FFFACC	long	Murder wall terminal speed
 FFFAD1	byte	selected option in Pause menu: 0=continue, 1=restart/give up
 FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
 FFFAD6  word    timer for storm background (counts down from 4, and if 0, display rain background)
+FFFADA  word    ?  (storm related)
+FFFADC  word    ?  (storm related)
+FFFADE  long    address to the level's storm (rain) palette
 FFFB40	word	Level Special Effects: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 FFFB48	byte	background format (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
 FFFB4A  byte    background scrolling flag: if set, don't scroll background.
@@ -153,7 +171,7 @@ FFFBCA  word    Game Mode:
     2C - TitleScreen
     30 - EndSequence
 FFFBD4  long    address of map header
-FFFBDA  $37 bytes   RNG RAM
+FFFBDA-FFFC12   RNG RAM ($37 bytes)
 FFFC12  word    offset for next random number
 FFFC14  long    random number word/long buffer
 FFFC18	word	Lives displayed on counter
@@ -169,7 +187,8 @@ FFFC2E	word	flag x position
 FFFC30	word	flag y position
 FFFC36  byte    flag: set if teleporting to different level, clear if teleporting to same level.
 FFFC37  byte    flag: enable level skipping by holding A+C+Start
-FFFC38	word	two player flag ?
+FFFC38	byte	two player flag: 0 = single player, -1 = two players
+FFFC39  byte    current player: 0 = first player, -1 = second player
 FFFC3B	byte	No Hit Bonus: 0 = retained, -1 = lost
 FFFC3C	byte	No Prize Bonus: 0 = retained, -1 = lost
 FFFC3D	byte	Level completion time (seconds)
@@ -208,6 +227,10 @@ FFFC74	word	Player 2 - Continues
 FFFC76	word	Player 2 - Extra hit point slots
 FFFC78	long	Player 2 - Score
 FFFC82  byte    Transformation on title. 0: red stealth. 1: maniaxe. 2: juggernaut.
+FFFC84  word    Player 1: number of one-time prizes collected
+FFFC86-FFFD26   Player 1: one-time prizes collected, 2 words per entry: pointer into Level_Layout, Level ID
+FFFD26  word    Player 2: number of one-time prizes collected
+FFFD28-FFFDC8   Player 2: one-time prizes collected, 2 words per entry: pointer into Level_Layout, Level ID
 FFFDC8	byte	selected sub-option 1 in options menu (flag). 2 Players: One controller = 0, Two = -1
 FFFDC9	byte	selected sub-option 3 in options menu (flag). Speed: Normal = 0, Fast = -1
 FFFDCA	word	selected sub-option 2 in options menu: Controls (0-5)
@@ -359,7 +382,7 @@ Object format for GfxObject from GfxObject RAM at FF2448:
     28: kid is below
     2C: kid is above (jumped on top of object)
     negative: ?
-3A: (word) bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
+3A: (word) bits 0-7: object ID, see e.g. EnemyLoad_Index. bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
 3C: (byte) flag: whether to execute level collision
 3D: (byte) flag: whether to execute collision with the kid
 3E: (word) for enemies: Enemy type VRAM slot. (long) other: some x position relative to camera? 
@@ -409,6 +432,25 @@ Object format for Diamond Power Object from Diamond Power Object RAM at FFF2AC:
 48: (word)
 
 
+Object format for Disappearing evanescent block Objects from Disappearing evanescent block RAM at FFE90A:
+ 0: (word) Address in Level_Layout at object's position
+ 2: (word) x position (in blocks)
+ 4: (word) y position (in blocks)
+ 6: (word) shooting directions (bit0=up, bit1=right, bit2=down, bit3=left)
+ 8: (word) increasing timer (starts from negative value?) that triggers bullets when 0
+ A: (word) pointer to next in list
+
+
+Object format for Shooter bullet Object from Shooter block Bullet RAM at FFE9FA:
+ 0: (word) Address in Level_Layout at object's position
+ 2: (word) x position (in pixels)
+ 4: (word) y position (in pixels)
+ 6: (word) direction (0=up, 1=right, 2=down, 3=left)
+ 8: (word) Counter from 0 to 4, updating value at offset 0 every 4th frame
+ A: (word) pointer to next in list
+
+
+
 Block List (FF3B24-?)
 ----------
 
@@ -441,3 +483,39 @@ word: ypos (in blocks)
 byte: destination map id
 byte: destination ypos (in blocks)
 word: destination xpos (in blocks)
+
+
+Level_Layout (FFA652-FFE7F2)
+----------
+
+2 bytes per 16x16 level cell
+    1 bit: flag whether cell contains block,
+    3 bits: collision type, (commonly =6 when call has block)
+    4 bits: block type, 
+    8 bits: skin (visible terrain piece)
+collision type (3 bits):
+    0  empty
+    1
+    2
+    3
+    4  downhill slope
+    5  uphill slope
+    6  solid
+    7  spikes
+block type (4 bits):
+    0  Smash block
+    1  Prize block
+    2  Ice block
+    3  Solid block (ghost block?)
+    4  Teleporter block
+    5  Metal block
+    6  Rubber block
+    7  Shifting block
+    8  
+    9  Mushroom block?
+    A  Evanescent block?
+    B  lift?
+    C  Drill?
+    D
+    E
+    F  freshly deleted block?

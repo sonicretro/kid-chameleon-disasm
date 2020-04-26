@@ -19,7 +19,7 @@ Enemy04_Armadillo_Init:
 
 loc_3C718:
 	st	$13(a3)
-	move.w	#enemyid_Armadillo,d5 ; loaded sprite id
+	move.w	#objid_Armadillo,d5 ; loaded sprite id
 	move.w	d5,object_meta(a3)
 	bsr.w	sub_36E84
 	move.b	#0,priority(a3)

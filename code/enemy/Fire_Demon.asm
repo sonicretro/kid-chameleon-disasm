@@ -22,7 +22,7 @@ Enemy00_FireDemon_Init:
 loc_3A3D2:
 	st	$13(a3)
 	st	is_animated(a3)
-	move.w	#0,d5
+	move.w	#objid_FireDemon,d5
 	move.w	d5,object_meta(a3)
 	bsr.w	sub_36E84
 	bset	#6,object_meta(a3)

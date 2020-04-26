@@ -1,14 +1,20 @@
 Sprite_Table = 		$FFFF0000 	; $280 bytes, 8 bytes per sprite ($50 sprites)
 Object_RAM = 		$FFFF0DA0 	; $16A8 bytes, $74 bytes per object ($32 slots)
 GfxObject_RAM = 	$FFFF2448	; $16DC bytes, $4C bytes per object ($4D objects)
+FGPlane_UpdateQueueCustom =   $FFFF43BC ; 10 bytes per entry: 1 word VDP control command, 2 words data
+FGPlane_UpdateQueueCell =   $FFFF47A6	; 6 bytes per entry, 1 word xpos, 1 word ypos, 1 word in format of Level_Layout cell
 Palette_Buffer = 	$FFFF4E58	; $80 bytes
+Palette_Buffer_2 = 	$FFFF4ED8	; $80 bytes
+Palette_Buffer_3 = 	$FFFF4F58	; $80 bytes
 Block_Mappings = 	$FFFF503A	; $288 bytes
 Level_terrain_layout = 	$FFFF52C2	; $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
 Horiz_Scroll_Data = 	$FFFF7392	; $A0 bytes. deformation related data
 Horiz_Scroll_Buffer = 	$FFFF7432 	; $380 bytes. 
 Decompression_Buffer =	$FFFF77B2	; $1000 bytes
-Level_Layout = 		$FFFFA652	; $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
+Level_Layout = 		$FFFFA652	; $41A0 bytes. 16 bits per entry: block_flag(1), collision(3), block(4), skin(8)
 EnemyStatus_Table = 	$FFFFF8FE	; ? bytes. 2 bytes per entry
+EvanescObject_RAM = 	$FFFFE90A	; Disappearing evanescent block RAM: ($13 objects), $C bytes per object
+ShooterObject_RAM = 	$FFFFE9FA	; Shooter Block Bullet RAM: ($27 objects), $C bytes per object
 Platform_RAM =		$FFFFEDBA	; $264 bytes, $22 bytes per platform ($12 platforms)
 
 Addr_FirstDPObjectSlot =	$FFFFF5A4	; long: Diamond Power Object RAM: Address of first object slot in list
@@ -63,8 +69,14 @@ Background_height = 	$FFFFF8A8	; word
 Foreground_theme = 	$FFFFF8AA	; word: also determines music
 Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
+FGUpdateQueueCustom_NextSlot = $FFFFF8B2	; long: pointer to next free space in FF43BC array (FGPlane_UpdateQueueCustom)
+FGUpdateQueueCell_NextSlot = $FFFFF8B6	; long: pointer to next free space in FF47A6 array (FGPlane_UpdateQueueCell)
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Addr_FirstEvanescObjectSlot =	$FFFFF8C6	; word
+Addr_NextFreeEvanescObjectSlot = $FFFFF8C8	; word
+Addr_FirstShooterObjectSlot =	$FFFFF8CA	; word
+Addr_NextFreeShooterObjectSlot = $FFFFF8CC	; word
 Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
 Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
 EnemyHeader7D = 	$FFFFF93A	; word:	enemy header, but for what? (last 2 bytes of header)
@@ -142,9 +154,10 @@ PlayerStart_Y_pos = 	$FFFFFC2C	; word
 Flag_X_pos = 		$FFFFFC2E	; word
 Flag_Y_pos = 		$FFFFFC30	; word
 LevelSkip_Cheat =	$FFFFFC37	; flag: enable level skipping by holding A+C+Start
-Two_player_flag = 	$FFFFFC38	; word
-NoHit_Bonus_Flag = 	$FFFFFC3B	; byte: 0 = retained, -1 = lost
-NoPrize_Bonus_Flag = 	$FFFFFC3C	; byte: 0 = retained, -1 = lost
+Two_player_flag = 	$FFFFFC38	; flag
+Current_player = 	$FFFFFC39	; flag
+NoHit_Bonus_Flag = 	$FFFFFC3B	; flag: 0 = retained, -1 = lost
+NoPrize_Bonus_Flag = 	$FFFFFC3C	; flag: 0 = retained, -1 = lost
 Level_completion_time = $FFFFFC3D	; byte: in seconds
 Number_Lives = 		$FFFFFC3E	; word
 Number_Hitpoints = 	$FFFFFC40	; word
@@ -180,6 +193,8 @@ Player_2_Helmet = 	$FFFFFC72	; word
 Player_2_Continues = 	$FFFFFC74	; word
 Player_2_Extra_hitpoint_slots = $FFFFFC76	; word
 Player_2_Score = 	$FFFFFC78	; long
+Player_1_OneTimePrizes = $FFFFFC84	; 
+Player_2_OneTimePrizes = $FFFFFD26	; 
 LevelSelect_ActNumber = $FFFFFDC6	; byte: number in e.g. "Elsewhere 15" or "BLW 1/2", also costume counter
 LevelSelect_Flag = 	$FFFFFDC7	; byte: indicator whether to load level select as options menu
 Options_Suboption_2PController = $FFFFFDC8	; byte: selected sub-option 1 in options menu (flag). 2 Players: One controller = 0, Two = -1

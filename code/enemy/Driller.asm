@@ -136,17 +136,17 @@ loc_3BE8E:
 
 loc_3BEDE:
 	move.w	a4,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	move.w	d0,d6
-	jsr	(j_sub_10E86).l
+	jsr	(j_Block_LoadSmashBits).l
 	bra.w	loc_3BF02
 ; ---------------------------------------------------------------------------
 
 loc_3BEF2:
 	move.w	a4,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	move.w	d0,d6
-	jsr	(j_sub_10F44).l
+	jsr	(j_IceBlock_SmashAndLoadBullets).l
 
 loc_3BF02:
 	move.w	collision_type(a3),d4

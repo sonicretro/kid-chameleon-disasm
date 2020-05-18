@@ -305,6 +305,8 @@ os.makedirs("theme/titlecard/artcomp", exist_ok=True)
 os.makedirs("theme/titlecard/palette", exist_ok=True)
 os.makedirs("theme/titlecard/mapeni", exist_ok=True)
 os.makedirs("scenes/artcomp", exist_ok=True)
+os.makedirs("tiled", exist_ok=True)
+os.makedirs("tiled/maps", exist_ok=True)
 os.makedirs("scenes/artunc", exist_ok=True)
 os.makedirs("scenes/palette", exist_ok=True)
 os.makedirs("scenes/mapeni", exist_ok=True)
@@ -326,6 +328,13 @@ background_addrs = dict()
 backgroundlayered_addrs = dict()
 block_addrs = dict()
 bgscroll_addrs = dict()
+
+res_path = open("tiled/maps/resource_paths.json", "w")
+res_path.write("""{
+    "kidc_repo_dir":    "../.."
+}
+""")
+res_path.close()
 
 linfo = open("level/level_files.txt", "w")
 # dump platform, bgscroll, header, enemy, foreground and block
@@ -367,6 +376,11 @@ for lev in range(Number_Levels):
 
     mapheader_addrs[addr] = lev
     linfo.write("header/{:02X}.bin ".format(mapheader_addrs[addr]))
+    kclv = open("tiled/maps/{:02X}.kclv".format(lev), "w")
+    kclv.write("{\n")
+    kclv.write("\t\"header\":\t\"level/header/{:02X}.bin\",\n".format(mapheader_addrs[addr]))
+    kclv.write("\t\"platform\":\t\"level/platform/{:02X}.bin\",\n".format(platform_addrs[platform]))
+    kclv.write("\t\"bgscroll\":\t\"level/bgscroll/{:02X}.bin\",\n".format(bgscroll_addrs[bgscroll]))
 
     '''
     map header format:
@@ -403,11 +417,15 @@ for lev in range(Number_Levels):
     linfo.write("enemy/{:02X}.bin ".format(enemy_addrs[enemy]))
     linfo.write("foreground/{:02X}.bin ".format(foreground_addrs[foreground]))
     linfo.write("block/{:02X}.bin ".format(block_addrs[block]))
+    kclv.write("\t\"enemy\":\t\"level/enemy/{:02X}.bin\",\n".format(enemy_addrs[enemy]))
+    kclv.write("\t\"foreground\":\t\"level/foreground/{:02X}.bin\",\n".format(foreground_addrs[foreground]))
+    kclv.write("\t\"block\":\t\"level/block/{:02X}.bin\",\n".format(block_addrs[block]))
 
     if bgtheme in [3,5,7,9]: # layered
         if background not in backgroundlayered_addrs:
             backgroundlayered_addrs[background] = lev
         linfo.write("background/{:02X}.bin ".format(backgroundlayered_addrs[background]))
+        kclv.write("\t\"background\":\t\"level/background/{:02X}.bin\"\n".format(backgroundlayered_addrs[background]))
     else:
         if background not in background_addrs:
             btype = btoi(background, 1)
@@ -419,12 +437,14 @@ for lev in range(Number_Levels):
                 if ref_addr in background_addrs:
                     ref = background_addrs[ref_addr][0]
                     linfo.write("background/{:02X}.bin ".format(ref))
+                    kclv.write("\t\"background\":\t\"level/background/{:02X}.bin\"\n".format(ref))
                 else: # this is a bit dirty, need to find the level whose background is shared somehow
                     for l in range(Number_Levels):
-                        a = btoi(MapHeader_Index+2*lev, 2) + MapHeader_BaseAddress
+                        a = btoi(MapHeader_Index+2*l, 2) + MapHeader_BaseAddress
                         bg = btoi(a+20, 4)
                         if bg == ref_addr:
                             linfo.write("background/{:02X}.bin ".format(l))
+                            kclv.write("\t\"background\":\t\"level/background/{:02X}.bin\"\n".format(l))
                             break;
             else:
                 l = length_bglayout(background)
@@ -432,6 +452,9 @@ for lev in range(Number_Levels):
                 with open("level/background/{:02X}.bin".format(lev), "wb") as out:
                     out.write(b[background:background+l])
                 linfo.write("background/{:02X}.bin ".format(lev))
+                kclv.write("\t\"background\":\t\"level/background/{:02X}.bin\"\n".format(lev))
+    kclv.write("}\n")
+    kclv.close()
 
 linfo.close()
 

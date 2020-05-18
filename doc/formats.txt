@@ -185,9 +185,21 @@ the type 1 background layout that the level is using, while the 2 words
 are an x_shift and a y_shift respectively by which the background is shifted.
 
 The type 2 level background format defines how a background is composed of
-layers (each 8 pixels tall). It is a list of bytes, each determining a
-layer from the Enigma compressed plane map. These layers in order then
-compose the background.
+layers (each 8 pixels tall). It is a list of bytes, each (except for the
+first one or two) determining a layer from the Enigma compressed plane map.
+These layers in order then compose the background.
+
+The first byte of the list has a special meaning: For forest and desert
+levels, it determines the layer from which on the water/heat ripple
+scrolling effect is applied. For all other themes this byte is unused.
+For desert, the second byte of the list is not part of the background
+layout and is unused. 
+
+
+The effective height (in tiles) of a background equals ysize_screens * 7 + 21,
+where ysize_screens is the vertical foreground size in screen.
+The effective width of a background is 64 tiles for layered backgrounds,
+and xsize_screens * 10 + 30 for chunked backgrounds.
 
 
 SPRITE MAPPING FORMATS

@@ -173,7 +173,7 @@ kclv_content = """
     "background":   "level/background/YY.bin",
     "bgscroll":     "level/bgscroll/XX.bin",
     "enemy":        "level/enemy/XX.bin",
-    "platform":     "level/platform/XX.bin",
+    "platform":     "level/platform/XX.asm",
     "block":        "level/block/XX.bin"
 }
 """

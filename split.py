@@ -360,7 +360,7 @@ for lev in range(Number_Levels):
             out.write(b[bgscroll:bgscroll+l])
 
     linfo.write("{:02X}\t".format(lev))
-    linfo.write("platform/{:02X}.bin ".format(platform_addrs[platform]))
+    linfo.write("platform/{:02X}.asm ".format(platform_addrs[platform]))
     linfo.write("bgscroll/{:02X}.bin ".format(bgscroll_addrs[bgscroll]))
 
     if addr == 0x40FF6 or addr == MapHeader_BaseAddress:
@@ -379,7 +379,7 @@ for lev in range(Number_Levels):
     kclv = open("tiled/maps/{:02X}.kclv".format(lev), "w")
     kclv.write("{\n")
     kclv.write("\t\"header\":\t\"level/header/{:02X}.bin\",\n".format(mapheader_addrs[addr]))
-    kclv.write("\t\"platform\":\t\"level/platform/{:02X}.bin\",\n".format(platform_addrs[platform]))
+    kclv.write("\t\"platform\":\t\"level/platform/{:02X}.asm\",\n".format(platform_addrs[platform]))
     kclv.write("\t\"bgscroll\":\t\"level/bgscroll/{:02X}.bin\",\n".format(bgscroll_addrs[bgscroll]))
 
     '''

@@ -1,3 +1,11 @@
+stru_33FC2:
+	anim_frame	  1,   5, LnkTo_unk_C81B8-Data_Index
+	anim_frame	  1,   5, LnkTo_unk_C81F0-Data_Index
+	anim_frame	  1,   5, LnkTo_unk_C81C8-Data_Index
+	anim_frame	  1, $23, LnkTo_unk_C81D0-Data_Index
+	dc.b   0
+	dc.b   0
+
 arrow_accuracy:
 	dc.w $1E	; 1 HP
 	dc.w $14	; 2 HP
@@ -46,13 +54,13 @@ Enemy07_Archer_Init:
 	andi.w	#$FF,d7
 	move.b	(Camera_X_pos).w,d6
 	eor.b	d6,d7
-	move.w	d7,-(sp)
-	jsr	(j_Hibernate_Object).w
+	move.w	d7,-(sp)	; initial time to hibernate
+	jsr	(j_Hibernate_Object).w	; this causes the bug where the archer has delayed death.
 
 loc_3408C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Object_CheckInRange
-	bsr.w	loc_34128
+	bsr.w	Enemy07_Archer_CheckKilled
 	sf	x_direction(a3)
 	lea	Shooting_Vertical(pc),a2
 	subi.w	#$1E,y_pos(a3)
@@ -74,55 +82,58 @@ loc_340C0:
 	bra.w	loc_3419A
 ; ---------------------------------------------------------------------------
 Shooting_Horizontal:
-	dc.w    $D ; shooting direction left facing
-	dc.w     0 ; shooting direction right facing
-	dc.w   $64 ; delay between tension bow?
-	dc.w  $C90 ; standing normal enemy sprite
-	dc.w $FFF2 ; standing normal arrow x position
-	dc.w $FFEF ; standing normal arrow y position
+	dc.w    $D ; shooting angle left facing
+	dc.w     0 ; shooting angle right facing
+
+	dc.w   $64 ; idle time (see d3 at loc_34248)
+	dc.w  LnkTo_unk_C81A8-Data_Index ; standing normal enemy sprite
+	dc.w $FFF2 ; arrow x position spawn offset
+	dc.w $FFEF ; arrow y position spawn offset
 	dc.w     6
-	dc.w  $C94
+	dc.w  LnkTo_unk_C81B0-Data_Index
 	dc.w $FFF5
 	dc.w $FFEF
 	dc.w    $C
-	dc.w  $C98
+	dc.w  LnkTo_unk_C81B8-Data_Index
 	dc.w $FFF8
 	dc.w $FFEF
 	dc.w     0
-	dc.w  $C9C
+	dc.w  LnkTo_unk_C81C0-Data_Index
 	dc.w $FFF2
 	dc.w $FFEF
 	dc.w $FFFF
+
 Shooting_Vertical:
-	dc.w    $A ; shooting direction left facing
-	dc.w     3 ; shooting direction right facing
-	dc.w   $64 ; delay between tension bow?
-	dc.w  $C80 ; standing normal enemy sprite
-	dc.w $FFF2 ; standing normal arrow x position
-	dc.w $FFE2 ; standing normal arrow y position
+	dc.w    $A ; shooting angle left facing
+	dc.w     3 ; shooting angle right facing
+
+	dc.w   $64 ; idle time (see d3 at loc_34248)
+	dc.w  LnkTo_unk_C8188-Data_Index ; standing normal enemy sprite
+	dc.w $FFF2 ; arrow x position spawn offset
+	dc.w $FFE2 ; arrow y position spawn offset
 	dc.w     6
-	dc.w  $C84
+	dc.w  LnkTo_unk_C8190-Data_Index
 	dc.w $FFF5
 	dc.w $FFE5
 	dc.w    $C
-	dc.w  $C88
+	dc.w  LnkTo_unk_C8198-Data_Index
 	dc.w $FFF8
 	dc.w $FFE8
 	dc.w     0
-	dc.w  $C8C
+	dc.w  LnkTo_unk_C81A0-Data_Index
 	dc.w $FFF2
 	dc.w $FFE2
 	dc.w $FFFF
 ; ---------------------------------------------------------------------------
-
-loc_34128:
+;loc_34128:
+Enemy07_Archer_CheckKilled:
 	move.w	collision_type(a3),d7
 	beq.w	return_34148
 	bmi.w	loc_3414A
 	clr.w	collision_type(a3)
-	cmpi.w	#$2C,d7
+	cmpi.w	#colid_kidabove,d7
 	beq.w	loc_3414A
-	cmpi.w	#$1C,d7
+	cmpi.w	#colid_hurt,d7
 	beq.w	loc_3414A
 
 return_34148:
@@ -134,8 +145,8 @@ loc_3414A:
 	move.l	#stru_33FC2,d7
 	jsr	(j_Init_Animation).w
 	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	#$FFFC0000,$2A(a4)
-	jsr	(j_sub_105E).w
+	move.l	#$FFFC0000,$2A(a4)	; this causes the bug where the kid bounces up when killing the archer
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_34188
@@ -168,7 +179,7 @@ loc_3419A:
 loc_341AA:
 	addq.w	#2,a2
 	exg	a1,a3
-	bsr.w	loc_3433E
+	bsr.w	Enemy07_ArcherArrow_AngleToSpeedAndAnim
 	exg	a1,a3
 	move.b	x_direction(a3),$16(a1)
 	not.b	$16(a1)
@@ -184,7 +195,7 @@ loc_341BE:
 	addq.w	#1,(Number_of_Arrows).w
 	move.w	#$8000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_34266,4(a0)
+	move.l	#Enemy07_ArcherArrow_Init,4(a0)
 	move.w	$4A(a5),$4A(a0)
 	move.w	(a2)+,$44(a0)
 	move.w	(a2)+,$46(a0)
@@ -219,14 +230,14 @@ loc_34234:
 loc_34248:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Object_CheckInRange
-	bsr.w	loc_34128
+	bsr.w	Enemy07_Archer_CheckKilled
 	dbf	d3,loc_34248
 	cmpi.w	#2,(Number_of_Arrows).w
 	bge.w	loc_3408C
 	bra.w	loc_341BE
 ; ---------------------------------------------------------------------------
-
-loc_34266:
+;loc_34266:
+Enemy07_ArcherArrow_Init:
 	move.l	d0,-(sp)
 	moveq	#sfx_Archer_shoots,d0
 	jsr	(j_PlaySound).l
@@ -253,7 +264,7 @@ loc_34266:
 	move.w	$4A(a5),d3
 	move.w	$48(a5),d6
 	move.w	d6,d2
-	bsr.w	loc_3433E
+	bsr.w	Enemy07_ArcherArrow_AngleToSpeedAndAnim
 
 loc_342D6:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -290,7 +301,7 @@ loc_34320:
 
 loc_3432E:
 	move.w	d2,d6
-	bsr.w	loc_3433E
+	bsr.w	Enemy07_ArcherArrow_AngleToSpeedAndAnim
 	bra.s	loc_342D6
 ; ---------------------------------------------------------------------------
 
@@ -298,143 +309,60 @@ loc_34336:
 	subq.w	#1,(Number_of_Arrows).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_3433E:
-	asl.w	#2,d6
+;loc_3433E:
+Enemy07_ArcherArrow_AngleToSpeedAndAnim:
+	asl.w	#2,d6	; angle of the arrow
 	move.b	byte_3437A(pc,d6.w),d7
 	move.b	d7,x_direction(a3)
 	moveq	#0,d7
-	move.b	byte_3437C(pc,d6.w),d7
+	move.b	byte_3437A+2(pc,d6.w),d7
 	ext.w	d7
 	swap	d7
 	asr.l	#4,d7
 	move.l	d7,x_vel(a3)
 	moveq	#0,d7
-	move.b	byte_3437D(pc,d6.w),d7
+	move.b	byte_3437A+3(pc,d6.w),d7
 	ext.w	d7
 	swap	d7
 	asr.l	#4,d7
 	move.l	d7,y_vel(a3)
-	move.b	byte_3437B(pc,d6.w),d6
+	move.b	byte_3437A+1(pc,d6.w),d6
 	ext.w	d6
 	add.w	d6,d6
 	move.w	off_343EA(pc,d6.w),d6
 	move.w	d6,addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
-byte_3437A:	dc.b 0
-byte_3437B:	dc.b 0
-byte_3437C:	dc.b $20
-byte_3437D:	dc.b 0
-	dc.b   0
-	dc.b   1
-	dc.b $20
-	dc.b $F8 ; ø
-	dc.b   0
-	dc.b   2
-	dc.b $1C
-	dc.b $F0 ; ð
-	dc.b   0
-	dc.b   3
-	dc.b $18
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   4
-	dc.b $10
-	dc.b $E4 ; ä
-	dc.b   0
-	dc.b   5
-	dc.b   8
-	dc.b $E0 ; à
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b $E0 ; à
-	dc.b $FF
-	dc.b   6
-	dc.b   0
-	dc.b $E0 ; à
-	dc.b $FF
-	dc.b   5
-	dc.b $F8 ; ø
-	dc.b $E0 ; à
-	dc.b $FF
-	dc.b   4
-	dc.b $F0 ; ð
-	dc.b $E4 ; ä
-	dc.b $FF
-	dc.b   3
-	dc.b $E8 ; è
-	dc.b $E8 ; è
-	dc.b $FF
-	dc.b   2
-	dc.b $E4 ; ä
-	dc.b $F0 ; ð
-	dc.b $FF
-	dc.b   1
-	dc.b $E0 ; à
-	dc.b $F8 ; ø
-	dc.b $FF
-	dc.b   0
-	dc.b $E0 ; à
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $E0 ; à
-	dc.b   0
-	dc.b $FF
-	dc.b   7
-	dc.b $E0 ; à
-	dc.b   8
-	dc.b $FF
-	dc.b   8
-	dc.b $E4 ; ä
-	dc.b $10
-	dc.b $FF
-	dc.b   9
-	dc.b $E8 ; è
-	dc.b $18
-	dc.b $FF
-	dc.b  $A
-	dc.b $F0 ; ð
-	dc.b $1C
-	dc.b $FF
-	dc.b  $B
-	dc.b $F8 ; ø
-	dc.b $20
-	dc.b $FF
-	dc.b  $C
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $B
-	dc.b   8
-	dc.b $20
-	dc.b   0
-	dc.b  $A
-	dc.b $10
-	dc.b $1C
-	dc.b   0
-	dc.b   9
-	dc.b $18
-	dc.b $18
-	dc.b   0
-	dc.b   8
-	dc.b $1C
-	dc.b $10
-	dc.b   0
-	dc.b   7
-	dc.b $20
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-off_343EA:
+byte_3437A: ; x direction, sprite ID, x velocity, y velocity
+	dc.b   0,   0, $20,   0
+	dc.b   0,   1, $20, $F8
+	dc.b   0,   2, $1C, $F0
+	dc.b   0,   3, $18, $E8
+	dc.b   0,   4, $10, $E4
+	dc.b   0,   5,   8, $E0
+	dc.b   0,   6,   0, $E0
+	dc.b $FF,   6,   0, $E0
+	dc.b $FF,   5, $F8, $E0
+	dc.b $FF,   4, $F0, $E4
+	dc.b $FF,   3, $E8, $E8
+	dc.b $FF,   2, $E4, $F0
+	dc.b $FF,   1, $E0, $F8
+	dc.b $FF,   0, $E0,   0
+	dc.b $FF,   0, $E0,   0
+	dc.b $FF,   7, $E0,   8
+	dc.b $FF,   8, $E4, $10
+	dc.b $FF,   9, $E8, $18
+	dc.b $FF,  $A, $F0, $1C
+	dc.b $FF,  $B, $F8, $20
+	dc.b $FF,  $C,   0, $20
+	dc.b   0,  $C,   0, $20
+	dc.b   0,  $B,   8, $20
+	dc.b   0,  $A, $10, $1C
+	dc.b   0,   9, $18, $18
+	dc.b   0,   8, $1C, $10
+	dc.b   0,   7, $20,   8
+	dc.b   0,   0, $20,   0
+off_343EA:	; sprite IDs depending on angle.
 	dc.w LnkTo_unk_C81F8-Data_Index
 	dc.w LnkTo_unk_C8200-Data_Index
 	dc.w LnkTo_unk_C8208-Data_Index
@@ -449,90 +377,12 @@ off_343EA:
 	dc.w LnkTo_unk_C8250-Data_Index
 	dc.w LnkTo_unk_C8258-Data_Index
 unk_34404:
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
+	dc.b   0,  1,  1,  2,  2,  2,  3,  3,  3,  3,  3,  3,  4,  4,  4,  4
+	dc.b   4,  4,  4,  4,  4,  4,  4,  4,  5,  5,  5,  5,  5,  5,  5,  5
+	dc.b   5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5
+	dc.b   5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5
+	dc.b   5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5
+	dc.b   5,  5,  5,  5
 ; ---------------------------------------------------------------------------
 
 loc_34458:

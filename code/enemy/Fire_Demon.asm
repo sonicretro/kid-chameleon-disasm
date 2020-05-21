@@ -190,7 +190,7 @@ loc_3A586:
 loc_3A5A6: ; fire demon death
 	move.l	#stru_3A378,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subi.b	#1,(Fire_Demon).w
 	bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
@@ -198,7 +198,7 @@ loc_3A5A6: ; fire demon death
 loc_3A5BE:
 	move.l	#stru_3A34E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	$62(a5),d7
 	jsr	(j_Init_Animation).w
 

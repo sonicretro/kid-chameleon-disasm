@@ -135,7 +135,7 @@ loc_3B6E6:
 	st	$3D(a2)
 	move.l	#stru_3B518,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 

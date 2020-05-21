@@ -78,7 +78,7 @@ loc_33424:
 	bne.s	loc_33424
 	move.l	#stru_33F90,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	st	$13(a1)
 	st	$14(a1)
 	st	$3C(a1)
@@ -107,7 +107,7 @@ loc_33488:
 	exg	a1,a3
 	move.l	#stru_33332,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	exg	a1,a3
 	move.l	$1A(a1),$1A(a2)
 	move.l	$1E(a1),$1E(a2)
@@ -266,7 +266,7 @@ loc_335D8:
 loc_33630:
 	move.l	#stru_33FA6,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_33F14,d7
 	jsr	(j_Init_Animation).w
 	st	is_moved(a3)
@@ -526,7 +526,7 @@ loc_338F8:
 
 loc_3392C:
 	sf	is_moved(a3)
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subq.w	#1,($FFFFFB42).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -761,7 +761,7 @@ loc_33B30:
 	ext.w	d7
 	move.l	(a4,d7.w),d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	tst.b	(a2)+
 	beq.w	loc_33B5E
 	not.b	x_direction(a3)

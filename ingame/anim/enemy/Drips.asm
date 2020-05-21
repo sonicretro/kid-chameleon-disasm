@@ -195,10 +195,3 @@ stru_33FB4:
 	anim_frame	  1,  $A, LnkTo_unk_C7BAE-Data_Index
 	dc.b   0
 	dc.b   0
-stru_33FC2:
-	anim_frame	  1,   5, LnkTo_unk_C81B8-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C81F0-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C81C8-Data_Index
-	anim_frame	  1, $23, LnkTo_unk_C81D0-Data_Index
-	dc.b   0
-	dc.b   0

@@ -135,7 +135,7 @@ loc_3EB60:
 	beq.w	loc_3F176
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EB78:
 	dbf	d1,loc_3EB0E
@@ -182,7 +182,7 @@ loc_3EBE4:
 	beq.w	loc_3F176
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EBFC:
 	dbf	d1,loc_3EB92
@@ -243,7 +243,7 @@ loc_3EC9A:
 	beq.w	loc_3F18C
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3ECB2:
 	dbf	d1,loc_3EC48
@@ -290,7 +290,7 @@ loc_3ED1E:
 	beq.w	loc_3F18C
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3ED36:
 	dbf	d1,loc_3ECCC
@@ -356,7 +356,7 @@ loc_3EDE0:
 	beq.w	loc_3F176
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EDF8:
 	dbf	d1,loc_3ED8E
@@ -403,7 +403,7 @@ loc_3EE64:
 	beq.w	loc_3F176
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EE7C:
 	dbf	d1,loc_3EE12
@@ -464,7 +464,7 @@ loc_3EF1A:
 	beq.w	loc_3F18C
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EF32:
 	dbf	d1,loc_3EEC8
@@ -511,7 +511,7 @@ loc_3EF9E:
 	beq.w	loc_3F18C
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3EFB6:
 	dbf	d1,loc_3EF4C
@@ -576,7 +576,7 @@ loc_3F05C:
 	beq.w	loc_3F158
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3F074:
 	dbf	d1,loc_3F00A
@@ -637,7 +637,7 @@ loc_3F0FA:
 	beq.w	loc_3F158
 	move.l	#stru_3E9C2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3F112:
 	dbf	d1,loc_3F0A8
@@ -666,7 +666,7 @@ loc_3F158:
 	sf	is_moved(a3)
 	move.l	#stru_3E9AC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 
@@ -674,7 +674,7 @@ loc_3F176:
 	sf	is_moved(a3)
 	move.l	#stru_3E998,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 
@@ -682,7 +682,7 @@ loc_3F18C:
 	sf	is_moved(a3)
 	move.l	#stru_3E9A2,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3F32E
 ; ---------------------------------------------------------------------------
 

@@ -82,7 +82,7 @@ loc_3B93C:
 	move.l	#loc_3B9B0,4(a0)
 	move.l	#stru_3B810,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 word_3B9A0:	dc.w $FFF0
@@ -324,7 +324,7 @@ loc_3BC34:
 	beq.s	loc_3BC56
 	move.l	#stru_3B836,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3B81C,d7
 	jsr	(j_Init_Animation).w
 	bra.s	loc_3BBE6
@@ -337,7 +337,7 @@ loc_3BC56:
 	beq.s	loc_3BC78
 	move.l	#stru_3B83C,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	tst.b	$5B(a5)
 	beq.s	loc_3BCA6
 

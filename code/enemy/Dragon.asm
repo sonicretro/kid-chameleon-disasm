@@ -132,7 +132,7 @@ loc_3CEBE:
 	bne.w	loc_3CF4C
 	move.l	#stru_3CCE6,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	$62(a5),d7
 	jsr	(j_Init_Animation).w
 	bra.s	loc_3CF4C
@@ -151,7 +151,7 @@ loc_3CEE4:
 loc_3CEFC:
 	move.l	#stru_3CCEC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 

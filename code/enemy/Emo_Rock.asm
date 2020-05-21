@@ -62,7 +62,7 @@ loc_3621A:
 	move.l	(sp)+,d0
 	move.l	#stru_3647E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	st	has_level_collision(a3)
 	sf	has_kid_collision(a3)
 
@@ -135,7 +135,7 @@ loc_36320:
 	move.l	(sp)+,d0
 	move.l	#stru_36456,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	clr.w	addroffset_sprite(a3)
 	bra.w	loc_361F4
 ; ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@ loc_36346:
 	moveq	#sfx_Prize_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_3638C

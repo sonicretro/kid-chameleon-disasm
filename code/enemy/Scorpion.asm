@@ -84,7 +84,7 @@ loc_3DCD4:
 	beq.s	loc_3DCF4
 	move.l	#stru_3DB7A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3DB60,d7
 	jsr	(j_Init_Animation).w
 	bra.s	loc_3DD5C
@@ -95,7 +95,7 @@ loc_3DCF4:
 	st	$3D(a4)
 	move.l	#stru_3DB80,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ loc_3DDEE:
 	ori.w	#$C000,object_meta(a3)
 	move.l	#stru_3DB8E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_3DE3C:
 	cmp.w	a2,d3

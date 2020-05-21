@@ -121,7 +121,7 @@ loc_359B2:
 
 	move.l	#stru_35B1E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_359E0

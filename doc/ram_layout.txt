@@ -357,7 +357,7 @@ Object format for GfxObject from GfxObject RAM at FF2448:
 15: (byte) flag: whether to animate object
 16: (byte) flag: horizontal direction
 17: (byte) flag
-18: (byte) flag
+18: (byte) flag: whether animation has finished?
 19: (byte) flag
 1A: (long) X position (16.16 fixed point)
 1E: (long) Y position (16.16 fixed point)

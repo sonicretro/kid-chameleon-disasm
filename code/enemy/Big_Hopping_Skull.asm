@@ -95,14 +95,14 @@ loc_365AC:
 	beq.w	loc_366D0
 	move.w	collision_type(a3),d7
 	beq.w	loc_366B6
-	cmpi.w	#$1C,d7
+	cmpi.w	#colid_hurt,d7
 	beq.s	loc_365D8
-	cmpi.w	#$2C,d7
+	cmpi.w	#colid_kidabove,d7
 	bne.w	loc_366B6
 
 loc_365D8:
 	st	has_kid_collision(a3)
-	move.w	#$FFFD,$2A(a2)
+	move.w	#$FFFD,$2A(a2)	; this causes the bug where the kid bounces up when killing the skull
 	subq.w	#1,d2
 	beq.w	loc_3664E
 	move.l	#stru_367CC,d7
@@ -189,10 +189,10 @@ loc_366B6:
 	beq.w	loc_365AC
 	move.l	#stru_367B4,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w	; hibernate the object until $18(a3) is non-zero
 
 loc_366D0:
-	move.w	#$FFFE,y_vel(a3)
+	move.w	#-2,y_vel(a3)
 	move.l	d0,x_vel(a3)
 	st	has_level_collision(a3)
 	bsr.w	loc_36770
@@ -234,19 +234,19 @@ loc_36720:
 	rts
 ; ---------------------------------------------------------------------------
 off_36736: ; jumping directions
-	dc.l loc_366EC
-	dc.l loc_366EC
-	dc.l loc_36580
-	dc.l loc_366E6
-	dc.l loc_36706
-	dc.l loc_36720
+	dc.l loc_366EC	; colid_rightwall
+	dc.l loc_366EC	; colid_leftwall
+	dc.l loc_36580	; colid_floor
+	dc.l loc_366E6	; colid_ceiling
+	dc.l loc_36706	; colid_slopeup
+	dc.l loc_36720	; colid_slopedown
 ; ---------------------------------------------------------------------------
 
 loc_3674E:
 	move.w	collision_type(a3),d7
 	beq.w	return_3676E
 	clr.w	collision_type(a3)
-	cmpi.w	#$1C,d7
+	cmpi.w	#colid_hurt,d7
 	bge.w	return_3676E
 	subq.w	#4,d7
 	lea	off_36736(pc),a4

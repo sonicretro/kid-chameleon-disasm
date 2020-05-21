@@ -309,7 +309,7 @@ loc_3492C:
 	move.w	d7,$46(a0)
 	move.b	x_direction(a3),$48(a0)
 	move.w	$46(a5),$4A(a0)
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_34998

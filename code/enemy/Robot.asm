@@ -113,7 +113,7 @@ loc_3A90C:
 	addi.w	#4,$1E(a2)
 	move.l	#stru_3A744,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subi.w	#1,$44(a3)
 	beq.s	loc_3A96C
 	tst.b	$19(a3)
@@ -146,7 +146,7 @@ loc_3A96C:
 	st	$3D(a2)
 	move.l	#stru_3A74A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	st	$13(a2)
 	move.l	#stru_3A6FC,d7
 	jsr	(j_Init_Animation).w
@@ -174,7 +174,7 @@ loc_3A9D2:
 	st	has_kid_collision(a3)
 	move.l	#stru_3A74A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3C46E
 ; END OF FUNCTION CHUNK	FOR sub_3C4F8
 ; ---------------------------------------------------------------------------
@@ -288,7 +288,7 @@ loc_3AB14:
 	addi.w	#4,$1E(a2)
 	move.l	#stru_3A744,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subi.w	#1,$44(a3)
 	beq.s	loc_3AB56
 	sf	$3D(a2)
@@ -309,7 +309,7 @@ loc_3AB56:
 	st	$3D(a2)
 	move.l	#stru_3A74A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	st	$13(a2)
 	move.l	#stru_3A6FC,d7
 	jsr	(j_Init_Animation).w
@@ -396,6 +396,6 @@ loc_3AC92:
 	add.w	d0,x_pos(a3)
 	move.l	#stru_3A762,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function Enemy03_Robot_Shot_Init

@@ -169,14 +169,14 @@ loc_3BF1C:
 	move.l	#stru_3BCE2,d7
 	jsr	(j_Init_Animation).w
 	exg	a0,a3
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
 loc_3BF4E:
 	move.l	#stru_3BCCE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3BCB2,d7
 	jsr	(j_Init_Animation).w
 

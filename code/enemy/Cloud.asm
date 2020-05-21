@@ -82,7 +82,7 @@ loc_35C0E:
 	clr.l	x_vel(a3)
 	move.l	#stru_35EBA,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_35C42
@@ -131,7 +131,7 @@ loc_35C7A:
 loc_35C82:
 	move.l	#stru_35EC8,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_35BAC
 ; ---------------------------------------------------------------------------
 off_35C94:

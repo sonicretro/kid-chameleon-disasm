@@ -231,8 +231,8 @@ j_nullsub_2: ;270
 j_Init_Animation: ;274
 	jmp	Init_Animation(pc)
 ; ===========================================================================
-j_sub_105E: ;278
-	jmp	sub_105E(pc)
+j_Hibernate_UntilAnimFinished: ;278
+	jmp	Hibernate_UntilAnimFinished(pc)
 ; ===========================================================================
 j_loc_1078: ;27C
 	jmp	loc_1078(pc)
@@ -1974,8 +1974,8 @@ Init_Animation:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_105E:
+;sub_105E:
+Hibernate_UntilAnimFinished:
 	move.l	(sp)+,$12(a5)
 
 loc_1062:
@@ -1984,7 +1984,7 @@ loc_1062:
 	beq.s	loc_1062
 	move.l	$12(a5),-(sp)
 	rts
-; End of function sub_105E
+; End of function Hibernate_UntilAnimFinished
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -3719,7 +3719,7 @@ loc_1F08:
 	move.b	#3,palette_line(a3)
 	move.l	#stru_1F40,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 stru_1F40:
@@ -9965,7 +9965,7 @@ loc_89A8:
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_87B0
 
@@ -10063,7 +10063,7 @@ loc_8ACC:	; axe hit solid block
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_8AF2:
 	jmp	(j_Delete_CurrentObject).w
@@ -13588,7 +13588,7 @@ loc_ABF0:
 	moveq	#sfx_The_Kid_pullup,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	clr.l	y_vel(a3)
 	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
@@ -21100,7 +21100,7 @@ loc_FBDA:
 	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_FBDA
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21116,7 +21116,7 @@ loc_FBDA:
 	move.w	d4,y_pos(a3)
 	move.l	#stru_FD10,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	d1,d4
 	lsl.w	#4,d4
 	addq.w	#8,d4
@@ -21127,7 +21127,7 @@ loc_FBDA:
 	move.w	d4,y_pos(a3)
 	move.l	#stru_FD3A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_FCA6,4(a0)
@@ -21542,7 +21542,7 @@ loc_10120:
 	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_10120
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21656,7 +21656,7 @@ loc_1026E:
 	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_1026E
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21684,7 +21684,7 @@ loc_102B8:
 	move.w	#(LnkTo_unk_E0F2E-Data_Index),addroffset_sprite(a3)
 	move.l	#stru_102DE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 stru_102DE:
@@ -22797,7 +22797,7 @@ sub_10D3E:
 	move.w	$46(a5),y_pos(a3)
 	move.l	#stru_102DE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_10D3E
 
@@ -23240,7 +23240,7 @@ loc_111A6:
 	dbf	d0,loc_111A6
 
 loc_111B2:
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -33427,7 +33427,7 @@ sub_1D9D6:
 	move.b	$48(a5),priority(a3)
 	move.l	#stru_1DA0E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_1D9D6
 
@@ -39184,7 +39184,7 @@ loc_371B6:
 	clr.l	y_vel(a3)
 	move.l	#stru_37BC6,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -39264,7 +39264,7 @@ loc_37280:
 sub_3728C:
 	move.l	#stru_37BFC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_3728C
 
@@ -39291,7 +39291,7 @@ sub_3729E:
 	addq.b	#1,($FFFFFB4F).w
 	move.l	#stru_37BEA,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_372F6:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -39320,7 +39320,7 @@ loc_3731A:
 loc_3731C:
 	move.l	#stru_37BFC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subq.b	#1,($FFFFFB4F).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_3729E
@@ -43137,32 +43137,32 @@ loc_39EBE:
 loc_39EE2:
 	move.l	#stru_39FEE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A004,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A016,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A028,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A03A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A050,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A062,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A074,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	d0,-(sp)
 	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
@@ -43172,18 +43172,18 @@ loc_39EE2:
 loc_39F7A:
 	move.l	#stru_3A086,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A09C,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A0AE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A0C0,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subq.w	#1,d0
 	bne.s	loc_39F7A
 	jmp	(j_Delete_CurrentObject).w
@@ -43358,7 +43358,7 @@ sub_3A172:
 loc_3A192:
 	move.l	#stru_3A1E0,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -48006,13 +48006,13 @@ LnkTo_Pal_A22FE:	dc.l Pal_A22FE
 			dc.l Pal_A230C
 			dc.l Pal_A231A
 LnkTo_unk_C8188:	dc.l unk_C8188
-			dc.l unk_C8190
-			dc.l unk_C8198
-			dc.l unk_C81A0
-			dc.l unk_C81A8
-			dc.l unk_C81B0
+LnkTo_unk_C8190:	dc.l unk_C8190
+LnkTo_unk_C8198:	dc.l unk_C8198
+LnkTo_unk_C81A0:	dc.l unk_C81A0
+LnkTo_unk_C81A8:	dc.l unk_C81A8
+LnkTo_unk_C81B0:	dc.l unk_C81B0
 LnkTo_unk_C81B8:	dc.l unk_C81B8
-			dc.l unk_C81C0
+LnkTo_unk_C81C0:	dc.l unk_C81C0
 LnkTo_unk_C81C8:	dc.l unk_C81C8
 LnkTo_unk_C81D0:	dc.l unk_C81D0
 			dc.l unk_C81D8

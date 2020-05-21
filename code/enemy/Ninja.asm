@@ -105,7 +105,7 @@ loc_3D670:
 	beq.w	loc_3DB4E
 	move.l	#stru_3D504,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	$5E(a5),$50(a5)
 	move.l	$62(a5),d7
 	jsr	(j_Init_Animation).w
@@ -510,5 +510,5 @@ loc_3DB3C:
 loc_3DB4E:
 	move.l	#stru_3D50A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956

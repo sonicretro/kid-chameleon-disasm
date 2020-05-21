@@ -132,7 +132,7 @@ loc_322C0:
 loc_322C8:
 	move.l	#stru_3272E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ loc_322DA:
 	sf	$13(a2)
 	move.l	#stru_3274C,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
 
@@ -231,7 +231,7 @@ loc_323C0:
 
 loc_323D6:
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.b	d2,$13(a2)
 	bra.w	loc_3224E
 ; ---------------------------------------------------------------------------
@@ -244,7 +244,7 @@ loc_323E6:
 	st	$44(a0)
 	move.l	#stru_32700,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_3242C
@@ -273,7 +273,7 @@ return_3243E:
 	sf	$13(a2)
 	move.l	#stru_3274C,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#$50,d0
 
 loc_32454:

@@ -1223,7 +1223,7 @@ loc_357C2:
 	jsr	(j_Init_Animation).w
 	tst.w	d0
 	bne.w	loc_357E6
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_357E2:
 	jmp	(j_Delete_CurrentObject).w

@@ -328,7 +328,7 @@ loc_3E32C:
 	bset	#7,object_meta(a3)
 	move.l	#stru_3DF42,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bclr	#7,object_meta(a3)
 	move.l	$62(a5),d7
 	jsr	(j_Init_Animation).w
@@ -352,7 +352,7 @@ loc_3E378:
 	st	has_kid_collision(a3)
 	move.l	#stru_3DF48,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	clr.b	$71(a5)
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------

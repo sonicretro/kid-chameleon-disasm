@@ -61,7 +61,7 @@ loc_3D23E:
 	beq.s	loc_3D268
 	move.l	#stru_3D118,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	#$FF88,$42(a3)
 	move.l	$5E(a5),$50(a5)
 	move.l	$62(a5),d7
@@ -73,7 +73,7 @@ loc_3D268:
 	st	has_kid_collision(a3)
 	move.l	#stru_3D11E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -266,7 +266,7 @@ loc_3D4BC:
 	sf	has_level_collision(a3)
 	move.l	#stru_3D11E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 

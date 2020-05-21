@@ -87,7 +87,7 @@ loc_3ADFA:	; lose a hit point
 	sf	is_moved(a3)
 	move.l	#stru_3ACBE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	st	is_moved(a3)
 	clr.w	collision_type(a3)
 	move.l	#stru_3ACA8,d7
@@ -99,7 +99,7 @@ loc_3AE28:
 	sf	is_moved(a3)
 	move.l	#stru_3ACC4,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3C46E
 ; ---------------------------------------------------------------------------
 
@@ -172,14 +172,14 @@ loc_3AEC4:
 loc_3AEE6:
 	move.l	#stru_3ACC4,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3C46E	; delete enemy
 ; ---------------------------------------------------------------------------
 
 loc_3AEF8:
 	move.l	#stru_3ACBE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	clr.w	collision_type(a3)
 	move.l	#stru_3ACA8,d7
 	jsr	(j_Init_Animation).w

@@ -104,7 +104,7 @@ loc_3C848:
 	beq.s	loc_3C87E
 	move.l	#stru_3C6D0,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	#$FF88,$42(a3)
 	move.l	$5E(a5),$50(a5)
 	move.l	$62(a5),d7
@@ -119,7 +119,7 @@ loc_3C87E:
 loc_3C886:
 	move.l	#stru_3C69A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	bra.w	loc_3E956
 ; ---------------------------------------------------------------------------
 
@@ -156,7 +156,7 @@ loc_3C8EC:
 loc_3C8F2:
 	move.l	#stru_3C6D6,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	#$FF88,$42(a3)
 	move.l	$5E(a5),$50(a5)
 	move.l	$62(a5),d7

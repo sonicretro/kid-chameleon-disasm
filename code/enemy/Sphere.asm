@@ -130,7 +130,7 @@ Enemy06_Sphere_Kill:
 	clr.l	y_vel(a3)
 	move.l	#stru_36182,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	moveq	#0,d0
 	move.b	$42(a5),d0
 	bpl.s	loc_36088

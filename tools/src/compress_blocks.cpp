@@ -179,8 +179,8 @@ int main(int argc, char* argv[]) {
 
     // put data into matrix
     int pos = 0;
-    int xsize = data[pos++];
-    int ysize = data[pos++];
+    int xsize = (data[pos++] << 8) + data[pos++];
+    int ysize = (data[pos++] << 8) + data[pos++];
     std::vector< std::vector < std::array<unsigned char, 5> > > blocks(ysize, std::vector<std::array<unsigned char, 5> >(xsize));
     for (int y = 0; y < ysize; ++y) {    
         for (int x = 0; x < xsize; ++x) {

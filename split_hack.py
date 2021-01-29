@@ -292,6 +292,7 @@ for lev in range(Number_Levels):
             make_shifted_background_copy(copied_lev, lev, xshift, yshift)
 
     kclv.close()
+    copyfile("tiled/maps/{:02X}.kclv".format(lev), "tiled/maps/{:02X}.kclvb".format(lev))
 
     if bgscroll in bgscroll_addrs:
         # Duplicate entry --> copy file

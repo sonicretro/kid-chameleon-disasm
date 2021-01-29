@@ -1,5 +1,6 @@
 import math
 import os
+from shutil import copyfile
 
 f = open("kid.bin", "rb")
 b = f.read()
@@ -455,6 +456,7 @@ for lev in range(Number_Levels):
                 kclv.write("\t\"background\":\t\"level/background/{:02X}.bin\"\n".format(lev))
     kclv.write("}\n")
     kclv.close()
+    copyfile("tiled/maps/{:02X}.kclv".format(lev), "tiled/maps/{:02X}.kclvb".format(lev))
 
 linfo.close()
 

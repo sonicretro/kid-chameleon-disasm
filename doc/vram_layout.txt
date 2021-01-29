@@ -32,10 +32,24 @@ to get the actual VRAM addresses multiply by $20.
 
 
 Palette:
-
 16 colors: foreground/blocks
- 8 colors: enemy 1
+ 8 colors: enemy 1/murder wall/lava/hail
  8 colors: background
  8 colors: enemy 2
  8 colors: enemy 3
 16 colors: kid
+
+64 colors total.
+There are 4 palette lines. A palette line is 16 colors (slots 0-15).
+The first color of each palette line is transparent
+(i.e. its value doesn't matter, except screen background color.)
+
+Notes: 
+- First palette line:
+  - First color determines the screen background color.
+    - It is taken from first entry of the background palette.
+  - The other 15 entries are the foreground palette
+- Second/third palette line
+ - Each enemy palette is 7 colors, taking up color slots 1-7 or 9-15
+ - Color slot 8 is set to black (slot 0 is transparent)
+ - The background palette uses slots 9-15 of the second palette line

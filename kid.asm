@@ -11837,9 +11837,11 @@ loc_9B08:
 
 loc_9B14:
 	tst.b	x_direction(a3)
-	bne.s	loc_9B7E
+	bne.s	loc_9B7E	; facing left
+	; facing right
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_9B26
+	; facing right but holding left --> now facing left
 	st	x_direction(a3)
 	bra.s	loc_9B90
 ; ---------------------------------------------------------------------------
@@ -11848,44 +11850,46 @@ loc_9B26:
 	tst.b	(Ctrl_Right_Held).w
 	beq.w	loc_9BEE
 
-loc_9B2E:
+loc_9B2E:	; facing right holding right
 	tst.b	(Ctrl_A_Held).w
 	bne.s	loc_9B62
+	; facing right, holding right but not run
 	tst.l	d0
 	bmi.s	loc_9B5C
+
+; facing right, holding right but not run, moving right
 	cmp.l	$10(a0),d0
 	ble.s	loc_9B44
-	move.l	$10(a0),d0
+	move.l	$10(a0),d0	; use running speed cap
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9B44:
+loc_9B44:	; below running speed cap
 	cmp.l	(a0),d0
 	ble.s	loc_9B4E
-	sub.l	8(a0),d0
+	sub.l	8(a0),d0	; beyond walking speed cap -> decelerate
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9B4E:
-	add.l	4(a0),d0
+loc_9B4E:	; below walking speed cap
+	add.l	4(a0),d0	; apply walking acceleration
 	cmp.l	(a0),d0
 	bcs.w	return_9B5A
-	move.l	(a0),d0
+	move.l	(a0),d0	; prevent from going above walking speed cap
 
 return_9B5A:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B5C:
+loc_9B5C:; facing right holding right but not run, but moving left
 	add.l	$C(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B62:
+loc_9B62:; facing right holding right and run
 	tst.l	d0
 	bmi.s	loc_9B78
-	add.l	$14(a0),d0
-	cmp.l	$10(a0),d0
+	; facing right holding right and run, moving right
+	add.l	$14(a0),d0	; apply running acceleration
+	cmp.l	$10(a0),d0	; check running speed cap
 	bcs.w	return_9B76
 	move.l	$10(a0),d0
 
@@ -11893,14 +11897,15 @@ return_9B76:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B78:
+loc_9B78:; facing right holding right and run, but moving left
 	add.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B7E:
+loc_9B7E:	; facing left
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_9B8A
+	; facing left but holding right --> now facing right
 	sf	x_direction(a3)
 	bra.s	loc_9B2E
 ; ---------------------------------------------------------------------------
@@ -11909,52 +11914,53 @@ loc_9B8A:
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_9BEE
 
-loc_9B90:
+loc_9B90:; facing left, holding left
 	tst.b	(Ctrl_A_Held).w
 	bne.s	loc_9BCE
+	; facing left, holding left but not run
 	tst.l	d0
 	bpl.s	loc_9BC8
+	; moving left
 	move.l	d0,d1
 	neg.l	d1
 	cmp.l	$10(a0),d1
 	ble.s	loc_9BAC
-	move.l	$10(a0),d0
+	move.l	$10(a0),d0	; use running speed cap
 	neg.l	d0
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9BAC:
+loc_9BAC:	; below running speed cap
 	cmp.l	(a0),d1
 	ble.s	loc_9BB6
-	add.l	8(a0),d0
+	add.l	8(a0),d0	; beyond walking speed cap -> decelerate
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9BB6:
-	sub.l	4(a0),d0
+loc_9BB6:	; below walking speed cap
+	sub.l	4(a0),d0	; apply walking acceleration
 	move.l	d0,d1
 	neg.l	d1
 	cmp.l	(a0),d1
 	ble.s	return_9BC6
-	move.l	(a0),d0
+	move.l	(a0),d0	; prevent from going above walking speed cap
 	neg.l	d0
 
 return_9BC6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BC8:
+loc_9BC8:; facing left, holding left but not run, moving right
 	sub.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BCE:
+loc_9BCE:; facing left, holding left and run
 	tst.l	d0
 	bpl.s	loc_9BE8
-	sub.l	$14(a0),d0
+	; facing left holding left and run, moving left
+	sub.l	$14(a0),d0	; apply running acceleration
 	move.l	d0,d1
 	neg.l	d1
-	cmp.l	$10(a0),d1
+	cmp.l	$10(a0),d1	; check running speed cap
 	ble.s	return_9BE6
 	move.l	$10(a0),d0
 	neg.l	d0
@@ -11963,20 +11969,21 @@ return_9BE6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BE8:
+loc_9BE8:; facing left holding left and run, but moving right
 	sub.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BEE:
+loc_9BEE:	; facing either way, holding nothing
 	tst.l	d0
 	bpl.s	loc_9BFC
+	; moving left
 	add.l	8(a0),d0
 	bpl.w	loc_9C06
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BFC:
+loc_9BFC:	; moving right
 	sub.l	8(a0),d0
 	bmi.w	loc_9C06
 	rts
@@ -11987,6 +11994,18 @@ loc_9C06:
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_9A0A
 ; ---------------------------------------------------------------------------
+; Max walking speed: If accelerating while walking, speed is capped at this value.
+;	If already going faster while walking, a deceleration is applied.
+; Acceleration walking rate: Used when pressing a direction but not run while
+;	moving in that direction at a speed lower than the walking speed cap
+; Deceleration walking/running rate: Used when holding no direction,
+;	or holding a direction but not run while going faster than the walking speed cap in that direction
+; Brake walking-left rate: Used when holding right but not run while moving left
+; Max running speed: If going faster than this and pressing the direction the
+;	kid is already moving, speed is reset to this value.
+; Acceleration running rate: Used when pressing a direction and run while moving in that direction
+; Brake walking-right/running rate: Used when pressing direction and run while moving in opposite direction,
+;	and when holding left but not run while moving right
 unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$20000	; Max walking speed
 	dc.l	 $1000	; Acceleration walking rate
@@ -14055,17 +14074,17 @@ loc_B09E:
 	add.w	d0,d0
 	lea	unk_A4B2(pc),a0
 	move.w	(a0,d0.w),d1
-	ext.l	d1
+	ext.l	d1	; horizontal acceleration
 	tst.b	(Ctrl_A_Held).w
 	beq.s	loc_B0B6
 	move.l	d1,d2
 	asr.l	#1,d2
-	add.l	d2,d1
+	add.l	d2,d1	; if RUN is held, multiply accel by 1.5
 
 loc_B0B6:
 	lea	unk_A4C6(pc),a0
 	add.w	d0,d0
-	move.l	(a0,d0.w),d2
+	move.l	(a0,d0.w),d2	; max speed
 	move.l	x_vel(a3),d0
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_B0E2
@@ -14075,7 +14094,7 @@ loc_B0B6:
 	neg.l	d2
 	cmp.l	d0,d2
 	ble.s	loc_B118
-	add.l	d1,d0
+	add.l	d1,d0	; we reached max speed
 	addi.l	#$100,d0
 	bra.s	loc_B118
 ; ---------------------------------------------------------------------------
@@ -14093,7 +14112,7 @@ loc_B0E2:
 	bra.s	loc_B118
 ; ---------------------------------------------------------------------------
 
-loc_B0FE:
+loc_B0FE:	; if holding no left/right button, reduce speed by $400
 	tst.l	d0
 	bmi.s	loc_B10E
 	subi.l	#$400,d0
@@ -14188,15 +14207,15 @@ loc_B1D4:
 	bne.s	loc_B1E8
 
 loc_B1E0:
-	addi.l	#$4000,d7
+	addi.l	#$4000,d7	; default gravity for kid
 	bra.s	loc_B1EE
 ; ---------------------------------------------------------------------------
 
 loc_B1E8:
-	addi.l	#$2000,d7
+	addi.l	#$2000,d7	; lower gravity if jump button is pressed
 
 loc_B1EE:
-	cmpi.l	#$80000,d7
+	cmpi.l	#$80000,d7	; maximum falling speed
 	ble.s	loc_B200
 	move.l	#$80000,d7
 	bra.w	loc_B20E
@@ -24045,7 +24064,7 @@ loc_11D0A:
 
 loc_11D0C:
 	move.l	(a0)+,a1	; background tiles
-	bsr.w	sub_1280A
+	bsr.w	Load_BackgroundMappings
 	move.l	(LnkTo_ThemeMappings_Index).l,a1
 	move.l	(a1,d7.w),(Addr_ThemeMappings).w
 	move.l	(a0)+,a1	; enemy	layout
@@ -24169,7 +24188,7 @@ loc_11E16:
 	lea	(Palette_Buffer+$32).l,a2
 	moveq	#6,d1
 
--	; loop to copy foreground palette into palette RAM
+-	; loop to copy background palette into palette RAM
 	move.w	(a1)+,(a2)+
 	dbf	d1,-
 
@@ -25282,12 +25301,10 @@ loc_127F8:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_1280A:
-; FUNCTION CHUNK AT 000128BA SIZE 000000F4 BYTES
-
+;sub_1280A
+Load_BackgroundMappings:
 	tst.b	(Background_format).w
-	bne.w	loc_128BA
+	bne.w	Load_BackgroundMappings_Layered
 	cmpi.w	#$8000,(a1)
 	beq.w	loc_12824
 	movem.l	d5-d7,-(sp)
@@ -25299,8 +25316,8 @@ sub_1280A:
 loc_12824:
 	movem.l	d5-d7,-(sp)
 	addq.w	#2,a1
-	move.w	(a1)+,d5
-	move.w	(a1)+,d6
+	move.w	(a1)+,d5	; x offset when copying from other level's layout
+	move.w	(a1)+,d6	; y offset when copying from other level's layout
 	move.l	(a1),a1
 
 loc_12830:
@@ -25310,14 +25327,14 @@ loc_12830:
 	sub.w	d5,d2
 	move.w	(a1)+,d3
 	sub.w	d6,d3
-	bsr.w	sub_12848
+	bsr.w	Load_BackgroundChunk
 	bra.s	loc_12830
 ; ---------------------------------------------------------------------------
 
 loc_12842:
 	movem.l	(sp)+,d5-d7
 	rts
-; End of function sub_1280A
+; End of function Load_BackgroundMappings
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -25329,7 +25346,8 @@ loc_12842:
 	; Background_theme = Background theme
 	; Background_width = background (buffer) width
 	; $FFFF87B2 = background tile buffer
-sub_12848:
+;sub_12848
+Load_BackgroundChunk:
 	movem.l	d5-d6,-(sp)
 	move.w	d2,d7
 	move.w	d3,d6
@@ -25342,12 +25360,12 @@ sub_12848:
 	lea	($FFFF87B2).w,a2
 	muls.w	(Background_width).w,d3
 	add.w	d3,a2
-	add.w	d2,a2
+	add.w	d2,a2	; destination address in bg buffer
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	(a3,d0.w),a3
-	move.w	(a3)+,d2
-	move.w	(a3)+,d3
+	move.l	(a3,d0.w),a3	; address to chunk definition
+	move.w	(a3)+,d2	; x size of chunk
+	move.w	(a3)+,d3	; y size of chunk
 	subq.w	#1,d2
 	subq.w	#1,d3
 
@@ -25365,7 +25383,7 @@ loc_1288A:
 	bmi.s	loc_128A0
 	cmp.w	(Background_height).w,d6
 	bge.s	loc_128A0
-	move.b	(a3),(a4)
+	move.b	(a3),(a4)	; if within bounds, copy tile over
 
 loc_128A0:
 	addq.w	#1,a3
@@ -25377,12 +25395,13 @@ loc_128A0:
 	dbf	d3,loc_12884
 	movem.l	(sp)+,d5-d6
 	rts
-; End of function sub_12848
+; End of function Load_BackgroundChunk
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_1280A
+; START	OF FUNCTION CHUNK FOR Load_BackgroundMappings
 
-loc_128BA:
+;loc_128BA:
+Load_BackgroundMappings_Layered:
 	move.l	a0,-(sp)
 	move.l	(LnkTo_off_7B3E4).l,a3
 	move.w	(Background_theme).w,d0
@@ -25470,7 +25489,7 @@ loc_12988:	; desert
 	bsr.w	EniDec
 	move.l	(sp)+,a0
 	rts
-; END OF FUNCTION CHUNK	FOR sub_1280A
+; END OF FUNCTION CHUNK	FOR Load_BackgroundMappings
 
 ; =============== S U B	R O U T	I N E =======================================
 

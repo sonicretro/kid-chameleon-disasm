@@ -16,6 +16,10 @@
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
+; Set to 1 to fix minor bugs in the game.
+; e.g. allows combining robots with other (non-UFO) enemies,
+; makes trap platforms move smoothly.
+minorBugFixes = 0
 ; Introduce type of scripted platform that starts the script only once the
 ; kid stands on the platform.
 ; In the layout, such a platform is used when the platform parameter t=1.
@@ -5283,7 +5287,11 @@ TrapPlatformDown_MoveLoop:
 	addi.l	#$4000,d7
 	cmpi.l	#$40000,d7
 	blt.w	+
+    if minorBugFixes = 0
 	move.l	#$20000,d7	; this is a bug. Should be $40000
+    else
+	move.l	#$40000,d7
+    endif
 +
 	move.l	d7,$E(a3)
 	move.w	6(a3),d7
@@ -38794,7 +38802,11 @@ loc_36D52:
 	cmpi.w	#objid_UFO,d4
 	beq.s	Load_EnemyPaletteLong
 	cmpi.w	#objid_Robot,d4
+    if minorBugFixes = 0
 	beq.s	Load_EnemyArtToVRAM
+    else
+	beq.s	Load_EnemyPaletteLong
+    endif
 	cmpi.w	#objid_HeadyMetal,d4
 	beq.s	Load_EnemyPaletteLong
 	cmpi.w	#objid_Shiskaboss,d4

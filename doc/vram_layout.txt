@@ -12,7 +12,7 @@ to get the actual VRAM addresses multiply by $20.
 23D-2C5: other kinds of blocks
 2C5-2CF: numbers (elevator block)
 2CF-2F3: dust cloud from hitting block
-2F3-2FB: rubber block
+2F3-2FB: indoor rubber block
 2FB-409: enemy slot 1
 409-517: enemy slot 2
 517-625: enemy slot 3

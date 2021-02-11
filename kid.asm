@@ -8715,7 +8715,7 @@ loc_7E14:
 	move.w	(Foreground_theme).w,d0
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_7E26
-	moveq	#$B,d0
+	moveq	#MusicSpeed_Murderwall-unk_7ECC,d0
 
 loc_7E26:
 	move.b	(a4,d0.w),d0
@@ -8788,6 +8788,8 @@ unk_7EC2:
 	dc.b   3	; berzerker
 	dc.b   3	; maniaxe
 	dc.b   3	; micromax
+	align 2
+; Music speeds(?) applied after transformation
 unk_7ECC:
 	dc.b   0
 	dc.b $7E
@@ -8800,7 +8802,9 @@ unk_7ECC:
 	dc.b $74
 	dc.b $78
 	dc.b $68
+MusicSpeed_Murderwall:
 	dc.b $76
+	align 2
 unk_7ED8:
 	dc.b   0
 	dc.b sfx_Skycutter_transform
@@ -8812,6 +8816,7 @@ unk_7ED8:
 	dc.b sfx_Berzerker_transform
 	dc.b sfx_Maniaxe_transform
 	dc.b sfx_Micromax_transform
+	align 2
 off_7EE2:
 	dc.w off_7EE2-off_7EE2
 	dc.w stru_7EFA-off_7EE2
@@ -24247,7 +24252,7 @@ loc_11EA2:
 	bne.s	loc_11EC4
 	lea	Palette_Permutation_BGHill_alt(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
-	move.l	$34(a1),a0
+	move.l	ThemeArtBack_HillAlt-ThemeArtBack_Index(a1),a0
 	move.w	#$F800,d0
 	bsr.w	DecompressToRAM
 
@@ -24256,14 +24261,14 @@ loc_11EC4:
 	bne.s	loc_11EFA
 	lea	Palette_Permutation_Identity(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
-	move.l	$2C(a1),a0
+	move.l	ThemeArtBack_CaveAlt-ThemeArtBack_Index(a1),a0
 	cmpi.w	#WeatherID_Storm,(Level_Special_Effects).w
 	beq.s	loc_11EEA
 	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	loc_11EF2
 
 loc_11EEA:
-	move.l	$30(a1),a0
+	move.l	ThemeArtBack_MountainLightning-ThemeArtBack_Index(a1),a0
 	lea	Palette_Permutation_BGMountain(pc),a3
 
 loc_11EF2:
@@ -24376,7 +24381,7 @@ unk_1201E:
 	dc.b   bgm_Cave
 	dc.b   bgm_Forest
 	dc.b   bgm_City
-	dc.b   0
+	align 2
 ; ---------------------------------------------------------------------------
 ANIART_SHORE_SIZE = $2E0
 
@@ -27519,7 +27524,7 @@ Palette_Permutation_BGHill_alt:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; Make indoor rubber block art and write it to tile $2F3-$2FA
 sub_144DA:
 	move.w	(Foreground_theme).w,d0
 	moveq	#0,d1
@@ -27545,7 +27550,7 @@ loc_14512:
 	move.l	(a2)+,(a1)+
 	dbf	d2,loc_14512
 	moveq	#7,d2
-	move.w	#$26E,d3
+	move.w	#$26E,d3	; rubber block VRAM address
 
 loc_1451E:
 	move.w	d3,d0
@@ -27576,7 +27581,7 @@ loc_14552:
 	dbf	d1,loc_1453E
 	move.l	d5,(a1)+
 	dbf	d0,loc_14538
-	move.l	#vdpComm($5E60,VRAM,WRITE),4(a6)
+	move.l	#vdpComm($5E60,VRAM,WRITE),4(a6)	; rubber block VRAM address (duplicate)
 	lea	($FFFF78B2).l,a0
 	moveq	#$3F,d0
 
@@ -27587,6 +27592,8 @@ loc_1456E:
 ; End of function sub_144DA
 
 ; ---------------------------------------------------------------------------
+; ID of some foreground block that is used for indoor areas.
+; Rubber block is drawn onto this to make indoor rubber block.
 unk_14576:
 	dc.b $10
 	dc.b  $A
@@ -27599,7 +27606,7 @@ unk_14576:
 	dc.b   1
 	dc.b $C5 ; Å
 	dc.b $9A ; š
-	dc.b   0
+	align 2
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -28735,6 +28742,7 @@ ArtComp_TitleCard_mountain:	binclude    "theme/titlecard/artcomp/mountain.bin"
 ArtComp_TitleCard_cave:		binclude    "theme/titlecard/artcomp/cave.bin"
 ArtComp_TitleCard_forest:	binclude    "theme/titlecard/artcomp/forest.bin"
 ArtComp_TitleCard_city:		binclude    "theme/titlecard/artcomp/city.bin"
+	align 2
 TitleCardArt_Index:
 	dc.l	0
 	dc.l ArtComp_TitleCard_sky
@@ -46028,9 +46036,9 @@ ThemeArtBack_Index:dc.l	unk_93C94
 	dc.l unk_96045
 	dc.l unk_96514
 	dc.l unk_96B49
-	dc.l unk_970D2
-	dc.l unk_9729F
-	dc.l unk_97381
+ThemeArtBack_CaveAlt:	dc.l unk_970D2	; 2C
+ThemeArtBack_MountainLightning:	dc.l unk_9729F	; 30
+ThemeArtBack_HillAlt:	dc.l unk_97381	; 34
 ThemeMappings_Index:dc.l unk_7C4EC
 	dc.l unk_7C51C
 	dc.l unk_7CCE4

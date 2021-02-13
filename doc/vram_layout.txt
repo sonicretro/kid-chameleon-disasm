@@ -27,8 +27,8 @@ to get the actual VRAM addresses multiply by $20.
 6EA-6FA: animated diamond
 6FA-6FE: unused star thingie?
 6FE-700: ?
-700-7B0: background plane map
-7B0-800: BG tiles
+700-780: background plane map
+780-800: BG tiles
 
 
 Palette:

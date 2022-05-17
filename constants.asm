@@ -103,27 +103,37 @@ sfx_Tar_Monster_shoots = $5E
 sfx_Robot_jumping_on = $5F
 
 ; Weather
-Lava = 1
-Storm = 2
-Storm_and_Hail = 3
+WeatherID_Lava = 1
+WeatherID_Storm = 2
+WeatherID_Storm_and_Hail = 3
 
 ; Character movement
-Standingstill = 0
-Crawling = 1
-Walking = 2
-Jump = 3
-Wall_Climbing = 4
-Up_Down_Hill = 5
+MoveID_Standingstill = 0
+MoveID_Crawling = 1
+MoveID_Walking = 2
+MoveID_Jump = 3
+MoveID_Wall_Climbing = 4
+MoveID_Up_Down_Hill = 5
 
 ; Keystrokes
-Up = 0
-Down = 1
-Right = 2
-Left = 3
-Button_A = 4 ; S (jump)
-Button_B = 5 ; D (special)
-Button_C = 6 ; A (run)
-Start = 7 ; Enter
+Button_Up = 0
+Button_Down = 1
+Button_Left = 2
+Button_Right = 3
+Button_B = 4 ; jump
+Button_C = 5 ; special
+Button_A = 6 ; run
+Button_Start = 7
+
+Button_Up_mask		=	1<<Button_Up	; $01
+Button_Down_mask	=	1<<Button_Down	; $02
+Button_Left_mask	=	1<<Button_Left	; $04
+Button_Right_mask	=	1<<Button_Right	; $08
+Button_B_mask		=	1<<Button_B	; $10
+Button_C_mask		=	1<<Button_C	; $20
+Button_A_mask		=	1<<Button_A	; $40
+Button_Start_mask	=	1<<Button_Start	; $80
+
 
 ; Characters
 The_Kid = 0
@@ -163,6 +173,59 @@ colid_kidright = $20
 colid_kidleft = $24
 colid_kidbelow = $28
 colid_kidabove = $2C
+
+; enemy IDs
+objid_FireDemon	= $00
+objid_Diamond	= $01
+objid_Robot	= $03
+objid_Armadillo	= $04
+objid_TarMonster	= $05
+objid_Sphere	= $06
+objid_Archer	= $07
+objid_Orca	= $08
+objid_Crab	= $09
+objid_RockTank	= $0A
+objid_RockTank_shooting	= $0B
+objid_Dragon_flying	= $0C
+objid_Dragon	= $0D
+objid_Cloud	= $0E
+objid_UFO	= $0F
+objid_Goat	= $10
+objid_Ninja	= $11
+objid_Lion	= $12
+objid_Scorpion	= $13
+objid_SpinningTwins	= $14
+objid_Drip	= $16
+objid_Hand	= $17
+objid_Tornado	= $18
+objid_Fireball	= $19
+objid_Driller	= $1A
+objid_EmoRock	= $1B
+objid_MiniHoppingSkull	= $1C
+objid_BigHoppingSkull	= $1D
+objid_invalid1F	= $1F
+objid_HeadyMetal	= $20
+objid_Shiskaboss	= $22
+objid_BoomerangBosses	= $23
+objid_BagelBrothers	= $24
+;objid_? = $3C
+objid_prizediamond = $64	; also ankh or clock after being collected
+objid_skycutter = $6C
+objid_cyclone = $70
+objid_redstealth = $74
+objid_eyeclops = $78
+objid_juggernaut = $7C
+objid_ironknight = $80
+objid_berzerker = $84
+objid_maniaxe = $88
+objid_micromax = $8C
+objid_ankh = $90
+objid_clock = $94
+objid_continue = $98
+objid_unkprize = $9C
+objid_flagpole = $A0
+;objid_BagelBrothers2 = $A4 ; ($24 with bit 7 set)
+
 
 ; Levels by number
 L_Blue_Lake_Woods_1 = 0

@@ -30,4 +30,5 @@ int main(int argc, char* argv[]) {
     fclose(input);
 
     compress(data, size, argv[2], true);
+    return 0;
 }

@@ -9,7 +9,7 @@ LevelSelect_Loop:
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	LevelSelect_DrawText
 	movem.l	(sp)+,d0-d3/a0-a3
-	move.w	#$69,d6
+	move.w	#TotalNumberLevels,d6
 	bsr.s	LevelSelect_Input
 	bclr	#7,(Ctrl_1_Pressed).w
 	beq.s	LevelSelect_Loop
@@ -59,7 +59,7 @@ LevelSelect_DrawText_loop:
 	lea	LevelSelect_spec_char_tbl_junk(pc),a4	; dirty fix: points to 0, $FF
 	tst.w	d6
 	bmi.s	LevelSelect_DrawText_Do
-	cmpi.w	#$69,d6
+	cmpi.w	#TotalNumberLevels,d6
 	bgt.s	LevelSelect_DrawText_Do
 
 	move.w	d6,d7

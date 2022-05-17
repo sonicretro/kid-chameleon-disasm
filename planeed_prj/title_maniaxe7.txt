@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/title_maniaxe.bin
+Mapping File:	../scenes/mapeni/2F76A.bin
+Art File:	../scenes/artcomp/Maniaxe_transformation_from_intro.bin
+Palette Length:	64
+Palette Offset: 6
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	14
+y-Size:	20
+Tile Offset: 0

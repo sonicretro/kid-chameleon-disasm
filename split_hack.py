@@ -117,8 +117,22 @@ def make_background_template(lev):
         ftemp.write(b'\xff\xff')
 
 def make_layered_background_template(lev):
-    with open("level/background/{:02X}_layered.bin".format(lev) , "wb") as ftemp:
+    with open("level/background/{:02X}.bin".format(lev) , "wb") as ftemp:
         ftemp.write(b'\x10' * 0x24)
+
+def make_shifted_background_copy(orig_lev, lev, xshift, yshift):
+    with open("level/background/{:02X}.bin".format(orig_lev) , "rb") as ftemp:
+        data = bytearray(ftemp.read())
+    # format: 3 words per chunk: id, xpos, ypos
+    for i in range(2, len(data), 6):
+        xpos = int.from_bytes(data[i  :i+2], byteorder='big', signed=True)
+        ypos = int.from_bytes(data[i+2:i+4], byteorder='big', signed=True)
+        xpos -= xshift
+        ypos -= yshift
+        data[i  :i+2] = xpos.to_bytes(2, byteorder='big', signed=True)
+        data[i+2:i+4] = ypos.to_bytes(2, byteorder='big', signed=True)
+    with open("level/background/{:02X}.bin".format(lev) , "wb") as ftemp:
+        ftemp.write(data)
 
 
 # os.makedirs("hack", exist_ok=True)
@@ -145,7 +159,9 @@ for lev in range(Number_Levels):
     if background not in background_addrs:
         if btoi(background, 2) == 0x8000: # copied
             copied_addr = btoi(background+6, 4) # address of copied layout
-            background_addrs[background] = (2, lev, copied_addr)
+            xshift = int.from_bytes(b[background+2:background+4], byteorder='big', signed=True)
+            yshift = int.from_bytes(b[background+4:background+6], byteorder='big', signed=True)
+            background_addrs[background] = (2, lev, copied_addr, xshift, yshift)
         elif bgtheme in [3,5,7,9]: # layered
             background_addrs[background] = (1, lev)
         else: # chunked
@@ -164,14 +180,28 @@ fbgs_inc = open("level/bgscroll_includes.asm", "w")
 fplat_inc = open("level/platform_includes.asm", "w")
 fplat_idx = open("level/platform_index.asm", "w")
 flevelfiles = open("level/level_files.txt", "w")
+fblock.write("\talign 2\n")
+
+kclv_content = """
+{
+    "header":       "level/header/XX.bin",
+    "foreground":   "level/foreground/XX.bin",
+    "background":   "level/background/XX.bin",
+    "bgscroll":     "level/bgscroll/XX.bin",
+    "enemy":        "level/enemy/XX.bin",
+    "platform":     "level/platform/XX.asm",
+    "block":        "level/block/XX.bin"
+}
+"""
 
 for lev in range(Number_Levels):
     addr = btoi(MapHeader_Index+2*lev, 2) + MapHeader_BaseAddress
+    kclv = open("tiled/maps/{:02X}.kclv".format(lev), "w")
 
     # Every map gets its own set of files.
     fheader_idx.write("\t\tdc.w\tMapHeader_{:02X}-MapHeader_BaseAddress\t; {:2X}\n".format(lev, lev))
     fheader_def.write("MapHeader_{:02X}:\tmaphdr\t\"level/header/{:02X}.bin\", ForegroundLayout_{:02X}, BlockLayout_{:02X}, BackgroundLayout_{:02X}, EnemyLayout_{:02X}\n".format(lev, lev, lev, lev, lev, lev))
-    flevelfiles.write("{:02X}\tplatform/{:02X}.bin bgcsroll/{:02X}.bin header/{:02X}.bin enemy/{:02X}.bin foreground/{:02X}.bin block/{:02X}.bin".format(lev, lev, lev, lev, lev, lev, lev))
+    flevelfiles.write("{:02X}\tplatform/{:02X}.asm bgscroll/{:02X}.bin header/{:02X}.bin enemy/{:02X}.bin foreground/{:02X}.bin block/{:02X}.bin".format(lev, lev, lev, lev, lev, lev, lev))
     ffg.write("ForegroundLayout_{:02X}:\tbinclude\t\"level/foreground/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
     fblock.write("BlockLayout_{:02X}:\tbinclude\t\"level/block/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
     fenemy.write("EnemyLayout_{:02X}:\tdc.l\tEnemyLayout_{:02X}+$10\n\tbinclude\t\"level/enemy/{:02X}.bin\"\n".format(lev, lev, lev))
@@ -201,6 +231,7 @@ for lev in range(Number_Levels):
         make_header_template(lev)
         fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
         flevelfiles.write(" background/{:02X}.bin\n".format(lev))
+        kclv.write(kclv_content.replace('XX', "{:02X}".format(lev)).replace('YY', "{:02X}".format(lev)))
 
     # Handle duplicate entries.
     elif addr in mapheader_addrs:
@@ -213,20 +244,20 @@ for lev in range(Number_Levels):
         copyfile("level/block/{:02X}.bin".format(orig_lev), "level/block/{:02X}.bin".format(lev))
         copyfile("level/enemy/{:02X}.bin".format(orig_lev), "level/enemy/{:02X}.bin".format(lev))
         copyfile("level/header/{:02X}.bin".format(orig_lev), "level/header/{:02X}.bin".format(lev))
-        if background_addrs[background][0] == 0: # chunked
+        fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
+        flevelfiles.write(" background/{:02X}.bin\n".format(lev))
+        kclv.write(kclv_content.replace('XX', "{:02X}".format(lev)))
+        if background_addrs[background][0] != 2: # chunked or layered, but not copied
             copyfile("level/background/{:02X}.bin".format(orig_lev), "level/background/{:02X}.bin".format(lev))
-            fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
-            flevelfiles.write(" background/{:02X}.bin\n".format(lev))
-        elif background_addrs[background][0] == 1: # layered
-            copyfile("level/background/{:02X}_layered.bin".format(orig_lev), "level/background/{:02X}_layered.bin".format(lev))
-            fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}_layered.bin\"\n\talign 2\n".format(lev, lev))
-            flevelfiles.write(" background/{:02X}_layered.bin\n".format(lev))
         else: #copied
             copied_addr = background_addrs[background][2]
+            xshift = background_addrs[background][3]
+            yshift = background_addrs[background][4]
             copied_lev = background_addrs[copied_addr][1]
-            fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
-            flevelfiles.write(" background/{:02X}.bin\n".format(copied_lev)) # background files are never layered
-
+            make_shifted_background_copy(copied_lev, lev, xshift, yshift)
+            # fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
+            # flevelfiles.write(" background/{:02X}.bin\n".format(copied_lev)) # background files are never layered
+            # kclv.write(kclv_content.replace('XX', "{:02X}".format(lev)).replace('YY', "{:02X}".format(copied_lev)))
     # New valid entry
     else:
         mapheader_addrs[addr] = lev
@@ -246,23 +277,22 @@ for lev in range(Number_Levels):
         else: # duplicate block layout
             copyfile("level/block/{:02X}.bin".format(block_addrs[block]), "level/block/{:02X}.bin".format(lev))
 
+        fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
+        flevelfiles.write(" background/{:02X}.bin\n".format(lev))
+        kclv.write(kclv_content.replace('XX', "{:02X}".format(lev)))
         orig_lev = background_addrs[background][1]
-        if background_addrs[background][0] == 0: # chunked
+        if background_addrs[background][0] != 2: # chunked or layered, but not copied
             if orig_lev != lev: # two levels sharing same bg --> make copy
                 copyfile("level/background/{:02X}.bin".format(orig_lev), "level/background/{:02X}.bin".format(lev))
-            fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}.bin\"\n\talign 2\n".format(lev, lev))
-            flevelfiles.write(" background/{:02X}.bin\n".format(lev))
-        elif background_addrs[background][0] == 1: # layered
-            if orig_lev != lev: # two levels sharing same bg --> make copy
-                copyfile("level/background/{:02X}_layered.bin".format(orig_lev), "level/background/{:02X}_layered.bin".format(lev))
-            fbg.write("BackgroundLayout_{:02X}:\tbinclude\t\"level/background/{:02X}_layered.bin\"\n\talign 2\n".format(lev, lev))
-            flevelfiles.write(" background/{:02X}_layered.bin\n".format(lev))
-        else: #copied
+        else: #copied --> make shifted copy
             copied_addr = background_addrs[background][2]
+            xshift = background_addrs[background][3]
+            yshift = background_addrs[background][4]
             copied_lev = background_addrs[copied_addr][1]
-            fbg.write("BackgroundLayout_{:02X}:\tdc.w\t$8000\n\tdc.l\t$0\n\tdc.l\tBackgroundLayout_{:02X}\n".format(lev, copied_lev))
-            flevelfiles.write(" background/{:02X}.bin\n".format(copied_lev)) # background files are never layered
+            make_shifted_background_copy(copied_lev, lev, xshift, yshift)
 
+    kclv.close()
+    copyfile("tiled/maps/{:02X}.kclv".format(lev), "tiled/maps/{:02X}.kclvb".format(lev))
 
     if bgscroll in bgscroll_addrs:
         # Duplicate entry --> copy file

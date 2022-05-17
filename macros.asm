@@ -32,8 +32,17 @@ enemyloaddata	macro	paladdr, artaddr, codeaddr
 		endm
 
 ; ---------------------------------------------------------------------------
+; if the art crosses a $20000 boundary, align it to make DMA safe
+align_dmasafe	macro   artsize
+		    if ((*) ! ((*)+artsize))&$FE0000 <> 0
+			align $8000
+		    endif
+		endm
 
-sprite_frame_unc	macro	xcenter, ycenter, width, height, art
+; ---------------------------------------------------------------------------
+sprite_frame_unc	macro	xcenter, ycenter, width, height, art, {INTLABEL}
+		align_dmasafe	((((width+7)>>3)*((height+7)>>3))*$20 + 6)
+__LABEL__ label *
 		dc.b	xcenter, ycenter
 		dc.w	width, height
 		binclude art
@@ -104,6 +113,10 @@ dma68kToVDP macro source,dest,length,type
 	move.w	(DMA_data_thunk).w,4(a6)
 	move.w	(DMA_data_thunk+2).w,4(a6)
     endm
+	
+; calculates initial loop counter value for a dbf loop
+; that writes n bytes total at 4 bytes per iteration
+bytesToLcnt function n,n>>2-1
 
 ; ---------------------------------------------------------------------------
 ; Z80 addresses

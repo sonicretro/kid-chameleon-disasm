@@ -76,9 +76,15 @@ The problem you may run into is that block layout must be condensed, but in the 
 Details of the block layout courtesy of van0014
 -----------------------------------------------
 
-I'll explain the block layout a little. The offset in the header is at $14. It is a word, in little endian, if I remember right. The layout has no header. It can begin with either a block or empty space marker. 1 byte of $7F or less denotes blank space of that many places: 128 blocks or less. 00 == 1 space, 01 == 2 spaces.
-Blocks and/or spaces must fill the entire map area in the block data section 
-(if there is only one block in the level, the rest of the data must be for example 7F7F7F...7F24, until all space is filled. 24 is just my example. To show it won't always be 7F, especially the last space. It could be anything needed to get the right number of spaces.)
+I'll explain the block layout a little. The offset to block data is at $14. It is a word, in little endian. So in map 4A, $FC15 is actually $15FC. 
+The layout itself can begin with either a block or empty space marker. 
+
+Blank space bytes - These need to fill every gap between blocks
+  1 byte of $7F or less denotes blank space of that many places: 00 == 1 space, 01 == 2 spaces, 7F == 128 spaces. The entire map must be covered with blocks and / or blank spaces to fill the area.
+  We need to know the map size. For map 4A, it is: $0A 02
+  This is 10 x 2 screens. Using the data from above, that gets multiplied by 20 and 14 respectively. So our actual map size in blocks is 200 x 28 -- ((10 x 20) x (2 x 14))
+  This gives us 5,600 blocks (200 x 28). So in order to fil the whole map with blank space, the data would be: 43 bytes of $7F + $5F. That adds up to 5,600! (43 lots of 128 + 96). Remember that byte $00 actually represents 1 block space, and $01 is 2 spaces, ect. As you add blocks, this 'blank space' block data gets smaller
+
 
 Block data. If a block is listed, it will be followed by 4 bytes for data. 
 
@@ -115,3 +121,15 @@ B: 1up
 C: Time
 D: Continue
 E: 10 Diamonds
+
+Enemy data
+Location: Read 2 bytes at $18, little endian (low byte, high byte)
+Map 4A: EF18; Actual offset = $18EF
+The first 6 bytes are for the 3 enemy types and palettes
+The 7th byte is the total number of enemies in the map (4 in map 4A)
+  Enemy date
+    Enemy type
+    Respawn
+    Level (2 bytes)
+    X location in pixels (2 bytes)
+    Y location in pixels (2 bytes)

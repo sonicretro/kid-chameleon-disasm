@@ -1,17 +1,29 @@
 Sprite_Table = 		$FFFF0000 	; $280 bytes, 8 bytes per sprite ($50 sprites)
 Object_RAM = 		$FFFF0DA0 	; $16A8 bytes, $74 bytes per object ($32 slots)
 GfxObject_RAM = 	$FFFF2448	; $16DC bytes, $4C bytes per object ($4D objects)
+FGPlane_UpdateQueueCustom =   $FFFF43BC ; 10 bytes per entry: 1 word VDP control command, 2 words data
+FGPlane_UpdateQueueCell =   $FFFF47A6	; 6 bytes per entry, 1 word xpos, 1 word ypos, 1 word in format of Level_Layout cell
 Palette_Buffer = 	$FFFF4E58	; $80 bytes
+Palette_Buffer_2 = 	$FFFF4ED8	; $80 bytes
+Palette_Buffer_3 = 	$FFFF4F58	; $80 bytes
 Block_Mappings = 	$FFFF503A	; $288 bytes
 Level_terrain_layout = 	$FFFF52C2	; $20D0 bytes. 1 byte per entry (30 screens of $118 entries each)
 Horiz_Scroll_Data = 	$FFFF7392	; $A0 bytes. deformation related data
 Horiz_Scroll_Buffer = 	$FFFF7432 	; $380 bytes. 
 Decompression_Buffer =	$FFFF77B2	; $1000 bytes
-Level_Layout = 		$FFFFA652	; $41A0 bytes. 2 bytes per entry: block,skin (30 screens of $118 entries each)
+Level_Layout = 		$FFFFA652	; $41A0 bytes. 16 bits per entry: block_flag(1), collision(3), block(4), skin(8)
 EnemyStatus_Table = 	$FFFFF8FE	; ? bytes. 2 bytes per entry
+EvanescObject_RAM = 	$FFFFE90A	; Disappearing evanescent block RAM: ($13 objects), $C bytes per object
+ShooterObject_RAM = 	$FFFFE9FA	; Shooter Block Bullet RAM: ($27 objects), $C bytes per object
 Platform_RAM =		$FFFFEDBA	; $264 bytes, $22 bytes per platform ($12 platforms)
 
+Addr_FirstDPObjectSlot =	$FFFFF5A4	; long: Diamond Power Object RAM: Address of first object slot in list
+Addr_NextFreeDPObjectSlot =	$FFFFF5A8	; long: Diamond Power Object RAM: Address of next free object slot
+Addr_LastDPObjectSlot =	$FFFFF5AC	; long: Diamond Power Object RAM: Address of last object slot in list
+Diamond_power_active =	$FFFFF5B8	; byte: flag: whether diamond power is active
+Diamond_power_ID =	$FFFFF5BA	; word: ID of active diamond power (equals HelmetID for 20-diamonds, HelmetID+10 for 50-diamonds)
 Diamond_power_timer = 	$FFFFF5BE	; word
+Initial_stack = 	$FFFFF7FE
 V_Int_counter = 	$FFFFF806	; word: number of frames since start of game
 Frame_Counter = 	$FFFFF808	; word: frame counter (adds 1 every frame)
 V_Int_Done = 		$FFFFF80A	; byte: Indicator that V-Int has occurred
@@ -44,6 +56,7 @@ Addr_NextFreeGfxObjectSlot = $FFFFF854	; long
 Addr_FirstGfxObjectSlot = $FFFFF858	; long
 Number_GfxObjects =	$FFFFF85C	; word
 Addr_GfxObject_Kid = 	$FFFFF85E	; long
+Addr_GfxObject_KidProjectile = 	$FFFFF866 ; long
 PaletteToDMA_Flag = 	$FFFFF890	; byte
 Level_width_blocks = 	$FFFFF89E	; word
 Level_width_tiles = 	$FFFFF89C	; word
@@ -56,18 +69,33 @@ Background_height = 	$FFFFF8A8	; word
 Foreground_theme = 	$FFFFF8AA	; word: also determines music
 Background_theme = 	$FFFFF8AC	; word
 Addr_ThemeMappings = 	$FFFFF8AE	; long:	Address of theme mappings
+FGUpdateQueueCustom_NextSlot = $FFFFF8B2	; long: pointer to next free space in FF43BC array (FGPlane_UpdateQueueCustom)
+FGUpdateQueueCell_NextSlot = $FFFFF8B6	; long: pointer to next free space in FF47A6 array (FGPlane_UpdateQueueCell)
 Camera_max_X_pos = 	$FFFFF8BA	; word: level width in pixels - $140
 Camera_max_Y_pos = 	$FFFFF8BC	; word: level height in pixels - $E0
+Addr_FirstEvanescObjectSlot =	$FFFFF8C6	; word
+Addr_NextFreeEvanescObjectSlot = $FFFFF8C8	; word
+Addr_FirstShooterObjectSlot =	$FFFFF8CA	; word
+Addr_NextFreeShooterObjectSlot = $FFFFF8CC	; word
+Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
+Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
+EnemyHeader7D = 	$FFFFF93A	; word:	enemy header, but for what? (last 2 bytes of header)
+Number_of_Enemy = 	$FFFFFA06	; word:	count number of enemies (when killing enemy it subtract 1)
 Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
-Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
-Maniaxe_throwing_axe = $FFFFFA65 ; byte: flag
+KidGrabbedByHand =	$FFFFFA28	; byte: flag: whether hand is currently grabbing the Kid
+FiveWayShotReady =	$FFFFFA29	; byte: flag: whether to initialize Juggernaut's 5-way shot
+SamuraiHazeActive =	$FFFFFA2A	; byte: flag: slow down objects (Samurai Haze)
+KidIsInvulnerable =	$FFFFFA2B	; byte: flag: Invulnerability for Kid
+Character_Movement =	$FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
+Maniaxe_throwing_axe =	$FFFFFA65 ; byte: flag
 Cyclone_flying =	$FFFFFA68 ; byte: flag
 Iron_Knight_block_breaker = $FFFFFA6B ; byte: flag
 Currently_transforming = $FFFFFA6D	; byte: flag
-Berzerker_charging = $FFFFFA6E ; byte: flag
+Berzerker_charging =	$FFFFFA6E ; byte: flag
 Red_Stealth_sword_swing = $FFFFFA6F ; byte: flag (FF = sideways, 7F strike downwards
 Telepad_timer = 	$FFFFFA70	; word
-Just_received_damage = $FFFFFA73 ; byte: flag
+Just_received_damage =	$FFFFFA73	; byte: flag
+Cyclone_YAcceleration =	$FFFFFA76	; word
 Kid_hitbox_left =	$FFFFFA7A	; word
 Kid_hitbox_right =	$FFFFFA7C	; word
 Kid_hitbox_top =	$FFFFFA7E	; word
@@ -83,8 +111,12 @@ MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphd
 MurderWall_speed = 	$FFFFFAC8	; long
 MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
-Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid    
+Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
+Number_of_Fire_Trails = $FFFFFB44	; word: max number of trails active on screen
+Number_of_Arrows = $FFFFFB46	; word: number of arrows on screen
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
+Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each kill
+Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo
 Demo_Mode_flag = 	$FFFFFBC9	; byte (for input)
@@ -116,13 +148,16 @@ Time_SubSeconds = 	$FFFFFC1C	; word: Frames until next second countdown
 Time_Seconds_low_digit = $FFFFFC1E	; word
 Time_Seconds_high_digit = $FFFFFC20	; word
 Time_Minutes = 		$FFFFFC22	; word
+Time_Frames = 		$FFFFFC24	; word
 PlayerStart_X_pos = 	$FFFFFC2A	; word
 PlayerStart_Y_pos = 	$FFFFFC2C	; word
 Flag_X_pos = 		$FFFFFC2E	; word
 Flag_Y_pos = 		$FFFFFC30	; word
-Two_player_flag = 	$FFFFFC38	; word
-NoHit_Bonus_Flag = 	$FFFFFC3B	; byte: 0 = retained, -1 = lost
-NoPrize_Bonus_Flag = 	$FFFFFC3C	; byte: 0 = retained, -1 = lost
+LevelSkip_Cheat =	$FFFFFC37	; flag: enable level skipping by holding A+C+Start
+Two_player_flag = 	$FFFFFC38	; flag
+Current_player = 	$FFFFFC39	; flag
+NoHit_Bonus_Flag = 	$FFFFFC3B	; flag: 0 = retained, -1 = lost
+NoPrize_Bonus_Flag = 	$FFFFFC3C	; flag: 0 = retained, -1 = lost
 Level_completion_time = $FFFFFC3D	; byte: in seconds
 Number_Lives = 		$FFFFFC3E	; word
 Number_Hitpoints = 	$FFFFFC40	; word
@@ -158,6 +193,8 @@ Player_2_Helmet = 	$FFFFFC72	; word
 Player_2_Continues = 	$FFFFFC74	; word
 Player_2_Extra_hitpoint_slots = $FFFFFC76	; word
 Player_2_Score = 	$FFFFFC78	; long
+Player_1_OneTimePrizes = $FFFFFC84	; 
+Player_2_OneTimePrizes = $FFFFFD26	; 
 LevelSelect_ActNumber = $FFFFFDC6	; byte: number in e.g. "Elsewhere 15" or "BLW 1/2", also costume counter
 LevelSelect_Flag = 	$FFFFFDC7	; byte: indicator whether to load level select as options menu
 Options_Suboption_2PController = $FFFFFDC8	; byte: selected sub-option 1 in options menu (flag). 2 Players: One controller = 0, Two = -1
@@ -173,3 +210,39 @@ Bosses_Played = 	$FFFFFDFE	; word
 Played_Level_List = 	$FFFFFE00	; 105 bytes
 Played_Bosses_List = 	$FFFFFE69	; 4 bytes
 
+; GfxObject RAM offsets
+; 0: (long) pointer to next objectData
+; 4: (long) ???address to some kind of gfxobject slot
+; 8: (word) ???lower word from value of a3 at allocation call; related to FFF866 etc
+; A: (word) ?upper word from value of a3 at allocation call -- priority?
+addr_parentobject = $C	; long: address of corresponding object (a5)
+priority = $10		; byte: priority flag: 0=low priority, 1=high priority, 2=depends on FFF896
+palette_line = $11	; byte
+;12: (byte)
+;13: (byte) flag
+is_moved = $14		; flag
+is_animated = $15	; flag
+x_direction = $16	; flag: horizontal direction.
+;17: (byte)
+;18: (byte) flag
+;19: (byte) flag
+x_pos = $1A		; long
+y_pos = $1E		; long
+addroffset_sprite = $22	; word
+vram_tile = $24		; word: tile address (index) to art in VRAM
+x_vel = $26		; long
+y_vel = $2A		; long
+addr_current_anim = $2E	; long: pointer to current anim_frame
+animation_timer = $32	; word
+;34
+collision_type = $38	; word
+object_meta = $3A	; word: bits 0-6: object ID, see e.g. EnemyLoad_Index. bit 7: ?, bit E: ?, bit F: flag whether berzerker recoils when hitting enemy?
+has_level_collision = $3C; flag
+has_kid_collision = $3D	; flag
+;3E: (long) some x position relative to camera? For enemies (word): Enemy type VRAM slot.
+;42: (long) some y position relative to camera?
+enemy_level = $40		; word
+current_hp = $44		; word
+;46: ?
+;48: (word)
+;4A: (word)

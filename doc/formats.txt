@@ -85,6 +85,50 @@ For foreground tile layout, block layout, enemy layout and platform
 layout refer to Saxman's notes.
 
 
+Enemy layout header
+-------------------
+
+Documentation in Saxman's notes is incomplete, see additions:
+
+4 bytes: 32-bit address pointing to 'H1'
+4 bytes: 00000000?
+2 bytes: first enemy type ID, $FFFF = blank
+2 bytes: second enemy type ID, $FFFF = blank
+2 bytes: third enemy type ID, $FFFF = blank
+2 bytes: 7D00?
+1 bytes: H1 - ? (byte)
+1 bytes: H2 - Number of objects in level (byte)
+
+The enemy type IDs are from those enemies whose art to load into the respective
+VRAM art and palette slots.
+The top 2 bits indicate which of the 3 palettes to use for the enemy.
+
+Each level can feature 3 different types of enemies. Each type is allocated
+one of 3 VRAM slots for art, and one of 3 slots for palettes. Most enemies
+use 7 colors (1 slot), however some use 15 colors and thus use up 2 palette slots
+(in that case they always use up slots 2 and 3).
+These enemies are: UFO, Robot (those two can share palette), Lion, Bosses.
+For these you don't want to put any other enemies in slots 2 or 3 or they will
+overwrite these palettes.
+
+Dragons fill up two consecutive art slots, thus they must never go in the 3rd slot.
+If you only want to use walking dragons, but no flying dragons, you can put dragons
+in the first slot, and put some other enemy in the second slot, which will then
+overwrite the flying dragon art.
+
+Rock tanks and shooting rock tanks use the same resources, so only one of them
+has to appear in the enemy layout header for both to be usable.
+
+Lions use up 3 art slots, and thus cannot be combined with other enemies.
+UFOs use up 2 art slots.
+
+Heady Metal uses up 2 art slots. The main part of the other bosses uses up
+2 slots. Boss eyes use up 1 slot.
+
+If a level features a murder wall, geysers or hail storm, the art will use up the
+first enemy slot, and thus one can only have two enemy types in that case.
+
+
 Background scrolling
 --------------------
 
@@ -93,13 +137,23 @@ points to the scrolling data. The scrolling data is a list of
 horizontal scroll speed values, where each value refers to a layer 
 that is 8 pixels tall. The data is terminated by a $FF byte.
 
+Values:
+00 -- fast automatic scrolling (e.g. clouds)
+08 -- slow automatic scrolling (e.g. clouds)
+10 -- no scrolling
+18-88 (in increments of 8): normal scrolling at different speeds
+
+Automatic scrolling refers to scrolling of the background even
+when the screen is not moving. Normal scrolling refers to scrolling
+of the background as the screen moves.
+
 
 Background layout
 -----------------
 
 There are two different formats. The first one is used by
-Sky, Ice, Island, Swamp, Cave and City levels (Type 1), the
-second by Hill, Desert, Mountain and Forest levels (Type 2).
+Sky, Ice, Island, Swamp, Cave and City levels (Type 1, chunked), the
+second by Hill, Desert, Mountain and Forest levels (Type 2, layered).
 
 Before explaining the background format, we need to describe the
 theme-specific background chunk definitions first.
@@ -109,11 +163,13 @@ This table consists of 32-bit pointers to background chunk definitions.
 
 For type 1 themes, a background chunk definition consists of 2 words
 (x_size and y_size), followed by x_size*y_size bytes.
-Each such byte is the ID for a 8x8 art tile, which together make a chunk
-of dimensions x_size X y_size.
+Each such byte defines an 8x8 art tile, with the lower 7 bits being
+the ID of the tile (within the background art) and the top bit being
+a flag indicating whether to horizontally flip the file.
+Together this makes a chunk of dimensions x_size * y_size.
 
 For type 2 themes, a background chunk definition consists of a Enigma
-compressed plane map.
+compressed plane map of width 64 tiles.
 
 
 The type 1 level background format defines how a background is composed of 
@@ -129,9 +185,21 @@ the type 1 background layout that the level is using, while the 2 words
 are an x_shift and a y_shift respectively by which the background is shifted.
 
 The type 2 level background format defines how a background is composed of
-layers (each 8 pixels tall). It is a list of bytes, each determining a
-layer from the Enigma compressed plane map. These layers in order then
-compose the background.
+layers (each 8 pixels tall). It is a list of bytes, each (except for the
+first one or two) determining a layer from the Enigma compressed plane map.
+These layers in order then compose the background.
+
+The first byte of the list has a special meaning: For forest and desert
+levels, it determines the layer from which on the water/heat ripple
+scrolling effect is applied. For all other themes this byte is unused.
+For desert, the second byte of the list is not part of the background
+layout and is unused. 
+
+
+The effective height (in tiles) of a background equals ysize_screens * 7 + 21,
+where ysize_screens is the vertical foreground size in screen.
+The effective width of a background is 64 tiles for layered backgrounds,
+and xsize_screens * 10 + 30 for chunked backgrounds.
 
 
 SPRITE MAPPING FORMATS

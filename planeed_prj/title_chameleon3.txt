@@ -1,0 +1,10 @@
+Palette File:	../scenes/palette/title.bin
+Mapping File:	../scenes/mapeni/2E77A.bin
+Art File:	../scenes/artcomp/Title_text_CHAMELEON.bin
+Palette Length:	102
+Palette Offset: 64
+Mapping Compression:	Enigma
+Art Compression:	Kid Chameleon
+x-Size:	29
+y-Size:	7
+Tile Offset: 0

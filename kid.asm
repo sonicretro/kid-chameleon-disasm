@@ -16,6 +16,10 @@
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 1
+; Set to 1 to fix minor bugs in the game.
+; e.g. allows combining robots with other (non-UFO) enemies,
+; makes trap platforms move smoothly.
+minorBugFixes = 0
 ; Introduce type of scripted platform that starts the script only once the
 ; kid stands on the platform.
 ; In the layout, such a platform is used when the platform parameter t=1.
@@ -33,6 +37,7 @@ HundredKTripDest_LevelID = $1F ; 100K trip destination level
 FirstElsewhere_LevelID = $49 ; from this level on name everything 'Elsewhere'.
 	; More specifically, all levels with a higher LevelID 
 	; use the title from the level with this LevelID.
+TotalNumberLevels = $69	; to tell the level select how many to display
 
 BagelBrothers_HitPointsPerHead = $1E
 BoomerangBoss_HitPointsPerHead = $1E
@@ -67,70 +72,71 @@ Default_Options = $00FF0000
 	include "macros.asm"
 ; ===========================================================================
 StartOfROM:
-	dc.l $FFFFF7FE
-	dc.l EntryPoint
-	dc.l loc_2D2
-	dc.l loc_2D8
-	dc.l loc_2DE
-	dc.l loc_2E4
-	dc.l loc_2EA
-	dc.l loc_2F0
-off_20:	dc.l loc_2F6
-	dc.l loc_2FC
-	dc.l loc_302
-	dc.l loc_308
-	dc.l loc_30E
-	dc.l loc_314
-	dc.l loc_31A
-	dc.l loc_320
-	dc.l loc_326
-	dc.l loc_32C
-	dc.l loc_332
-	dc.l loc_338
-	dc.l loc_33E
-	dc.l loc_344
-	dc.l loc_34A
-	dc.l loc_350
-	dc.l loc_358
-	dc.l loc_360
-	dc.l loc_368
-	dc.l loc_370
-	dc.l H_Int
-	dc.l loc_378
-	dc.l V_Int
-	dc.l EntryPoint
-	dc.l loc_388
-	dc.l loc_390
-	dc.l loc_398
-	dc.l loc_3A0
-	dc.l loc_3A8
-	dc.l loc_3B0
-	dc.l loc_3B8
-	dc.l loc_3C0
-	dc.l loc_3C8
-	dc.l loc_3D0
-	dc.l loc_3D8
-	dc.l loc_3E0
-	dc.l loc_3E8
-	dc.l loc_3F0
-	dc.l loc_3F8
-	dc.l loc_400
-	dc.l loc_408
-	dc.l loc_410
-	dc.l loc_418
-	dc.l loc_420
-	dc.l loc_428
-	dc.l loc_430
-	dc.l loc_438
-	dc.l loc_440
-	dc.l loc_448
-	dc.l loc_450
-	dc.l loc_458
-	dc.l loc_460
-	dc.l loc_468
-	dc.l loc_470
-	dc.l loc_478
-	dc.l loc_480
+Vectors:
+	dc.l Initial_stack	; Initial stack pointer value
+	dc.l EntryPoint		; Start of program
+	dc.l BusError		; Bus error
+	dc.l AddressError		; Address error (4)
+	dc.l IllegalInstruction        ; Illegal instruction
+	dc.l DivisionByZero        ; Division by zero
+	dc.l ChkException        ; CHK exception
+	dc.l TRAPVException        ; TRAPV exception (8)
+off_20:	dc.l PrivilegeViolation    ; Privilege violation
+	dc.l TraceException        ; TRACE exception
+	dc.l LineAEmulator        ; Line-A emulator
+	dc.l LineFEmulator        ; Line-F emulator (12)
+	dc.l Vector13        ; Unused (reserved)
+	dc.l Vector14        ; Unused (reserved)
+	dc.l Vector15        ; Unused (reserved)
+	dc.l Vector16        ; Unused (reserved) (16)	
+	dc.l Vector17        ; Unused (reserved)
+	dc.l Vector18        ; Unused (reserved)
+	dc.l Vector19        ; Unused (reserved)
+	dc.l Vector20        ; Unused (reserved) (20)
+	dc.l Vector21        ; Unused (reserved)
+	dc.l Vector22        ; Unused (reserved)
+	dc.l Vector23        ; Unused (reserved)
+	dc.l Vector24        ; Unused (reserved) (24)
+	dc.l SpuriousException        ; Spurious exception
+	dc.l IRQLevel1        ; IRQ level 1
+	dc.l IRQLevel2        ; IRQ level 2
+	dc.l IRQLevel3        ; IRQ level 3 (28)
+	dc.l H_Int          ; IRQ level 4 (horizontal retrace interrupt)
+	dc.l IRQLevel5        ; IRQ level 5
+	dc.l V_Int          ; IRQ level 6 (vertical retrace interrupt)
+	dc.l EntryPoint		; IRQ level 7 (32)
+	dc.l Trap00Exception        ; TRAP #00 exception
+	dc.l Trap01Exception        ; TRAP #01 exception
+	dc.l Trap02Exception        ; TRAP #02 exception
+	dc.l Trap03Exception        ; TRAP #03 exception (36)
+	dc.l Trap04Exception        ; TRAP #04 exception
+	dc.l Trap05Exception        ; TRAP #05 exception
+	dc.l Trap06Exception        ; TRAP #06 exception
+	dc.l Trap07Exception        ; TRAP #07 exception (40)
+	dc.l Trap08Exception        ; TRAP #08 exception
+	dc.l Trap09Exception        ; TRAP #09 exception
+	dc.l Trap10Exception        ; TRAP #10 exception
+	dc.l Trap11Exception        ; TRAP #11 exception (44)
+	dc.l Trap12Exception        ; TRAP #12 exception
+	dc.l Trap13Exception        ; TRAP #13 exception
+	dc.l Trap14Exception        ; TRAP #14 exception
+	dc.l Trap15Exception        ; TRAP #15 exception (48)
+	dc.l Vector49        ; Unused (reserved)
+	dc.l Vector50        ; Unused (reserved)
+	dc.l Vector51        ; Unused (reserved)
+	dc.l Vector52        ; Unused (reserved) (52)
+	dc.l Vector53        ; Unused (reserved)
+	dc.l Vector54        ; Unused (reserved)
+	dc.l Vector55        ; Unused (reserved)
+	dc.l Vector56        ; Unused (reserved) (56)
+	dc.l Vector57        ; Unused (reserved)
+	dc.l Vector58        ; Unused (reserved)
+	dc.l Vector59        ; Unused (reserved)
+	dc.l Vector60        ; Unused (reserved) (60)
+	dc.l Vector61        ; Unused (reserved)
+	dc.l Vector62        ; Unused (reserved)
+	dc.l Vector63        ; Unused (reserved)
+	dc.l Vector64        ; Unused (reserved) (64)
 ROM_Header:	dc.b "SEGA MEGA DRIVE "
 	dc.b "(C)SEGA 1991 DEC"
 	dc.b "KID CHAMELEON                                   "
@@ -236,8 +242,8 @@ j_nullsub_2: ;270
 j_Init_Animation: ;274
 	jmp	Init_Animation(pc)
 ; ===========================================================================
-j_sub_105E: ;278
-	jmp	sub_105E(pc)
+j_Hibernate_UntilAnimFinished: ;278
+	jmp	Hibernate_UntilAnimFinished(pc)
 ; ===========================================================================
 j_loc_1078: ;27C
 	jmp	loc_1078(pc)
@@ -281,8 +287,8 @@ j_sub_28FC: ;2B4
 j_sub_44B0: ;2B8
 	jmp	sub_44B0(pc)
 ; ===========================================================================
-j_sub_6526: ;2BC
-	jmp	sub_6526(pc)
+j_Init_Timer_and_Bonus_Flags: ;2BC
+	jmp	Init_Timer_and_Bonus_Flags(pc)
 ; ---------------------------------------------------------------------------
 	jmp	sub_8A4(pc)
 ; ===========================================================================
@@ -295,249 +301,249 @@ j_Do_Nothing: ;2C8
 j_sub_14C0: ;2CC
 	jmp	sub_14C0(pc)
 ; ---------------------------------------------------------------------------
-return_2D0:
-	bra.s	return_2D0
+returnFromException:
+	bra.s	returnFromException
 	;rte
 ; ---------------------------------------------------------------------------
-loc_2D2:
+BusError:
 	move.w	#2,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2D8:
+AddressError:
 	move.w	#3,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2DE:
+IllegalInstruction:
 	move.w	#4,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2E4:
+DivisionByZero:
 	move.w	#5,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2EA:
+ChkException:
 	move.w	#6,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2F0:
+TRAPVException:
 	move.w	#7,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2F6:
+PrivilegeViolation:
 	move.w	#8,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_2FC:
+TraceException:
 	move.w	#9,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_302:
+LineAEmulator:
 	move.w	#$A,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_308:
+LineFEmulator:
 	move.w	#$B,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_30E:
+Vector13:
 	move.w	#$C,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_314:
+Vector14:
 	move.w	#$D,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_31A:
+Vector15:
 	move.w	#$E,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_320:
+Vector16:
 	move.w	#$F,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_326:
+Vector17:
 	move.w	#$10,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_32C:
+Vector18:
 	move.w	#$11,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_332:
+Vector19:
 	move.w	#$12,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_338:
+Vector20:
 	move.w	#$13,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_33E:
+Vector21:
 	move.w	#$14,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_344:
+Vector22:
 	move.w	#$15,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_34A:
+Vector23:
 	move.w	#$16,d0
-	bra.s	return_2D0
+	bra.s	returnFromException
 ; ---------------------------------------------------------------------------
-loc_350:
+Vector24:
 	move.w	#$17,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_358:
+SpuriousException:
 	move.w	#$18,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_360:
+IRQLevel1:
 	move.w	#$19,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_368:
+IRQLevel2:
 	move.w	#$1A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_370:
+IRQLevel3:
 	move.w	#$1B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_378:
+IRQLevel5:
 	move.w	#$1C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
 	move.w	#$1D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_388:
+Trap00Exception:
 	move.w	#$1E,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_390:
+Trap01Exception:
 	move.w	#$1F,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_398:
+Trap02Exception:
 	move.w	#$20,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3A0:
+Trap03Exception:
 	move.w	#$21,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3A8:
+Trap04Exception:
 	move.w	#$22,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3B0:
+Trap05Exception:
 	move.w	#$23,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3B8:
+Trap06Exception:
 	move.w	#$24,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3C0:
+Trap07Exception:
 	move.w	#$25,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3C8:
+Trap08Exception:
 	move.w	#$26,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3D0:
+Trap09Exception:
 	move.w	#$27,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3D8:
+Trap10Exception:
 	move.w	#$28,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3E0:
+Trap11Exception:
 	move.w	#$29,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3E8:
+Trap12Exception:
 	move.w	#$2A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3F0:
+Trap13Exception:
 	move.w	#$2B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_3F8:
+Trap14Exception:
 	move.w	#$2C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_400:
+Trap15Exception:
 	move.w	#$2D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_408:
+Vector49:
 	move.w	#$2E,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_410:
+Vector50:
 	move.w	#$2F,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_418:
+Vector51:
 	move.w	#$30,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_420:
+Vector52:
 	move.w	#$31,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_428:
+Vector53:
 	move.w	#$32,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_430:
+Vector54:
 	move.w	#$33,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_438:
+Vector55:
 	move.w	#$34,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_440:
+Vector56:
 	move.w	#$35,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_448:
+Vector57:
 	move.w	#$36,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_450:
+Vector58:
 	move.w	#$37,d0
 loc_454:
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_458:
+Vector59:
 	move.w	#$38,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_460:
+Vector60:
 	move.w	#$39,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_468:
+Vector61:
 	move.w	#$3A,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_470:
+Vector62:
 	move.w	#$3B,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_478:
+Vector63:
 	move.w	#$3C,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
-loc_480:
+Vector64:
 	move.w	#$3D,d0
-	bra.w	return_2D0
+	bra.w	returnFromException
 ; ---------------------------------------------------------------------------
 V_Int:
 	addq.l	#1,(V_Int_counter).w
@@ -549,206 +555,202 @@ H_Int:
 	ori.w	#$500,(sp)
 	rte
 ; ---------------------------------------------------------------------------
-unk_49C:	dc.b $14
-	dc.b $74 ; t
-	dc.b   0
-	dc.b   0
-	dc.b   7
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $81 ; Å
-	dc.b   5
-	dc.b   0
-	dc.b   2
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
+VDPGameInitValues:
+	dc.b $14		; Command $8014 - HInt on, Enable HV counter read
+	dc.b $74		; Command $8174 - Display on, VInt on, DMA on, PAL off
+	dc.b   0		; Command $8200 - Scroll A Address $0000
+	dc.b   0		; Command $8300 - Window Address $0000
+	dc.b   7		; Command $8407 - Scroll B Address $E000
+	dc.b   8		; Command $8508 - Sprite Table Address $1000
+	dc.b   0		; Command $8600 - Null
+	dc.b   0		; Command $8700 - Background color Pal 0 Color 0
+	dc.b   0		; Command $8800 - Null
+	dc.b   0		; Command $8900 - Null
+	dc.b   0		; Command $8A00 - Hint timing 0 scanlines
+	dc.b   3		; Command $8B03 - Ext Int off, VScroll full, HScroll single pixel rows
+	dc.b $81		; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
+	dc.b   5		; Command $8D05 - HScroll Table Address $1400
+	dc.b   0		; Command $8E00 - Null
+	dc.b   2		; Command $8F02 - VDP auto increment 2 bytes
+	dc.b   1		; Command $9001 - 64x32 cell scroll size
+	dc.b   0		; Command $9100 - Window H left side, Base Point 0
+	dc.b   0		; Command $9200 - Window V upside, Base Point 0
+	dc.b   0		; Command $9300 - DMA Length Counter $0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR Character_CheckCollision
 
 EntryPoint:
-	tst.l	($A10008).l
-	bne.s	loc_4BE
-	tst.w	($A1000C).l
+	tst.l	(HW_Port_1_Control-1).l	; test ports A and B control
+	bne.s	PortA_Ok	; If so, branch.
+	tst.w	(HW_Expansion_Control-1).l	; test port C control
 
-loc_4BE:
-	bne.s	loc_53C
-	lea	SetupValues(pc),a5
+PortA_Ok:
+	bne.s	PortC_OK ; skip the VDP and Z80 setup code if port A, B or C is ok...?
+	lea	SetupValues(pc),a5	; Load setup values array address.
 	movem.w	(a5)+,d5-d7
 	movem.l	(a5)+,a0-a4
-	move.b	-$10FF(a1),d0
-	andi.b	#$F,d0
-	beq.s	loc_4DE
-	move.l	#$53454741,$2F00(a1)
+	move.b	HW_Version-Z80_Bus_Request(a1),d0	; get hardware version
+	andi.b	#$F,d0	; Compare
+	beq.s	SkipSecurity	; If the console has no TMSS, skip the security stuff.
+	move.l	#'SEGA',Security_Addr-Z80_Bus_Request(a1) ; Satisfy the TMSS
 
-loc_4DE:
-	move.w	(a4),d0
-	moveq	#0,d0
-	move.l	d0,a6
-	move	a6,usp
-	moveq	#$17,d1
+SkipSecurity:
+	move.w	(a4),d0	; check if VDP works
+	moveq	#0,d0	; clear d0
+	move.l	d0,a6	; clear a6
+	move	a6,usp	; set usp to $0
+	moveq	#VDPInitValues_End-VDPInitValues-1,d1 ; run the following loop $18 times
 
-loc_4E8:
-	move.b	(a5)+,d5
-	move.w	d5,(a4)
-	add.w	d7,d5
-	dbf	d1,loc_4E8
-	move.l	(a5)+,(a4)
-	move.w	d0,(a3)
-	move.w	d7,(a1)
-	move.w	d7,(a2)
+VDPInitLoop:
+	move.b	(a5)+,d5	; add $8000 to value
+	move.w	d5,(a4)	; move value to VDP register
+	add.w	d7,d5	; next register
+	dbf	d1,VDPInitLoop
+	
+	move.l	(a5)+,(a4)	; set VRAM write mode
+	move.w	d0,(a3)	; clear the screen
+	move.w	d7,(a1)	; stop the Z80
+	move.w	d7,(a2)	; reset the Z80
 
-loc_4FA:
-	btst	d0,(a1)
-	bne.s	loc_4FA
-	moveq	#$25,d2
+WaitForZ80:
+	btst	d0,(a1)	; has the Z80 stopped?
+	bne.s	WaitForZ80	; if not, branch
+	moveq	#Z80StartupCodeEnd-Z80StartupCodeBegin-1,d2
 
-loc_500:
+Z80InitLoop:
 	move.b	(a5)+,(a0)+
-	dbf	d2,loc_500
+	dbf	d2,Z80InitLoop
+	
 	move.w	d0,(a2)
-	move.w	d0,(a1)
-	move.w	d7,(a2)
+	move.w	d0,(a1)	; start the Z80
+	move.w	d7,(a2)	; reset the Z80
 
-loc_50C:
-	move.l	d0,-(a6)
-	dbf	d6,loc_50C
-	move.l	(a5)+,(a4)
-	move.l	(a5)+,(a4)
-	moveq	#$1F,d3
+ClrRAMLoop:
+	move.l	d0,-(a6)	; clear 4 bytes of RAM
+	dbf	d6,ClrRAMLoop	; repeat until the entire RAM is clear
+	move.l	(a5)+,(a4)	; set VDP display mode and increment mode
+	move.l	(a5)+,(a4)	; set VDP to CRAM write
+	moveq	#bytesToLcnt($80),d3	; set repeat times
 
-loc_518:
-	move.l	d0,(a3)
-	dbf	d3,loc_518
-	move.l	(a5)+,(a4)
-	moveq	#$13,d4
+ClrCRAMLoop:
+	move.l	d0,(a3)	; clear 2 palettes
+	dbf	d3,ClrCRAMLoop	; repeat until the entire CRAM is clear
+	move.l	(a5)+,(a4)	; set VDP to VSRAM write
+	moveq	#bytesToLcnt($50),d4	; set repeat times
 
-loc_522:
-	move.l	d0,(a3)
-	dbf	d4,loc_522
-	moveq	#3,d5
+ClrVSRAMLoop:
+	move.l	d0,(a3)	; clear 4 bytes of VSRAM.
+	dbf	d4,ClrVSRAMLoop	; repeat until the entire VSRAM is clear
+	moveq	#PSGInitValues_End-PSGInitValues-1,d5	; set repeat times
 
-loc_52A:
-	move.b	(a5)+,$11(a3)
-	dbf	d5,loc_52A
+PSGInitLoop:
+	move.b	(a5)+,PSG_input-VDP_data_port(a3) ; reset the PSG
+	dbf	d5,PSGInitLoop	; repeat for other channels
 	move.w	d0,(a2)
-	movem.l	(a6),d0-a6
-	move	#$2700,sr
+	movem.l	(a6),d0-a6	; clear all registers
+	move	#$2700,sr	; set the sr
 
-loc_53C:
-	bra.s	loc_5AA
-; END OF FUNCTION CHUNK	FOR Character_CheckCollision
+PortC_OK:
+	bra.s	GameProgram	; Branch to game program.
 ; ---------------------------------------------------------------------------
 SetupValues:
-	dc.w $8000
-	dc.w $3FFF
-	dc.w $100
-	dc.l $A00000
-	dc.l $A11100
-	dc.l $A11200
-	dc.l $C00000
-	dc.l $C00004
-	dc.b   4
-	dc.b $14
-	dc.b $30 ; 0
-	dc.b $3C ; <
-	dc.b   7
-	dc.b $6C ; l
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $81 ; Å
-	dc.b $37 ; 7
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; Ä
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; Ä
-	dc.b $AF ; Ø
-	dc.b   1
-	dc.b $D9 ; Ÿ
-	dc.b $1F
-	dc.b $11
-	dc.b $27 ; '
-	dc.b   0
-	dc.b $21 ; !
-	dc.b $26 ; &
-	dc.b   0
-	dc.b $F9 ; ˘
-	dc.b $77 ; w
-	dc.b $ED ; Ì
-	dc.b $B0 ; ∞
-	dc.b $DD ; ›
-	dc.b $E1 ; ·
-	dc.b $FD ; ˝
-	dc.b $E1 ; ·
-	dc.b $ED ; Ì
-	dc.b $47 ; G
-	dc.b $ED ; Ì
-	dc.b $4F ; O
-	dc.b $D1 ; —
-	dc.b $E1 ; ·
-	dc.b $F1 ; Ò
-	dc.b   8
-	dc.b $D9 ; Ÿ
-	dc.b $C1 ; ¡
-	dc.b $D1 ; —
-	dc.b $E1 ; ·
-	dc.b $F1 ; Ò
-	dc.b $F9 ; ˘
-	dc.b $F3 ; Û
-	dc.b $ED ; Ì
-	dc.b $56 ; V
-	dc.b $36 ; 6
-	dc.b $E9 ; È
-	dc.b $E9 ; È
-	dc.b $81 ; Å
-	dc.b   4
-	dc.b $8F ; è
-	dc.b   2
-	dc.b $C0 ; ¿
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $9F ; ü
-	dc.b $BF ; ø
-	dc.b $DF ; ﬂ
-	dc.b $FF
+	dc.w	$8000,bytesToLcnt($10000),$100
+
+	dc.l	Z80_RAM
+	dc.l	Z80_Bus_Request
+	dc.l	Z80_Reset
+	dc.l	VDP_data_port, VDP_control_port
+
+VDPInitValues:	; values for VDP registers
+	dc.b 4			; Command $8004 - HInt off, Enable HV counter read
+	dc.b $14		; Command $8114 - Display off, VInt off, DMA on, PAL off
+	dc.b $30		; Command $8230 - Scroll A Address $C000
+	dc.b $3C		; Command $833C - Window Address $F000
+	dc.b 7			; Command $8407 - Scroll B Address $E000
+	dc.b $6C		; Command $856C - Sprite Table Address $D800
+	dc.b 0			; Command $8600 - Null
+	dc.b 0			; Command $8700 - Background color Pal 0 Color 0
+	dc.b 0			; Command $8800 - Null
+	dc.b 0			; Command $8900 - Null
+	dc.b $FF		; Command $8AFF - Hint timing $FF scanlines
+	dc.b 0			; Command $8B00 - Ext Int off, VScroll full, HScroll full
+	dc.b $81		; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
+	dc.b $37		; Command $8D37 - HScroll Table Address $DC00
+	dc.b 0			; Command $8E00 - Null
+	dc.b 1			; Command $8F01 - VDP auto increment 1 byte
+	dc.b 1			; Command $9001 - 64x32 cell scroll size
+	dc.b 0			; Command $9100 - Window H left side, Base Point 0
+	dc.b 0			; Command $9200 - Window V upside, Base Point 0
+	dc.b $FF		; Command $93FF - DMA Length Counter $FFFF
+	dc.b $FF		; Command $94FF - See above
+	dc.b 0			; Command $9500 - DMA Source Address $0
+	dc.b 0			; Command $9600 - See above
+	dc.b $80		; Command $9780	- See above + VRAM fill mode
+VDPInitValues_End:
+
+	dc.l	vdpComm($0000,VRAM,DMA) ; value for VRAM write mode
+	
+	; Z80 instructions (not the sound driver; that gets loaded later)
+Z80StartupCodeBegin: ; loc_2CA:
+    if (*)+$26 < $10000
+    save
+    CPU Z80 ; start assembling Z80 code
+    phase 0 ; pretend we're at address 0
+	xor	a	; clear a to 0
+	ld	bc,((Z80_RAM_End-Z80_RAM)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
+	ld	de,zStartupCodeEndLoc+1	; initial destination address
+	ld	hl,zStartupCodeEndLoc	; initial source address
+	ld	sp,hl	; set the address the stack starts at
+	ld	(hl),a	; set first byte of the stack to 0
+	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
+	pop	ix	; clear ix
+	pop	iy	; clear iy
+	ld	i,a	; clear i
+	ld	r,a	; clear r
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ex	af,af'	; swap af with af'
+	exx		; swap bc/de/hl with their shadow registers too
+	pop	bc	; clear bc
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ld	sp,hl	; clear sp
+	di		; clear iff1 (for interrupt handler)
+	im	1	; interrupt handling mode = 1
+	ld	(hl),0E9h ; replace the first instruction with a jump to itself
+	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+zStartupCodeEndLoc:
+    dephase ; stop pretending
+	restore
+    padding off ; unfortunately our flags got reset so we have to set them again...
+    else ; due to an address range limitation I could work around but don't think is worth doing so:
+	message "Warning: using pre-assembled Z80 startup code."
+	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
+    endif
+Z80StartupCodeEnd:
+
+	dc.w	$8104	; value for VDP display mode
+	dc.w	$8F02	; value for VDP increment
+	dc.l	vdpComm($0000,CRAM,WRITE)	; value for CRAM write mode
+	dc.l	vdpComm($0000,VSRAM,WRITE)	; value for VSRAM write mode
+
+PSGInitValues:
+	dc.b	$9F,$BF,$DF,$FF	; values for PSG channel volumes
+PSGInitValues_End:
 ; ---------------------------------------------------------------------------
 
-loc_5AA:
-	tst.w	($C00004).l
-	move	#$2700,sr
+GameProgram:
+	tst.w	(VDP_control_port).l
+	move	#$2700,sr	; Initialise stack (already done in the init routine though
 	lea	($FFFFF7FE).w,sp
-	lea	($C00000).l,a6
+	lea	(VDP_data_port).l,a6
 	moveq	#$40,d0
-	move.b	d0,($A10009).l
-	move.b	d0,($A1000B).l
-	move.b	#$1F,($A1000D).l
-	move.b	#$7F,($A10007).l
-	lea	unk_49C(pc),a0
+	move.b	d0,(HW_Port_1_Control).l
+	move.b	d0,(HW_Port_2_Control).l
+	move.b	#$1F,(HW_Expansion_Control).l
+	move.b	#$7F,(HW_Expansion_Data).l
+	lea	VDPGameInitValues(pc),a0
 	moveq	#$12,d0
 	move.w	#$8000,d1
 
@@ -769,13 +771,13 @@ loc_604:
 	dbf	d0,loc_604
 	move.l	d7,(Options_Suboption_2PController).w
 	cmpi.w	#5,d7
-    if Default_Options = 0
+  if Default_Options = 0
 	bls.s	loc_61C
 	move.l	#0,(Options_Suboption_2PController).w
-    else
+  else
 	nop	; not strictly necessary, but avoids shifting stuff
 	move.l	#Default_Options,(Options_Suboption_2PController).w
-    endif
+  endif
 
 loc_61C:
 	; clear entire	VRAM
@@ -815,14 +817,14 @@ loc_65C:
 	clr.w	(Player_1_Helmet).w
 	move.w	#2,(Player_1_Hitpoints).w
 	move.w	#3,(Player_1_Continues).w
-	move.w	#$FFFF,($FFFFFC84).w
+	move.w	#$FFFF,(Player_1_OneTimePrizes).w
 	move.w	(MapHeader_BaseAddress).l,(Player_2_LevelID).w
 	move.w	#3,(Player_2_Lives).w
 	clr.l	(Player_2_Score).w
 	clr.w	(Player_2_Helmet).w
 	move.w	#2,(Player_2_Hitpoints).w
 	move.w	#3,(Player_2_Continues).w
-	move.w	#$FFFF,($FFFFFD26).w
+	move.w	#$FFFF,(Player_2_OneTimePrizes).w
 	bsr.w	sub_6E24
 
 
@@ -915,7 +917,7 @@ Mode_Level:
 	bsr.w	sub_21F8
 	tst.b	($FFFFFB49).w
 	bne.s	loc_80C
-	jsr	(sub_3F57E).l
+	jsr	(j_DiamondPower_Run).l
 	jsr	(j_sub_DFB0).l
 
 loc_7FC:
@@ -936,14 +938,12 @@ loc_80C:
 	bsr.w	Platforms_CheckCollision
 	lea	($FFFFF86A).w,a2
 	bsr.w	GfxObjects_Collision
-	lea	($FFFFF866).w,a2
+	lea	(Addr_GfxObject_KidProjectile).w,a2
 	bsr.w	GfxObjects_Collision
-
-loc_83E:
 	move.b	(Just_received_damage).w,($FFFFFC28).w
 	move.b	($FFFFFA75).w,($FFFFFA74).w
 	sf	($FFFFFA75).w
-	lea	($FFFFF866).w,a2
+	lea	(Addr_GfxObject_KidProjectile).w,a2
 	bsr.w	GfxObjects_CollisionKid
 	bsr.w	sub_1F52
 	bsr.w	sub_219C
@@ -958,7 +958,7 @@ loc_83E:
 	bsr.w	Make_SpritesFromGfxObjects
 	tst.b	($FFFFFB49).w
 	bne.s	loc_892
-	jsr	(sub_3F582).l
+	jsr	(j_DiamondPower_CompileSprites).l
 	bsr.w	Make_SpritesFromPlatforms
 
 loc_892:
@@ -973,7 +973,7 @@ loc_892:
 sub_8A4:
 
 	lea	(Player_1_Lives).w,a0
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_8B4
 	lea	(Player_2_Lives).w,a0
 
@@ -993,7 +993,7 @@ loc_8BA:
 
 sub_8C2:
 	lea	(Player_1_Lives).w,a0
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_8D2
 	lea	(Player_2_Lives).w,a0
 
@@ -1340,7 +1340,7 @@ sub_B52:
 ReadJoypad:
 	tst.b	(Options_Suboption_2PController).w
 	beq.w	loc_B8C
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_B8C
 	move.b	(Ctrl_Held).w,(Ctrl_2_Held).w
 	move.b	(Ctrl_Pressed).w,(Ctrl_2_Pressed).w
@@ -1361,7 +1361,7 @@ loc_B98:
 	bne.s	loc_BB6
 
 loc_BB2:
-	st	($FFFFFC37).w
+	st	(LevelSkip_Cheat).w
 
 loc_BB6:
 	jsr	(j_sub_914).w
@@ -1381,8 +1381,6 @@ loc_BB6:
 	cmpi.w	#$3F2,d7
 	blt.w	loc_C22
 	move.w	#0,(Game_Mode).w
-
-loc_BFE:
 	sf	(Demo_Mode_flag).w
 	st	($FFFFFBCE).w
 	st	($FFFFFC36).w
@@ -1426,7 +1424,7 @@ loc_C4E:
 	move.b	(Ctrl_2).w,(Ctrl_2_Held).w
 	tst.b	(Options_Suboption_2PController).w
 	beq.w	loc_C9C
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.w	loc_C9C
 	move.b	(Ctrl_2_Held).w,(Ctrl_Held).w
 	move.b	(Ctrl_2_Pressed).w,(Ctrl_Pressed).w
@@ -1652,11 +1650,11 @@ loc_E1E:
 	move.l	(a5),d0	; get address of next object
 	beq.s	loc_E58	; if 0, quit executing objects, we're done
 	move.l	d0,a5	; a5 is now address of object
-	tst.b	($FFFFFA2A).w
+	tst.b	(SamuraiHazeActive).w
 	beq.w	loc_E3E
 	tst.b	$10(a5)
 	beq.w	loc_E3E
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#3,d0
 	bne.s	loc_E1E
 
@@ -1819,7 +1817,7 @@ Initialize_GfxObjectSlots:
 	_clr.l	0(a0)
 	clr.l	(Addr_FirstGfxObjectSlot).w
 	clr.w	(Number_GfxObjects).w
-	clr.l	($FFFFF866).w
+	clr.l	(Addr_GfxObject_KidProjectile).w
 	clr.l	($FFFFF86A).w
 	clr.l	($FFFFF86E).w
 	clr.l	($FFFFF872).w
@@ -1869,7 +1867,7 @@ Allocate_GfxObjectSlot:
 	beq.s	loc_FBE
 	subq.w	#1,d5
 	bne.s	loc_F9C
-	lea	($FFFFF866).w,a4
+	lea	(Addr_GfxObject_KidProjectile).w,a4
 	bra.s	loc_FB8
 ; ---------------------------------------------------------------------------
 
@@ -1976,11 +1974,11 @@ nullsub_2:
 ;sub_1040
 Init_Animation:
 	move.l	d7,$2E(a3)
-	move.w	#1,$32(a3)
-	st	$15(a3)
+	move.w	#1,animation_timer(a3)
+	st	is_animated(a3)
 	sf	$18(a3)
 	exg	d7,a0
-	move.w	2(a0),$22(a3)
+	move.w	2(a0),addroffset_sprite(a3)
 	exg	d7,a0
 	rts
 ; End of function Init_Animation
@@ -1988,8 +1986,8 @@ Init_Animation:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_105E:
+;sub_105E:
+Hibernate_UntilAnimFinished:
 	move.l	(sp)+,$12(a5)
 
 loc_1062:
@@ -1998,7 +1996,7 @@ loc_1062:
 	beq.s	loc_1062
 	move.l	$12(a5),-(sp)
 	rts
-; End of function sub_105E
+; End of function Hibernate_UntilAnimFinished
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -2064,7 +2062,7 @@ loc_10C6:
 loc_10EA:
 	subq.w	#1,d0
 	bne.s	loc_10F4
-	lea	($FFFFF866).w,a0
+	lea	(Addr_GfxObject_KidProjectile).w,a0
 	bra.s	loc_1106
 ; ---------------------------------------------------------------------------
 
@@ -2105,12 +2103,12 @@ loc_111A:
 GfxObject_Move:
 	tst.b	($FFFFF80B).w
 	bne.s	return_113C
-	tst.b	$14(a3)
+	tst.b	is_moved(a3)
 	beq.s	return_113C
-	move.l	$26(a3),d0
-	add.l	d0,$1A(a3)
-	move.l	$2A(a3),d0
-	add.l	d0,$1E(a3)
+	move.l	x_vel(a3),d0
+	add.l	d0,x_pos(a3)
+	move.l	y_vel(a3),d0
+	add.l	d0,y_pos(a3)
 
 return_113C:
 	rts
@@ -2125,10 +2123,10 @@ GfxObject_Animate:
 	move.l	a2,-(sp)
 	tst.b	($FFFFF80B).w
 	bne.w	loc_1172
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.s	loc_1172
 	move.l	$2E(a3),a2
-	subq.w	#1,$32(a3)
+	subq.w	#1,animation_timer(a3)
 	bne.s	loc_1166
 
 loc_1158:
@@ -2141,7 +2139,7 @@ loc_1158:
 ; ---------------------------------------------------------------------------
 
 loc_1166:
-	cmpi.w	#1,$32(a3)
+	cmpi.w	#1,animation_timer(a3)
 	bne.s	loc_1172
 	tst.b	(a2)
 	beq.s	loc_1182
@@ -2158,8 +2156,8 @@ off_1176:
 
 loc_1182:
 	st	$18(a3)
-	sf	$15(a3)
-	move.w	#1,$32(a3)
+	sf	is_animated(a3)
+	move.w	#1,animation_timer(a3)
 	move.l	(sp)+,a2
 	rts
 ; End of function GfxObject_Animate
@@ -2171,9 +2169,9 @@ loc_1182:
 sub_1194:
 	moveq	#0,d7
 	move.b	(a2)+,d7
-	move.w	d7,$32(a3)
+	move.w	d7,animation_timer(a3)
 	move.w	(a2)+,d7
-	move.w	d7,$22(a3)
+	move.w	d7,addroffset_sprite(a3)
 	jsr	(j_nullsub_2).w
 	move.l	a2,$2E(a3)
 	bra.s	loc_1166
@@ -2200,11 +2198,11 @@ Make_SpriteFromGfxObject:
 	tst.b	$13(a3)
 	beq.w	return_129C
 	lea	(Data_Index).l,a4
-	move.w	$22(a3),d7
+	move.w	addroffset_sprite(a3),d7
 	move.l	(a4,d7.w),d7
 	beq.w	return_129C
 	move.l	d7,a4
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	sub.w	(Camera_Y_pos).w,d7
 	tst.b	$12(a3)
 	bne.s	loc_11EA
@@ -2221,7 +2219,7 @@ loc_11EE:
 	bgt.w	return_129C
 	cmpi.w	#$FF80,d7
 	blt.w	return_129C
-	move.w	$1A(a3),d6
+	move.w	x_pos(a3),d6
 	sub.w	(Camera_X_pos).w,d6
 	cmpi.w	#$160,d6
 	bgt.w	return_129C
@@ -2229,9 +2227,9 @@ loc_11EE:
 	blt.w	return_129C
 	sf	$19(a3)
 	moveq	#0,d0
-	move.b	$11(a3),d0
+	move.b	palette_line(a3),d0
 	ror.w	#3,d0
-	cmpi.b	#1,$10(a3)
+	cmpi.b	#1,priority(a3)
 	bcs.s	loc_1238
 	beq.s	loc_1234
 	tst.b	($FFFFF896).w
@@ -2244,7 +2242,7 @@ loc_1238:
 	tst.b	$12(a3)
 	bne.s	loc_1246
 	add.w	(a4)+,d0
-	add.w	$24(a3),d0
+	add.w	vram_tile(a3),d0
 	bra.s	loc_124A
 ; ---------------------------------------------------------------------------
 
@@ -2258,37 +2256,30 @@ loc_124A:
 	bset	#4,($FFFFF830).w
 	cmp.l	(Addr_GfxObject_Kid).w,a3
 	bne.w	loc_1286
-	move.w	$22(a3),d1
-	subi.w	#$13C,d1
+	move.w	addroffset_sprite(a3),d1
+	subi.w	#LnkTo_unk_A978A-Data_Index,d1	; Skycutter frames
 	asr.w	#1,d1
 	sub.w	unk_1276(pc,d1.w),d7
 	bra.w	loc_1292
 ; ---------------------------------------------------------------------------
-unk_1276:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b  $D
+unk_1276:
+	dc.w   0
+	dc.w   2
+	dc.w   2
+	dc.w   4
+	dc.w   2
+	dc.w   0
+	dc.w   2
+	dc.w  $D
 ; ---------------------------------------------------------------------------
 
 loc_1286:
-	cmpi.w	#(LnkTo_unk_A59AA-Data_Index),$22(a3)
+	cmpi.w	#(LnkTo_unk_A59AA-Data_Index),addroffset_sprite(a3)
 	bne.w	loc_1292
 	subq.w	#6,d7
 
 loc_1292:
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.w	loc_132A
 	bra.s	loc_129E
 ; ---------------------------------------------------------------------------
@@ -2296,7 +2287,7 @@ loc_1292:
 return_129C:
 	rts
 ; ---------------------------------------------------------------------------
-
+; sprite in normal orientation (not x-flipped)
 loc_129E:
 	move.b	(a4)+,d0
 	ext.w	d0
@@ -2377,7 +2368,7 @@ loc_130E:
 return_1328:
 	rts
 ; ---------------------------------------------------------------------------
-
+; x-flipped sprite
 loc_132A:
 	bset	#3,($FFFFF830).w
 	move.b	(a4)+,d0
@@ -2478,44 +2469,31 @@ sub_13C0:
 	moveq	#0,d0
 	move.b	2(a0),d0
 	add.w	d0,d0
-	move.w	unk_13FA(pc,d0.w),d0
+	move.w	NumberTilesPerSpriteSize(pc,d0.w),d0
 	addq.w	#1,d0
 	add.w	d0,($FFFFF830).w
 	lea	8(a0),a0
 	rts
 ; ---------------------------------------------------------------------------
-unk_13FA:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   7
-	dc.b   0
-	dc.b  $B
-	dc.b   0
-	dc.b  $F
+	; number of tiles taken by each of the 16 different sprite sizes
+;unk_13FA:
+NumberTilesPerSpriteSize:
+	dc.w   0
+	dc.w   1
+	dc.w   2
+	dc.w   3
+	dc.w   1
+	dc.w   3
+	dc.w   5
+	dc.w   7
+	dc.w   2
+	dc.w   5
+	dc.w   8
+	dc.w  $B
+	dc.w   3
+	dc.w   7
+	dc.w  $B
+	dc.w  $F
 ; ---------------------------------------------------------------------------
 
 loc_141A:
@@ -2523,15 +2501,16 @@ loc_141A:
 	moveq	#0,d0
 	move.b	2(a0),d0
 	add.w	d0,d0
-	move.w	unk_13FA(pc,d0.w),d0
+	move.w	NumberTilesPerSpriteSize(pc,d0.w),d0
 	addq.w	#1,d0
 	add.w	d0,($FFFFF830).w
 	add.w	d0,($FFFFF83C).w
+	; add length and start address to DMA queue
 	move.w	d0,(a1)+
 	move.l	a4,(a1)+
 	lsl.w	#5,d0
-	add.w	d0,a4
-	lea	8(a0),a0
+	add.w	d0,a4	; end of art to be DMA'd
+	lea	8(a0),a0	; next slot in sprite table
 	rts
 ; End of function sub_13C0
 
@@ -2540,7 +2519,7 @@ loc_141A:
 
 ;sub_1444
 GfxObjects_MoveAndAnimate:
-	tst.b	($FFFFFA2A).w
+	tst.b	(SamuraiHazeActive).w
 	bne.s	loc_1462
 	lea	(Addr_FirstGfxObjectSlot).w,a3
 
@@ -2570,7 +2549,7 @@ loc_1466:
 	bne.s	loc_1488
 
 loc_147E:
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#3,d0
 	bne.s	loc_1466
 
@@ -2636,8 +2615,8 @@ loc_14EE:
 	swap	d0
 	dbf	d2,loc_14EE
 	moveq	#$F,d4
-	lea	($FFFF4ED8).l,a0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_2).l,a0
+	lea	(Palette_Buffer_3).l,a1
 	lea	(Palette_Buffer).l,a2
 	tst.l	d7
 	beq.s	loc_1518
@@ -2645,9 +2624,9 @@ loc_14EE:
 	bsr.s	sub_1536
 
 loc_1518:
-	lea	($FFFF4F18).l,a0
-	lea	($FFFF4F98).l,a1
-	lea	($FFFF4E98).l,a2
+	lea	(Palette_Buffer_2+$40).l,a0
+	lea	(Palette_Buffer_3+$40).l,a1
+	lea	(Palette_Buffer+$40).l,a2
 	lea	($FFFFF88C).w,a4
 	move.l	(a4),d7
 	bne.s	loc_1534
@@ -2717,16 +2696,15 @@ loc_158E:
 
 sub_1596:
 	lea	4(a6),a5
-	move.l	($FFFFF8B2).w,d0
+	move.l	(FGUpdateQueueCustom_NextSlot).w,d0
 	beq.s	loc_15D2
 	move.l	d0,a0
 	move.w	#$FFFF,(a0)
 	moveq	#0,d1
 	move.w	#$4000,d2
 	move.w	#$80,d3
-	lea	($FFFF43BC).l,a0
+	lea	(FGPlane_UpdateQueueCustom).l,a0
 	bra.s	loc_15C8
-; ---------------------------------------------------------------------------
 
 loc_15B8:
 	or.w	d2,d0
@@ -2742,16 +2720,16 @@ loc_15C8:
 	move.w	(a0)+,d0
 	bpl.s	loc_15B8
 	moveq	#0,d0
-	move.l	d0,($FFFFF8B2).w
+	move.l	d0,(FGUpdateQueueCustom_NextSlot).w
 
 loc_15D2:
-	move.l	($FFFFF8B6).w,d0
+	move.l	(FGUpdateQueueCell_NextSlot).w,d0
 	beq.w	loc_1686
-	cmpi.w	#$47A6,d0
+	cmpi.w	#FGPlane_UpdateQueueCell&$FFFF,d0
 	beq.w	loc_1686
 	move.l	d0,a0
 	move.w	#$FFFF,(a0)
-	lea	($FFFF47A6).l,a0
+	lea	(FGPlane_UpdateQueueCell).l,a0
 	move.l	(Addr_ThemeMappings).w,a1
 	lea	(Block_Mappings).l,a2
 	move.w	(Camera_X_pos).w,d4
@@ -2786,6 +2764,7 @@ loc_1614:
 	move.w	d3,(a5)
 	move.w	(a0)+,d0
 	bmi.s	loc_165E
+	; cell has no block in it
 	andi.w	#$FF,d0
 	lsl.w	#3,d0
 	move.l	(a1,d0.w),(a6)
@@ -2799,6 +2778,7 @@ loc_1614:
 ; ---------------------------------------------------------------------------
 
 loc_165E:
+	; cell has block in it
 	andi.w	#$FF,d0
 	lsl.w	#3,d0
 	move.l	(a2,d0.w),(a6)
@@ -2818,11 +2798,11 @@ loc_167A:
 
 loc_1680:
 	moveq	#0,d0
-	move.l	d0,($FFFFF8B6).w
+	move.l	d0,(FGUpdateQueueCell_NextSlot).w
 
 loc_1686:
-	move.l	#$FFFF43BC,($FFFFF8B2).w
-	move.l	#$FFFF47A6,($FFFFF8B6).w
+	move.l	#FGPlane_UpdateQueueCustom,(FGUpdateQueueCustom_NextSlot).w
+	move.l	#FGPlane_UpdateQueueCell,(FGUpdateQueueCell_NextSlot).w
 	rts
 ; End of function sub_1596
 
@@ -3502,7 +3482,7 @@ loc_1CDE:
 
 loc_1CE4:
 	move.w	#colid_kidabove,d7
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_1D4C
 
 loc_1CF2:
@@ -3512,7 +3492,7 @@ loc_1CF2:
 
 loc_1D00:
 	addq.w	#2,sp
-	tst.b	($FFFFFA2B).w
+	tst.b	(KidIsInvulnerable).w
 	beq.w	return_1D32
 	move.w	$38(a0),d7
 	beq.w	return_1D32
@@ -3604,7 +3584,7 @@ loc_1DBE:
 	add.w	$1E(a0),d2
 	move.w	d2,d3
 	add.w	(a1)+,d3
-	lea	($FFFFF866).w,a2
+	lea	(Addr_GfxObject_KidProjectile).w,a2
 
 loc_1DCC:
 	move.l	4(a2),d4
@@ -3744,14 +3724,14 @@ unk_1EBE:
 loc_1F08:
 	move.l	#$3000401,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	st	$13(a3)
-	move.b	#1,$10(a3)
-	move.b	#3,$11(a3)
+	move.b	#1,priority(a3)
+	move.b	#3,palette_line(a3)
 	move.l	#stru_1F40,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 stru_1F40:
@@ -3994,7 +3974,7 @@ loc_2156:
 loc_216A:
 	cmpi.w	#6,($FFFFFA56).w
 	beq.w	loc_200C
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.w	loc_200C
 	bra.s	loc_2156
 ; End of function sub_1FA2
@@ -4049,8 +4029,8 @@ loc_21B8:
 	bge.s	loc_21B8
 	move.w	#$20,$38(a0)
 	move.w	$A(a2),$A(a3)
-	move.w	($FFFFF8CC).w,$A(a2)
-	move.w	a2,($FFFFF8CC).w
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a2)
+	move.w	a2,(Addr_NextFreeShooterObjectSlot).w
 
 loc_21F2:
 	movem.l	(sp)+,d0-d4/a0-a4
@@ -4121,7 +4101,7 @@ loc_226E:
 	move.w	d7,a0
 	move.w	2(a0),d0
 	move.w	4(a0),d1
-	lea	($FFFFF866).w,a2
+	lea	(Addr_GfxObject_KidProjectile).w,a2
 
 loc_2286:
 	move.l	4(a2),d4
@@ -4177,8 +4157,8 @@ loc_22D2:
 loc_22FE:
 	move.w	#colid_hurt,$38(a2)	; hurt by shooter block bullet
 	move.w	$A(a0),$A(a1)
-	move.w	($FFFFF8CC).w,$A(a0)
-	move.w	a0,($FFFFF8CC).w
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
 	move.w	a1,a0
 	bra.w	loc_226E
 ; ---------------------------------------------------------------------------
@@ -4604,7 +4584,7 @@ loc_266A:
 loc_2672:
 	cmp.w	d5,d4
 	blt.w	loc_26D4
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_2686
 	move.w	a2,($FFFFFA96).w
 
@@ -4645,7 +4625,7 @@ loc_26D4:
 	add.w	d6,$1E(a0)
 	tst.w	d6
 	bpl.w	loc_26FE
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	move.w	a2,(Addr_PlatformStandingOn).w
 	st	($FFFFFAA4).w
 	tst.b	($FFFFFAA5).w
@@ -4658,7 +4638,7 @@ loc_26FE:
 	addi.l	#$4000,d7
 	move.l	d7,$2A(a0)
 	st	($FFFFFAA5).w
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.w	loc_2590
 
 loc_271A:
@@ -4741,7 +4721,7 @@ loc_2762:
 	move.w	(PlatformLoader_Offset).w,$20(a3)	; --> a3
 	clr.l	$A(a3)
 	clr.l	$E(a3)
-	move.w	#1,$16(a3)
+	move.w	#1,x_direction(a3)
 	_move.w	0(a4),d7
 	asl.w	#4,d7
 	move.w	d7,2(a3)	; load x pos from platform layout
@@ -4760,7 +4740,7 @@ loc_2762:
 	andi.w	#$F0,d7
 	addi.w	#$10,d7
 	subq.w	#1,d7
-	move.w	d7,$1A(a3)	; x size in pixels
+	move.w	d7,x_pos(a3)	; x size in pixels
 	move.w	d6,$1C(a3)	; y size in pixels
 	move.b	8(a4),d7
 	move.b	d7,$1F(a3)	; t/s bits from platform layout
@@ -4836,14 +4816,14 @@ loc_2876:	; special platform
 Pal_FadeOut:
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_28A6:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_28A6
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_28B8:
 	move.w	d1,(a0)+
@@ -4946,12 +4926,12 @@ loc_2988:
 	lea	(unk_2A06).l,a2
 
 loc_2994:
-	move.w	$1A(a3),d4
+	move.w	x_pos(a3),d4
 	move.w	d7,d0
 	add.w	d0,d0
 	add.w	(a5,d0.w),d4
 	move.w	d4,$C(a1)
-	move.w	$1E(a3),d5
+	move.w	y_pos(a3),d5
 	add.w	(a4,d0.w),d5
 	move.w	d5,4(a1)
 	move.w	(a6,d0.w),8(a1)
@@ -5256,9 +5236,9 @@ SoftPlatform_BounceLoop:
 	bsr.w	SoftPlatform_Move
 	move.l	$E(a3),d7
 	subi.l	#$7000,d7
-	cmpi.l	#$FFFE8000,d7
+	cmpi.l	#-$18000,d7
 	bgt.w	+
-	move.l	#$FFFE8000,d7
+	move.l	#-$18000,d7
 +
 	move.l	d7,$E(a3)
 	cmp.w	6(a3),d0	;compare to original y pos
@@ -5315,7 +5295,11 @@ TrapPlatformDown_MoveLoop:
 	addi.l	#$4000,d7
 	cmpi.l	#$40000,d7
 	blt.w	+
-	move.l	#$20000,d7
+    if minorBugFixes = 0
+	move.l	#$20000,d7	; this is a bug. Should be $40000
+    else
+	move.l	#$40000,d7
+    endif
 +
 	move.l	d7,$E(a3)
 	move.w	6(a3),d7
@@ -5490,7 +5474,7 @@ PlatformChain_LoadPlatform:
 	move.w	d4,2(a3)
 	move.w	6(a0),6(a3)
 	move.w	#1,$20(a3)
-	move.w	$1A(a0),$1A(a3)
+	move.w	$1A(a0),x_pos(a3)
 	move.w	$1C(a0),$1C(a3)
 	move.w	$18(a0),$18(a3)
 	rts
@@ -5798,19 +5782,20 @@ loc_468C:
 ArtUnc_4692:   binclude    "ingame/artunc/Life_icon_(3_frames).bin"
 ArtUnc_4812:   binclude    "ingame/artunc/Clock_icon_(3_frames).bin"
 ArtUnc_4992:   binclude    "ingame/artunc/Coin_continue_icon_(6_frames).bin"
+	align_dmasafe	(6*ANIART_FLAG_SIZE)
 ArtUnc_4C92:   binclude    "ingame/artunc/End_of_level_Flag_(6_frames).bin"
 ArtComp_5B92:   binclude    "ingame/artcomp/Horizontal_platform.bin"
 ArtComp_5C83:   binclude    "ingame/artcomp/Vertical_platform.bin"
 	align	2
 ; =============== S U B	R O U T	I N E =======================================
-
+ANIART_DIAMOND_SIZE	= $200
 
 sub_5D4A:
 	addi.l	#off_7B0AC,a0
 	move.l	(a0),d1
 	addq.l	#2,d1		; d1 = DMA source address
 	jsr	(j_Stop_z80).l
-	move.l	#$93009401,4(a6)	; DMA length: $200
+	move.l	#(($9300|((ANIART_DIAMOND_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_DIAMOND_SIZE>>9)),4(a6)	; DMA length
 	move.l	d1,d0
 	lsr.l	#1,d0
 	move.w	d0,d1
@@ -5840,7 +5825,7 @@ loc_5D6C:
 sub_5DA6:
 	move.l	a1,d1		; d1 = DMA source address
 	jsr	(j_Stop_z80).l
-	move.l	#$93409401,4(a6)	; DMA length: $280
+	move.l	#(($9300|((ANIART_FLAG_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_FLAG_SIZE>>9)),4(a6)	; DMA length
 	move.l	d1,d0
 	lsr.l	#1,d0
 	move.w	d0,d1
@@ -6093,42 +6078,46 @@ sub_6048:
 	move.b	#$7F,($FFFFF88B).w
 	move.b	#$80,($FFFFF888).w
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	move.w	#$1F,d0
 
 loc_607A:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_607A
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_3).l,a1
 	move.w	#$1F,d0
 
 loc_6090:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_6090
-	move.l	($FFFFFADE).w,a0
-	lea	($FFFF4F8A).l,a1
+	move.l	($FFFFFADE).w,a0	; saved storm palette
+	lea	(Palette_Buffer_3+$32).l,a1
 	moveq	#6,d0
 	cmpi.w	#Mountain,(Foreground_theme).w
 	beq.s	loc_60C0
 
 loc_60AA:
+	; load storm palette for other themes
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_60AA
-	move.w	#0,($FFFF4F58).l
+	; background color is set to 0
+	move.w	#0,(Palette_Buffer_3).l
 	subq.w	#4,($FFFFFADA).w
 	bra.w	loc_61C2
 ; ---------------------------------------------------------------------------
 
 loc_60C0:
-	move.w	(a0)+,($FFFF4F58).l
-
+	; load the storm background palette for Mountain
+	; first color goes to a special slot
+	move.w	(a0)+,(Palette_Buffer_3).l
 loc_60C6:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_60C6
+	; load the storm foreground palette for Mountain
 	move.w	#$FFFF,($FFFFF888).w
 	move.l	(LnkTo_Pal_7B774).l,a0
-	lea	($FFFF4F5A).l,a1
+	lea	(Palette_Buffer_3+2).l,a1
 	moveq	#$E,d0
 
 loc_60E0:
@@ -6139,7 +6128,7 @@ loc_60E0:
 ; ---------------------------------------------------------------------------
 
 loc_60EE:
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bgt.s	loc_6172
 	cmpi.w	#Mountain,(Background_theme).w
 	bne.s	loc_6172
@@ -6155,7 +6144,7 @@ loc_60EE:
 	move.w	#0,($FFFFFADC).w
 	move.l	(LnkTo_Pal_7B86C).l,a0
 	move.w	(a0)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a1
+	lea	(Palette_Buffer+$32).l,a1
 	moveq	#6,d0
 
 loc_6136:
@@ -6173,7 +6162,7 @@ loc_613E:
 	sub.w	d7,($FFFFFADC).w
 	move.l	(LnkTo_Pal_7B85C).l,a0
 	move.w	(a0)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a1
+	lea	(Palette_Buffer+$32).l,a1
 	moveq	#6,d0
 
 loc_616C:
@@ -6183,7 +6172,7 @@ loc_616C:
 loc_6172:
 	cmpi.w	#$834,d6 ; Timer: 0x0834, decimal 2100/60=35 seconds (triggers snow)
 	bls.s	loc_61C2
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	return_61C0
 	cmpi.w	#$873,(Frame_Counter).w ; Timer: 0x0873, decimal 2163/60=36 seconds (triggers ice balls)
 	bls.s	return_61C0
@@ -6581,21 +6570,21 @@ loc_6504:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6526:
+Init_Timer_and_Bonus_Flags:
 	tst.b	($FFFFFC36).w
 	beq.w	return_6550
 	sf	($FFFFFC36).w
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
-	move.w	#3,(Time_Minutes).w
+	move.w	#3,(Time_Minutes).w	; Starting timer is 3 minutes
 	clr.w	(Clocks_collected).w
 	sf	(NoHit_Bonus_Flag).w
 	sf	(NoPrize_Bonus_Flag).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 
 return_6550:
 	rts
-; End of function sub_6526
+; End of function Init_Timer_and_Bonus_Flags
 
 ; ---------------------------------------------------------------------------
 word_6552:	dc.w $19
@@ -6820,8 +6809,8 @@ loc_6A76:
 	dbf	d5,loc_6A1E
 
 loc_6A84:
-	bclr	#Up,(Ctrl_Pressed).w
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	move.b	#0,(Pause_Option).w
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$68,d0
@@ -6852,7 +6841,7 @@ loc_6A84:
 Game_Paused_Loop:
 	jsr	(j_WaitForVint).w
 	jsr	(j_ReadJoypad).w
-	bclr	#Up,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
 	beq.s	loc_6B0E
 	; up pressed
 	tst.b	(Pause_Option).w
@@ -6867,7 +6856,7 @@ Game_Paused_Loop:
 ; ---------------------------------------------------------------------------
 
 loc_6B0E:
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	beq.s	Game_Paused_ChkStart
 	; down pressed
 	tst.b	(Pause_Option).w
@@ -6880,7 +6869,7 @@ loc_6B0E:
 	addi.b	#1,(Pause_Option).w
 
 Game_Paused_ChkStart:
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	Game_Paused_Loop
 	; start pressed
 	tst.b	(Pause_Option).w
@@ -7715,14 +7704,14 @@ sub_73D0:
 	sf	(PaletteToDMA_Flag).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_73E2:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_73E2
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_73F4:
 	move.w	d1,(a0)+
@@ -7756,13 +7745,13 @@ loc_7420:
 sub_7428:
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	return_7450
-	btst	#Start,(Ctrl_Held).w ; keyboard key (Enter) start
+	btst	#Button_Start,(Ctrl_Held).w ; keyboard key (Enter) start
 	beq.s	return_7450
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	return_7450
 	cmpi.w	#5,(Number_Diamonds).w
 	blt.s	return_7450
-	st	($FFFFFA29).w
+	st	(FiveWayShotReady).w
 
 return_7450:
 	rts
@@ -7808,15 +7797,15 @@ loc_749C:
 	not.b	(Ctrl_A_Held).w
 
 loc_74B0:
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_7452
-	tst.b	($FFFFFC37).w
+	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_74C8
-	btst	#Button_B,(Ctrl_Held).w ; keyboard key (D) special
+	btst	#Button_C,(Ctrl_Held).w ; keyboard key (D) special
 	bne.w	loc_74E0
 
 loc_74C8:
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	bne.s	loc_7452
 	tst.b	($FFFFFB56).w
 	beq.w	loc_7452
@@ -7825,7 +7814,7 @@ loc_74C8:
 ; ---------------------------------------------------------------------------
 
 loc_74E0:
-	btst	#Button_C,(Ctrl_Held).w ; keyboard key (A) run
+	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	loc_7452
 	addq.w	#1,(Current_LevelID).w
 	clr.w	($FFFFFBCC).w
@@ -7843,7 +7832,7 @@ loc_7508:
 	lea	off_80F2(pc),a1
 	add.w	(a1,d0.w),a0
 	move.l	(a0),a0
-	lea	($FFFF4EBA).l,a1
+	lea	(Palette_Buffer+$62).l,a1
 	moveq	#$B,d0
 
 loc_7526:
@@ -7855,12 +7844,12 @@ loc_7526:
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	a3,(Addr_GfxObject_Kid).w
 	st	$13(a3)
-	move.b	#3,$11(a3)
-	move.b	#0,$10(a3)
+	move.b	#3,palette_line(a3)
+	move.b	#0,priority(a3)
 	move.b	#1,$12(a3)
-	move.w	(PlayerStart_X_pos).w,$1A(a3)
-	move.w	(PlayerStart_Y_pos).w,$1E(a3)
-	subq.w	#1,$1E(a3)
+	move.w	(PlayerStart_X_pos).w,x_pos(a3)
+	move.w	(PlayerStart_Y_pos).w,y_pos(a3)
+	subq.w	#1,y_pos(a3)
 	move.l	#$2010000,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,($FFFFF862).w
@@ -7892,13 +7881,13 @@ loc_75C0:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_75D4:
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 	move.w	(Current_Helmet).w,d0
 	cmpi.w	#1,d0
@@ -7917,7 +7906,7 @@ loc_7606:
 	cmpi.w	#2,(Number_Diamonds).w
 	blt.s	loc_7650
 	move.w	#$8001,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
@@ -7933,16 +7922,16 @@ loc_7650:
 	move.w	#0,($FFFFFB58).w
 
 loc_7664:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_7772
 	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_76B0
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	move.w	($FFFFFA78).w,d6
 	addq.w	#1,d6
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_7696
 	neg.w	d6
 
@@ -7977,7 +7966,7 @@ loc_76E4:
 	bne.w	loc_7772
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
 	st	(Maniaxe_throwing_axe).w
@@ -7987,7 +7976,7 @@ loc_76E4:
 loc_7718:
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.s	loc_7742
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	bne.s	loc_7772
 	cmpi.w	#8,($FFFFFB70).w
 	bge.w	loc_7772
@@ -8005,7 +7994,7 @@ loc_7742:
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_7772
 	move.w	#1,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
@@ -8016,7 +8005,7 @@ loc_7742:
 loc_7772:
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_779C
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_779C
 	addq.w	#1,($FFFFFB58).w
 	cmpi.w	#Micromax,(Current_Helmet).w
@@ -8030,14 +8019,14 @@ loc_779C:
 	tst.b	(Maniaxe_throwing_axe).w
 	bne.w	loc_7828
 	move.w	($FFFFFA78).w,d0
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_77E6
 	add.w	d0,d7
 	addq.w	#1,d7
 	bsr.w	sub_922C
 	beq.s	loc_77C2
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bra.s	loc_7828
 ; ---------------------------------------------------------------------------
 
@@ -8051,7 +8040,7 @@ loc_77C2:
 	bsr.w	sub_B55C
 	cmpi.w	#$4000,d5
 	bne.w	loc_7820
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bra.s	loc_7828
 ; ---------------------------------------------------------------------------
 
@@ -8062,7 +8051,7 @@ loc_77E6:
 	subq.w	#1,d7
 	bsr.w	sub_922C
 	beq.s	loc_77FC
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_7828
 ; ---------------------------------------------------------------------------
 
@@ -8076,7 +8065,7 @@ loc_77FC:
 	bsr.w	sub_B55C
 	cmpi.w	#$5000,d5
 	bne.w	loc_7820
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_7828
 ; ---------------------------------------------------------------------------
 
@@ -8089,20 +8078,20 @@ loc_7828:
 	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_78C6
 	move.w	d7,a4
-	move.l	$A(a4),$26(a3)
+	move.l	$A(a4),x_vel(a3)
 	move.w	4(a4),$1C(a3)
 	bsr.w	sub_8F26
 	move.w	(Addr_PlatformStandingOn).w,a4
-	move.l	$E(a4),$2A(a3)
-	move.l	6(a4),$1E(a3)
-	subq.w	#1,$1E(a3)
+	move.l	$E(a4),y_vel(a3)
+	move.l	6(a4),y_pos(a3)
+	subq.w	#1,y_pos(a3)
 	bsr.w	sub_902A
 	beq.w	loc_7886
 	bmi.w	loc_78A8
 	cmpi.w	#2,d7
 	beq.w	loc_78C0
 	clr.w	(Addr_PlatformStandingOn).w
-	tst.l	$26(a3)
+	tst.l	x_vel(a3)
 	beq.w	loc_787E
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
@@ -8116,7 +8105,7 @@ loc_787E:
 loc_7886:
 	bsr.w	sub_8ED0
 	beq.w	loc_789C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -8143,8 +8132,8 @@ loc_78C0:
 
 loc_78C6:
 	moveq	#0,d0
-	move.l	d0,$26(a3)
-	move.l	d0,$2A(a3)
+	move.l	d0,x_vel(a3)
+	move.l	d0,y_vel(a3)
 	moveq	#0,d7
 	moveq	#0,d6
 	bsr.w	sub_B43A
@@ -8178,7 +8167,7 @@ sub_78E8:
 loc_7920:
 	cmpi.w	#4,d0
 	bne.w	loc_7932
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.w	loc_794C
 	rts
 ; ---------------------------------------------------------------------------
@@ -8199,7 +8188,7 @@ loc_794C:
 	add.w	d0,d0
 	lea	off_79B2(pc),a0
 	add.w	d0,a0
-	move.w	(a0),$22(a3)
+	move.w	(a0),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -8217,19 +8206,19 @@ loc_7974:
 	move.w	#LnkTo_unk_ABEA6-Data_Index,d1
 
 loc_7982:
-	move.w	d1,$22(a3)
+	move.w	d1,addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_7988:
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.w	loc_7998
 	tst.b	$18(a3)
 	beq.w	loc_79A2
 
 loc_7998:
-	move.w	#(LnkTo_unk_C0246-Data_Index),$22(a3)
-	sf	$15(a3)
+	move.w	#(LnkTo_unk_C0246-Data_Index),addroffset_sprite(a3)
+	sf	is_animated(a3)
 
 loc_79A2:
 	move.l	($FFFFF862).w,a4
@@ -8259,21 +8248,21 @@ off_79B2:	dc.w LnkTo_unk_A3E72-Data_Index
 	beq.s	loc_79E6
 	cmpi.w	#8,d1
 	bne.s	loc_79DE
-	move.w	#(LnkTo_unk_C0552-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C0552-Data_Index),addroffset_sprite(a3)
 	bra.s	loc_7A02
 ; ---------------------------------------------------------------------------
 
 loc_79DE:
-	move.w	#(LnkTo_unk_C0552-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C0552-Data_Index),addroffset_sprite(a3)
 	bra.s	loc_7A02
 ; ---------------------------------------------------------------------------
 
 loc_79E6:
 	move.w	d0,$22(a2)
-	move.w	$1A(a3),$1A(a2)
-	move.w	$1E(a3),$1E(a2)
-	move.w	$16(a3),$16(a2)
-	move.w	#(LnkTo_unk_BF0FC-Data_Index),$22(a3)
+	move.w	x_pos(a3),$1A(a2)
+	move.w	y_pos(a3),$1E(a2)
+	move.w	x_direction(a3),$16(a2)
+	move.w	#(LnkTo_unk_BF0FC-Data_Index),addroffset_sprite(a3)
 
 loc_7A02:
 	clr.b	($FFFFFA0D).w
@@ -8285,9 +8274,9 @@ loc_7A02:
 
 sub_7A10:
 	clr.w	$1C(a3)
-	move.w	$1A(a3),-(sp)
+	move.w	x_pos(a3),-(sp)
 	move.w	#$E,d4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	d4,d7
 	bmi.w	loc_7A60
 	move.w	d4,d7
@@ -8298,7 +8287,7 @@ sub_7A10:
 	andi.w	#$4000,d7
 	bne.w	loc_7A60
 	move.w	d4,d7
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	cmp.w	(Level_width_pixels).w,d7
 	bge.w	loc_7A98
 	move.w	#$E,d7
@@ -8311,12 +8300,12 @@ sub_7A10:
 ; ---------------------------------------------------------------------------
 
 loc_7A60:
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	d4,d7
 	andi.w	#$FFF0,d7
 	addi.w	#$10,d7
 	add.w	d4,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	add.w	d4,d7
 	cmp.w	(Level_width_pixels).w,d7
 	bge.w	loc_7A90
@@ -8328,18 +8317,18 @@ loc_7A60:
 	beq.w	loc_7AC6
 
 loc_7A90:
-	move.w	(sp)+,$1A(a3)
+	move.w	(sp)+,x_pos(a3)
 	moveq	#1,d7
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_7A98:
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	add.w	d4,d7
 	andi.w	#$F,d7
 	addq.w	#1,d7
-	sub.w	d7,$1A(a3)
-	move.w	$1A(a3),d7
+	sub.w	d7,x_pos(a3)
+	move.w	x_pos(a3),d7
 	sub.w	d4,d7
 	bmi.s	loc_7A90
 	move.w	d4,d7
@@ -8416,8 +8405,8 @@ loc_7B28:
 
 sub_7B30:
 
-	move.l	$1A(a3),d0
-	move.l	$1E(a3),d1
+	move.l	x_pos(a3),d0
+	move.l	y_pos(a3),d1
 	subq.w	#4,sp
 	move.w	d7,(sp)
 	moveq	#0,d5
@@ -8426,7 +8415,7 @@ sub_7B30:
 	moveq	#1,d5
 
 loc_7B48:
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	andi.w	#$F,d4
 	cmpi.w	#$F,d4
 	beq.w	loc_7B5A
@@ -8434,11 +8423,11 @@ loc_7B48:
 
 loc_7B5A:
 	move.w	d5,2(sp)
-	move.w	$1A(a3),d6
+	move.w	x_pos(a3),d6
 	sub.w	d7,d6
 	bpl.w	loc_7B74
 	move.w	(sp),d6
-	move.w	d6,$1A(a3)
+	move.w	d6,x_pos(a3)
 	add.w	d6,d6
 	bra.w	loc_7BB6
 ; ---------------------------------------------------------------------------
@@ -8449,7 +8438,7 @@ loc_7B74:
 	bsr.w	sub_7BEA
 	bne.w	loc_7BA4
 	move.w	(sp),d6
-	add.w	$1A(a3),d6
+	add.w	x_pos(a3),d6
 	move.w	d6,d4
 	cmp.w	(Level_width_pixels).w,d6
 	bge.w	loc_7BCE
@@ -8467,7 +8456,7 @@ loc_7BA4:
 	andi.w	#$FFF0,d4
 	addi.w	#$10,d4
 	add.w	(sp),d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	add.w	(sp),d4
 	move.w	d4,d6
 
@@ -8479,8 +8468,8 @@ loc_7BB6:
 loc_7BC0:
 	moveq	#1,d7
 	addq.w	#4,sp
-	move.l	d0,$1A(a3)
-	move.l	d1,$1E(a3)
+	move.l	d0,x_pos(a3)
+	move.l	d1,y_pos(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -8488,7 +8477,7 @@ loc_7BCE:
 	andi.w	#$FFF0,d4
 	subq.w	#1,d4
 	sub.w	(sp),d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	sub.w	(sp),d4
 	move.w	d4,d6
 	move.w	2(sp),d7
@@ -8502,7 +8491,7 @@ loc_7BCE:
 
 
 sub_7BEA:
-	move.w	$1E(a3),d5
+	move.w	y_pos(a3),d5
 	asr.w	#4,d5
 	add.w	d5,d5
 	lea	($FFFF4A04).l,a4
@@ -8656,7 +8645,7 @@ off_7D34:	dc.l loc_7D80
 loc_7D44:
 	move.l	($FFFFF862).w,a4
 	sf	$13(a4)
-	move.w	d7,$22(a3)
+	move.w	d7,addroffset_sprite(a3)
 	move.w	(Current_Helmet).w,d7
 	bsr.w	sub_8106
 	rts
@@ -8669,7 +8658,7 @@ loc_7D5A:
 	add.w	d7,d7
 	lea	off_79B2(pc),a4
 	add.w	d7,a4
-	move.w	(a4),$22(a3)
+	move.w	(a4),addroffset_sprite(a3)
 	move.w	(Current_Helmet).w,d7
 	bsr.w	sub_80D0
 	rts
@@ -8684,13 +8673,13 @@ loc_7D80:
 	sf	$13(a4)
 	bclr	#$F,d6
 	beq.w	loc_7DF0
-	move.w	$1A(a3),$1A(a4)
-	move.w	$1E(a3),$1E(a4)
-	subi.w	#$E,$1E(a4)
+	move.w	x_pos(a3),x_pos(a4)
+	move.w	y_pos(a3),y_pos(a4)
+	subi.w	#$E,y_pos(a4)
 	st	$13(a4)
 	sf	$15(a4)
 	sf	$14(a4)
-	move.b	$16(a3),$16(a4)
+	move.b	x_direction(a3),$16(a4)
 	move.w	(Current_Helmet).w,d7
 	cmpi.w	#3,d7
 	beq.w	loc_7DD6
@@ -8705,14 +8694,14 @@ loc_7DD6:
 	not.b	$16(a4)
 
 loc_7DDA:
-	move.b	$11(a3),$11(a4)
+	move.b	palette_line(a3),$11(a4)
 	move.w	(Current_Helmet).w,d7
 	add.w	d7,d7
 	lea	off_8176(pc),a2
 	move.w	(a2,d7.w),$22(a4)
 
 loc_7DF0:
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	moveq	#0,d7
 	bsr.w	sub_80D0
 	bsr.w	sub_813C
@@ -8746,7 +8735,7 @@ loc_7E14:
 	move.w	(Foreground_theme).w,d0
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_7E26
-	moveq	#$B,d0
+	moveq	#MusicSpeed_Murderwall-unk_7ECC,d0
 
 loc_7E26:
 	move.b	(a4,d0.w),d0
@@ -8783,10 +8772,10 @@ loc_7E8C:
 
 loc_7E90:
 	sf	(Check_Helmet_Change).w
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
 	sf	(Currently_transforming).w
-	lea	($FFFF4ED8).l,a4
+	lea	(Palette_Buffer_2).l,a4
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
 	move.w	(sp)+,-(a4)
@@ -8819,6 +8808,8 @@ unk_7EC2:
 	dc.b   3	; berzerker
 	dc.b   3	; maniaxe
 	dc.b   3	; micromax
+	align 2
+; Music speeds(?) applied after transformation
 unk_7ECC:
 	dc.b   0
 	dc.b $7E
@@ -8831,7 +8822,9 @@ unk_7ECC:
 	dc.b $74
 	dc.b $78
 	dc.b $68
+MusicSpeed_Murderwall:
 	dc.b $76
+	align 2
 unk_7ED8:
 	dc.b   0
 	dc.b sfx_Skycutter_transform
@@ -8843,6 +8836,7 @@ unk_7ED8:
 	dc.b sfx_Berzerker_transform
 	dc.b sfx_Maniaxe_transform
 	dc.b sfx_Micromax_transform
+	align 2
 off_7EE2:
 	dc.w off_7EE2-off_7EE2
 	dc.w stru_7EFA-off_7EE2
@@ -8998,7 +8992,7 @@ stru_808A:
 
 sub_80BC:
 
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$B,d7
 	move.w	#$FFF,d6
 
@@ -9018,7 +9012,7 @@ sub_80D0:
 	lea	(Data_Index).l,a4
 	add.w	off_80F2(pc,d7.w),a4
 	move.l	(a4),a4
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$B,d7
 
 loc_80E8:
@@ -9049,7 +9043,7 @@ sub_8106:
 	lea	(Data_Index).l,a4
 	add.w	off_8128(pc,d7.w),a4
 	move.l	(a4),a4
-	lea	($FFFF4EBA).l,a2
+	lea	(Palette_Buffer+$62).l,a2
 	moveq	#$E,d7
 
 loc_811E:
@@ -9117,12 +9111,12 @@ loc_818A:
 	moveq	#-$11,d7
 	bsr.w	sub_B43A
 	beq.w	loc_819A
-	addi.w	#$10,$1E(a3)
+	addi.w	#$10,y_pos(a3)
 
 loc_819A:
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	sf	(Cyclone_flying).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
@@ -9149,13 +9143,13 @@ sub_81B4:
 loc_81D8:
 	bsr.w	sub_B41C
 	moveq	#-$E,d7
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$F,d7
 	sub.w	($FFFFFA78).w,d7
 	swap	d7
 	clr.w	d7
-	move.l	d7,$1A(a3)
+	move.l	d7,x_pos(a3)
 	moveq	#0,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -9163,12 +9157,12 @@ loc_81D8:
 loc_81FA:
 	bsr.w	sub_B41C
 	moveq	#$E,d7
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	add.w	($FFFFFA78).w,d7
 	swap	d7
 	clr.w	d7
-	move.l	d7,$1A(a3)
+	move.l	d7,x_pos(a3)
 	moveq	#0,d7
 	rts
 ; End of function sub_81B4
@@ -9177,13 +9171,13 @@ loc_81FA:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8218:
-	move.w	#Crawling,(Character_Movement).w
+	move.w	#MoveID_Crawling,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 	beq.s	loc_825C
 	move.w	(Current_Helmet).w,d0
@@ -9193,7 +9187,7 @@ loc_8218:
 	bne.s	loc_825C
 
 loc_8252:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E16
 ; ---------------------------------------------------------------------------
 
@@ -9221,16 +9215,16 @@ loc_8298:
 	bsr.w	sub_B41C
 
 loc_829C:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_82BA
-	move.w	#Walking,(Character_Movement).w
+	move.w	#MoveID_Walking,(Character_Movement).w
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
 
 loc_82BA:
-	tst.l	$26(a3)
+	tst.l	x_vel(a3)
 	beq.w	loc_82CA
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
@@ -9238,7 +9232,7 @@ loc_82BA:
 
 loc_82CA:
 	clr.w	($FFFFF8F0).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_8E3E
 ; ---------------------------------------------------------------------------
 
@@ -9251,22 +9245,22 @@ loc_82D8:
 	bsr.w	sub_9A0A
 	move.l	d0,($FFFFFA98).w
 	add.l	$A(a4),d0
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bsr.w	sub_8F26
 	beq.w	loc_8306
 	clr.l	($FFFFFA98).w
 
 loc_8306:
 	move.w	(Addr_PlatformStandingOn).w,a4
-	move.l	$E(a4),$2A(a3)
-	move.l	6(a4),$1E(a3)
-	subq.w	#1,$1E(a3)
+	move.l	$E(a4),y_vel(a3)
+	move.l	6(a4),y_pos(a3)
+	subq.w	#1,y_pos(a3)
 	bsr.w	sub_902A
 	beq.w	loc_833E
 	cmpi.w	#2,d7
 	beq.w	loc_837C
 	clr.w	(Addr_PlatformStandingOn).w
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	move.l	($FFFFFA98).w,d0
 	bsr.w	sub_8446
 	bra.w	loc_8218
@@ -9278,13 +9272,13 @@ loc_833E:
 	bsr.w	sub_B43A
 	beq.w	loc_818A
 	clr.w	(Addr_PlatformStandingOn).w
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
 	bsr.w	sub_B41C
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -9310,31 +9304,31 @@ loc_8382:
 	moveq	#-$10,d0
 	moveq	#$F,d1
 	bsr.w	sub_8600
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_83B4
 	bsr.w	sub_9A0A
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bra.w	loc_83BC
 ; ---------------------------------------------------------------------------
 
 loc_83B4:
 	bsr.w	sub_8506
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 
 loc_83BC:
 	bsr.w	sub_8F26
 	bne.w	loc_83D8
 	bsr.w	sub_83E6
 	bne.w	loc_83D8
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; ---------------------------------------------------------------------------
 
 loc_83D8:
 	moveq	#0,d0
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -9344,17 +9338,17 @@ loc_83D8:
 
 sub_83E6:
 	move.w	($FFFFFA78).w,d7
-	move.l	$26(a3),d6
+	move.l	x_vel(a3),d6
 	bmi.w	loc_841A
 	moveq	#0,d6
 	bsr.w	sub_B55C
 	cmpi.w	#$4000,d5
 	bne.w	loc_8442
 	move.w	($FFFFFA78).w,d7
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	andi.w	#$F,d7
 	addq.w	#1,d7
-	sub.w	d7,$1A(a3)
+	sub.w	d7,x_pos(a3)
 	clr.w	$1C(a3)
 	moveq	#1,d6
 	rts
@@ -9366,10 +9360,10 @@ loc_841A:
 	bsr.w	sub_B55C
 	cmpi.w	#$5000,d5
 	bne.w	loc_8442
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	add.w	($FFFFFA78).w,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	clr.w	$1C(a3)
 	moveq	#1,d7
 	rts
@@ -9414,7 +9408,7 @@ loc_8470:
 	lsr.w	#8,d2
 	add.w	d2,d2
 	add.w	d2,a0
-	move.w	(a0),$22(a3)
+	move.w	(a0),addroffset_sprite(a3)
 	rts
 ; End of function sub_8446
 
@@ -9485,13 +9479,13 @@ sub_8506:
 	add.w	d1,d1
 	add.w	d1,d1
 	move.l	off_84FA(pc,d1.w),a0
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_8560
 
 loc_8518:
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_8524
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_8572
 ; ---------------------------------------------------------------------------
 
@@ -9536,7 +9530,7 @@ return_855E:
 loc_8560:
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_856C
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bra.s	loc_852C
 ; ---------------------------------------------------------------------------
 
@@ -9629,12 +9623,12 @@ sub_8600:
 	move.w	($FFFFFA78).w,d0
 	move.w	d0,d1
 	neg.w	d0
-	add.w	$1A(a3),d0
+	add.w	x_pos(a3),d0
 	bpl.s	loc_8616
 	moveq	#0,d0
 
 loc_8616:
-	add.w	$1A(a3),d1
+	add.w	x_pos(a3),d1
 	cmp.w	(Level_width_pixels).w,d1
 	blt.s	loc_8626
 	move.w	(Level_width_pixels).w,d1
@@ -9644,7 +9638,7 @@ loc_8626:
 	lsr.w	#4,d0
 	lsr.w	#4,d1
 	sub.w	d0,d1
-	move.w	$1E(a3),d2
+	move.w	y_pos(a3),d2
 	addq.w	#1,d2
 	lsr.w	#4,d2
 	add.w	d2,d2
@@ -9710,11 +9704,11 @@ sub_868E:
 	jsr	(j_Hibernate_Object).w
 	move.l	#$3000001,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	#(LnkTo1_NULL-Data_Index),$22(a3)
+	move.w	#(LnkTo1_NULL-Data_Index),addroffset_sprite(a3)
 	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1E(a0),d7
 	subi.w	#$A,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 	moveq	#$1C,d7
 	tst.b	$16(a0)
 	beq.w	loc_86CE
@@ -9722,12 +9716,12 @@ sub_868E:
 
 loc_86CE:
 	add.w	$1A(a0),d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	moveq	#3,d0
 
 loc_86D8:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	bne.w	loc_86EC
 	dbf	d0,loc_86D8
 
@@ -9756,7 +9750,7 @@ sub_86FA:
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
 	move.b	#1,$12(a3)
-	move.b	#3,$11(a3)
+	move.b	#3,palette_line(a3)
 	move.l	(Addr_GfxObject_Kid).w,a2
 	exg	a2,a3
 	move.l	#stru_8BD8,d7
@@ -9771,9 +9765,9 @@ sub_86FA:
 	exg	a4,a3
 
 loc_874C:
-	move.l	$1A(a2),$1A(a3)
-	move.l	$1E(a2),$1E(a3)
-	move.b	$16(a2),$16(a3)
+	move.l	$1A(a2),x_pos(a3)
+	move.l	$1E(a2),y_pos(a3)
+	move.b	$16(a2),x_direction(a3)
 	move.l	#stru_8BA2,d7
 	jsr	(j_Init_Animation).w
 	moveq	#3,d0
@@ -9785,16 +9779,16 @@ loc_876A:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_87B0,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
-	move.b	$16(a3),$48(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
+	move.b	x_direction(a3),$48(a0)
 	move.w	#$64,d0
 
 loc_879A:
-	move.l	$1A(a2),$1A(a3)
+	move.l	$1A(a2),x_pos(a3)
 
 loc_87A0:
-	move.l	$1E(a2),$1E(a3)
+	move.l	$1E(a2),y_pos(a3)
 	tst.b	$18(a3)
 	beq.s	loc_876A
 	jmp	(j_Delete_CurrentObject).w
@@ -9809,20 +9803,20 @@ sub_87B0:
 	move.l	#$3000001,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#3,$11(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	subi.w	#8,$1E(a3)
+	move.b	#3,palette_line(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	subi.w	#8,y_pos(a3)
 	moveq	#$1A,d6
 	moveq	#4,d7
-	move.b	$48(a5),$16(a3)
+	move.b	$48(a5),x_direction(a3)
 	beq.w	loc_87EC
 	moveq	#-$4,d7
 	moveq	#-$1A,d6
 
 loc_87EC:
-	move.w	d7,$26(a3)
-	add.w	d6,$1A(a3)
+	move.w	d7,x_vel(a3)
+	add.w	d6,x_pos(a3)
 	moveq	#4,d0
 	moveq	#0,d7
 	moveq	#0,d6
@@ -9836,12 +9830,12 @@ loc_8810:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	$19(a3)
 	bne.w	loc_899C
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	bne.w	loc_899C
-	addi.l	#$1000,$2A(a3)
-	move.w	$1A(a3),d6
+	addi.l	#$1000,y_vel(a3)
+	move.w	x_pos(a3),d6
 	move.w	d6,d5
-	move.w	$26(a3),d7
+	move.w	x_vel(a3),d7
 	bmi.w	loc_887A
 	addq.w	#1,d6
 	neg.w	d6
@@ -9849,13 +9843,13 @@ loc_8810:
 	cmp.w	d6,d7
 	bgt.w	loc_8852
 	add.w	d5,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	bra.w	loc_88E6
 ; ---------------------------------------------------------------------------
 
 loc_8852:
 	add.w	d5,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	moveq	#0,d6
 	moveq	#0,d7
 	bsr.w	sub_B55C
@@ -9863,10 +9857,10 @@ loc_8852:
 
 loc_8864:
 	bne.w	loc_88E6
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	subq.w	#1,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	bra.w	loc_88B6
 ; ---------------------------------------------------------------------------
 
@@ -9876,27 +9870,27 @@ loc_887A:
 	cmp.w	d6,d7
 	bgt.w	loc_8890
 	sub.w	d7,d5
-	move.w	d5,$1A(a3)
+	move.w	d5,x_pos(a3)
 	bra.w	loc_88E6
 ; ---------------------------------------------------------------------------
 
 loc_8890:
 	sub.w	d7,d5
-	move.w	d5,$1A(a3)
+	move.w	d5,x_pos(a3)
 	moveq	#0,d6
 	moveq	#0,d7
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	bne.w	loc_88E6
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$10,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 
 loc_88B6:
 	subq.w	#1,d0
 	beq.w	loc_899C
-	move.w	$26(a3),d7
+	move.w	x_vel(a3),d7
 	bmi.w	loc_88D2
 	cmpi.w	#1,d7
 	beq.w	loc_88DC
@@ -9911,21 +9905,21 @@ loc_88D2:
 
 loc_88DC:
 	neg.w	d7
-	move.w	d7,$26(a3)
-	not.b	$16(a3)
+	move.w	d7,x_vel(a3)
+	not.b	x_direction(a3)
 
 loc_88E6:
-	move.l	$1E(a3),d7
+	move.l	y_pos(a3),d7
 	move.l	d7,d6
 	move.l	d6,d5
-	move.l	$2A(a3),d4
+	move.l	y_vel(a3),d4
 	bmi.w	loc_893C
 	swap	d7
 	addq.w	#1,d7
 	neg.w	d7
 	andi.w	#$F,d7
 	add.l	d4,d6
-	move.l	d6,$1E(a3)
+	move.l	d6,y_pos(a3)
 	swap	d6
 	swap	d5
 	sub.w	d5,d6
@@ -9940,11 +9934,11 @@ loc_8916:
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	bne.w	loc_8810
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	clr.w	$20(a3)
 	andi.w	#$FFF0,d7
 	subq.w	#1,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 	bra.w	loc_897C
 ; ---------------------------------------------------------------------------
 
@@ -9952,7 +9946,7 @@ loc_893C:
 	swap	d7
 	andi.w	#$F,d7
 	add.l	d4,d6
-	move.l	d6,$1E(a3)
+	move.l	d6,y_pos(a3)
 	swap	d6
 	swap	d5
 	sub.w	d6,d5
@@ -9967,24 +9961,24 @@ loc_8958:
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	bne.w	loc_8810
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	clr.w	$20(a3)
 	andi.w	#$FFF0,d7
 	addi.w	#$10,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 
 loc_897C:
 	move.w	d0,-(sp)
 	move.w	(sp)+,d0
 	subq.w	#1,d0
 	beq.w	loc_899C
-	move.l	$2A(a3),d7
+	move.l	y_vel(a3),d7
 	neg.l	d7
 	asr.l	#1,d7
 	move.l	d7,d6
 	asr.l	#1,d6
 	add.l	d6,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	bra.w	loc_8810
 ; ---------------------------------------------------------------------------
 
@@ -9995,24 +9989,24 @@ loc_899C:
 	subq.w	#1,($FFFFFB70).w
 
 loc_89A8:
-	sf	$14(a3)
+	sf	is_moved(a3)
 	clr.b	$12(a3)
-	clr.b	$11(a3)
+	clr.b	palette_line(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Juggernaut_skull_explode,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_87B0
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_89D2:
+;sub_89D2:
+ManiaxeAxe_Init:
 	move.w	($FFFFFA56).w,d0
 	move.w	#6,-(sp)
 	jsr	(j_Hibernate_Object).w
@@ -10027,25 +10021,25 @@ sub_89D2:
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	(Addr_GfxObject_Kid).w,a0
-	move.w	$1A(a0),$1A(a3)
+	move.w	$1A(a0),x_pos(a3)
 	move.w	$1E(a0),d7
 	subi.w	#$10,d7
-	move.w	d7,$1E(a3)
-	move.b	$16(a0),$16(a3)
+	move.w	d7,y_pos(a3)
+	move.b	$16(a0),x_direction(a3)
 	move.b	#1,$12(a3)
-	move.b	#3,$11(a3)
+	move.b	#3,palette_line(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	moveq	#5,d7
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_8A42
 	moveq	#-5,d7
 
 loc_8A42:
 	add.w	$26(a0),d7
-	move.w	d7,$26(a3)
+	move.w	d7,x_vel(a3)
 	moveq	#$C,d0
-	move.b	$16(a3),$3E(a3)
+	move.b	x_direction(a3),$3E(a3)
 
 loc_8A52:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -10061,27 +10055,27 @@ loc_8A52:
 loc_8A74:
 	subq.w	#1,d0
 	bne.w	loc_8A84
-	not.b	$16(a3)
+	not.b	x_direction(a3)
 	not.b	$17(a3)
 	moveq	#$C,d0
 
 loc_8A84:
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	asr.w	#4,d7
 	add.w	d7,d7
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	asr.w	#4,d6
 	add.w	d6,d6
 	lea	($FFFF4A04).l,a4
 	move.w	(a4,d6.w),a4
 	add.w	d7,a4
-	move.w	(a4),d7
-	andi.w	#$7000,d7
+	move.w	(a4),d7	; address of underlying cell in Level_layout
+	andi.w	#$7000,d7	; collision bits
 	cmpi.w	#$6000,d7
 	beq.w	loc_8ACC
-	bsr.w	sub_8AF6
-	bne.w	loc_8AF2
-	tst.w	$38(a3)
+	bsr.w	ManiaxeAxe_CheckOutOfBounds
+	bne.w	loc_8AF2	; axe is out of bounds from the screen
+	tst.w	collision_type(a3)
 	beq.s	loc_8A52
 
 loc_8ABC:
@@ -10092,28 +10086,28 @@ loc_8ABC:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_8ACC:
-	clr.w	$26(a3)
+loc_8ACC:	; axe hit solid block
+	clr.w	x_vel(a3)
 	clr.b	$12(a3)
-	clr.b	$11(a3)
+	clr.b	palette_line(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Maniaxe_hitting_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	#stru_8BDE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_8AF2:
 	jmp	(j_Delete_CurrentObject).w
-; End of function sub_89D2
+; End of function ManiaxeAxe_Init
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_8AF6:
-	move.w	$1A(a3),d7
+;sub_8AF6:
+ManiaxeAxe_CheckOutOfBounds:
+	move.w	x_pos(a3),d7
 	move.w	(Camera_X_pos).w,d6
 	subi.w	#$10,d6
 	cmp.w	d6,d7
@@ -10121,7 +10115,7 @@ sub_8AF6:
 	addi.w	#$160,d6
 	cmp.w	d6,d7
 	bgt.w	loc_8B32
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	move.w	(Camera_Y_pos).w,d6
 	subi.w	#$10,d6
 	cmp.w	d6,d7
@@ -10136,7 +10130,7 @@ sub_8AF6:
 loc_8B32:
 	moveq	#1,d7
 	rts
-; End of function sub_8AF6
+; End of function ManiaxeAxe_CheckOutOfBounds
 
 ; ---------------------------------------------------------------------------
 stru_8B36:
@@ -10222,12 +10216,12 @@ stru_8BDE:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_8BF0:
-	move.w	#Walking,(Character_Movement).w
+	move.w	#MoveID_Walking,(Character_Movement).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 
 loc_8C12:
@@ -10250,7 +10244,7 @@ loc_8C26:
 	cmpi.w	#2,(Number_Diamonds).w
 	blt.s	loc_8C70
 	move.w	#$8001,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
@@ -10259,11 +10253,11 @@ loc_8C26:
 	move.l	(sp)+,d0
 
 loc_8C70:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
 	tst.b	(Ctrl_Down_Held).w
 	beq.s	loc_8CB6
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_8CB6
 	addq.w	#1,($FFFFFB58).w
 	move.w	(Current_Helmet).w,d0
@@ -10273,14 +10267,14 @@ loc_8C70:
 	beq.s	loc_8CB6
 	bsr.w	sub_7A10
 	bne.w	loc_8CB6
-	move.l	$26(a3),d0
-	move.w	#Crawling,(Character_Movement).w
+	move.l	x_vel(a3),d0
+	move.w	#MoveID_Crawling,(Character_Movement).w
 	bsr.w	sub_8446
 	bra.w	loc_8218
 ; ---------------------------------------------------------------------------
 
 loc_8CB6:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_8D72
 	cmpi.w	#Maniaxe,(Current_Helmet).w
 	bne.w	loc_8CF8
@@ -10288,10 +10282,10 @@ loc_8CB6:
 	bne.w	loc_8D72
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	st	(Maniaxe_throwing_axe).w
 	bra.w	loc_8D72
 ; ---------------------------------------------------------------------------
@@ -10313,7 +10307,7 @@ loc_8CF8:
 loc_8D2C:
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	loc_8D58
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	bne.w	loc_8D72
 	cmpi.w	#8,($FFFFFB70).w
 	bge.w	loc_8D72
@@ -10327,7 +10321,7 @@ loc_8D58:
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_8D72
 	move.w	#1,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 
 loc_8D72:
 	move.w	(Addr_PlatformStandingOn).w,d7
@@ -10338,22 +10332,22 @@ loc_8D72:
 	move.l	d0,($FFFFFA98).w
 	beq.w	loc_8DFC
 	add.l	$A(a4),d0
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bsr.w	sub_8F26
 	beq.w	loc_8DA0
 	clr.l	($FFFFFA98).w
 
 loc_8DA0:
 	move.w	(Addr_PlatformStandingOn).w,a4
-	move.l	$E(a4),$2A(a3)
-	move.l	6(a4),$1E(a3)
-	subq.w	#1,$1E(a3)
+	move.l	$E(a4),y_vel(a3)
+	move.l	6(a4),y_pos(a3)
+	subq.w	#1,y_pos(a3)
 	bsr.w	sub_902A
 	beq.w	loc_8DD4
 	cmpi.w	#2,d7
 	beq.w	loc_8DF6
 	clr.w	(Addr_PlatformStandingOn).w
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -10361,7 +10355,7 @@ loc_8DA0:
 loc_8DD4:
 	bsr.w	sub_8ED0
 	beq.w	loc_8DEA
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -10378,7 +10372,7 @@ loc_8DF6:
 ; ---------------------------------------------------------------------------
 
 loc_8DFC:
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10391,13 +10385,13 @@ loc_8E06:
 
 loc_8E16:
 	bsr.w	sub_8600
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_9A0A
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bne.w	loc_8E3E
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_8E3E
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bra.w	loc_7606
 ; ---------------------------------------------------------------------------
 
@@ -10408,7 +10402,7 @@ loc_8E3E:
 	bne.w	loc_8E80
 
 loc_8E4E:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -10417,13 +10411,13 @@ loc_8E5A:
 	bmi.w	loc_8E74
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.s	loc_8E4E
-	move.w	#Standingstill,(Character_Movement).w
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
 
 loc_8E74:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -10444,14 +10438,14 @@ loc_8E98:
 	btst	d7,d6
 	bne.w	loc_9D22
 	clr.w	$1C(a3)
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	subq.w	#1,d7
-	move.w	d7,$1A(a3)
-	move.l	$26(a3),d6
+	move.w	d7,x_pos(a3)
+	move.l	x_vel(a3),d6
 	bpl.w	loc_8EC8
 	addi.w	#$11,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 
 loc_8EC8:
 	bsr.w	sub_78E8
@@ -10465,9 +10459,9 @@ sub_8ED0:
 	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_8F1C
 	move.w	d7,a4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	move.w	($FFFFFA78).w,d6
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_8EFA
 	moveq	#7,d6
 	cmpi.w	#The_Kid,(Current_Helmet).w
@@ -10481,7 +10475,7 @@ loc_8EFA:
 	blt.w	loc_8F18
 	sub.w	d6,d7
 	sub.w	d6,d7
-	sub.w	$1A(a4),d7
+	sub.w	x_pos(a4),d7
 	cmp.w	d5,d7
 	bgt.w	loc_8F18
 	moveq	#0,d7
@@ -10494,7 +10488,7 @@ loc_8F18:
 ; ---------------------------------------------------------------------------
 
 loc_8F1C:
-	move.w	#4,$38(a3)
+	move.w	#4,collision_type(a3)
 	bra.s	loc_8F18
 ; End of function sub_8ED0
 
@@ -10505,12 +10499,12 @@ loc_8F1C:
 
 
 sub_8F26:
-	move.l	$1A(a3),d7
+	move.l	x_pos(a3),d7
 	move.l	d7,d4
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bmi.w	loc_8FAC
 	add.l	d0,d4
-	move.l	d4,$1A(a3)
+	move.l	d4,x_pos(a3)
 	swap	d4
 	swap	d7
 	sub.w	d7,d4
@@ -10526,10 +10520,10 @@ sub_8F26:
 	bge.w	loc_8F86
 	bsr.w	sub_922C
 	beq.w	loc_9022
-	move.l	$26(a3),d6
-	clr.l	$26(a3)
+	move.l	x_vel(a3),d6
+	clr.l	x_vel(a3)
 	sub.w	d0,d4
-	sub.w	d4,$1A(a3)
+	sub.w	d4,x_pos(a3)
 	clr.w	$1C(a3)
 	tst.w	d7
 	bmi.w	loc_8F98
@@ -10539,9 +10533,9 @@ sub_8F26:
 ; ---------------------------------------------------------------------------
 
 loc_8F86:
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	sub.w	d0,d4
-	sub.w	d4,$1A(a3)
+	sub.w	d4,x_pos(a3)
 	clr.w	$1C(a3)
 	moveq	#0,d7
 	rts
@@ -10551,13 +10545,13 @@ loc_8F98:
 	cmpi.l	#$8000,d6
 	blt.w	loc_901E
 	neg.l	d6
-	move.l	d6,$26(a3)
+	move.l	d6,x_vel(a3)
 	bra.w	loc_901E
 ; ---------------------------------------------------------------------------
 
 loc_8FAC:
 	add.l	d0,d4
-	move.l	d4,$1A(a3)
+	move.l	d4,x_pos(a3)
 	swap	d4
 	swap	d7
 	sub.w	d7,d4
@@ -10571,10 +10565,10 @@ loc_8FAC:
 	bmi.w	loc_8FF8
 	bsr.w	sub_922C
 	beq.w	loc_9022
-	move.l	$26(a3),d6
-	clr.l	$26(a3)
+	move.l	x_vel(a3),d6
+	clr.l	x_vel(a3)
 	sub.w	d0,d4
-	add.w	d4,$1A(a3)
+	add.w	d4,x_pos(a3)
 	clr.w	$1C(a3)
 	tst.w	d7
 	bmi.w	loc_900A
@@ -10584,9 +10578,9 @@ loc_8FAC:
 ; ---------------------------------------------------------------------------
 
 loc_8FF8:
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	sub.w	d0,d4
-	add.w	d4,$1A(a3)
+	add.w	d4,x_pos(a3)
 	clr.w	$1C(a3)
 	moveq	#0,d6
 	rts
@@ -10596,7 +10590,7 @@ loc_900A:
 	neg.l	d6
 	cmpi.l	#$8000,d6
 	blt.w	loc_901E
-	move.l	d6,$26(a3)
+	move.l	d6,x_vel(a3)
 	bra.w	*+4
 
 loc_901E:
@@ -10617,12 +10611,12 @@ loc_9022:
 
 
 sub_902A:
-	move.l	$1E(a3),d7
+	move.l	y_pos(a3),d7
 	move.l	d7,d4
-	move.l	$2A(a3),d0
+	move.l	y_vel(a3),d0
 	bmi.w	loc_908C
 	add.l	d0,d4
-	move.l	d4,$1E(a3)
+	move.l	d4,y_pos(a3)
 	swap	d4
 	swap	d7
 	sub.w	d7,d4
@@ -10637,10 +10631,10 @@ sub_902A:
 	bge.w	loc_9142
 	bsr.w	sub_914A
 	beq.w	loc_913A
-	move.l	$2A(a3),d6
-	clr.l	$2A(a3)
+	move.l	y_vel(a3),d6
+	clr.l	y_vel(a3)
 	sub.w	d0,d4
-	sub.w	d4,$1E(a3)
+	sub.w	d4,y_pos(a3)
 	clr.w	$20(a3)
 	tst.w	d7
 	bmi.w	loc_9082
@@ -10650,20 +10644,20 @@ sub_902A:
 
 loc_9082:
 	neg.l	d6
-	move.l	d6,$2A(a3)
+	move.l	d6,y_vel(a3)
 	moveq	#-1,d7
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_908C:
 	add.l	d0,d4
-	move.l	d4,$1E(a3)
+	move.l	d4,y_pos(a3)
 	swap	d4
 	swap	d7
 	sub.w	d7,d4
 	neg.w	d4
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	beq.w	loc_90C0
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_90C0
@@ -10680,10 +10674,10 @@ loc_90C0:
 	bmi.w	loc_90F6
 	bsr.w	sub_914A
 	beq.w	loc_913A
-	move.l	$2A(a3),d6
-	clr.l	$2A(a3)
+	move.l	y_vel(a3),d6
+	clr.l	y_vel(a3)
 	sub.w	d0,d4
-	add.w	d4,$1E(a3)
+	add.w	d4,y_pos(a3)
 	clr.w	$20(a3)
 	tst.w	d7
 	bmi.w	loc_9130
@@ -10694,10 +10688,10 @@ loc_90C0:
 loc_90F6:
 	tst.b	($FFFFFA6A).w
 	bne.w	loc_9114
-	move.l	$2A(a3),d6
-	clr.l	$2A(a3)
+	move.l	y_vel(a3),d6
+	clr.l	y_vel(a3)
 	sub.w	d0,d4
-	add.w	d4,$1E(a3)
+	add.w	d4,y_pos(a3)
 	clr.w	$20(a3)
 	moveq	#0,d7
 	rts
@@ -10706,16 +10700,16 @@ loc_90F6:
 loc_9114:
 	move.b	#1,($FFFFFA69).w
 	sub.w	d0,d4
-	add.w	d4,$1E(a3)
+	add.w	d4,y_pos(a3)
 	clr.w	$20(a3)
-	move.l	#$30000,$2A(a3)
+	move.l	#$30000,y_vel(a3)
 	moveq	#0,d7
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_9130:
 	neg.l	d6
-	move.l	d6,$2A(a3)
+	move.l	d6,y_vel(a3)
 	moveq	#-1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -10743,7 +10737,7 @@ sub_914A:
 
 	clr.w	($FFFFFB6C).w
 	subq.w	#2,sp
-	move.w	$1A(a3),d6
+	move.w	x_pos(a3),d6
 	sub.w	($FFFFFA78).w,d6
 	asr.w	#4,d6
 	move.w	d6,d5
@@ -10754,12 +10748,12 @@ sub_914A:
 	lea	($FFFF4A04).l,a4
 	move.w	(a4,d7.w),a4
 	add.w	d6,a4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	add.w	($FFFFFA78).w,d7
 	asr.w	#4,d7
 	sub.w	d5,d7
 	exg	d5,d7
-	dc.l	$51EF0000	; bindary for opcode _sf	0(sp)
+	dc.l	$51EF0000	; binary for opcode _sf	0(sp)
 	sf	1(sp)
 
 loc_9188:
@@ -10776,7 +10770,7 @@ loc_919E:
 ; ---------------------------------------------------------------------------
 
 loc_91A6:
-	move.w	#colid_kidbelow,$38(a3)
+	move.w	#colid_kidbelow,collision_type(a3)
 
 loc_91AC:
 	st	1(sp)
@@ -10794,14 +10788,14 @@ loc_91C0:
 	asr.w	#6,d7
 	cmpi.w	#$18,d7
 	bne.s	loc_919E
-	dc.l	$50EF0000	; bindary for opcode _st	0(sp)
+	dc.l	$50EF0000	; binary for opcode _st	0(sp)
 	move.l	a4,-(sp)
 	movem.w	d0-d7,-(sp)
 	move.l	a4,d3
 	subq.w	#2,d3
 	moveq	#0,d6
-	jsr	(j_sub_FACE).l
-	tst.l	$2A(a3)
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
+	tst.l	y_vel(a3)
 	bpl.w	loc_91F6
 	moveq	#2,d6
 
@@ -10848,7 +10842,7 @@ sub_922C:
 
 
 	subq.w	#2,sp
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	asr.w	#4,d6
 	move.w	d6,d5
 	add.w	d6,d6
@@ -10860,22 +10854,22 @@ sub_922C:
 	cmp.w	(Level_width_tiles).w,d7
 	bgt.w	loc_9380
 	add.w	d7,a4
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	subi.w	#$F,d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	beq.w	loc_9288
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.w	loc_9288
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_9288
-	cmpi.w	#(LnkTo_unk_A94AC-Data_Index),$22(a3)
+	cmpi.w	#(LnkTo_unk_A94AC-Data_Index),addroffset_sprite(a3)
 	beq.w	loc_9288
 	subi.w	#$10,d7
 
 loc_9288:
 	asr.w	#4,d7
 	sub.w	d7,d5
-	dc.l	$51EF0000	; bindary for opcode _sf	0(sp)
+	dc.l	$51EF0000	; binary for opcode _sf	0(sp)
 	sf	1(sp)
 
 loc_9294:
@@ -10893,7 +10887,7 @@ loc_92AA:
 ; ---------------------------------------------------------------------------
 
 loc_92B6:
-	move.w	#colid_kidbelow,$38(a3)
+	move.w	#colid_kidbelow,collision_type(a3)
 
 loc_92BC:
 	st	1(sp)
@@ -10902,16 +10896,16 @@ loc_92BC:
 	beq.s	loc_92AA
 	andi.w	#$F00,d7
 	asr.w	#6,d7
-	cmpi.w	#$18,d7
+	cmpi.w	#$18,d7	; drill block?
 	bne.w	loc_92DE
-	dc.l	$50EF0000	; bindary for opcode _st	0(sp)
+	dc.l	$50EF0000	; binary for opcode _st	0(sp)
 	bra.w	loc_92EC
 ; ---------------------------------------------------------------------------
 
 loc_92DE:
 	tst.b	(Berzerker_charging).w
 	beq.s	loc_92AA
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.s	loc_92AA
 
 loc_92EC:
@@ -10921,8 +10915,8 @@ loc_92EC:
 	move.l	(a2,d7.w),a2
 	move.l	a4,d3
 	moveq	#3,d6
-	jsr	(j_sub_FACE).l
-	tst.l	$26(a3)
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
+	tst.l	x_vel(a3)
 	bpl.w	loc_930E
 	moveq	#1,d6
 
@@ -10955,9 +10949,10 @@ loc_9338:
 	addq.w	#2,sp
 	rts
 ; ---------------------------------------------------------------------------
-off_933E:	dc.l j_sub_10E86
-	dc.l j_sub_10E86
-	dc.l j_sub_10F44
+off_933E:	; interaction for each block type
+	dc.l j_Block_LoadSmashBits
+	dc.l j_Block_LoadSmashBits
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_937E
 	dc.l return_937E
 	dc.l j_loc_111F4
@@ -10993,9 +10988,9 @@ sub_9386:
 	bsr.w	sub_B55C
 	cmpi.w	#$4000,d5
 	bne.w	loc_93AE
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
-	add.w	$1E(a3),d7
+	add.w	y_pos(a3),d7
 	move.w	d7,($FFFFFA24).w
 	sf	($FFFFFA26).w
 	moveq	#-1,d7
@@ -11005,10 +11000,10 @@ sub_9386:
 loc_93AE:
 	cmpi.w	#$5000,d5
 	bne.w	loc_93D4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$F,d7
-	sub.w	$1E(a3),d7
+	sub.w	y_pos(a3),d7
 	neg.w	d7
 	move.w	d7,($FFFFFA24).w
 	st	($FFFFFA26).w
@@ -11022,10 +11017,10 @@ loc_93D4:
 	andi.w	#$7000,d7
 	cmpi.w	#$4000,d7
 	bne.w	loc_9402
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$10,d7
-	add.w	$1E(a3),d7
+	add.w	y_pos(a3),d7
 	move.w	d7,($FFFFFA24).w
 	sf	($FFFFFA26).w
 	moveq	#1,d7
@@ -11035,10 +11030,10 @@ loc_93D4:
 loc_9402:
 	cmpi.w	#$5000,d7
 	bne.w	loc_9426
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	subq.w	#1,d7
-	sub.w	$1E(a3),d7
+	sub.w	y_pos(a3),d7
 	neg.w	d7
 	move.w	d7,($FFFFFA24).w
 	st	($FFFFFA26).w
@@ -11093,7 +11088,7 @@ loc_9484:
 	bne.w	loc_94F6
 	move.w	($FFFFF8F0).w,d2
 	move.l	($FFFFF862).w,a4
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bpl.s	loc_949C
 	neg.l	d0
 
@@ -11118,14 +11113,14 @@ loc_94B4:
 	lsr.w	#8,d2
 	add.w	d2,d2
 	add.w	d2,a0
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.w	loc_94D8
 	tst.b	$18(a3)
 	beq.w	loc_94E0
 
 loc_94D8:
-	move.w	(a0),$22(a3)
-	sf	$15(a3)
+	move.w	(a0),addroffset_sprite(a3)
+	sf	is_animated(a3)
 
 loc_94E0:
 	bsr.w	sub_975C
@@ -11146,13 +11141,13 @@ loc_94F6:
 	bne.w	loc_9580
 	tst.l	d0
 	bmi.s	loc_950A
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_957C
 	bra.s	loc_9512
 ; ---------------------------------------------------------------------------
 
 loc_950A:
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_957C
 	neg.l	d0
 
@@ -11197,7 +11192,7 @@ loc_9564:
 	lsr.w	#8,d2
 	add.w	d2,d2
 	add.w	d2,a0
-	move.w	(a0),$22(a3)
+	move.w	(a0),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -11210,17 +11205,17 @@ loc_9580:
 	bne.s	loc_95A4
 	tst.l	d0
 	bpl.s	loc_9596
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_95A4
 	bra.s	loc_959C
 ; ---------------------------------------------------------------------------
 
 loc_9596:
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_95A4
 
 loc_959C:
-	move.w	#(LnkTo_unk_A5346-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_A5346-Data_Index),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -11242,7 +11237,7 @@ loc_95BA:
 	add.w	d0,d0
 	lea	off_79B2(pc),a0
 	add.w	d0,a0
-	move.w	(a0),$22(a3)
+	move.w	(a0),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -11276,7 +11271,7 @@ loc_9600:
 	lsr.w	#8,d2
 	add.w	d2,d2
 	add.w	d2,a0
-	move.w	(a0),$22(a3)
+	move.w	(a0),addroffset_sprite(a3)
 	rts
 ; End of function sub_942A
 
@@ -11411,7 +11406,7 @@ unk_96D0:	dc.b   0
 
 sub_96E8:
 	movem.l	a0-a1,-(sp)
-	move.w	$1E(a3),d5
+	move.w	y_pos(a3),d5
 	move.w	d5,d6
 	subi.w	#$1F,d5
 	subi.w	#$10,d6
@@ -11423,14 +11418,14 @@ sub_96E8:
 	move.w	(a0,d5.w),a0
 	moveq	#$B,d5
 	moveq	#4,d7
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_971A
 	exg	d5,d7
 
 loc_971A:
-	sub.w	$1A(a3),d5
+	sub.w	x_pos(a3),d5
 	neg.w	d5
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	asr.w	#4,d5
 	asr.w	#4,d7
 	sub.w	d5,d7
@@ -11506,23 +11501,23 @@ loc_97BE:
 ; ---------------------------------------------------------------------------
 
 loc_97D4:
-	cmpi.w	#Standingstill,(Character_Movement).w
+	cmpi.w	#MoveID_Standingstill,(Character_Movement).w
 	bne.w	loc_97E8
 	move.w	#(LnkTo_unk_BEDF0-Data_Index),$22(a4)
 	bra.w	loc_97FE
 ; ---------------------------------------------------------------------------
 
 loc_97E8:
-	cmpi.w	#Walking,(Character_Movement).w
+	cmpi.w	#MoveID_Walking,(Character_Movement).w
 	bne.w	loc_97FE
 	lea	(off_9826).l,a0
 	add.w	d2,a0
 	move.w	(a0),$22(a4)
 
 loc_97FE:
-	move.l	$1A(a3),$1A(a4)
-	move.l	$1E(a3),$1E(a4)
-	move.b	$16(a3),$16(a4)
+	move.l	x_pos(a3),x_pos(a4)
+	move.l	y_pos(a3),y_pos(a4)
+	move.b	x_direction(a3),$16(a4)
 	rts
 ; End of function sub_975C
 
@@ -11547,11 +11542,11 @@ off_9826:	dc.w LnkTo_unk_BEDF0-Data_Index
 
 sub_9832:
 	movem.l	d0-d3,-(sp)
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	subi.w	#$28,d0
 	addi.w	#$28,d1
-	move.w	$1E(a3),d2
+	move.w	y_pos(a3),d2
 	subi.w	#$1F,d2
 	move.w	d2,d3
 	addi.w	#$10,d3
@@ -11656,7 +11651,7 @@ loc_992A:
 	move.b	d7,($FFFFFA69).w
 	asr.w	#3,d7
 	add.w	d7,d7
-	move.w	off_993A(pc,d7.w),$22(a3)
+	move.w	off_993A(pc,d7.w),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 off_993A:	dc.w LnkTo_unk_AA3AE-Data_Index
@@ -11666,7 +11661,7 @@ off_993A:	dc.w LnkTo_unk_AA3AE-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_9942:
-	move.l	$26(a3),d7
+	move.l	x_vel(a3),d7
 	movem.l	a0-a2,-(sp)
 	move.w	($FFFFF8F0).w,d6
 	subq.b	#1,($FFFFFA0D).w
@@ -11704,17 +11699,17 @@ loc_998A:
 	add.w	d6,d6
 	move.l	($FFFFF862).w,a2
 	move.w	off_99FE(pc,d6.w),d7
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_99A6
 	move.w	#(LnkTo_unk_A94AC-Data_Index),d7
 
 loc_99A6:
-	move.w	d7,$22(a3)
-	move.l	$1A(a3),$1A(a2)
-	move.l	$1E(a3),$1E(a2)
-	move.l	$26(a3),$26(a2)
-	move.l	$2A(a3),$2A(a2)
-	move.w	$16(a3),$16(a2)
+	move.w	d7,addroffset_sprite(a3)
+	move.l	x_pos(a3),$1A(a2)
+	move.l	y_pos(a3),$1E(a2)
+	move.l	x_vel(a3),$26(a2)
+	move.l	y_vel(a3),$2A(a2)
+	move.w	x_direction(a3),$16(a2)
 	move.w	#$12C,d7
 	move.b	($FFFFFA0C).w,d5
 	add.b	d5,d5
@@ -11767,11 +11762,11 @@ loc_9A14:
 
 
 sub_9A20:
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_9A84
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_9A32
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_9A90
 ; ---------------------------------------------------------------------------
 
@@ -11812,7 +11807,7 @@ loc_9A6E:
 loc_9A84:
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_9A90
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bra.s	loc_9A32
 ; ---------------------------------------------------------------------------
 
@@ -11874,11 +11869,13 @@ loc_9B08:
 	lea	$38(a0),a0
 
 loc_9B14:
-	tst.b	$16(a3)
-	bne.s	loc_9B7E
+	tst.b	x_direction(a3)
+	bne.s	loc_9B7E	; facing left
+	; facing right
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_9B26
-	st	$16(a3)
+	; facing right but holding left --> now facing left
+	st	x_direction(a3)
 	bra.s	loc_9B90
 ; ---------------------------------------------------------------------------
 
@@ -11886,44 +11883,46 @@ loc_9B26:
 	tst.b	(Ctrl_Right_Held).w
 	beq.w	loc_9BEE
 
-loc_9B2E:
+loc_9B2E:	; facing right holding right
 	tst.b	(Ctrl_A_Held).w
 	bne.s	loc_9B62
+	; facing right, holding right but not run
 	tst.l	d0
 	bmi.s	loc_9B5C
+
+; facing right, holding right but not run, moving right
 	cmp.l	$10(a0),d0
 	ble.s	loc_9B44
-	move.l	$10(a0),d0
+	move.l	$10(a0),d0	; use running speed cap
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9B44:
+loc_9B44:	; below running speed cap
 	cmp.l	(a0),d0
 	ble.s	loc_9B4E
-	sub.l	8(a0),d0
+	sub.l	8(a0),d0	; beyond walking speed cap -> decelerate
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9B4E:
-	add.l	4(a0),d0
+loc_9B4E:	; below walking speed cap
+	add.l	4(a0),d0	; apply walking acceleration
 	cmp.l	(a0),d0
 	bcs.w	return_9B5A
-	move.l	(a0),d0
+	move.l	(a0),d0	; prevent from going above walking speed cap
 
 return_9B5A:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B5C:
+loc_9B5C:; facing right holding right but not run, but moving left
 	add.l	$C(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B62:
+loc_9B62:; facing right holding right and run
 	tst.l	d0
 	bmi.s	loc_9B78
-	add.l	$14(a0),d0
-	cmp.l	$10(a0),d0
+	; facing right holding right and run, moving right
+	add.l	$14(a0),d0	; apply running acceleration
+	cmp.l	$10(a0),d0	; check running speed cap
 	bcs.w	return_9B76
 	move.l	$10(a0),d0
 
@@ -11931,15 +11930,16 @@ return_9B76:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B78:
+loc_9B78:; facing right holding right and run, but moving left
 	add.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9B7E:
+loc_9B7E:	; facing left
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_9B8A
-	sf	$16(a3)
+	; facing left but holding right --> now facing right
+	sf	x_direction(a3)
 	bra.s	loc_9B2E
 ; ---------------------------------------------------------------------------
 
@@ -11947,52 +11947,53 @@ loc_9B8A:
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_9BEE
 
-loc_9B90:
+loc_9B90:; facing left, holding left
 	tst.b	(Ctrl_A_Held).w
 	bne.s	loc_9BCE
+	; facing left, holding left but not run
 	tst.l	d0
 	bpl.s	loc_9BC8
+	; moving left
 	move.l	d0,d1
 	neg.l	d1
 	cmp.l	$10(a0),d1
 	ble.s	loc_9BAC
-	move.l	$10(a0),d0
+	move.l	$10(a0),d0	; use running speed cap
 	neg.l	d0
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9BAC:
+loc_9BAC:	; below running speed cap
 	cmp.l	(a0),d1
 	ble.s	loc_9BB6
-	add.l	8(a0),d0
+	add.l	8(a0),d0	; beyond walking speed cap -> decelerate
 	rts
-; ---------------------------------------------------------------------------
 
-loc_9BB6:
-	sub.l	4(a0),d0
+loc_9BB6:	; below walking speed cap
+	sub.l	4(a0),d0	; apply walking acceleration
 	move.l	d0,d1
 	neg.l	d1
 	cmp.l	(a0),d1
 	ble.s	return_9BC6
-	move.l	(a0),d0
+	move.l	(a0),d0	; prevent from going above walking speed cap
 	neg.l	d0
 
 return_9BC6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BC8:
+loc_9BC8:; facing left, holding left but not run, moving right
 	sub.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BCE:
+loc_9BCE:; facing left, holding left and run
 	tst.l	d0
 	bpl.s	loc_9BE8
-	sub.l	$14(a0),d0
+	; facing left holding left and run, moving left
+	sub.l	$14(a0),d0	; apply running acceleration
 	move.l	d0,d1
 	neg.l	d1
-	cmp.l	$10(a0),d1
+	cmp.l	$10(a0),d1	; check running speed cap
 	ble.s	return_9BE6
 	move.l	$10(a0),d0
 	neg.l	d0
@@ -12001,20 +12002,21 @@ return_9BE6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BE8:
+loc_9BE8:; facing left holding left and run, but moving right
 	sub.l	$18(a0),d0
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BEE:
+loc_9BEE:	; facing either way, holding nothing
 	tst.l	d0
 	bpl.s	loc_9BFC
+	; moving left
 	add.l	8(a0),d0
 	bpl.w	loc_9C06
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_9BFC:
+loc_9BFC:	; moving right
 	sub.l	8(a0),d0
 	bmi.w	loc_9C06
 	rts
@@ -12025,6 +12027,18 @@ loc_9C06:
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_9A0A
 ; ---------------------------------------------------------------------------
+; Max walking speed: If accelerating while walking, speed is capped at this value.
+;	If already going faster while walking, a deceleration is applied.
+; Acceleration walking rate: Used when pressing a direction but not run while
+;	moving in that direction at a speed lower than the walking speed cap
+; Deceleration walking/running rate: Used when holding no direction,
+;	or holding a direction but not run while going faster than the walking speed cap in that direction
+; Brake walking-left rate: Used when holding right but not run while moving left
+; Max running speed: If going faster than this and pressing the direction the
+;	kid is already moving, speed is reset to this value.
+; Acceleration running rate: Used when pressing a direction and run while moving in that direction
+; Brake walking-right/running rate: Used when pressing direction and run while moving in opposite direction,
+;	and when holding left but not run while moving right
 unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$20000	; Max walking speed
 	dc.l	 $1000	; Acceleration walking rate
@@ -12102,21 +12116,21 @@ unk_9CCE:	; The below properties when the kid is walking on rubber blocks
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_9D22:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	tst.b	($FFFFFA26).w
 	bne.s	loc_9D2E
 	neg.l	d0
 
 loc_9D2E:
-	move.l	d0,$2A(a3)
+	move.l	d0,y_vel(a3)
 	move.w	#6,($FFFFFA56).w
 	bsr.w	sub_71E4
 	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_7ACC
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 
 loc_9D58:
 	cmpi.w	#Eyeclops,(Current_Helmet).w
@@ -12137,7 +12151,7 @@ loc_9D86:
 	lea	$10(a1),a1
 
 loc_9D94:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	move.b	(Ctrl_Right_Held).w,d1
 	move.b	(Ctrl_Left_Held).w,d2
 	tst.b	($FFFFFA26).w
@@ -12158,7 +12172,7 @@ loc_9DAA:
 ; ---------------------------------------------------------------------------
 
 loc_9DC0:
-	move.b	($FFFFFA26).w,$16(a3)
+	move.b	($FFFFFA26).w,x_direction(a3)
 	tst.l	d0
 	bpl.s	loc_9DD4
 	add.l	4(a1),d0
@@ -12188,7 +12202,7 @@ loc_9DEE:
 
 loc_9DF2:
 	tst.b	($FFFFFA26).w
-	seq	$16(a3)
+	seq	x_direction(a3)
 	tst.l	d0
 	bmi.s	loc_9E08
 	sub.l	$C(a1),d0
@@ -12238,7 +12252,7 @@ loc_9E4C:
 	eori.b	#$FF,d1
 
 loc_9E58:
-	move.b	d1,$16(a3)
+	move.b	d1,x_direction(a3)
 
 loc_9E5C:
 	tst.b	($FFFFFA26).w
@@ -12246,12 +12260,12 @@ loc_9E5C:
 	neg.l	d0
 
 loc_9E64:
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	bra.w	loc_9F18
 ; ---------------------------------------------------------------------------
 
 loc_9E6C:
-	move.l	$26(a3),d7
+	move.l	x_vel(a3),d7
 	tst.b	($FFFFFA26).w
 	beq.w	loc_9E94
 	addi.l	#$1000,d7
@@ -12259,8 +12273,8 @@ loc_9E6C:
 	move.l	#$1000,d7
 
 loc_9E88:
-	sf	$16(a3)
-	move.l	d7,$26(a3)
+	sf	x_direction(a3)
+	move.l	d7,x_vel(a3)
 	bra.w	loc_9F18
 ; ---------------------------------------------------------------------------
 
@@ -12270,8 +12284,8 @@ loc_9E94:
 	move.l	#$FFFFF000,d7
 
 loc_9EA4:
-	st	$16(a3)
-	move.l	d7,$26(a3)
+	st	x_direction(a3)
+	move.l	d7,x_vel(a3)
 	bra.w	loc_9F18
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
@@ -12383,10 +12397,10 @@ unk_9EE4:	dc.b   0
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_9F18:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_B580
 	move.l	#$40000,d1
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	cmp.l	d1,d0
 	ble.s	loc_9F32
 	move.l	d1,d0
@@ -12398,18 +12412,18 @@ loc_9F32:
 	move.l	d1,d0
 
 loc_9F3A:
-	move.l	d0,$26(a3)
-	add.l	$1A(a3),d0
-	move.l	d0,$1A(a3)
+	move.l	d0,x_vel(a3)
+	add.l	x_pos(a3),d0
+	move.l	d0,x_pos(a3)
 	bsr.w	sub_A254
 	tst.b	($FFFFFA26).w
 	bne.w	loc_A04C
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	lsr.w	#4,d0
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	lsr.w	#4,d0
 	add.w	d0,d0
 	add.w	d0,a0
@@ -12419,43 +12433,43 @@ loc_9F3A:
 	beq.s	loc_9FE4
 	cmpi.w	#$6000,d0
 	beq.w	loc_9FBC
-	tst.l	$26(a3)
+	tst.l	x_vel(a3)
 	bpl.w	loc_9FBC
 	clr.w	$1C(a3)
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$F,d7
 	sub.w	($FFFFFA78).w,d7
-	move.w	d7,$1A(a3)
-	move.l	$2A(a3),d7
+	move.w	d7,x_pos(a3)
+	move.l	y_vel(a3),d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	sf	($FFFFFA72).w
-	st	$3C(a3)
+	st	has_level_collision(a3)
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_9FBC:
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	andi.w	#$FFF0,d0
-	tst.w	$26(a3)
+	tst.w	x_vel(a3)
 	bmi.s	loc_9FCE
 	addi.w	#$10,d0
 
 loc_9FCE:
 	subq.w	#1,d0
-	move.w	d0,$1E(a3)
-	move.l	$26(a3),d0
-	clr.l	$2A(a3)
+	move.w	d0,y_pos(a3)
+	move.l	x_vel(a3),d0
+	clr.l	y_vel(a3)
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
 
 loc_9FE4:
-	tst.w	$26(a3)
+	tst.w	x_vel(a3)
 	bmi.s	loc_A048
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	andi.w	#$F,d0
 	moveq	#8,d1
 	cmpi.w	#Micromax,(Current_Helmet).w
@@ -12465,14 +12479,14 @@ loc_9FE4:
 loc_9FFE:
 	cmp.w	d1,d0
 	ble.s	loc_A048
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	subq.w	#1,d0
 	lsr.w	#4,d0
 	subq.w	#1,d0
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	lsr.w	#4,d0
 	addq.w	#1,d0
 	cmp.w	(Level_width_blocks).w,d0
@@ -12485,10 +12499,10 @@ loc_9FFE:
 	bne.s	loc_A048
 
 loc_A036:
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	andi.w	#$FFF0,d0
 	or.w	d1,d0
-	move.w	d0,$1A(a3)
+	move.w	d0,x_pos(a3)
 	bsr.w	sub_A254
 
 loc_A048:
@@ -12496,12 +12510,12 @@ loc_A048:
 ; ---------------------------------------------------------------------------
 
 loc_A04C:
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	lsr.w	#4,d0
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	lsr.w	#4,d0
 	add.w	d0,d0
 	add.w	d0,a0
@@ -12511,43 +12525,43 @@ loc_A04C:
 	beq.s	loc_A0DC
 	cmpi.w	#$6000,d0
 	beq.w	loc_A0B4
-	tst.l	$26(a3)
+	tst.l	x_vel(a3)
 	bmi.w	loc_A0B4
 	clr.w	$1C(a3)
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
 	add.w	($FFFFFA78).w,d7
-	move.w	d7,$1A(a3)
-	move.l	$2A(a3),d7
+	move.w	d7,x_pos(a3)
+	move.l	y_vel(a3),d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	st	($FFFFFA72).w
-	st	$3C(a3)
+	st	has_level_collision(a3)
 	subq.w	#4,sp
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_A0B4:
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	andi.w	#$FFF0,d0
-	tst.w	$26(a3)
+	tst.w	x_vel(a3)
 	bpl.s	loc_A0C6
 	addi.w	#$10,d0
 
 loc_A0C6:
 	subq.w	#1,d0
-	move.w	d0,$1E(a3)
-	move.l	$26(a3),d0
-	clr.l	$2A(a3)
+	move.w	d0,y_pos(a3)
+	move.l	x_vel(a3),d0
+	clr.l	y_vel(a3)
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
 
 loc_A0DC:
-	tst.w	$26(a3)
+	tst.w	x_vel(a3)
 	bpl.s	loc_A13A
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	andi.w	#$F,d0
 	moveq	#8,d1
 	cmpi.w	#Micromax,(Current_Helmet).w
@@ -12557,13 +12571,13 @@ loc_A0DC:
 loc_A0F6:
 	cmp.w	d1,d0
 	bge.s	loc_A13A
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	lsr.w	#4,d0
 	subq.w	#1,d0
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	lsr.w	#4,d0
 	subq.w	#1,d0
 	bmi.s	loc_A128
@@ -12575,19 +12589,19 @@ loc_A0F6:
 	bne.s	loc_A13A
 
 loc_A128:
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	andi.w	#$FFF0,d0
 	or.w	d1,d0
-	move.w	d0,$1A(a3)
+	move.w	d0,x_pos(a3)
 	bsr.w	sub_A254
 
 loc_A13A:
 	move.w	(Current_Helmet).w,d7
 	asl.w	#2,d7
 	move.l	off_A190(pc,d7.w),a0
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	move.w	($FFFFF8F0).w,d2
-	move.b	$16(a3),d1
+	move.b	x_direction(a3),d1
 	tst.b	($FFFFFA26).w
 	beq.s	loc_A15C
 	eori.b	#$FF,d1
@@ -12617,7 +12631,7 @@ loc_A17E:
 	move.w	d2,($FFFFF8F0).w
 	lsr.w	#8,d2
 	add.w	d2,d2
-	move.w	(a0,d2.w),$22(a3)
+	move.w	(a0,d2.w),addroffset_sprite(a3)
 	bra.w	loc_9D22
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
@@ -12717,15 +12731,15 @@ sub_A254:
 	tst.b	($FFFFFA26).w
 	bne.s	loc_A268
 	move.w	($FFFFFA24).w,d0
-	sub.w	$1A(a3),d0
-	move.w	d0,$1E(a3)
+	sub.w	x_pos(a3),d0
+	move.w	d0,y_pos(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_A268:
 	move.w	($FFFFFA24).w,d0
-	add.w	$1A(a3),d0
-	move.w	d0,$1E(a3)
+	add.w	x_pos(a3),d0
+	move.w	d0,y_pos(a3)
 	rts
 ; End of function sub_A254
 
@@ -12735,28 +12749,28 @@ loc_A268:
 loc_A276:
 	st	($FFFFFA62).w
 	moveq	#0,d3
-	move.w	#0,($FFFFFA76).w
-	move.l	#$FFFFC000,$2A(a3)
+	move.w	#0,(Cyclone_YAcceleration).w
+	move.l	#$FFFFC000,y_vel(a3)
 
 loc_A28A:
-	move.w	#Wall_Climbing,(Character_Movement).w
+	move.w	#MoveID_Wall_Climbing,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_7ACC
 	bne.w	loc_A6F8
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_A426
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_A2E2
 	tst.b	(Ctrl_Right_Held).w
 	beq.w	loc_A2F6
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -12764,7 +12778,7 @@ loc_A28A:
 loc_A2E2:
 	tst.b	(Ctrl_Left_Held).w
 	beq.w	loc_A2F6
-	st	$16(a3)
+	st	x_direction(a3)
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -12773,7 +12787,7 @@ loc_A2F6:
 	bsr.w	Get_RandomNumber_wordC
 	move.w	($FFFFFA78).w,d7
 	addq.w	#1,d7
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_A30A
 	neg.w	d7
 
@@ -12782,7 +12796,7 @@ loc_A30A:
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	beq.w	loc_A328
-	move.l	#$FFFC0000,$2A(a3)
+	move.l	#$FFFC0000,y_vel(a3)
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
@@ -12800,7 +12814,7 @@ loc_A338:
 	cmpi.w	#2,d7
 	bge.s	loc_A330
 	bsr.w	sub_78E8
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	loc_75D4
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 
@@ -12809,9 +12823,9 @@ loc_A338:
 
 Get_RandomNumber_wordC:
 	moveq	#0,d6
-	move.w	($FFFFFA76).w,d7
+	move.w	(Cyclone_YAcceleration).w,d7
 	addi.w	#$80,d7
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A382
 	move.l	d0,-(sp)
 	moveq	#sfx_Iron_Knight_wall_climbing,d0
@@ -12831,9 +12845,9 @@ loc_A382:
 	move.w	#$1800,d7
 
 loc_A38E:
-	move.w	d7,($FFFFFA76).w
+	move.w	d7,(Cyclone_YAcceleration).w
 	ext.l	d7
-	add.l	$2A(a3),d7
+	add.l	y_vel(a3),d7
 	cmpi.l	#$FFFE8000,d7
 	bgt.s	loc_A3A6
 	move.l	#$FFFE8000,d7
@@ -12844,7 +12858,7 @@ loc_A3A6:
 	move.l	#$40000,d7
 
 loc_A3B4:
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	tst.w	d6
 	rts
 ; End of function Get_RandomNumber_wordC
@@ -12855,7 +12869,7 @@ loc_A3B4:
 
 sub_A3BC:
 	move.w	d3,d7
-	move.l	$2A(a3),d6
+	move.l	y_vel(a3),d6
 	asl.l	#3,d6
 	swap	d6
 	add.w	d6,d7
@@ -12874,7 +12888,7 @@ loc_A3DE:
 	asr.w	#2,d7
 	move.b	unk_A3F0(pc,d7.w),d7
 	ext.w	d7
-	move.w	off_A420(pc,d7.w),$22(a3)
+	move.w	off_A420(pc,d7.w),addroffset_sprite(a3)
 	rts
 ; End of function sub_A3BC
 
@@ -12943,11 +12957,11 @@ loc_A426:
 
 
 sub_A432:
-	move.w	#$2000,($FFFFFA76).w
+	move.w	#$2000,(Cyclone_YAcceleration).w
 	move.w	(Current_Helmet).w,d0
 	add.w	d0,d0
 	move.w	unk_A49E(pc,d0.w),d0
-	move.l	$26(a3),d1
+	move.l	x_vel(a3),d1
 	bpl.s	loc_A44A
 	neg.l	d1
 
@@ -12958,27 +12972,27 @@ loc_A44A:
 	mulu.w	d1,d0
 	lsl.l	#4,d0
 	neg.l	d0
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	beq.w	loc_A466
 	addi.l	#$20000,d0
 
 loc_A466:
-	move.l	d0,$2A(a3)
+	move.l	d0,y_vel(a3)
 	move.l	d0,($FFFFFAAA).w
-	tst.l	$1E(a3)
+	tst.l	y_pos(a3)
 	bpl.s	loc_A480
 	moveq	#0,d0
 	move.w	(Level_height_blocks).w,d0
 	swap	d0
-	move.l	d0,$1E(a3)
+	move.l	d0,y_pos(a3)
 
 loc_A480:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	asr.l	#1,d0
 	move.l	d0,d1
 	asr.l	#1,d1
 	add.l	d1,d0
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Jump,d0
 	jsr	(j_PlaySound).l
@@ -13027,20 +13041,20 @@ unk_A4C6:
 
 
 sub_A4EE:
-	st	$3C(a3)
-	move.l	$1A(a3),d5
-	move.l	$1E(a3),d6
+	st	has_level_collision(a3)
+	move.l	x_pos(a3),d5
+	move.l	y_pos(a3),d6
 	move.l	d5,d7
-	add.l	$26(a3),d7
-	move.l	d7,$1A(a3)
+	add.l	x_vel(a3),d7
+	move.l	d7,x_pos(a3)
 	move.l	d6,d7
-	add.l	$2A(a3),d7
-	move.l	d7,$1E(a3)
+	add.l	y_vel(a3),d7
+	move.l	d7,y_pos(a3)
 	move.l	a2,-(sp)
 	lea	(Addr_FirstGfxObjectSlot+2).w,a2
 	jsr	(j_GfxObjects_Collision).w
 	move.l	(sp)+,a2
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	loc_A532
 	cmpi.w	#$14,d7
 	beq.w	loc_A53C
@@ -13048,8 +13062,8 @@ sub_A4EE:
 	beq.w	loc_A594
 
 loc_A532:
-	move.l	d5,$1A(a3)
-	move.l	d6,$1E(a3)
+	move.l	d5,x_pos(a3)
+	move.l	d6,y_pos(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -13063,20 +13077,20 @@ loc_A53C:
 ; ---------------------------------------------------------------------------
 
 loc_A556:
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	move.l	#$FFFE0000,d7
-	move.l	d7,$26(a3)
-	move.l	d7,$2A(a3)
+	move.l	d7,x_vel(a3)
+	move.l	d7,y_vel(a3)
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	add.w	d2,d1
 	addi.w	#$F,d1
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	add.w	($FFFFFA78).w,d7
 	sub.w	d7,d1
-	move.w	d1,$1E(a3)
+	move.w	d1,y_pos(a3)
 	addq.w	#4,sp
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
@@ -13092,20 +13106,20 @@ loc_A594:
 ; ---------------------------------------------------------------------------
 
 loc_A5AE:
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	move.l	#$FFFE0000,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	neg.l	d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	sub.w	d2,d1
 	neg.w	d1
 	sub.w	($FFFFFA78).w,d1
-	add.w	$1A(a3),d1
-	move.w	d1,$1E(a3)
+	add.w	x_pos(a3),d1
+	move.w	d1,y_pos(a3)
 	addq.w	#4,sp
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
@@ -13114,7 +13128,7 @@ loc_A5AE:
 loc_A5EA:
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	move.w	d7,a4
 	clr.l	($FFFFFA98).w
 	move.b	($FFFFFAA3).w,($FFFFFA72).w
@@ -13125,15 +13139,15 @@ loc_A606:
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	move.w	($FFFFFA96).w,a4
-	move.l	$A(a4),$26(a3)
+	move.l	$A(a4),x_vel(a3)
 	move.l	($FFFFFA98).w,d7
 	addi.l	#$800,d7
 	move.l	d7,($FFFFFA98).w
 	add.l	$E(a4),d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	bsr.w	sub_902A
 	beq.w	loc_A656
 	clr.w	($FFFFFA96).w
@@ -13150,7 +13164,7 @@ loc_A656:
 loc_A666:
 	move.w	($FFFFFA96).w,a4
 	move.w	6(a4),d7
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	cmp.w	d7,d6
 	blt.w	loc_A6F8
 	subi.w	#$F,d6
@@ -13161,35 +13175,35 @@ loc_A666:
 	bne.w	loc_A69E
 	tst.b	(Ctrl_Left_Held).w
 	beq.w	loc_A6AE
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_A69E:
 	tst.b	(Ctrl_Right_Held).w
 	beq.w	loc_A6AE
-	sf	$16(a3)
+	sf	x_direction(a3)
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
 loc_A6AE:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A6F4
-	move.l	#$FFFC0000,$2A(a3)
+	move.l	#$FFFC0000,y_vel(a3)
 	move.l	#$FFFE0000,d7
 	tst.b	($FFFFFA72).w
 	beq.w	loc_A6D0
 	neg.l	d7
 
 loc_A6D0:
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	sf	($FFFFFA66).w
 	st	($FFFFFA67).w
 	move.l	#stru_8B74,d7
 	jsr	(j_Init_Animation).w
 	move.b	($FFFFFA72).w,d7
 	not.b	d7
-	move.b	d7,$16(a3)
+	move.b	d7,x_direction(a3)
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
@@ -13199,7 +13213,7 @@ loc_A6F4:
 
 loc_A6F8:
 	sf	($FFFFFA66).w
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
 	move.w	#$5A,(Telepad_timer).w
@@ -13217,8 +13231,8 @@ loc_A6F8:
 loc_A73A:
 	bsr.w	sub_7ACC
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 
 loc_A74E:
 	bsr.w	sub_B084
@@ -13246,7 +13260,7 @@ loc_A76A:
 	cmpi.w	#2,(Number_Diamonds).w
 	blt.s	loc_A7B4
 	move.w	#$8001,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
@@ -13256,31 +13270,31 @@ loc_A76A:
 
 loc_A7B4:
 	move.w	(Current_Helmet).w,d7
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A7F8
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_A7F8
 	moveq	#-$21,d7
 	move.l	d7,d6
-	add.w	$1E(a3),d6
+	add.w	y_pos(a3),d6
 	bmi.w	loc_A7DE
 	bsr.w	sub_B43A
 	beq.w	loc_A7F8
 
 loc_A7DE:
-	move.l	$26(a3),d6
+	move.l	x_vel(a3),d6
 	bpl.w	loc_A7E8
 	neg.l	d6
 
 loc_A7E8:
 	asr.l	#1,d6
 	addi.l	#$30000,d6
-	move.l	d6,$2A(a3)
+	move.l	d6,y_vel(a3)
 	bra.w	loc_A8D6
 ; ---------------------------------------------------------------------------
 
 loc_A7F8:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_A8D6
 	cmpi.w	#8,d7
 	bne.w	loc_A830
@@ -13289,7 +13303,7 @@ loc_A7F8:
 	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B60,d7
 	jsr	(j_Init_Animation).w
 
@@ -13307,7 +13321,7 @@ loc_A840:
 	beq.w	loc_A864
 	moveq	#-$21,d7
 	move.l	d7,d6
-	add.w	$1E(a3),d6
+	add.w	y_pos(a3),d6
 	bmi.w	loc_A8D6
 	bsr.w	sub_B43A
 	bne.w	loc_A8D6
@@ -13324,7 +13338,7 @@ loc_A864:
 loc_A87A:
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	bne.w	loc_A8A6
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	bne.w	loc_A8D6
 	cmpi.w	#8,($FFFFFB70).w
 	bge.w	loc_A8D6
@@ -13338,7 +13352,7 @@ loc_A8A6:
 	tst.w	($FFFFFAB8).w
 	bne.s	loc_A8D6
 	move.w	#1,($FFFFFAB8).w
-	move.b	$16(a3),($FFFFFABE).w
+	move.b	x_direction(a3),($FFFFFABE).w
 	move.l	#stru_8B36,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
@@ -13363,10 +13377,10 @@ loc_A8DE:
 loc_A8F6:
 	bpl.w	loc_A912
 	sf	(Maniaxe_throwing_axe).w
-	sf	$15(a3)
+	sf	is_animated(a3)
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
-	sf	$15(a3)
+	sf	is_animated(a3)
 	bra.w	loc_A762
 ; ---------------------------------------------------------------------------
 
@@ -13389,7 +13403,7 @@ loc_A92E:
 ; ---------------------------------------------------------------------------
 
 loc_A942:
-	move.w	#4,$38(a3)
+	move.w	#4,collision_type(a3)
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 	bra.s	loc_A942
@@ -13401,8 +13415,8 @@ loc_A94E:
 	bsr.w	sub_AF7A
 	bne.w	loc_A762
 	bsr.w	sub_DB22
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	cmpi.w	#Iron_Knight,(Current_Helmet).w
 	bne.w	loc_A984
 	move.l	d0,-(sp)
@@ -13413,14 +13427,14 @@ loc_A94E:
 loc_A984:
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	beq.w	loc_A99E
-	tst.l	$26(a3)
+	tst.l	x_vel(a3)
 	bne.w	loc_A99E
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
 
 loc_A99E:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
@@ -13428,17 +13442,17 @@ loc_A99E:
 loc_A9AA:
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_A9BE
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	clr.w	(Addr_PlatformStandingOn).w
 	bra.w	loc_A74E
 ; ---------------------------------------------------------------------------
 
 loc_A9BE:
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	bsr.w	sub_DB22
 	move.w	d7,a4
-	move.l	$26(a3),d7
+	move.l	x_vel(a3),d7
 	sub.l	$A(a4),d7
 	move.l	d7,($FFFFFA98).w
 	clr.w	($FFFFFA0A).w
@@ -13453,17 +13467,17 @@ loc_A9E4:
 	moveq	#sfx_Micromax_sticking,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	tst.l	$2A(a3)
+	tst.l	y_vel(a3)
 	bmi.w	loc_AA22
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bra.w	*+4
 
 loc_AA22:
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -13472,24 +13486,24 @@ loc_AA22:
 	bsr.w	sub_7ACC
 	bne.w	loc_A74E
 	bsr.w	Character_CheckCollision
-	move.w	$1A(a3),($FFFFFA2C).w
-	move.w	$1E(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),($FFFFFA2C).w
+	move.w	y_pos(a3),($FFFFFA2E).w
 	bsr.w	sub_B168
 	bsr.w	sub_A4EE
 	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AA8E
 	tst.b	($FFFFFA66).w
 	bne.w	loc_AA8E
-	tst.l	$2A(a3)
+	tst.l	y_vel(a3)
 	bmi.w	loc_AA8E
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	st	($FFFFFA66).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 
 loc_AA8E:
-	move.w	$1E(a3),($FFFFFB5C).w
+	move.w	y_pos(a3),($FFFFFB5C).w
 	bsr.w	sub_902A
 	bne.w	loc_AD68
 
@@ -13510,7 +13524,7 @@ loc_AAB8:
 	beq.w	kid_flip
 
 loc_AAC8:
-	tst.l	$2A(a3)
+	tst.l	y_vel(a3)
 	bmi.w	loc_AB22
 	bsr.w	sub_ADB8
 	bne.w	kid_flip
@@ -13525,15 +13539,15 @@ loc_AAC8:
 
 loc_AAF8:
 	add.w	d6,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 	moveq	#1,d7
 	tst.b	($FFFFFA72).w
 	beq.w	loc_AB0A
 	moveq	#-1,d7
 
 loc_AB0A:
-	add.w	d7,$1A(a3)
-	clr.l	$2A(a3)
+	add.w	d7,x_pos(a3)
+	clr.l	y_vel(a3)
 	tst.b	($FFFFFA6A).w
 	bne.w	loc_A6F8
 	bsr.w	sub_DB22
@@ -13543,10 +13557,10 @@ loc_AB0A:
 loc_AB22:
 	bsr.w	sub_AE6E
 	bne.w	kid_flip
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	andi.w	#$FFF0,d7
 	addi.w	#$F,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 	clr.w	$20(a3)
 	moveq	#1,d7
 	tst.b	($FFFFFA72).w
@@ -13554,8 +13568,8 @@ loc_AB22:
 	moveq	#-1,d7
 
 loc_AB4A:
-	add.w	d7,$1A(a3)
-	clr.l	$2A(a3)
+	add.w	d7,x_pos(a3)
+	clr.l	y_vel(a3)
 	tst.b	($FFFFFA6A).w
 	bne.w	loc_A6F8
 	bsr.w	sub_DB22
@@ -13566,16 +13580,16 @@ kid_flip:
 	bsr.w	sub_7428
 	bsr.w	sub_AF10
 	beq.w	loc_AD34
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_ACB0
 	cmpi.w	#The_Kid,(Current_Helmet).w
 	bne.w	loc_AC42
-	tst.b	($FFFFFA28).w
+	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_AC42
 	move.w	($FFFFFA78).w,d7
 	addq.w	#5,d7
 	move.b	($FFFFFA72).w,d6
-	cmp.b	$16(a3),d6
+	cmp.b	x_direction(a3),d6
 	bne.w	loc_AD2C
 	tst.b	d6
 	beq.w	loc_ABA4
@@ -13594,7 +13608,7 @@ loc_ABA4:
 	cmpi.w	#$6000,d7
 	bge.w	loc_AD2C
 	moveq	#-2,d7
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_ABD4
 	moveq	#2,d7
 
@@ -13604,7 +13618,7 @@ loc_ABD4:
 	andi.w	#$7000,d7
 	cmpi.w	#$6000,d7
 	bge.w	loc_AD2C
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	subi.w	#$14,d6
 	andi.w	#$FFF0,d6
 
@@ -13618,17 +13632,17 @@ loc_ABF0:
 	subq.w	#1,d6
 	cmpi.w	#$F,d6
 	ble.w	loc_AD2C
-	move.w	d6,$1E(a3)
-	add.w	d4,$1A(a3)
+	move.w	d6,y_pos(a3)
+	add.w	d4,x_pos(a3)
 	move.l	#stru_8BB4,d7
 	jsr	(j_Init_Animation).w
 	move.l	d0,-(sp)
 	moveq	#sfx_The_Kid_pullup,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	jsr	(j_sub_105E).w
-	clr.l	$2A(a3)
-	move.w	#Standingstill,(Character_Movement).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	clr.l	y_vel(a3)
+	move.w	#MoveID_Standingstill,(Character_Movement).w
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
@@ -13636,21 +13650,21 @@ loc_ABF0:
 loc_AC42:
 	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AC88
-	move.l	#$FFFC0000,$2A(a3)
+	move.l	#$FFFC0000,y_vel(a3)
 	move.l	#$FFFE0000,d7
 	tst.b	($FFFFFA72).w
 	beq.w	loc_AC64
 	neg.l	d7
 
 loc_AC64:
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	sf	($FFFFFA66).w
 	st	($FFFFFA67).w
 	move.l	#stru_8B74,d7
 	jsr	(j_Init_Animation).w
 	move.b	($FFFFFA72).w,d7
 	not.b	d7
-	move.b	d7,$16(a3)
+	move.b	d7,x_direction(a3)
 	bra.w	loc_A6F8
 ; ---------------------------------------------------------------------------
 
@@ -13659,18 +13673,18 @@ loc_AC88:
 	beq.w	loc_AD2C
 	moveq	#-$21,d7
 	move.l	d7,d6
-	add.w	$1E(a3),d6
+	add.w	y_pos(a3),d6
 	bmi.w	loc_ACA4
 	bsr.w	sub_B43A
 	beq.w	loc_AD2C
 
 loc_ACA4:
-	move.l	#$30000,$2A(a3)
+	move.l	#$30000,y_vel(a3)
 	bra.w	loc_AD2C
 ; ---------------------------------------------------------------------------
 
 loc_ACB0:
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_AD2C
 	cmpi.w	#Cyclone,(Current_Helmet).w
 	bne.w	loc_ACCC
@@ -13686,7 +13700,7 @@ loc_ACCC:
 	st	(Maniaxe_throwing_axe).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_89D2,4(a0)
+	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B60,d7
 	jsr	(j_Init_Animation).w
 	bra.w	loc_AD2C
@@ -13699,7 +13713,7 @@ loc_AD00:
 	beq.w	loc_AD26
 	moveq	#-$21,d7
 	move.l	d7,d6
-	add.w	$1E(a3),d6
+	add.w	y_pos(a3),d6
 	bmi.w	loc_AD2C
 	bsr.w	sub_B43A
 	bne.w	loc_AD2C
@@ -13713,21 +13727,21 @@ loc_AD2C:
 ; ---------------------------------------------------------------------------
 
 loc_AD34:
-	sf	$15(a3)
+	sf	is_animated(a3)
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
 	tst.b	($FFFFFA72).w
 	beq.w	loc_AD58
 	tst.b	(Ctrl_Left_Held).w
 	beq.w	loc_A76A
-	subq.w	#1,$1A(a3)
+	subq.w	#1,x_pos(a3)
 	bra.w	loc_A76A
 ; ---------------------------------------------------------------------------
 
 loc_AD58:
 	tst.b	(Ctrl_Right_Held).w
 	beq.w	loc_A76A
-	addq.w	#1,$1A(a3)
+	addq.w	#1,x_pos(a3)
 	bra.w	loc_A76A
 ; ---------------------------------------------------------------------------
 
@@ -13735,7 +13749,7 @@ loc_AD68:
 	bpl.w	loc_AD7C
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
-	sf	$15(a3)
+	sf	is_animated(a3)
 	bra.w	loc_A762
 ; ---------------------------------------------------------------------------
 
@@ -13758,7 +13772,7 @@ loc_AD98:
 ; ---------------------------------------------------------------------------
 
 loc_ADAC:
-	move.w	#4,$38(a3)
+	move.w	#4,collision_type(a3)
 	bra.w	loc_AA22
 ; End of function sub_A4EE
 
@@ -13769,7 +13783,7 @@ loc_ADAC:
 
 
 sub_ADB8:
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	move.w	d7,d6
 	sub.w	($FFFFFB5C).w,d6
 	moveq	#$F,d5
@@ -13804,7 +13818,7 @@ loc_ADF0:
 	neg.w	d7
 
 loc_AE0E:
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	asr.w	#4,d7
 	add.w	d7,d7
 	add.w	d7,a4
@@ -13843,7 +13857,7 @@ loc_AE5A:
 
 
 sub_AE6E:
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	move.w	d7,d6
 	sub.w	($FFFFFB5C).w,d6
 	neg.w	d6
@@ -13859,7 +13873,7 @@ loc_AE88:
 ; ---------------------------------------------------------------------------
 
 loc_AE8C:
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	asr.w	#4,d7
 	add.w	d7,d7
 	lea	($FFFF4A04).l,a4
@@ -13871,7 +13885,7 @@ loc_AE8C:
 	neg.w	d7
 
 loc_AEAE:
-	add.w	$1A(a3),d7
+	add.w	x_pos(a3),d7
 	asr.w	#4,d7
 	add.w	d7,d7
 	add.w	d7,a4
@@ -13910,7 +13924,7 @@ loc_AEFA:
 
 
 sub_AF10:
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	move.w	d7,d6
 	moveq	#$F,d5
 	cmpi.w	#Micromax,(Current_Helmet).w
@@ -13934,7 +13948,7 @@ loc_AF2E:
 	neg.w	d6
 
 loc_AF52:
-	add.w	$1A(a3),d6
+	add.w	x_pos(a3),d6
 	asr.w	#4,d6
 	add.w	d6,d6
 	add.w	d6,a4
@@ -13973,14 +13987,14 @@ loc_AF96:
 	move.l	a2,-(sp)
 	bsr.w	sub_BBE2
 	beq.w	loc_AFCA
-	cmpi.w	#$14,d7
+	cmpi.w	#$14,d7	; block ID > 5?
 	bgt.w	loc_AFCA
 	moveq	#0,d6
 	move.l	off_AFD8(pc,d7.w),a4
 	jsr	(a4)
 	move.l	(sp)+,a2
 	movem.w	(sp)+,d0-d3
-	move.l	#$FFFF8000,$2A(a3)
+	move.l	#$FFFF8000,y_vel(a3)
 	moveq	#1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -14004,9 +14018,10 @@ sub_AFD4:
 ; End of function sub_AFD4
 
 ; ---------------------------------------------------------------------------
-off_AFD8:	dc.l loc_AFF0
+off_AFD8:	; interaction for each block type
+	dc.l loc_AFF0
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l sub_AFD4
 	dc.l sub_AFD4
 	dc.l j_loc_110D0
@@ -14014,10 +14029,10 @@ off_AFD8:	dc.l loc_AFF0
 
 loc_AFF0:
 	moveq	#2,d6
-	jmp	(j_sub_10E86).l
+	jmp	(j_Block_LoadSmashBits).l
 ; ---------------------------------------------------------------------------
 	moveq	#2,d6
-	jmp	(j_sub_10F44).l
+	jmp	(j_IceBlock_SmashAndLoadBullets).l
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -14028,7 +14043,7 @@ sub_B000:
 	tst.b	(Red_Stealth_sword_swing).w
 	beq.w	loc_B080
 	moveq	#0,d7
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.w	loc_B01E
 	neg.w	d7
 
@@ -14039,7 +14054,7 @@ loc_B01E:
 	bclr	#$F,d7
 	beq.w	loc_B080
 	move.w	a4,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	moveq	#0,d6
 	andi.w	#$F00,d7
 	asr.w	#6,d7
@@ -14047,15 +14062,16 @@ loc_B01E:
 	bgt.w	loc_B080
 	move.l	off_B058(pc,d7.w),a4
 	jsr	(a4)
-	move.l	#$FFFC8000,$2A(a3)
+	move.l	#$FFFC8000,y_vel(a3)
 	moveq	#1,d7
 
 return_B056:
 	rts
 ; ---------------------------------------------------------------------------
-off_B058:	dc.l loc_B070
+off_B058:	; interaction for each block type
+	dc.l loc_B070
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_B056
 	dc.l return_B056
 	dc.l j_loc_110D0
@@ -14063,10 +14079,10 @@ off_B058:	dc.l loc_B070
 
 loc_B070:
 	moveq	#2,d6
-	jmp	(j_sub_10E86).l
+	jmp	(j_Block_LoadSmashBits).l
 ; ---------------------------------------------------------------------------
 	moveq	#2,d6
-	jmp	(j_sub_10F44).l
+	jmp	(j_IceBlock_SmashAndLoadBullets).l
 ; ---------------------------------------------------------------------------
 
 loc_B080:
@@ -14082,7 +14098,7 @@ sub_B084:
 	move.w	(Current_Helmet).w,d0
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_B09E
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_9A20
 	bra.w	loc_B118
 ; ---------------------------------------------------------------------------
@@ -14091,27 +14107,27 @@ loc_B09E:
 	add.w	d0,d0
 	lea	unk_A4B2(pc),a0
 	move.w	(a0,d0.w),d1
-	ext.l	d1
+	ext.l	d1	; horizontal acceleration
 	tst.b	(Ctrl_A_Held).w
 	beq.s	loc_B0B6
 	move.l	d1,d2
 	asr.l	#1,d2
-	add.l	d2,d1
+	add.l	d2,d1	; if RUN is held, multiply accel by 1.5
 
 loc_B0B6:
 	lea	unk_A4C6(pc),a0
 	add.w	d0,d0
-	move.l	(a0,d0.w),d2
-	move.l	$26(a3),d0
+	move.l	(a0,d0.w),d2	; max speed
+	move.l	x_vel(a3),d0
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_B0E2
-	st	$16(a3)
+	st	x_direction(a3)
 	sub.l	d1,d0
 	bpl.s	loc_B118
 	neg.l	d2
 	cmp.l	d0,d2
 	ble.s	loc_B118
-	add.l	d1,d0
+	add.l	d1,d0	; we reached max speed
 	addi.l	#$100,d0
 	bra.s	loc_B118
 ; ---------------------------------------------------------------------------
@@ -14119,7 +14135,7 @@ loc_B0B6:
 loc_B0E2:
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_B0FE
-	sf	$16(a3)
+	sf	x_direction(a3)
 	add.l	d1,d0
 	bmi.s	loc_B118
 	cmp.l	d0,d2
@@ -14129,7 +14145,7 @@ loc_B0E2:
 	bra.s	loc_B118
 ; ---------------------------------------------------------------------------
 
-loc_B0FE:
+loc_B0FE:	; if holding no left/right button, reduce speed by $400
 	tst.l	d0
 	bmi.s	loc_B10E
 	subi.l	#$400,d0
@@ -14144,13 +14160,13 @@ loc_B10E:
 	moveq	#0,d0
 
 loc_B118:
-	move.l	d0,$26(a3)
+	move.l	d0,x_vel(a3)
 	rts
 ; End of function sub_B084
 
 ; ---------------------------------------------------------------------------
-	add.l	$1A(a3),d0
-	move.l	d0,$1A(a3)
+	add.l	x_pos(a3),d0
+	move.l	d0,x_pos(a3)
 	swap	d0
 	move.w	d0,d7
 	sub.w	($FFFFFA78).w,d7
@@ -14162,9 +14178,9 @@ loc_B118:
 ; ---------------------------------------------------------------------------
 
 loc_B140:
-	move.w	($FFFFFA78).w,$1A(a3)
+	move.w	($FFFFFA78).w,x_pos(a3)
 	clr.w	$1C(a3)
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -14172,9 +14188,9 @@ loc_B150:
 	move.w	(Level_width_pixels).w,d7
 	subq.w	#1,d7
 	sub.w	($FFFFFA78).w,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	clr.w	$1C(a3)
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	rts
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -14183,11 +14199,11 @@ loc_B150:
 sub_B168:
 	tst.b	($FFFFFA66).w
 	beq.w	loc_B18A
-	move.l	$2A(a3),d7
+	move.l	y_vel(a3),d7
 	addi.l	#$600,d7
 	cmpi.l	#$10000,d7
 	bgt.w	loc_B18A
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -14200,7 +14216,7 @@ loc_B18A:
 loc_B19C:
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_B1D4
-	move.l	$2A(a3),d7
+	move.l	y_vel(a3),d7
 	move.l	#$2000,d6
 	tst.w	(Ctrl_B_Held).w
 	bne.w	loc_B1BC
@@ -14213,26 +14229,26 @@ loc_B1BC:
 	move.l	#$FFF88000,d7
 
 loc_B1CE:
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_B1D4:
-	move.l	$2A(a3),d7
+	move.l	y_vel(a3),d7
 	bpl.s	loc_B1E0
 	tst.b	(Ctrl_B_Held).w
 	bne.s	loc_B1E8
 
 loc_B1E0:
-	addi.l	#$4000,d7
+	addi.l	#$4000,d7	; default gravity for kid
 	bra.s	loc_B1EE
 ; ---------------------------------------------------------------------------
 
 loc_B1E8:
-	addi.l	#$2000,d7
+	addi.l	#$2000,d7	; lower gravity if jump button is pressed
 
 loc_B1EE:
-	cmpi.l	#$80000,d7
+	cmpi.l	#$80000,d7	; maximum falling speed
 	ble.s	loc_B200
 	move.l	#$80000,d7
 	bra.w	loc_B20E
@@ -14244,15 +14260,16 @@ loc_B200:
 	move.l	#$FFF80000,d7
 
 loc_B20E:
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_B214:
-	move.w	($FFFFFA76).w,d7
+loc_B214:	; Cyclone is flying
+	move.w	(Cyclone_YAcceleration).w,d7
 	addi.w	#$400,d7
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	beq.w	loc_B23A
+	; flying button was pressed
 	subi.w	#$3000,d7
 	cmpi.w	#$8001,d7
 	bgt.w	loc_B246
@@ -14260,26 +14277,28 @@ loc_B214:
 	bra.w	loc_B246
 ; ---------------------------------------------------------------------------
 
-loc_B23A:
+loc_B23A:	; flying button not pressed.
 	cmpi.w	#$1200,d7
 	ble.w	loc_B246
 	move.w	#$1200,d7
 
 loc_B246:
-	move.w	d7,($FFFFFA76).w
+	move.w	d7,(Cyclone_YAcceleration).w
 	ext.l	d7
-	add.l	$2A(a3),d7
+	add.l	y_vel(a3),d7
+
+	; y-speed at most 2.5 px/frame downwards
 	cmpi.l	#$28000,d7
 	ble.s	loc_B25E
 	move.l	#$28000,d7
 
-loc_B25E:
-	cmpi.l	#$FFFD0000,d7
+loc_B25E:	; y-speed at most 3 px/frame upwards
+	cmpi.l	#-$30000,d7
 	bgt.s	loc_B26C
-	move.l	#$FFFD0000,d7
+	move.l	#-$30000,d7
 
 loc_B26C:
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 ; End of function sub_B168
 
 
@@ -14289,7 +14308,7 @@ loc_B26C:
 sub_B270:
 	cmpi.w	#Eyeclops,(Current_Helmet).w
 	bne.w	loc_B284
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.w	loc_B304
 	rts
 ; ---------------------------------------------------------------------------
@@ -14312,7 +14331,7 @@ loc_B2A0:
 	sf	($FFFFFA67).w
 	tst.b	(Cyclone_flying).w
 	beq.w	loc_B2DE
-	move.w	($FFFFFA76).w,d7
+	move.w	(Cyclone_YAcceleration).w,d7
 	neg.w	d7
 	addi.w	#$2000,d7
 	asl.w	#2,d7
@@ -14328,7 +14347,7 @@ loc_B2CA:
 	add.w	d7,d7
 	add.w	d7,d7
 	addi.w	#LnkTo_unk_BA55A-Data_Index,d7
-	move.w	d7,$22(a3)
+	move.w	d7,addroffset_sprite(a3)
 
 return_B2DC:
 	rts
@@ -14340,11 +14359,11 @@ loc_B2DE:
 	bne.w	loc_B304
 	move.l	($FFFFF862).w,a4
 	bsr.w	sub_975C
-	tst.b	$15(a3)
+	tst.b	is_animated(a3)
 	beq.w	loc_B304
 	tst.b	$18(a3)
 	beq.s	return_B2DC
-	sf	$15(a3)
+	sf	is_animated(a3)
 
 loc_B304:
 	move.w	(Current_Helmet).w,d7
@@ -14365,7 +14384,7 @@ loc_B304:
 loc_B334:
 	sf	(Maniaxe_throwing_axe).w
 	move.l	($FFFFFAAA).w,d7
-	move.l	$2A(a3),d6
+	move.l	y_vel(a3),d6
 	lsl.l	#2,d6
 	bpl.s	loc_B350
 	cmp.l	d7,d6
@@ -14396,7 +14415,7 @@ loc_B380:
 	add.w	d7,d7
 	add.w	d7,d7
 	addi.w	#LnkTo_unk_B40DE-Data_Index,d7
-	move.w	d7,$22(a3)
+	move.w	d7,addroffset_sprite(a3)
 	cmpi.b	#$10,(Red_Stealth_sword_swing).w
 	bne.s	return_B3A6
 	move.l	d0,-(sp)
@@ -14410,7 +14429,7 @@ return_B3A6:
 
 loc_B3A8:
 	sf	(Red_Stealth_sword_swing).w
-	move.w	(a4),$22(a3)
+	move.w	(a4),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -14503,22 +14522,22 @@ sub_B41C:
 
 
 sub_B43A:
-	move.w	$1A(a3),d4
+	move.w	x_pos(a3),d4
 	swap	d4
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	move.w	($FFFFFA78).w,d1
-	cmpi.w	#Crawling,(Character_Movement).w
+	cmpi.w	#MoveID_Crawling,(Character_Movement).w
 	bne.w	loc_B4A0
 	move.w	(Current_LevelID).w,d5
 	subq.w	#WarpCheatStart_LevelID,d5
 	bne.w	loc_B482
-	cmpi.l	#$9D3005F,d4
+	cmpi.l	#$9D3005F,d4 ; ; x-pos=09D3 y-pos=005F in number of pixels (RAM 0xFA2C.w 0xFA2E.w)
 	bne.w	loc_B482
-	btst	#Button_A,(Ctrl_Held).w ; keyboard key (S) jump
+	btst	#Button_B,(Ctrl_Held).w ; keyboard key (S) jump
 	beq.w	loc_B482
 	move.w	#WarpCheatDest_LevelID,(Current_LevelID).w
-	move.w	#colid_kidbelow,$38(a3)
-	move.w	#$A0,$3A(a3)
+	move.w	#colid_kidbelow,collision_type(a3)
+	move.w	#$A0,object_meta(a3)
 
 loc_B482:
 	moveq	#7,d1
@@ -14536,7 +14555,7 @@ loc_B494:
 loc_B4A0:
 	move.w	d1,d2
 	neg.w	d1
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	add.w	d0,d1
 	add.w	d0,d2
 	asr.w	#4,d1
@@ -14552,7 +14571,7 @@ loc_B4B2:
 
 loc_B4C0:
 	sub.w	d1,d2
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	addq.w	#1,d0
 	add.w	d7,d0
 	lsr.w	#4,d0
@@ -14571,7 +14590,7 @@ loc_B4E0:
 	beq.w	loc_B4FA
 	cmpi.w	#$7000,d0
 	bne.s	loc_B514
-	move.w	#colid_kidbelow,$38(a3)
+	move.w	#colid_kidbelow,collision_type(a3)
 
 loc_B4FA:
 	moveq	#1,d7
@@ -14601,13 +14620,13 @@ loc_B522:
 ; End of function sub_B43A
 
 ; ---------------------------------------------------------------------------
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	subi.w	#$22,d7
 	asr.w	#4,d7
 	add.w	d7,d7
 	lea	($FFFF4A04).l,a4
 	move.w	(a4,d7.w),a4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	asr.w	#4,d7
 	add.w	d7,d7
 	add.w	d7,a4
@@ -14619,8 +14638,8 @@ loc_B522:
 
 
 sub_B55C:
-	add.w	$1A(a3),d7
-	add.w	$1E(a3),d6
+	add.w	x_pos(a3),d7
+	add.w	y_pos(a3),d6
 	asr.w	#4,d6
 	add.w	d6,d6
 	lea	($FFFF4A04).l,a4
@@ -14637,26 +14656,26 @@ sub_B55C:
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_B580:
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	bra.w	loc_A426
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
-	st	$3C(a3)
+	st	has_level_collision(a3)
 	bsr.w	sub_A432
 	bsr.w	sub_B270
-	move.l	$1E(a3),d7
+	move.l	y_pos(a3),d7
 
 loc_B598:
 	lea	(Addr_FirstGfxObjectSlot+2).w,a2
 	jsr	(j_GfxObjects_Collision).w
-	cmpi.w	#colid_ceiling,$38(a3)
+	cmpi.w	#colid_ceiling,collision_type(a3)
 	bne.w	loc_A6F8
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	subi.l	#$30000,d7
-	move.l	d7,$1E(a3)
+	move.l	d7,y_pos(a3)
 	bra.s	loc_B598
 ; ---------------------------------------------------------------------------
-	tst.l	$2A(a3)
+	tst.l	y_vel(a3)
 	bmi.w	loc_A426
 	moveq	#8,d4
 	tst.b	($FFFFFA26).w
@@ -14674,16 +14693,16 @@ loc_B5CE:
 	bsr.w	sub_B55C
 	andi.w	#$4000,d5
 	bne.w	loc_A426
-	andi.w	#$FFF0,$1E(a3)
+	andi.w	#$FFF0,y_pos(a3)
 	bra.w	loc_A426
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_B5F6:
-	addq.w	#1,$1E(a3)
-	st	$3C(a3)
+	addq.w	#1,y_pos(a3)
+	st	has_level_collision(a3)
 	sf	(Cyclone_flying).w
-	move.w	#Jump,(Character_Movement).w
+	move.w	#MoveID_Jump,(Character_Movement).w
 	bsr.w	sub_B270
 	bra.w	loc_A6F8
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -14692,16 +14711,17 @@ loc_B5F6:
 ; Added some first basic labels for Character_CheckCollision
 
 Character_CheckCollision:
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	return_B63E
-	clr.w	$38(a3)
-	move.w	$3A(a3),d5
+	clr.w	collision_type(a3)
+	move.w	object_meta(a3),d5
 	move.w	d5,d6
 	bclr	#$F,d5
 	bclr	#$E,d5
-	clr.w	$3A(a3)
+	clr.w	object_meta(a3)
 	cmpi.w	#$64,d5
-	bge.w	loc_B8E6
+	bge.w	CharacterCollision_TouchPrize
+	; interaction with an enemy or similar
 	subq.w	#4,d7
 	move.l	off_B640(pc,d7.w),a4
 	jmp	(a4)
@@ -14711,17 +14731,17 @@ return_B63E:
 	rts
 ; ---------------------------------------------------------------------------
 off_B640:
-	dc.l Crushed_to_Death
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l loc_B672
-	dc.l Check_for_recent_damge
-	dc.l loc_B678	; kid right of enemy
-	dc.l loc_B678	; kid left of enemy
+	dc.l Crushed_to_Death		; rightwall - shouldn't happen here
+	dc.l loc_B672			; leftwall  - shouldn't happen here
+	dc.l loc_B672			; floor   - shouldn't happen here
+	dc.l loc_B672			; ceiling - shouldn't happen here
+	dc.l loc_B672			; slopeup  - shouldn't happen here
+	dc.l loc_B672			; slopedown - shouldn't happen here
+	dc.l Check_for_recent_damge	; hurt by enemy
+	dc.l loc_B678			; kid right of enemy
+	dc.l loc_B678			; kid left of enemy
 	dc.l Check_for_recent_damge	; kid below enemy
-	dc.l Jump_On_Enemy	; kid above enemy
+	dc.l Jump_On_Enemy		; kid above enemy
 ; ---------------------------------------------------------------------------
 
 Crushed_to_Death:
@@ -14730,7 +14750,6 @@ Crushed_to_Death:
 ; ---------------------------------------------------------------------------
 
 loc_B672:
-
 	jmp	(j_loc_6E2).w
 ; ---------------------------------------------------------------------------
 	bra.s	loc_B672 ; Restart current level not losing a live and time doesn't reset?!
@@ -14749,9 +14768,9 @@ return_B690:
 ; ---------------------------------------------------------------------------
 
 loc_B692:	; negate x velocity
-	move.l	$26(a3),d7
+	move.l	x_vel(a3),d7
 	neg.l	d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -14762,25 +14781,25 @@ loc_B69E:
 ; ---------------------------------------------------------------------------
 
 Jump_On_Enemy:
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	Check_for_recent_damge
 	move.l	d0,-(sp)
 	moveq	#sfx_Jump_on_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	move.w	($FFFFFA2C).w,$1A(a3)
-	move.w	($FFFFFA2E).w,$1E(a3)
+	move.w	($FFFFFA2C).w,x_pos(a3)
+	move.w	($FFFFFA2E).w,y_pos(a3)
 	move.l	#$FFFC0000,d7
 	tst.b	($FFFFFA6A).w
 	beq.w	loc_B6DA
 	moveq	#0,d7
 
 loc_B6DA:
-	move.l	d7,$2A(a3)
-	move.l	$26(a3),d7
-	sub.l	d7,$1A(a3)
+	move.l	d7,y_vel(a3)
+	move.l	x_vel(a3),d7
+	sub.l	d7,x_pos(a3)
 	asr.l	#1,d7
-	add.l	d7,$26(a3)
+	add.l	d7,x_vel(a3)
 	bclr	#$E,d6
 	bne.w	Check_for_recent_damge
 	rts
@@ -14856,7 +14875,11 @@ loc_B778:
 loc_B786:
 	moveq	#0,d7
 	tst.w	(Current_Helmet).w
+	
+	; Player dies if he doesn't have a helmet
 	beq.w	Death
+	
+	; Lose the helmet
 	st	(Check_Helmet_Change).w
 	clr.w	(Current_Helmet_Available).w
 	bra.s	loc_B73C
@@ -14872,15 +14895,15 @@ Death:
 	clr.w	(Extra_hitpoint_slots).w
 	move.l	($FFFFF862).w,a4
 	sf	$13(a4)
-	sf	$3C(a3)
-	sf	$14(a3)
+	sf	has_level_collision(a3)
+	sf	is_moved(a3)
 	st	($FFFFFA64).w
 	tst.w	d7
 	beq.w	loc_B7EA
-	move.l	$2A(a3),d0
+	move.l	y_vel(a3),d0
 
 loc_B7CA:
-	add.l	d0,$1E(a3)
+	add.l	d0,y_pos(a3)
 	addi.l	#$4000,d0
 	movem.l	d0-a5,-(sp)
 	jsr	(j_sub_8E0).w
@@ -14899,7 +14922,7 @@ loc_B7EA:
 loc_B7FA:
 	move.l	#$8000,d0
 	move.l	#$FFFC0000,d1
-	move.w	#(LnkTo_unk_A3FF8-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_A3FF8-Data_Index),addroffset_sprite(a3)
 
 loc_B80C:
 	movem.l	d0-a5,-(sp)
@@ -14908,8 +14931,8 @@ loc_B80C:
 	tst.b	$19(a3)
 	bne.w	lose_life
 	addi.l	#$3000,d1
-	add.l	d0,$1A(a3)
-	add.l	d1,$1E(a3)
+	add.l	d0,x_pos(a3)
+	add.l	d1,y_pos(a3)
 	bra.s	loc_B80C
 ; ---------------------------------------------------------------------------
 
@@ -14952,7 +14975,7 @@ loc_B894:
 	beq.w	loc_B8D0
 	tst.w	(Player_2_Lives).w
 	bne.w	loc_B8BA
-	sf	($FFFFFC39).w
+	sf	(Current_player).w
 
 loc_B8A8:
 	tst.b	($FFFFFC29).w
@@ -14965,14 +14988,14 @@ loc_B8BA:
 	tst.b	($FFFFFC29).w
 	bne.w	loc_B8DE
 	move.w	#8,(Game_Mode).w
-	not.b	($FFFFFC39).w
+	not.b	(Current_player).w
 	bra.w	loc_B8DE
 ; ---------------------------------------------------------------------------
 
 loc_B8D0:
 	tst.w	(Player_2_Lives).w
 	beq.w	loc_B8E2
-	st	($FFFFFC39).w
+	st	(Current_player).w
 	bra.s	loc_B8A8
 ; ---------------------------------------------------------------------------
 
@@ -14983,10 +15006,10 @@ loc_B8DE:
 loc_B8E2:
 	jmp	(j_EntryPoint).w
 ; ---------------------------------------------------------------------------
-
-loc_B8E6:
-	bgt.w	Assign_ID_to_Helmet
-	st	(NoPrize_Bonus_Flag).w
+;loc_B8E6:
+CharacterCollision_TouchPrize:
+	bgt.w	CharacterCollision_TouchSpecialPrize ; not a diamond
+	st	(NoPrize_Bonus_Flag).w	; diamond
 	rts
 ; ---------------------------------------------------------------------------
 word_B8F0:
@@ -15002,10 +15025,10 @@ word_B8F0:
 	dc.w	 9
 	dc.w	$A
 ; ---------------------------------------------------------------------------
-
-Assign_ID_to_Helmet:
+;Assign_ID_to_Helmet
+CharacterCollision_TouchSpecialPrize:
 	cmpi.w	#$90,d5
-	bge.w	loc_B93A ; No helmet prize continue other
+	bge.w	CharacterCollision_TouchNonHelmetPrize
 	st	(NoPrize_Bonus_Flag).w
 	move.w	d5,d7
 	subi.w	#$68,d7
@@ -15014,17 +15037,18 @@ Assign_ID_to_Helmet:
 	st	(Check_Helmet_Change).w
 	rts
 ; ---------------------------------------------------------------------------
-off_B926:
-	dc.l Ankh
-	dc.l Clock
-	dc.l Coin
-	dc.l loc_B972
-	dc.l Flagpole
+;off_B926:
+CharacterCollision_NonHelmetPrize_Index:
+	dc.l CharacterCollision_TouchAnkh
+	dc.l CharacterCollision_TouchClock
+	dc.l CharacterCollision_TouchCoin
+	dc.l CharacterCollision_TouchUnknownPrize
+	dc.l CharacterCollision_TouchFlagpole
 ; ---------------------------------------------------------------------------
-
-loc_B93A:
+;loc_B93A:
+CharacterCollision_TouchNonHelmetPrize:
 	subi.w	#$90,d5
-	move.l	off_B926(pc,d5.w),a4
+	move.l	CharacterCollision_NonHelmetPrize_Index(pc,d5.w),a4
 	jmp	(a4)
 ; End of function Character_CheckCollision
 
@@ -15032,7 +15056,7 @@ loc_B93A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Ankh:
+CharacterCollision_TouchAnkh:
 	st	(NoPrize_Bonus_Flag).w
 	move.l	d0,-(sp)
 	moveq	#sfx_Ankh_prize,d0
@@ -15045,14 +15069,14 @@ Ankh:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Clock:
+CharacterCollision_TouchClock:
 	st	(NoPrize_Bonus_Flag).w
 	rts
 ; End of function Clock
 
 ; ---------------------------------------------------------------------------
 
-Coin:
+CharacterCollision_TouchCoin:
 	st	(NoPrize_Bonus_Flag).w
 	addq.w	#1,(Number_Continues).w
 	move.l	d0,-(sp)
@@ -15061,8 +15085,8 @@ Coin:
 	move.l	(sp)+,d0
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_B972:
+;loc_B972:
+CharacterCollision_TouchUnknownPrize:
 	st	(NoPrize_Bonus_Flag).w
 	rts
 ; ---------------------------------------------------------------------------
@@ -15070,43 +15094,43 @@ loc_B972:
 
 loc_B978:
 	clr.w	$20(a3)
-	andi.w	#$FFF0,$1E(a3)
-	subq.w	#1,$1E(a3)
-	tst.l	$26(a3)
+	andi.w	#$FFF0,y_pos(a3)
+	subq.w	#1,y_pos(a3)
+	tst.l	x_vel(a3)
 	bne.w	loc_B996
 	bsr.w	sub_78E8
 	bra.w	loc_75D4
 ; ---------------------------------------------------------------------------
 
 loc_B996:
-	move.l	$26(a3),d0
+	move.l	x_vel(a3),d0
 	bsr.w	sub_942A
 	bra.w	loc_8BF0
 ; ---------------------------------------------------------------------------
 
 loc_B9A2:
 	bsr.w	sub_DB22
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	clr.w	$1C(a3)
 	clr.w	$20(a3)
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB08
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
-	sf	$3C(a3)
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
+	sf	has_level_collision(a3)
 	sf	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	add.w	d2,d1
 	addi.w	#$F,d1
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	swap	d3
-	move.w	$1E(a3),d3
+	move.w	y_pos(a3),d3
 	move.w	d1,($FFFFFA24).w
-	sub.w	$1A(a3),d1
-	move.w	d1,$1E(a3)
+	sub.w	x_pos(a3),d1
+	move.w	d1,y_pos(a3)
 	moveq	#0,d7
 	moveq	#0,d6
 	bsr.w	sub_B55C
@@ -15119,20 +15143,20 @@ loc_B9A2:
 ; ---------------------------------------------------------------------------
 
 loc_BA1C:
-	move.w	d3,$1E(a3)
+	move.w	d3,y_pos(a3)
 	swap	d3
 	andi.w	#$FFF0,d3
 	addi.w	#$F,d3
 	sub.w	($FFFFFA78).w,d3
-	move.w	d3,$1A(a3)
-	clr.l	$26(a3)
+	move.w	d3,x_pos(a3)
+	clr.l	x_vel(a3)
 	moveq	#0,d7
 	moveq	#0,d6
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	beq.w	loc_B978
 	sf	($FFFFFA72).w
-	st	$3C(a3)
+	st	has_level_collision(a3)
 	bsr.w	sub_B270
 	bra.w	loc_AA22
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
@@ -15143,27 +15167,27 @@ loc_BA1C:
 
 loc_BA5A:
 	bsr.w	sub_DB22
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	clr.w	$1C(a3)
 	clr.w	$20(a3)
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_BB30
-	bclr	#Button_A,(Ctrl_Pressed).w ; keyboard key (S) jump
-	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (D) special
-	sf	$3C(a3)
+	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
+	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
+	sf	has_level_collision(a3)
 	st	($FFFFFA26).w
 	move.w	($FFFFFB6C).w,d3
-	jsr	(j_sub_FACE).l
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
 	asl.w	#4,d2
 	sub.w	d2,d1
 	neg.w	d1
 	move.w	d1,($FFFFFA24).w
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	swap	d3
-	move.w	$1E(a3),d3
-	add.w	$1A(a3),d1
-	move.w	d1,$1E(a3)
+	move.w	y_pos(a3),d3
+	add.w	x_pos(a3),d1
+	move.w	d1,y_pos(a3)
 	moveq	#0,d7
 	moveq	#0,d6
 	bsr.w	sub_B55C
@@ -15176,49 +15200,49 @@ loc_BA5A:
 ; ---------------------------------------------------------------------------
 
 loc_BAD2:
-	move.w	d3,$1E(a3)
+	move.w	d3,y_pos(a3)
 	swap	d3
 	andi.w	#$FFF0,d3
 	add.w	($FFFFFA78).w,d3
-	move.w	d3,$1A(a3)
-	clr.l	$26(a3)
+	move.w	d3,x_pos(a3)
+	clr.l	x_vel(a3)
 	moveq	#0,d7
 	moveq	#0,d6
 	bsr.w	sub_B55C
 	cmpi.w	#$6000,d5
 	beq.w	loc_B978
 	st	($FFFFFA72).w
-	st	$3C(a3)
+	st	has_level_collision(a3)
 	bsr.w	sub_B270
 	bra.w	loc_AA22
 ; ---------------------------------------------------------------------------
 
 loc_BB08:
-	move.l	#$FFFE0000,$26(a3)
-	move.l	#$FFFE0000,$2A(a3)
+	move.l	#$FFFE0000,x_vel(a3)
+	move.l	#$FFFE0000,y_vel(a3)
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
+	move.l	x_vel(a3),d7
 	neg.l	d7
-	move.l	$2A(a3),d6
+	move.l	y_vel(a3),d6
 	neg.l	d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
+	move.l	d6,x_vel(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
 loc_BB30:
-	move.l	#$20000,$26(a3)
-	move.l	#$FFFE0000,$2A(a3)
+	move.l	#$20000,x_vel(a3)
+	move.l	#$FFFE0000,y_vel(a3)
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
+	move.l	x_vel(a3),d7
+	move.l	y_vel(a3),d6
+	move.l	d6,x_vel(a3)
+	move.l	d7,y_vel(a3)
 	rts
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -15241,14 +15265,15 @@ loc_BB6E:
 loc_BB74:
 	move.l	(sp)+,a2
 	movem.w	(sp)+,d0-d3
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	rts
 ; End of function sub_BB54
 
 ; ---------------------------------------------------------------------------
-off_BB80:	dc.l j_sub_10E86
+off_BB80:	; interaction for each block type
+	dc.l j_Block_LoadSmashBits
 	dc.l j_loc_1002E
-	dc.l j_sub_10F44
+	dc.l j_IceBlock_SmashAndLoadBullets
 	dc.l return_BBC0
 	dc.l return_BBC0
 	dc.l j_loc_110D0
@@ -15293,8 +15318,8 @@ return_BBE0:
 sub_BBE2:
 	move.w	($FFFFFB6C).w,d3
 	move.w	d3,a4
-	jsr	(j_sub_FACE).l
-	move.w	$1A(a3),d7
+	jsr	(j_Get_XY_From_LevelLayoutAddress).l
+	move.w	x_pos(a3),d7
 	asr.w	#4,d7
 	cmp.w	d1,d7
 	ble.w	loc_BC1C
@@ -15331,7 +15356,7 @@ loc_BC30:
 
 loc_BC34:
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.b	$11(a3),d1
+	move.b	palette_line(a3),d1
 	move.b	d1,d0
 	addq.w	#2,d0
 
@@ -15685,10 +15710,10 @@ Make_SpriteAttr_HUD:
 	moveq	#0,d1
 	move.b	HelmetHitpoint_Table(pc,d2.w),d1
 	add.w	(Extra_hitpoint_slots).w,d1
-	move.w	#$80,d2
+	move.w	#$80,d2	; x-position of first hitpoint sprites
 	tst.b	($FFFFFB49).w
 	beq.s	loc_BE08
-	move.w	($FFFFFC24).w,d3
+	move.w	(Time_Frames).w,d3
 	cmpi.w	#$50,d3
 	ble.s	loc_BE06
 	moveq	#$50,d3
@@ -15697,7 +15722,7 @@ loc_BE06:
 	sub.w	d3,d2
 
 loc_BE08:
-	move.w	#$A4,d3
+	move.w	#$A4,d3	; y-position of first hitpoint sprites
 
 loc_BE0C:
 	addq.w	#1,d4
@@ -15766,12 +15791,15 @@ loc_BE74:
 loc_BE82:
 	move.b	d4,(Number_Sprites).w
 	move.l	a2,(Addr_NextSpriteSlot).w
+	
 	tst.b	(Currently_transforming).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left	; Time left does not decrease while transforming
 	tst.b	($FFFFFB4B).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
+	
+	; Handle the math for decreasing the time left
 	subq.w	#1,(Time_SubSeconds).w
-	bne.w	loc_BF12
+	bne.w	End_Decrease_Time_Left
 	move.w	#$3C,(Time_SubSeconds).w
 	subq.w	#1,(Time_Seconds_low_digit).w
 	bpl.s	loc_BEE8
@@ -15781,11 +15809,13 @@ loc_BE82:
 	move.w	#5,(Time_Seconds_high_digit).w
 	subq.w	#1,(Time_Minutes).w
 	bpl.s	loc_BEE8
+	
+	; No time left
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 	clr.w	(Time_Minutes).w
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.w	#4,$38(a3)
+	move.w	#4,collision_type(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_no_time,d0
 	jsr	(j_PlaySound).l
@@ -15804,7 +15834,7 @@ loc_BEE8:
 	moveq	#0,d7
 	bsr.w	sub_BD0A
 
-loc_BF12:
+End_Decrease_Time_Left:
 	tst.w	(Time_Minutes).w
 	bne.w	loc_BF2A
 	cmpi.w	#2,(Time_Seconds_high_digit).w
@@ -15814,9 +15844,9 @@ loc_BF12:
 
 loc_BF2A:
 	move.w	(Number_Lives).w,d0
-	cmpi.w	#$64,d0
+	cmpi.w	#100,d0
 	blt.s	life_display
-	moveq	#$63,d0
+	moveq	#99,d0
 	move.w	d0,(Number_Lives).w
 
 life_display:							; Lives display
@@ -15883,28 +15913,28 @@ Flagpole_Boss:
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,a3
 	move.l	a1,($FFFFFA30).w
-	move.w	(Flag_X_pos).w,$1A(a3)
-	move.w	(Flag_Y_pos).w,$1E(a3)
+	move.w	(Flag_X_pos).w,x_pos(a3)
+	move.w	(Flag_Y_pos).w,y_pos(a3)
 	move.b	($FFFFFAD2).w,d5
 	lsl.w	#4,d5
-	add.w	d5,$1E(a3)
+	add.w	d5,y_pos(a3)
 	st	$13(a3)
-	move.w	#$A0,$3A(a3)
-	move.b	#1,$10(a3)
-	move.w	#(LnkTo_unk_E0FDE-Data_Index),$22(a3)
+	move.w	#$A0,object_meta(a3)
+	move.b	#1,priority(a3)
+	move.w	#(LnkTo_unk_E0FDE-Data_Index),addroffset_sprite(a3)
 	move.l	a1,a4
 	move.l	#$FF0004,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,a3
 	move.l	a1,$3E(a4)
-	move.w	(Flag_X_pos).w,$1A(a3)
-	move.w	(Flag_Y_pos).w,$1E(a3)
+	move.w	(Flag_X_pos).w,x_pos(a3)
+	move.w	(Flag_Y_pos).w,y_pos(a3)
 	move.b	($FFFFFAD2).w,d5
 	lsl.w	#4,d5
-	add.w	d5,$1E(a3)
+	add.w	d5,y_pos(a3)
 	st	$13(a3)
-	move.b	#1,$10(a3)
-	move.w	#(LnkTo_unk_E0FFE-Data_Index),$22(a3)
+	move.b	#1,priority(a3)
+	move.w	#(LnkTo_unk_E0FFE-Data_Index),addroffset_sprite(a3)
 	cmpi.w	#Boss1_LevelID,(Current_LevelID).w
 	beq.s	loc_C03A
 	cmpi.w	#Boss2_LevelID,(Current_LevelID).w
@@ -15927,10 +15957,7 @@ return_C046:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-Flagpole:
-
-; FUNCTION CHUNK AT 0000D468 SIZE 0000042C BYTES
-
+CharacterCollision_TouchFlagpole:
 	jsr	(j_StopMusic).l
 	st	($FFFFFB4B).w
 	lea	(Addr_FirstObjectSlot).w,a0
@@ -15979,7 +16006,7 @@ loc_C0C8:
 loc_C0CC:
 	jsr	(j_Hibernate_Object_1Frame).w
 	st	($FFFFFB49).w
-	st	($FFFFFB4A).w
+	st	(Background_NoScrollFlag).w
 	move.w	(Time_Seconds_low_digit).w,d0
 	move.w	(Time_Seconds_high_digit).w,d1
 	mulu.w	#$A,d1
@@ -15998,7 +16025,7 @@ loc_C0CC:
 
 loc_C10A:
 	move.b	d0,(Level_completion_time).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 	clr.b	(MurderWall_flag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -16037,19 +16064,19 @@ loc_C190:
 	dbf	d1,loc_C186
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_C1AA:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_C1AA
 	moveq	#$E,d0
 	lea	Pal_D00C(pc),a0
-	lea	($FFFF4F9A).l,a1
+	lea	(Palette_Buffer_3+$42).l,a1
 
 loc_C1BC:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_C1BC
-	clr.w	($FFFF4F58).l
+	clr.w	(Palette_Buffer_3).l
 	move.w	#$100,($FFFFF876).w
 	bra.s	loc_C1DC
 ; ---------------------------------------------------------------------------
@@ -16085,7 +16112,7 @@ loc_C1EE:
 
 loc_C21E:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	($FFFFF8B2).w,a0
+	move.l	(FGUpdateQueueCustom_NextSlot).w,a0
 	moveq	#$C,d7
 
 loc_C228:
@@ -16093,12 +16120,12 @@ loc_C228:
 	bmi.s	Score_Board
 	tst.w	d7
 	bge.s	loc_C228
-	move.l	a0,($FFFFF8B2).w
+	move.l	a0,(FGUpdateQueueCustom_NextSlot).w
 	bra.s	loc_C21E
 ; ---------------------------------------------------------------------------
 
 Score_Board:
-	move.l	a0,($FFFFF8B2).w
+	move.l	a0,(FGUpdateQueueCustom_NextSlot).w
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.l	#bgm_Score_Board,d0
@@ -16423,9 +16450,9 @@ loc_C48C:
 	moveq	#0,d7
 	moveq	#0,d2
 	move.l	$60(a5),d6
-	cmpi.l	#$98967F,d6
+	cmpi.l	#9999999,d6
 	ble.s	loc_C4AE
-	move.l	#$98967F,d6
+	move.l	#9999999,d6
 
 loc_C4AE:
 	move.l	(a4)+,a0
@@ -16527,21 +16554,21 @@ off_C550:
 loc_C564:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$11(a3)
-	move.w	#$409,$24(a3)
+	move.b	#1,palette_line(a3)
+	move.w	#$409,vram_tile(a3)
 	bra.s	loc_C592
 ; ---------------------------------------------------------------------------
 
 loc_C57C:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#2,$11(a3)
-	move.w	#$517,$24(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$517,vram_tile(a3)
 
 loc_C592:
 	st	$13(a3)
-	move.b	#1,$10(a3)
-	move.w	$44(a5),$22(a3)
+	move.b	#1,priority(a3)
+	move.w	$44(a5),addroffset_sprite(a3)
 
 loc_C5A2:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -16549,12 +16576,12 @@ loc_C5A2:
 	add.w	$6C(a5),d0
 	move.w	d0,$64(a5)
 	add.w	(Camera_X_pos).w,d0
-	move.w	d0,$1A(a3)
+	move.w	d0,x_pos(a3)
 	move.w	$68(a5),d1
 	add.w	$70(a5),d1
 	move.w	d1,$68(a5)
 	add.w	(Camera_Y_pos).w,d1
-	move.w	d1,$1E(a3)
+	move.w	d1,y_pos(a3)
 	subq.w	#1,$46(a5)
 	bne.s	loc_C5A2
 	clr.w	$6C(a5)
@@ -16566,10 +16593,10 @@ loc_C5DE:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#2,$11(a3)
-	move.b	#1,$10(a3)
-	move.w	#$517,$24(a3)
-	move.w	#(LnkTo_unk_C8640-Data_Index),$22(a3)
+	move.b	#2,palette_line(a3)
+	move.b	#1,priority(a3)
+	move.w	#$517,vram_tile(a3)
+	move.w	#(LnkTo_unk_C8640-Data_Index),addroffset_sprite(a3)
 	moveq	#-$40,d0
 	moveq	#0,d1
 	moveq	#2,d2
@@ -16609,10 +16636,10 @@ loc_C638:
 loc_C644:
 	move.w	d0,d4
 	add.w	(Camera_X_pos).w,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	d1,d4
 	add.w	(Camera_Y_pos).w,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	bra.s	loc_C60C
 ; ---------------------------------------------------------------------------
 ArtComp_C65A_HoloBG:
@@ -16676,7 +16703,7 @@ loc_D0BC:
 loc_D0C0:
 	jsr	(j_Hibernate_Object_1Frame).w
 	st	($FFFFFB49).w
-	clr.w	($FFFFFC24).w
+	clr.w	(Time_Frames).w
 	clr.b	(MurderWall_flag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
@@ -16692,27 +16719,27 @@ loc_D0C0:
 	jsr	(j_DecompressToVRAM).l
 	moveq	#$E,d0
 	lea	Pal_D02A(pc),a0
-	lea	($FFFF4E9A).l,a1
+	lea	(Palette_Buffer+$42).l,a1
 
 loc_D11C:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_D11C
 	moveq	#4,d0
 	lea	Pal_D048(pc),a0
-	lea	($FFFF4E7A).l,a1
+	lea	(Palette_Buffer+$22).l,a1
 
 loc_D12E:
 	move.w	(a0)+,(a1)+
 	dbf	d0,loc_D12E
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D142:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D142
 	moveq	#$1F,d0
-	lea	($FFFF4F58).l,a1
+	lea	(Palette_Buffer_3).l,a1
 
 loc_D150:
 	clr.l	(a1)+
@@ -16773,7 +16800,7 @@ loc_D17E:
 	move.w	#$36,$68(a0)
 	move.w	#8,$6C(a0)
 	move.l	a0,$48(a5)
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.s	loc_D25E
 	move.w	#$FD8,$44(a0)
 
@@ -16836,7 +16863,7 @@ Continue_Screen:
 loc_D350:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D350
 	move.l	$44(a5),d0
 	beq.s	loc_D372
@@ -16863,12 +16890,12 @@ loc_D386:
 loc_D3AA:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	(Ctrl_Held).w
-	bmi.s	lose_continue
+	bmi.s	Use_Continue
 	dbf	d0,loc_D3AA
 	bra.w	loc_D3F0
 ; ---------------------------------------------------------------------------
 
-lose_continue:							; Losing a Continue
+Use_Continue:							; Using a Continue (it's lost afterwards
 	subq.w	#1,(Number_Continues).w
 	sf	(Check_Helmet_Change).w
 	sf	($FFFFFC29).w
@@ -16889,13 +16916,13 @@ loc_D3F0:
 	clr.w	($FFFFFBCC).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D40A:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D40A
 	moveq	#$3F,d0
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D418:
 	move.w	#0,(a0)+
@@ -16933,7 +16960,7 @@ loc_D44C:
 ; START	OF FUNCTION CHUNK FOR Flagpole
 
 loc_D468:
-	tst.b	($FFFFFC37).w
+	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_D4CE
 	moveq	#2,d6
 	move.w	#$11C,d2
@@ -17129,13 +17156,13 @@ loc_D702:
 	jsr	(j_Hibernate_Object).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D718:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D718
 	moveq	#$3F,d0
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D726:
 	move.w	#0,(a0)+
@@ -17173,14 +17200,14 @@ loc_D77E:
 	add.l	d4,(Score).w
 	move.l	d5,d6
 	add.l	d4,d6
-	cmpi.l	#$98967F,(Score).w ; Score 99.999.99
+	cmpi.l	#9999999,(Score).w ; Score 99.999.99
 	blt.s	loc_D79E
-	move.l	#$98967F,d6 ; Score 99.999.99
+	move.l	#9999999,d6 ; Score 99.999.99
 	move.l	d6,(Score).w
 
 loc_D79E:
-	divu.w	#$C350,d5 ; Score 50.000
-	divu.w	#$C350,d6 ; Score 50.000
+	divu.w	#50000,d5 ; Score 50.000
+	divu.w	#50000,d6 ; Score 50.000
 	cmp.w	d5,d6
 	beq.s	loc_D7CE
 	addq.w	#1,(Number_Lives).w
@@ -17213,8 +17240,8 @@ loc_D7E4:
 
 loc_D7F4:
 	move.l	d0,-(sp)
-	moveq	#$C,d0
-	jsr	(sub_E132C).l
+	moveq	#sfx_Socre_counter,d0
+	jsr	(j_PlaySound2).l
 	move.l	(sp)+,d0
 	move.w	d0,-(sp)
 	jsr	(j_Hibernate_Object).w
@@ -17252,14 +17279,14 @@ End_Credits:
 	jsr	(j_Hibernate_Object).w
 	moveq	#$1F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 
 loc_D84E:
 	move.l	(a0)+,(a1)+
 	dbf	d0,loc_D84E
 	moveq	#$3F,d0
 	moveq	#0,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_D85E:
 	move.w	d1,(a0)+
@@ -17322,7 +17349,9 @@ sub_D8BE:
 
 ; ---------------------------------------------------------------------------
 unk_D8E8:	include	"level/pathbonus.asm"
+	align	2
 unk_D934:	include	"level/speedbonus.asm"
+	align	2
 ; ---------------------------------------------------------------------------
 
 loc_D980:
@@ -17374,8 +17403,8 @@ loc_D9EA:
 	st	($FFFFFB49).w
 	moveq	#$3F,d0
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
-	lea	($FFFF4F58).l,a2
+	lea	(Palette_Buffer_2).l,a1
+	lea	(Palette_Buffer_3).l,a2
 
 loc_DA16:
 	move.w	(a0)+,d1
@@ -17449,10 +17478,10 @@ sub_DAA6:
 	moveq	#$1F,d5
 
 loc_DAD6:
-	move.w	$1E(a3),d3
+	move.w	y_pos(a3),d3
 	move.w	d3,d2
 	sub.w	d5,d2
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	sub.w	d7,d0
 	add.w	d7,d1
@@ -17497,8 +17526,8 @@ sub_DB22:
 	sf	($FFFFFA66).w
 	sf	($FFFFFA67).w
 	sf	(Berzerker_charging).w
-	sf	$3C(a3)
-	sf	$15(a3)
+	sf	has_level_collision(a3)
+	sf	is_animated(a3)
 	sf	(Iron_Knight_block_breaker).w
 	rts
 ; End of function sub_DB22
@@ -17525,21 +17554,21 @@ j_sub_F06A:	;sub_DEDA
 j_sub_DFB0:	;sub_DEDE
 	jmp	sub_DFB0(pc)
 ; ---------------------------------------------------------------------------
-j_loc_DF22: ;DEE2
-	jmp	loc_DF22(pc)
+j_Initialize_EvanescShooterObjectSlots: ;DEE2
+	jmp	Initialize_EvanescShooterObjectSlots(pc)
 ; ---------------------------------------------------------------------------
-	jmp	sub_DF68(pc)
+	jmp	EvanescentBlock_Trigger(pc)
 ; ---------------------------------------------------------------------------
-j_sub_FACE: ;DEEA
-	jmp	sub_FACE(pc)
+j_Get_XY_From_LevelLayoutAddress: ;DEEA
+	jmp	Get_XY_From_LevelLayoutAddress(pc)
 ; ---------------------------------------------------------------------------
-j_sub_10E86: ;DEEE
-	jmp	sub_10E86(pc)
+j_Block_LoadSmashBits: ;DEEE
+	jmp	Block_LoadSmashBits(pc)
 ; ---------------------------------------------------------------------------
 	jmp	return_FAFC(pc)
 ; ---------------------------------------------------------------------------
-j_sub_10F44: ;DEF6
-	jmp	sub_10F44(pc)
+j_IceBlock_SmashAndLoadBullets: ;DEF6
+	jmp	IceBlock_SmashAndLoadBullets(pc)
 ; ---------------------------------------------------------------------------
 j_loc_1002E: ;DEFA
 	jmp	loc_1002E(pc)
@@ -17570,10 +17599,10 @@ j_loc_FAFE: ;DF16
 	jmp	return_10DA2(pc)
 ; ---------------------------------------------------------------------------
 
-loc_DF22:
+Initialize_EvanescShooterObjectSlots:
 	bsr.w	sub_EABC
-	lea	($FFFFE90A).w,a0
-	move.w	a0,($FFFFF8C8).w
+	lea	(EvanescObject_RAM).w,a0
+	move.w	a0,(Addr_NextFreeEvanescObjectSlot).w
 	moveq	#$12,d0
 
 loc_DF30:
@@ -17582,9 +17611,9 @@ loc_DF30:
 	move.l	a1,a0
 	dbf	d0,loc_DF30
 	clr.w	$A(a0)
-	clr.w	($FFFFF8C6).w
-	lea	($FFFFE9FA).w,a0
-	move.w	a0,($FFFFF8CC).w
+	clr.w	(Addr_FirstEvanescObjectSlot).w
+	lea	(ShooterObject_RAM).w,a0
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
 	moveq	#$26,d0
 
 loc_DF50:
@@ -17593,27 +17622,26 @@ loc_DF50:
 	move.l	a1,a0
 	dbf	d0,loc_DF50
 	clr.w	$A(a0)
-	clr.w	($FFFFF8CA).w
+	clr.w	(Addr_FirstShooterObjectSlot).w
 	rts
-; End of function j_loc_DF22
+; End of function j_Initialize_EvanescShooterObjectSlots
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_DF68:
-
+;sub_DF68:
+EvanescentBlock_Trigger:
 	move.l	d0,-(sp)
 	moveq	#sfx_Evanescent_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	swap	d1
-	move.w	($FFFFF8C8).w,d1
+	move.w	(Addr_NextFreeEvanescObjectSlot).w,d1
 	beq.s	return_DFAE
 	move.w	d1,a3
-	move.w	$A(a3),($FFFFF8C8).w
-	move.w	($FFFFF8C6).w,$A(a3)
-	move.w	a3,($FFFFF8C6).w
+	move.w	$A(a3),(Addr_NextFreeEvanescObjectSlot).w
+	move.w	(Addr_FirstEvanescObjectSlot).w,$A(a3)
+	move.w	a3,(Addr_FirstEvanescObjectSlot).w
 	swap	d1
 	move.w	d3,(a3)+
 	move.w	d1,(a3)+
@@ -17630,7 +17658,7 @@ sub_DF68:
 
 return_DFAE:
 	rts
-; End of function sub_DF68
+; End of function EvanescentBlock_Trigger
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -17639,10 +17667,10 @@ return_DFAE:
 sub_DFB0:
 	bsr.w	sub_E49A
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	move.w	($FFFFFAB6).w,d7
 	move.w	d6,($FFFFFAB6).w
-	cmpi.w	#Jump,(Character_Movement).w
+	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	bne.w	loc_EAE4
 	move.w	(Current_Helmet).w,d0
 	lea	unk_E246(pc),a5
@@ -17653,14 +17681,14 @@ sub_DFB0:
 	lea	(a5,d0.w),a5
 	move.w	(a5)+,d0
 	move.w	(a5)+,d1
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_DFEE
 	exg	d0,d1
 
 loc_DFEE:
 	neg.w	d0
-	add.w	$1A(a3),d0
-	add.w	$1A(a3),d1
+	add.w	x_pos(a3),d0
+	add.w	x_pos(a3),d1
 	subq.w	#1,d1
 	asr.w	#4,d0
 	bpl.s	loc_E000
@@ -17955,7 +17983,7 @@ sub_E1D4:
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
 
 loc_E1FE:
-	clr.l	$2A(a3)
+	clr.l	y_vel(a3)
 	moveq	#0,d2
 	move.w	d6,d2
 	addq.w	#1,d2
@@ -17964,7 +17992,7 @@ loc_E1FE:
 	clr.w	$20(a3)
 	subq.w	#1,d2
 	move.w	d2,(Kid_hitbox_bottom).w
-	move.w	d2,$1E(a3)
+	move.w	d2,y_pos(a3)
 	subi.w	#$F,d2
 	move.w	(Current_Helmet).w,d3
 	cmpi.w	#9,d3
@@ -18050,7 +18078,7 @@ loc_E282:
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$36(a5),a3
 	tst.w	$50(a5)
-	sne	$16(a3)
+	sne	x_direction(a3)
 	bra.s	loc_E2A8
 ; ---------------------------------------------------------------------------
 
@@ -18061,33 +18089,33 @@ loc_E29A:
 
 loc_E2A8:
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d0
-	move.w	$4E(a5),$22(a3)
+	move.w	$4E(a5),addroffset_sprite(a3)
 	move.w	d1,d4
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_E2D2
 	addq.w	#1,d4
 
 loc_E2D2:
 	lsl.w	#4,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	d2,d4
 	lsl.w	#4,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	moveq	#3,d3
 
 loc_E2E2:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d3,loc_E2E2
 	moveq	#3,d3
 
 loc_E2F0:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d3,loc_E2F0
 	bsr.w	sub_11530
@@ -18099,30 +18127,30 @@ loc_E304:
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d0
-	move.w	$4E(a5),$22(a3)
+	move.w	$4E(a5),addroffset_sprite(a3)
 	move.w	d1,d4
 	lsl.w	#4,d4
 	add.w	$50(a5),d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	d2,d4
 	lsl.w	#4,d4
 	add.w	$52(a5),d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	moveq	#3,d3
 
 loc_E34C:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d3,loc_E34C
 	moveq	#3,d3
 
 loc_E35A:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d3,loc_E35A
 	tst.w	$50(a5)
@@ -18300,12 +18328,12 @@ sub_E446:
 	move.w	d5,(a0)+
 	move.w	d2,(a0)+
 	move.w	#$12C,(a0)+
-	move.l	($FFFFF8B6).w,a0
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
 	move.w	d2,(a2)
 	move.w	d1,(a0)+
 	move.w	d5,(a0)+
 	move.w	d2,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 
 loc_E48E:
 	addq.w	#1,d5
@@ -19108,7 +19136,7 @@ loc_EA5A:
 	bne.s	loc_EA72
 	move.w	2(a2),d1
 	move.w	4(a2),d2
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.b	#$20,(a1)
 
 loc_EA72:
@@ -19238,15 +19266,15 @@ loc_EB62:
 	dbf	d1,loc_EB48
 
 loc_EB6E:
-	bra.w	loc_EC22
+	bra.w	LoadBulletsFromEvanescentBlock
 ; ---------------------------------------------------------------------------
 
 loc_EB72:
 	move.w	a1,d3
 	subq.w	#2,d3
-	bsr.w	sub_FACE
-	bsr.w	sub_DF68
-	bra.w	loc_EC22
+	bsr.w	Get_XY_From_LevelLayoutAddress
+	bsr.w	EvanescentBlock_Trigger
+	bra.w	LoadBulletsFromEvanescentBlock
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
 	dc.b   0
@@ -19412,14 +19440,15 @@ loc_EB72:
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
 
-loc_EC22:
-	move.l	($FFFFF8B6).w,a1
+;loc_EC22:
+LoadBulletsFromEvanescentBlock:
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 	moveq	#0,d0
 	move.b	(Number_Sprites).w,d0
 	move.w	d0,a5
-	move.w	($FFFFF8C6).w,d0
-	beq.w	loc_EDDA
+	move.w	(Addr_FirstEvanescObjectSlot).w,d0
+	beq.w	Process_ShooterObjects
 	move.w	(Camera_X_pos).w,d4
 	lsr.w	#4,d4
 	move.w	d4,d6
@@ -19442,17 +19471,19 @@ loc_EC52:
 	lsl.w	#4,d2
 	addq.w	#8,d2
 	move.w	6(a0),d3
+	; for each direction d4, check whether to load a bullet
 	move.w	#3,d4
 
 loc_EC76:
 	btst	d4,d3
 	beq.s	loc_EC9E
-	move.w	($FFFFF8CC).w,d5
+	; load bullet for this direction
+	move.w	(Addr_NextFreeShooterObjectSlot).w,d5
 	beq.s	loc_ECA2
 	move.w	d5,a3
-	move.w	$A(a3),($FFFFF8CC).w
-	move.w	($FFFFF8CA).w,$A(a3)
-	move.w	a3,($FFFFF8CA).w
+	move.w	$A(a3),(Addr_NextFreeShooterObjectSlot).w
+	move.w	(Addr_FirstShooterObjectSlot).w,$A(a3)
+	move.w	a3,(Addr_FirstShooterObjectSlot).w
 	move.w	(a0),(a3)+
 	move.w	d1,(a3)+
 	move.w	d2,(a3)+
@@ -19471,10 +19502,10 @@ loc_ECA6:
 	cmpi.w	#$16,d0
 	bne.s	loc_ED04
 	move.w	$A(a0),d0
-	move.w	($FFFFF8C6).w,a3
+	move.w	(Addr_FirstEvanescObjectSlot).w,a3
 	cmp.w	a0,a3
 	bne.s	loc_ECC4
-	move.w	$A(a0),($FFFFF8C6).w
+	move.w	$A(a0),(Addr_FirstEvanescObjectSlot).w
 	bra.s	loc_ECD8
 ; ---------------------------------------------------------------------------
 
@@ -19490,11 +19521,11 @@ loc_ECD2:
 	move.w	$A(a0),$A(a3)
 
 loc_ECD8:
-	move.w	($FFFFF8C8).w,$A(a0)
-	move.w	a0,($FFFFF8C8).w
+	move.w	(Addr_NextFreeEvanescObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeEvanescObjectSlot).w
 	tst.w	d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
 unk_ECEC:	dc.b   0
@@ -19529,7 +19560,7 @@ loc_ED04:
 	bne.s	loc_ED16
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_ED16:
@@ -19593,13 +19624,13 @@ loc_ED98:
 	move.w	d1,(a1)+
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.s	loc_EDDA
+	bra.s	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_EDB0:
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
-	bra.w	loc_EDDA
+	bra.w	Process_ShooterObjects
 ; ---------------------------------------------------------------------------
 
 loc_EDBC:
@@ -19613,8 +19644,9 @@ loc_EDBC:
 	move.w	$A(a0),d0
 	bne.w	loc_EC52
 
-loc_EDDA:
-	move.w	($FFFFF8CA).w,d0
+;loc_EDDA:
+Process_ShooterObjects:
+	move.w	(Addr_FirstShooterObjectSlot).w,d0
 	beq.w	loc_F05A
 	move.w	(Camera_X_pos).w,d4
 	move.w	d4,d6
@@ -19625,31 +19657,33 @@ loc_EDDA:
 	subq.w	#8,d5
 	addi.w	#$140,d7
 
-loc_EDFA:
+;loc_EDFA:
+Process_ShooterObjects_Loop:
 	move.w	d0,a0
 	move.w	6(a0),d0
-	beq.s	loc_EE62
+	beq.s	Process_ShooterObject_MovingUp
 	subq.w	#2,d0
-	beq.w	loc_EF0C
-	bpl.w	loc_EEBC
+	beq.w	Process_ShooterObject_MovingDown
+	bpl.w	Process_ShooterObject_MovingLeft
+
+;Process_ShooterObject_MovingRight:
 	move.w	2(a0),d0
 	addq.w	#4,d0
 	cmp.w	(Level_width_pixels).w,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
-	bgt.s	loc_EE2A
+	bgt.s	loc_EE2A	; this branch always happens except in the first 2 frames of the object's existence
 	bne.s	loc_EE52
 	addq.w	#2,(a0)
 	bra.s	loc_EE52
-; ---------------------------------------------------------------------------
 
 loc_EE2A:
 	cmpi.w	#4,d0
 	bne.s	loc_EE38
 	moveq	#0,d0
-	move.w	d0,8(a0)
-	addq.w	#2,(a0)
+	move.w	d0,8(a0)	; reset to 0 every 4th frame
+	addq.w	#2,(a0)		; update Level_Layout offset every 4th frame
 
 loc_EE38:
 	move.w	(a0),a4
@@ -19657,21 +19691,21 @@ loc_EE38:
 	btst	#$E,d1
 	beq.s	loc_EE52
 	cmpi.w	#2,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	andi.w	#$3000,d1
-	bne.w	loc_EFA0
+	bne.w	ShooterObject_InteractLevelLayout
 
 loc_EE52:
 	addq.w	#4,2(a0)
 	moveq	#0,d1
 	moveq	#-$4,d2
-	move.w	#$8A96,d3
-	bra.w	loc_EF62
+	move.w	#$8A96,d3	; tile offset+flags in VRAM
+	bra.w	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EE62:
+;loc_EE62:
+Process_ShooterObject_MovingUp:
 	cmpi.w	#4,4(a0)
-	ble.w	loc_EFA0
+	ble.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EE80
@@ -19679,7 +19713,6 @@ loc_EE62:
 	move.w	(Level_width_tiles).w,d1
 	sub.w	d1,(a0)
 	bra.s	loc_EEAC
-; ---------------------------------------------------------------------------
 
 loc_EE80:
 	cmpi.w	#4,d0
@@ -19695,28 +19728,27 @@ loc_EE92:
 	btst	#$E,d1
 	beq.s	loc_EEAC
 	cmpi.w	#2,d0
-	blt.w	loc_EFA0
+	blt.w	ShooterObject_InteractLevelLayout
 	andi.w	#$2000,d1
-	bne.w	loc_EFA0
+	bne.w	ShooterObject_InteractLevelLayout
 
 loc_EEAC:
 	subq.w	#4,4(a0)
 	moveq	#-$4,d1
 	moveq	#-8,d2
 	move.w	#$8295,d3
-	bra.w	loc_EF62
+	bra.w	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EEBC:
+;loc_EEBC:
+Process_ShooterObject_MovingLeft:
 	cmpi.w	#4,2(a0)
-	ble.w	loc_EFA0
+	ble.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EED6
 	bne.s	loc_EEFE
 	subq.w	#2,(a0)
 	bra.s	loc_EEFE
-; ---------------------------------------------------------------------------
 
 loc_EED6:
 	cmpi.w	#4,d0
@@ -19731,23 +19763,23 @@ loc_EEE4:
 	btst	#$E,d1
 	beq.s	loc_EEFE
 	cmpi.w	#2,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	andi.w	#$1000,d1
-	beq.w	loc_EFA0
+	beq.w	ShooterObject_InteractLevelLayout
 
 loc_EEFE:
 	subq.w	#4,2(a0)
 	moveq	#-8,d1
 	moveq	#-$4,d2
 	move.w	#$8296,d3
-	bra.s	loc_EF62
+	bra.s	Process_ShooterObject_MakeSprite
 ; ---------------------------------------------------------------------------
-
-loc_EF0C:
+;loc_EF0C:
+Process_ShooterObject_MovingDown:
 	move.w	4(a0),d0
 	addq.w	#4,d0
 	cmp.w	(Level_height_blocks).w,d0
-	bge.w	loc_EFA0
+	bge.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
 	bgt.s	loc_EF2E
@@ -19755,7 +19787,6 @@ loc_EF0C:
 	move.w	(Level_width_tiles).w,d1
 	add.w	d1,(a0)
 	bra.s	loc_EF56
-; ---------------------------------------------------------------------------
 
 loc_EF2E:
 	cmpi.w	#4,d0
@@ -19771,9 +19802,9 @@ loc_EF40:
 	btst	#$E,d1
 	beq.s	loc_EF56
 	cmpi.w	#2,d0
-	bge.s	loc_EFA0
+	bge.s	ShooterObject_InteractLevelLayout
 	andi.w	#$2000,d1
-	bne.s	loc_EFA0
+	bne.s	ShooterObject_InteractLevelLayout
 
 loc_EF56:
 	addq.w	#4,4(a0)
@@ -19781,7 +19812,8 @@ loc_EF56:
 	moveq	#0,d2
 	move.w	#$9295,d3
 
-loc_EF62:
+;loc_EF62:
+Process_ShooterObject_MakeSprite:
 	add.w	2(a0),d1
 	cmp.w	d4,d1
 	blt.s	loc_EF94
@@ -19796,26 +19828,28 @@ loc_EF62:
 	addi.w	#$80,d1
 	sub.w	(Camera_Y_pos).w,d2
 	addi.w	#$80,d2
-	move.w	d2,(a2)+
+	; Write it into the Sprite_Table
+	move.w	d2,(a2)+	; y pos + shape (1x1 tile)
 	addq.w	#1,a5
-	move.w	a5,(a2)+
-	move.w	d3,(a2)+
-	move.w	d1,(a2)+
+	move.w	a5,(a2)+	; link to next
+	move.w	d3,(a2)+	; tile offset+flags in VRAM
+	move.w	d1,(a2)+	; x_pos
 
 loc_EF94:
 	move.w	$A(a0),d0
-	bne.w	loc_EDFA
+	bne.w	Process_ShooterObjects_Loop
 	bra.w	loc_F05A
 ; ---------------------------------------------------------------------------
 
-loc_EFA0:
+;loc_EFA0:
+ShooterObject_InteractLevelLayout:
+	; first delete the object from the object list
 	move.w	$A(a0),d0
-	move.w	($FFFFF8CA).w,a3
+	move.w	(Addr_FirstShooterObjectSlot).w,a3
 	cmp.w	a0,a3
 	bne.s	loc_EFB4
-	move.w	$A(a0),($FFFFF8CA).w
+	move.w	$A(a0),(Addr_FirstShooterObjectSlot).w
 	bra.s	loc_EFC8
-; ---------------------------------------------------------------------------
 
 loc_EFB4:
 	move.w	$A(a3),d1
@@ -19823,81 +19857,84 @@ loc_EFB4:
 	beq.w	loc_EFC2
 	move.w	d1,a3
 	bra.s	loc_EFB4
-; ---------------------------------------------------------------------------
 
 loc_EFC2:
 	move.w	$A(a0),$A(a3)
 
 loc_EFC8:
-	move.w	($FFFFF8CC).w,$A(a0)
-	move.w	a0,($FFFFF8CC).w
-	move.b	(a4),d1
-	bpl.w	loc_F054
+	; now interact with the level layout
+	move.w	(Addr_NextFreeShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_NextFreeShooterObjectSlot).w
+	move.b	(a4),d1	; upper byte of entry in Level_layout
+	bpl.w	ShooterObject_InteractBlock_None	; if top bit clear, do nothing
 	andi.w	#$F,d1
 	add.w	d1,d1
-	move.w	off_EFEA(pc,d1.w),a3
-	addi.l	#off_EFEA,a3
+	move.w	ShooterObject_InteractBlock_Index(pc,d1.w),a3
+	addi.l	#ShooterObject_InteractBlock_Index,a3
 	jmp	(a3)
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
 ; ---------------------------------------------------------------------------
-off_EFEA:	dc.w loc_F00A-off_EFEA
-	dc.w loc_F00A-off_EFEA
-	dc.w loc_F02A-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F00A-off_EFEA
-	dc.w loc_F04A-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
-	dc.w loc_F054-off_EFEA
+;off_EFEA:
+ShooterObject_InteractBlock_Index:
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Ice-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Smash-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_Evanescent-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
+	dc.w ShooterObject_InteractBlock_None-ShooterObject_InteractBlock_Index
 ; ---------------------------------------------------------------------------
-
-loc_F00A:
+;loc_F00A:
+ShooterObject_InteractBlock_Smash:
 	move.w	d6,-(sp)
 	move.w	a4,d3
 	move.w	6(a0),d6
-	move.l	a1,($FFFFF8B6).w
-	bsr.w	sub_FACE
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
+	bsr.w	Get_XY_From_LevelLayoutAddress
 	eori.w	#2,d6
-	bsr.w	sub_10E86
-	move.l	($FFFFF8B6).w,a1
+	bsr.w	Block_LoadSmashBits
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	(sp)+,d6
-	bra.s	loc_F054
+	bra.s	ShooterObject_InteractBlock_None
 ; ---------------------------------------------------------------------------
-
-loc_F02A:
+;loc_F02A:
+ShooterObject_InteractBlock_Ice:
 	move.w	d6,-(sp)
 	move.w	a4,d3
 	move.w	6(a0),d6
-	move.l	a1,($FFFFF8B6).w
-	bsr.w	sub_FACE
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
+	bsr.w	Get_XY_From_LevelLayoutAddress
 	eori.w	#2,d6
-	bsr.w	sub_10F44
-	move.l	($FFFFF8B6).w,a1
+	bsr.w	IceBlock_SmashAndLoadBullets
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	(sp)+,d6
-	bra.s	loc_F054
+	bra.s	ShooterObject_InteractBlock_None
 ; ---------------------------------------------------------------------------
-
-loc_F04A:
+;loc_F04A:
+ShooterObject_InteractBlock_Evanescent:
 	move.w	a4,d3
-	bsr.w	sub_FACE
-	bsr.w	sub_DF68
+	bsr.w	Get_XY_From_LevelLayoutAddress
+	bsr.w	EvanescentBlock_Trigger
 ; START	OF FUNCTION CHUNK FOR sub_DFB0
 
-loc_F054:
+;loc_F054:
+ShooterObject_InteractBlock_None:
 	tst.w	d0
-	bne.w	loc_EDFA
+	bne.w	Process_ShooterObjects_Loop
 
 loc_F05A:
 	move.w	a5,d0
 	move.b	d0,(Number_Sprites).w
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 	rts
 ; END OF FUNCTION CHUNK	FOR sub_DFB0
@@ -20151,7 +20188,7 @@ loc_F25C:
 	lsr.w	#4,d5
 	move.w	d5,d7
 	addi.w	#$E,d7
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 	move.w	#$500,d0
 	move.b	(Number_Sprites).w,d0
@@ -20171,7 +20208,7 @@ loc_F28C:
 loc_F2A2:
 	move.w	a5,d0
 	move.b	d0,(Number_Sprites).w
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 
 loc_F2B0:
@@ -20188,7 +20225,8 @@ loc_F2B6:
 	move.l	off_F2CE(pc,d0.w),a3
 	jmp	(a3)
 ; ---------------------------------------------------------------------------
-off_F2CE:	dc.l loc_F2EE
+off_F2CE:
+	dc.l loc_F2EE
 	dc.l loc_F2F8
 	dc.l loc_F386
 	dc.l loc_F386
@@ -20478,14 +20516,14 @@ loc_F528:
 
 sub_F536:
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	lsr.w	#4,d0
 	subq.w	#4,d0
 	sub.w	2(a0),d0
 	bgt.s	loc_F564
 	addq.w	#8,d0
 	bmi.s	loc_F564
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	lsr.w	#4,d0
 	subq.w	#6,d0
 	sub.w	4(a0),d0
@@ -20727,7 +20765,7 @@ sub_F730:
 	move.w	#$500,d7
 	move.b	(Number_Sprites).w,d7
 	move.l	($FFFFF8DA).w,a0
-	move.l	($FFFFF8B2).w,a1
+	move.l	(FGUpdateQueueCustom_NextSlot).w,a1
 	move.l	(Addr_NextSpriteSlot).w,a2
 
 loc_F76C:
@@ -21143,7 +21181,7 @@ loc_FAA6:
 
 loc_FAC0:
 	move.b	d7,(Number_Sprites).w
-	move.l	a1,($FFFFF8B2).w
+	move.l	a1,(FGUpdateQueueCustom_NextSlot).w
 	move.l	a2,(Addr_NextSpriteSlot).w
 
 return_FACC:
@@ -21152,9 +21190,14 @@ return_FACC:
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_FACE:
+; input:
+;	d3: address somewhere within Level_Layout
+; output:
+;	d1: x pos (in blocks) in level layout
+;	d2: y pos (in blocks) in level layout
+; ---------------------------------------------------------------------------
+;sub_FACE:
+Get_XY_From_LevelLayoutAddress:
 	moveq	#0,d1
 	move.w	d3,d1
 	subi.w	#Level_Layout&$FFFF,d1
@@ -21163,10 +21206,10 @@ sub_FACE:
 	swap	d1
 	lsr.w	#1,d1
 	rts
-; End of function sub_FACE
+; End of function Get_XY_From_LevelLayoutAddress
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_FAE2:
 	move.l	a0,-(sp)
@@ -21204,7 +21247,7 @@ loc_FAFE:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21222,54 +21265,54 @@ sub_FB3E:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.l	#stru_FD4C,d7
 	jsr	(j_Init_Animation).w
 	moveq	#5,d0
 
 loc_FB94:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_FB94
 	moveq	#5,d1
 
 loc_FBA2:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_FBA2
 	moveq	#4,d0
 
 loc_FBB0:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_FBB0
 	moveq	#4,d1
 
 loc_FBBE:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_FBBE
 	moveq	#3,d0
 
 loc_FBCC:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_FBCC
 	moveq	#4,d1
 
 loc_FBDA:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_FBDA
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21278,25 +21321,25 @@ loc_FBDA:
 	move.w	d1,d4
 	lsl.w	#4,d4
 	addq.w	#4,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	d2,d4
 	lsl.w	#4,d4
 	addq.w	#7,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	move.l	#stru_FD10,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	d1,d4
 	lsl.w	#4,d4
 	addq.w	#8,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	d2,d4
 	lsl.w	#4,d4
 	addq.w	#8,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	move.l	#stru_FD3A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_FCA6,4(a0)
@@ -21304,20 +21347,20 @@ loc_FBDA:
 	move.w	a3,$44(a0)
 	clr.l	$A(a3)
 	move.l	#$FFFF0000,$E(a3)
-	move.w	#1,$16(a3)
+	move.w	#1,x_direction(a3)
 	move.w	d1,d4
 	lsl.w	#4,d4
 	move.w	d4,2(a3)
 	move.w	d2,d4
 	lsl.w	#4,d4
 	move.w	d4,6(a3)
-	move.w	#$F,$1A(a3)
+	move.w	#$F,x_pos(a3)
 	move.w	#7,$1C(a3)
 	move.w	#$63,$20(a3)
 	move.b	#$88,$1F(a3)
 	move.w	#$2C3,$18(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_FB3E
 
@@ -21403,8 +21446,8 @@ stru_FD4C:
 	dc.b 0
 	dc.b 0
 ; ---------------------------------------------------------------------------
-
-diamond_pickup:
+;diamond_pickup:
+PrizeDiamondCollected_Init:
 	tst.b	$19(a3)
 	bne.s	+
 	moveq	#sfx_Diamond_prize,d0
@@ -21413,38 +21456,38 @@ diamond_pickup:
 +
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
-	move.w	#$64,$3A(a3)
-	st	$3D(a3)
+	move.b	#1,priority(a3)
+	move.w	#$64,object_meta(a3)
+	st	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#5,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.l	#stru_10D6E,d7
 	jsr	(j_Init_Animation).w
 	cmpi.w	#$63,(Number_Diamonds).w		; Check if more than max diamonds
-	bne.w	diamond_increment
-	sf	$3C(a3)
-	st	$3D(a3)
+	bne.w	Increase_Diamonds
+	sf	has_level_collision(a3)
+	st	has_kid_collision(a3)
 	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	$26(a4),$26(a3)
-	move.l	#$FFFD0000,$2A(a3)
+	move.l	$26(a4),x_vel(a3)
+	move.l	#$FFFD0000,y_vel(a3)
 
 -
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$6000,$2A(a3)
+	addi.l	#$6000,y_vel(a3)
 	tst.b	$19(a3)
 	beq.s	-
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-diamond_increment:
-	move.l	$1A(a3),d0
+Increase_Diamonds:
+	move.l	x_pos(a3),d0
 	sub.l	(Camera_X_pos).w,d0
 	move.l	d0,$3E(a3)
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	sub.l	(Camera_Y_pos).w,d0
 	move.l	d0,$42(a3)
 	move.l	#$1260000,d0
@@ -21461,10 +21504,10 @@ diamond_increment:
 	add.l	d1,$42(a3)
 	move.w	$3E(a3),d4
 	add.w	(Camera_X_pos).w,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	$42(a3),d4
 	add.w	(Camera_Y_pos).w,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	dbf	d2,-
 	addq.w	#1,(Number_Diamonds).w
 	cmpi.w	#$14,(Number_Diamonds).w
@@ -21490,25 +21533,25 @@ diamond_increment:
 +
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_FE7A:
+;loc_FE7A:
+PrizeAnkhCollected_Init:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
-	move.w	#$64,$3A(a3)
-	st	$3D(a3)
+	move.b	#1,priority(a3)
+	move.w	#$64,object_meta(a3)
+	st	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#5,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.l	#stru_10C08,d7
 	jsr	(j_Init_Animation).w
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	sub.l	(Camera_X_pos).w,d0
 	move.l	d0,$3E(a3)
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	sub.l	(Camera_Y_pos).w,d0
 	move.l	d0,$42(a3)
 	move.l	#$1270000,d0
@@ -21527,33 +21570,33 @@ loc_FEEE:
 
 loc_FEFE:
 	add.w	(Camera_X_pos).w,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	$42(a3),d4
 	add.w	(Camera_Y_pos).w,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	dbf	d2,loc_FEEE
 	addq.w	#1,(Number_Lives).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-
-loc_FF1E:
+;loc_FF1E
+PrizeClockCollected_Init:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
-	move.w	#$64,$3A(a3)
-	st	$3D(a3)
+	move.b	#1,priority(a3)
+	move.w	#$64,object_meta(a3)
+	st	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#5,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.l	#stru_10C18,d7
 	jsr	(j_Init_Animation).w
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	sub.l	(Camera_X_pos).w,d0
 	move.l	d0,$3E(a3)
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	sub.l	(Camera_Y_pos).w,d0
 	move.l	d0,$42(a3)
 	move.l	#$380000,d0
@@ -21570,10 +21613,10 @@ loc_FF92:
 	add.l	d1,$42(a3)
 	move.w	$3E(a3),d4
 	add.w	(Camera_X_pos).w,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	$42(a3),d4
 	add.w	(Camera_Y_pos).w,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	dbf	d2,loc_FF92
 	addq.w	#1,(Time_Seconds_low_digit).w
 	cmpi.w	#$A,(Time_Seconds_low_digit).w
@@ -21587,14 +21630,16 @@ loc_FF92:
 
 loc_FFDE:
 	move.w	(Time_Minutes).w,d7
-	addq.w	#3,d7
-	cmpi.w	#$A,d7
-	blt.w	loc_FFF8
-	move.w	#$A,d7
+	addq.w	#3,d7	; Clocks are worth 3 minutes
+	cmpi.w	#10,d7
+	blt.w	+
+	
+	; If timer is above 10 minutes, reset it to 10 minutes
+	move.w	#10,d7
 	clr.w	(Time_Seconds_low_digit).w
 	clr.w	(Time_Seconds_high_digit).w
 
-loc_FFF8:
++
 	move.w	d7,(Time_Minutes).w
 
 loc_FFFC:
@@ -21608,16 +21653,16 @@ loc_1000A:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	$3E(a3),d4
 	add.w	(Camera_X_pos).w,d4
-	move.w	d4,$1A(a3)
+	move.w	d4,x_pos(a3)
 	move.w	$42(a3),d4
 
 loc_1001E:
 	add.w	(Camera_Y_pos).w,d4
-	move.w	d4,$1E(a3)
+	move.w	d4,y_pos(a3)
 	dbf	d3,loc_1000A
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_1002E:
 	move.l	d0,-(sp)
@@ -21642,7 +21687,7 @@ loc_1002E:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21662,54 +21707,54 @@ sub_1007A:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.l	#stru_101B6,d7
 	jsr	(j_Init_Animation).w
 	moveq	#5,d0
 
 loc_100DA:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_100DA
 	moveq	#5,d1
 
 loc_100E8:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_100E8
 	moveq	#4,d0
 
 loc_100F6:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_100F6
 	moveq	#4,d1
 
 loc_10104:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_10104
 	moveq	#3,d0
 
 loc_10112:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_10112
 	moveq	#4,d1
 
 loc_10120:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_10120
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21734,7 +21779,7 @@ loc_10120:
 	move.w	#$1FFF,a0
 	move.l	#$FF0004,a1
 	jsr	(j_sub_E02).w
-	move.l	#loc_10330,4(a0)
+	move.l	#Prize_Init,4(a0)
 	move.w	d1,$44(a0)
 	move.w	d2,$46(a0)
 	ext.l	d3
@@ -21771,13 +21816,13 @@ loc_101D8:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
 
 loc_10200:
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
@@ -21790,40 +21835,40 @@ loc_10200:
 	moveq	#5,d0
 
 loc_10228:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_10228
 	moveq	#5,d1
 
 loc_10236:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_10236
 	moveq	#4,d0
 
 loc_10244:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_10244
 	moveq	#4,d1
 
 loc_10252:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_10252
 	moveq	#3,d0
 
 loc_10260:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_10260
 	moveq	#4,d1
 
 loc_1026E:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d1,loc_1026E
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -21847,11 +21892,11 @@ stru_10296:
 loc_102B8:
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.w	#(LnkTo_unk_E0F2E-Data_Index),$22(a3)
+	move.b	#0,palette_line(a3)
+	move.w	#(LnkTo_unk_E0F2E-Data_Index),addroffset_sprite(a3)
 	move.l	#stru_102DE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 stru_102DE:
@@ -21902,7 +21947,7 @@ SpecialBlocks_FoundBlock:
 	move.w	(a4,d7.w),d7	; random helmet (between 1 and 9)
 	addq.w	#1,d7	; adjusted to table below
 	asl.w	#2,d7
-	move.l	off_102F0(pc,d7.w),a4	; address to corresponding code
+	move.l	Prize_Init_Index(pc,d7.w),a4	; address to corresponding code
 	jmp	(a4)
 ; ---------------------------------------------------------------------------
 SpecialBlocks_NormalBlock:
@@ -21917,47 +21962,49 @@ SpecialBlocks_NormalBlock:
 
 	;jsr	Get_RandomNumber_byte
 	and.w	#$7C,d7	; randomize: get a random prize.
-	move.l	off_102F0(pc,d7.w),a4
+	move.l	Prize_Init_Index(pc,d7.w),a4
 	jmp	(a4)
 
-off_102F0:	; code to load prize object from prize block
-	dc.l loc_10354	; 0 - Diamond
-	dc.l loc_10A90	; 1 - 10000 points
-	dc.l loc_10436	; 2 - Helmet (skycutter)
-	dc.l loc_10480	; 3 - Helmet (cyclone)
-	dc.l loc_104CA	; 4 - Helmet (red stealth)
-	dc.l loc_10514	; 5 - Helmet (eyeclops)
-	dc.l loc_1055E	; 6 - Helmet (juggernaut)
-	dc.l loc_105A8	; 7 - Helmet (iron knight)
-	dc.l loc_105F2	; 8 - Helmet (berzerker)
-	dc.l loc_1063C	; 9 - Helmet (maniaxe)
-	dc.l loc_10686	; A - Helmet (micromax)
-	dc.l loc_10706	; B - 1-up
-	dc.l loc_1076C	; C - Time
-	dc.l loc_107F2	; D - Continue
-	dc.l loc_108CA	; E - 10 diamonds
-	dc.l loc_10354	; F - Same as 0
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
-	dc.l loc_10354
+;off_102F0:
+Prize_Init_Index:	; code to load prize object from prize block
+	dc.l PrizeDiamond_Init		; 0 - Diamond
+	dc.l Prize10000Points_Init	; 1 - 10000 points
+	dc.l PrizeHelmetSkycutter_Init	; 2 - Helmet (skycutter)
+	dc.l PrizeHelmetCyclone_Init	; 3 - Helmet (cyclone)
+	dc.l PrizeHelmetRedStealth_Init	; 4 - Helmet (red stealth)
+	dc.l PrizeHelmetEyeclops_Init	; 5 - Helmet (eyeclops)
+	dc.l PrizeHelmetJuggernaut_Init	; 6 - Helmet (juggernaut)
+	dc.l PrizeHelmetIronKnight_Init	; 7 - Helmet (iron knight)
+	dc.l PrizeHelmetBerzerker_Init	; 8 - Helmet (berzerker)
+	dc.l PrizeHelmetManiaxe_Init	; 9 - Helmet (maniaxe)
+	dc.l PrizeHelmetMicromax_Init	; A - Helmet (micromax)
+	dc.l PrizeAnkh_Init		; B - 1-up
+	dc.l PrizeClock_Init		; C - Time
+	dc.l PrizeContinue_Init		; D - Continue
+	dc.l Prize10Diamonds_Init	; E - 10 diamonds
+	dc.l PrizeDiamond_Init		; F - Same as 0
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
+	dc.l PrizeDiamond_Init
 ; ---------------------------------------------------------------------------
 ; load prize object from prize block.
-loc_10330:
+;loc_10330:
+Prize_Init:
 	move.l	$36(a5),a3
-	clr.w	$3A(a3)
+	clr.w	object_meta(a3)
 	move.l	$48(a5),d2
 	move.l	($FFFFF8D4).w,a1
 	bra.s	loc_10344
@@ -22109,19 +22156,18 @@ SpecialBlocks_Index:
 
 	include	"level/special_blocks.asm"
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_10848
+; START	OF FUNCTION CHUNK FOR OneTimePrize_CheckCollected
 
-loc_10354:
-
-	sf	$14(a3)
+PrizeDiamond_Init:
+	sf	is_moved(a3)
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.w	#$64,$3A(a3)
+	move.b	#0,palette_line(a3)
+	move.w	#$64,object_meta(a3)
 	move.w	#$1F4,d3
 	swap	d3
 	move.w	#1,d3
 	swap	d3
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	andi.w	#$FFF0,d0
 	move.l	#0,d1
 	move.b	#0,$12(a3)
@@ -22160,9 +22206,9 @@ loc_103DA:
 
 loc_103DE:
 	addi.l	#$1388,d1
-	move.l	$1E(a3),d2
+	move.l	y_pos(a3),d2
 	add.l	d1,d2
-	move.l	d2,$1E(a3)
+	move.l	d2,y_pos(a3)
 	swap	d2
 	move.w	d2,d5
 	andi.w	#$FFF0,d2
@@ -22176,26 +22222,26 @@ loc_10402:
 
 loc_10404:
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10430
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_10396
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#diamond_pickup,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.l	#PrizeDiamondCollected_Init,4(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 
 loc_10430:
 	jmp	(j_Delete_CurrentObject).w
-; END OF FUNCTION CHUNK	FOR sub_10848
+; END OF FUNCTION CHUNK	FOR OneTimePrize_CheckCollected
 ; ---------------------------------------------------------------------------
 
 loc_10434:
 	bra.s	loc_10434
 ; ---------------------------------------------------------------------------
 
-loc_10436:
+PrizeHelmetSkycutter_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D02).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22204,7 +22250,7 @@ loc_10436:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$6C,$3A(a3)
+	move.w	#$6C,object_meta(a3)
 	move.l	#stru_106DC,d7
 	jsr	(j_Init_Animation).w
 
@@ -22212,16 +22258,16 @@ loc_10464:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_1047C
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_10464
 
 loc_1047C:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10480:
+PrizeHelmetCyclone_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E34).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22230,7 +22276,7 @@ loc_10480:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$70,$3A(a3)
+	move.w	#$70,object_meta(a3)
 	move.l	#stru_106E8,d7
 	jsr	(j_Init_Animation).w
 
@@ -22238,16 +22284,16 @@ loc_104AE:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_104C6
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_104AE
 
 loc_104C6:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_104CA:
+PrizeHelmetRedStealth_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DBC).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22256,7 +22302,7 @@ loc_104CA:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$74,$3A(a3)
+	move.w	#$74,object_meta(a3)
 	move.l	#stru_106F4,d7
 	jsr	(j_Init_Animation).w
 
@@ -22264,16 +22310,16 @@ loc_104F8:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10510
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_104F8
 
 loc_10510:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10514:
+PrizeHelmetEyeclops_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1DF8).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22282,7 +22328,7 @@ loc_10514:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$78,$3A(a3)
+	move.w	#$78,object_meta(a3)
 	move.l	#stru_106EE,d7
 	jsr	(j_Init_Animation).w
 
@@ -22290,16 +22336,16 @@ loc_10542:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_1055A
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_10542
 
 loc_1055A:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1055E:
+PrizeHelmetJuggernaut_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1E70).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22308,7 +22354,7 @@ loc_1055E:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$7C,$3A(a3)
+	move.w	#$7C,object_meta(a3)
 	move.l	#stru_106D6,d7
 	jsr	(j_Init_Animation).w
 
@@ -22316,16 +22362,16 @@ loc_1058C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_105A4
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_1058C
 
 loc_105A4:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_105A8:
+PrizeHelmetIronKnight_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1EAC).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22334,7 +22380,7 @@ loc_105A8:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$80,$3A(a3)
+	move.w	#$80,object_meta(a3)
 	move.l	#stru_106FA,d7
 	jsr	(j_Init_Animation).w
 
@@ -22342,16 +22388,16 @@ loc_105D6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_105EE
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_105D6
 
 loc_105EE:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_105F2:
+PrizeHelmetBerzerker_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D80).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22360,7 +22406,7 @@ loc_105F2:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$84,$3A(a3)
+	move.w	#$84,object_meta(a3)
 	move.l	#stru_106E2,d7
 	jsr	(j_Init_Animation).w
 
@@ -22368,16 +22414,16 @@ loc_10620:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10638
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_10620
 
 loc_10638:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1063C:
+PrizeHelmetManiaxe_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1CA2).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22386,7 +22432,7 @@ loc_1063C:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$88,$3A(a3)
+	move.w	#$88,object_meta(a3)
 	move.l	#stru_106D0,d7
 	jsr	(j_Init_Animation).w
 
@@ -22394,16 +22440,16 @@ loc_1066A:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10682
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_1066A
 
 loc_10682:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_10686:
+PrizeHelmetMicromax_Init:
 	movem.l	a4-a5,-(sp)
 	move.l	(LnkTo_Pal_A1D44).l,a5
 	lea	(Palette_Buffer+$7A).l,a4
@@ -22412,7 +22458,7 @@ loc_10686:
 	move.w	(a5)+,(a4)+
 	movem.l	(sp)+,a4-a5
 	bsr.w	sub_10CB0
-	move.w	#$8C,$3A(a3)
+	move.w	#$8C,object_meta(a3)
 	move.l	#stru_10700,d7
 	jsr	(j_Init_Animation).w
 
@@ -22420,9 +22466,9 @@ loc_106B4:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_106CC
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_106B4
 
 loc_106CC:
@@ -22466,9 +22512,9 @@ stru_10700:
 	dc.b 5
 ; ---------------------------------------------------------------------------
 
-loc_10706:
-	bsr.w	sub_10848
-	move.w	#$90,$3A(a3)
+PrizeAnkh_Init:
+	bsr.w	OneTimePrize_CheckCollected
+	move.w	#$90,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C08,d7
 	jsr	(j_Init_Animation).w
@@ -22485,22 +22531,22 @@ loc_1071E:
 loc_10738:
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10768
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_1071E
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_FE7A,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.l	#PrizeAnkhCollected_Init,4(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 
 loc_10768:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_1076C:
-	move.w	#$94,$3A(a3)
+PrizeClock_Init:
+	move.w	#$94,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C18,d7
 	jsr	(j_Init_Animation).w
@@ -22526,29 +22572,29 @@ loc_10796:
 loc_107B0:
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_107E0
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_10796
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_FF1E,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.l	#PrizeClockCollected_Init,4(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 
 loc_107E0:
 	subq.b	#1,($FFFFFB55).w
 	bne.s	loc_107EE
-	moveq	#$E,d0
-	jsr	(sub_E132C).l
+	moveq	#sfx_Clock_prize,d0
+	jsr	(j_PlaySound2).l
 
 loc_107EE:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_107F2:
-	bsr.w	sub_10848
-	move.w	#$98,$3A(a3)
+PrizeContinue_Init:
+	bsr.w	OneTimePrize_CheckCollected
+	move.w	#$98,object_meta(a3)
 	bsr.w	sub_10C78
 	move.l	#stru_10C28,d7
 	jsr	(j_Init_Animation).w
@@ -22565,9 +22611,9 @@ loc_1080A:
 loc_10824:
 	bsr.w	sub_10C38
 	move.w	(Level_height_blocks).w,d4
-	cmp.w	$1E(a3),d4
+	cmp.w	y_pos(a3),d4
 	ble.s	loc_10838
-	tst.w	$38(a3)
+	tst.w	collision_type(a3)
 	beq.s	loc_1080A
 
 loc_10838:
@@ -22578,30 +22624,30 @@ loc_10838:
 	jmp	(j_Delete_CurrentObject).w
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_10848:
-
-; FUNCTION CHUNK AT 00010354 SIZE 000000E0 BYTES
-
-	lea	($FFFFFC84).w,a0
-	tst.b	($FFFFFC39).w
+; For ankhs, continues, 10 diamonds and 10000 points check whether they have
+; already been found. If yes, load a diamond instead. If no, indicate that
+; they have been found so that next time a simple diamond will spawn instead.
+;sub_10848
+OneTimePrize_CheckCollected:
+	lea	(Player_1_OneTimePrizes).w,a0
+	tst.b	(Current_player).w
 	beq.s	loc_10856
-	lea	($FFFFFD26).w,a0
+	lea	(Player_2_OneTimePrizes).w,a0
 
 loc_10856:
 	tst.w	(a0)
 	bpl.s	loc_1086A
+	; This is first prize ever collected. Clear the array.
 	lea	2(a0),a1
 	moveq	#$27,d0
 	moveq	#0,d1
 	move.w	d1,(a0)
-
-loc_10864:
+-
 	move.l	d1,(a1)+
-	dbf	d0,loc_10864
+	dbf	d0,-
 
 loc_1086A:
+	; Check the array for our prize.
 	move.w	#$27,d0
 	move.w	$4A(a5),d1
 	lea	2(a0),a1
@@ -22611,16 +22657,20 @@ loc_10876:
 	bne.s	loc_10886
 	move.w	(Current_LevelID).w,d2
 	cmp.w	2(a1),d2
-	beq.w	loc_10354
+	beq.w	PrizeDiamond_Init	; We found the prize (same level and address)
+	; we called this as bsr, so now we have an extra entry on the stack if
+	; we take this branch? Could this cause a stack overflow if done too many times?
 
 loc_10886:
 	addq.w	#4,a1
 	dbf	d0,loc_10876
+	; Not found, so add our new prize (level and address) to the array.
 	move.w	(a0),d0
 	move.w	d0,d1
 	addq.w	#1,d1
 	cmpi.w	#$28,d1
 	blt.s	loc_1089A
+	; more than $28 prizes collected, overwrite the oldest ones now
 	moveq	#0,d1
 
 loc_1089A:
@@ -22629,7 +22679,7 @@ loc_1089A:
 	move.w	$4A(a5),2(a0,d0.w)
 	move.w	(Current_LevelID).w,4(a0,d0.w)
 	rts
-; End of function sub_10848
+; End of function OneTimePrize_CheckCollected
 
 ; ---------------------------------------------------------------------------
 byte_108AC:	dc.b 0
@@ -22664,10 +22714,10 @@ byte_108AC:	dc.b 0
 	dc.b   9
 ; ---------------------------------------------------------------------------
 
-loc_108CA:
-	bsr.w	sub_10848
-	move.l	$1A(a3),$6C(a5)
-	move.l	$1E(a3),$70(a5)
+Prize10Diamonds_Init:
+	bsr.w	OneTimePrize_CheckCollected
+	move.l	x_pos(a3),$6C(a5)
+	move.l	y_pos(a3),$70(a5)
 	jsr	(j_loc_1078).w
 	moveq	#0,d3
 	lea	$44(a5),a2
@@ -22862,25 +22912,25 @@ unk_10A7A:	dc.b   0
 	dc.b   0
 ; ---------------------------------------------------------------------------
 
-loc_10A90:
-	bsr.w	sub_10848
+Prize10000Points_Init:
+	bsr.w	OneTimePrize_CheckCollected
 	move.l	(Score).w,d0
 	move.l	d0,d1
-	addi.l	#$2710,d1
-	cmpi.l	#$98967F,d1
+	addi.l	#10000,d1
+	cmpi.l	#9999999,d1
 	blt.s	loc_10AAE
-	move.l	#$98967F,d1
+	move.l	#9999999,d1
 
 loc_10AAE:
 	move.l	d1,(Score).w
-	divu.w	#$C350,d0
-	divu.w	#$C350,d1
+	divu.w	#50000,d0
+	divu.w	#50000,d1
 	cmp.w	d0,d1
 	beq.s	loc_10AC2
 	addq.w	#1,(Number_Lives).w
 
 loc_10AC2:
-	cmpi.l	#$186A0,(Score).w
+	cmpi.l	#100000,(Score).w
 	blt.s	loc_10AE0
 	cmpi.w	#HundredKTripStart_LevelID,(Current_LevelID).w
 	bne.s	loc_10AE0
@@ -22889,8 +22939,8 @@ loc_10AC2:
 	move.w	#$3C,($FFFFFB4C).w
 
 loc_10AE0:
-	move.l	$1A(a3),$6C(a5)
-	move.l	$1E(a3),$70(a5)
+	move.l	x_pos(a3),$6C(a5)
+	move.l	y_pos(a3),$70(a5)
 	jsr	(j_loc_1078).w
 	moveq	#0,d3
 	lea	$44(a5),a2
@@ -23059,9 +23109,9 @@ sub_10C38:
 
 loc_10C50:
 	addi.l	#$1388,d1
-	move.l	$1E(a3),d2
+	move.l	y_pos(a3),d2
 	add.l	d1,d2
-	move.l	d2,$1E(a3)
+	move.l	d2,y_pos(a3)
 	swap	d2
 	move.w	d2,d5
 	andi.w	#$FFF0,d2
@@ -23082,15 +23132,15 @@ return_10C76:
 
 
 sub_10C78:
-	st	$14(a3)
+	st	is_moved(a3)
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.w	#$1E,d0
 	move.w	#$320,d3
 	swap	d3
 	move.w	#1,d3
 	swap	d3
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	andi.w	#$FFF0,d0
 	move.l	#0,d1
 	move.b	#0,$12(a3)
@@ -23103,15 +23153,15 @@ sub_10C78:
 
 
 sub_10CB0:
-	st	$14(a3)
+	st	is_moved(a3)
 	st	$13(a3)
-	move.b	#3,$11(a3)
+	move.b	#3,palette_line(a3)
 	move.w	#$1E,d0
 	move.w	#$320,d3
 	swap	d3
 	move.w	#1,d3
 	swap	d3
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	andi.w	#$FFF0,d0
 	move.l	#0,d1
 	move.b	#1,$12(a3)
@@ -23160,13 +23210,13 @@ loc_10D38:
 sub_10D3E:
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	clr.w	$24(a3)
+	clr.w	vram_tile(a3)
 	st	$13(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	move.l	#stru_102DE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_10D3E
 
@@ -23190,7 +23240,7 @@ stru_10D80:
 	dc.b 2
 	dc.b $21
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 return_10DA2:
 	rts
@@ -23216,7 +23266,7 @@ loc_10DA4:
 
 return_10DE2:
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23278,34 +23328,33 @@ loc_10E0A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_10E86:
-
+;sub_10E86:
+Block_LoadSmashBits:
 	move.l	d0,-(sp)
 	moveq	#sfx_Destroy_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	movem.l	d4/a0-a1,-(sp)
-	move.w	d3,a0
-	or.b	#$F,(a0)
+	move.w	d3,a0	; address in Level_layout
+	or.b	#$F,(a0)	; set the 4 "block" bits to $F
 	move.w	#$2001,a0
 	move.l	#$FF0004,a1
-	jsr	(j_sub_E02).w
+	jsr	(j_sub_E02).w	; allocate an object + gfxobject slot
 	move.l	#sub_10EDA,4(a0)
 	move.w	d1,$44(a0)
 	move.w	d2,$46(a0)
 	ext.l	d3
 	move.l	d3,$48(a0)
 	move.w	d6,$4C(a0)
-	move.w	d1,d4
-	lsl.w	#4,d4
+	move.w	d1,d4	; xpos in blocks
+	lsl.w	#4,d4	; xpos in pixels
 	move.w	d4,$1A(a1)
-	move.w	d2,d4
-	lsl.w	#4,d4
+	move.w	d2,d4	; ypos in blocks
+	lsl.w	#4,d4	; ypos in pixels
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; End of function sub_10E86
+; End of function Block_LoadSmashBits
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -23316,36 +23365,33 @@ sub_10EDA:
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d6
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.w	#(LnkTo_unk_E0E4E-Data_Index),$22(a3)
+	move.b	#0,palette_line(a3)
+	move.w	#(LnkTo_unk_E0E4E-Data_Index),addroffset_sprite(a3)
 	cmpi.w	#3,d6
 	beq.s	loc_10F26
 	cmpi.w	#2,d6
 	beq.s	loc_10F1A
 	cmpi.w	#1,d6
 	beq.s	loc_10F20
-	addq.w	#4,$1E(a3)
+	addq.w	#4,y_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F1A:
-	subq.w	#4,$1E(a3)
+	subq.w	#4,y_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F20:
-	subq.w	#4,$1A(a3)
+	subq.w	#4,x_pos(a3)
 	bra.s	loc_10F2A
-; ---------------------------------------------------------------------------
 
 loc_10F26:
-	addq.w	#4,$1A(a3)
+	addq.w	#4,x_pos(a3)
 
 loc_10F2A:
-	move.w	#(LnkTo_unk_E0E56-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_E0E56-Data_Index),addroffset_sprite(a3)
 	move.w	#2,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.w	$4C(a5),d6
@@ -23356,14 +23402,13 @@ loc_10F2A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_10F44:
-
+;sub_10F44:
+IceBlock_SmashAndLoadBullets:
 	move.l	d0,-(sp)
 	moveq	#sfx_Prize_block,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	bsr.w	sub_11006
+	bsr.w	IceBlock_LoadBullets
 	movem.l	d4/a0-a1,-(sp)
 	move.w	d3,a0
 	or.b	#$F,(a0)
@@ -23384,7 +23429,7 @@ sub_10F44:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; End of function sub_10F44
+; End of function IceBlock_SmashAndLoadBullets
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -23395,36 +23440,33 @@ sub_10F9C:
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.w	$4C(a5),d6
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.w	#(LnkTo_unk_E0E6E-Data_Index),$22(a3)
+	move.b	#0,palette_line(a3)
+	move.w	#(LnkTo_unk_E0E6E-Data_Index),addroffset_sprite(a3)
 	cmpi.w	#3,d6
 	beq.s	loc_10FE8
 	cmpi.w	#2,d6
 	beq.s	loc_10FDC
 	cmpi.w	#1,d6
 	beq.s	loc_10FE2
-	addq.w	#4,$1E(a3)
+	addq.w	#4,y_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FDC:
-	subq.w	#4,$1E(a3)
+	subq.w	#4,y_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FE2:
-	subq.w	#4,$1A(a3)
+	subq.w	#4,x_pos(a3)
 	bra.s	loc_10FEC
-; ---------------------------------------------------------------------------
 
 loc_10FE8:
-	addq.w	#4,$1A(a3)
+	addq.w	#4,x_pos(a3)
 
 loc_10FEC:
-	move.w	#(LnkTo_unk_E0E76-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_E0E76-Data_Index),addroffset_sprite(a3)
 	move.w	#3,-(sp)
 	jsr	(j_Hibernate_Object).w
 	move.w	$4C(a5),d6
@@ -23435,41 +23477,42 @@ loc_10FEC:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_11006:
+;sub_11006:
+IceBlock_LoadBullets:
 	movem.l	d1-d2/d4/a0-a1,-(sp)
-	eori.w	#2,d6
+	eori.w	#2,d6	; bits 0-1: direction; bit 2: ?
 	move.w	d3,a0
 	tst.w	d6
 	bne.s	loc_11020
+	; up
 	tst.w	d2
 	beq.w	loc_11080
 	suba.w	(Level_width_tiles).w,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_11020:
 	cmpi.w	#2,d6
 	bge.s	loc_11036
+	; right
 	move.w	d1,d4
 	addq.w	#1,d4
 	cmp.w	(Level_width_blocks).w,d4
 	bge.w	loc_11080
 	addq.w	#2,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_11036:
 	bne.s	loc_1104A
+	; down
 	move.w	d2,d4
 	addq.w	#1,d4
 	cmp.w	(Level_height_pixels).w,d4
 	bge.w	loc_11080
 	add.w	(Level_width_tiles).w,a0
 	bra.s	loc_11052
-; ---------------------------------------------------------------------------
 
 loc_1104A:
+	; left
 	tst.w	d1
 	beq.w	loc_11080
 	subq.w	#2,a0
@@ -23483,67 +23526,40 @@ loc_11052:
 	addq.w	#8,d2
 	move.w	d6,d4
 	lsl.w	#3,d4
-	lea	unk_1108A(pc,d4.w),a1
-	bsr.s	sub_110AA
+	lea	IceBlock_BulletPosOffset_Index(pc,d4.w),a1
+	bsr.s	IceBlock_LoadSingleBullet
 	add.w	(a1)+,d1
 	add.w	(a1)+,d2
-	bsr.s	sub_110AA
+	bsr.s	IceBlock_LoadSingleBullet
 	subq.w	#1,-2(a0)
 	add.w	(a1)+,d1
 	add.w	(a1)+,d2
-	bsr.s	sub_110AA
+	bsr.s	IceBlock_LoadSingleBullet
 	subq.w	#1,-2(a0)
 
 loc_11080:
 	eori.w	#2,d6
 	movem.l	(sp)+,d1-d2/d4/a0-a1
 	rts
-; End of function sub_11006
+; End of function IceBlock_LoadBullets
 
 ; ---------------------------------------------------------------------------
-unk_1108A:	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $F8 ; ¯
+IceBlock_BulletPosOffset_Index:	; x and y offsets of 2nd and 3rd bullet
+	dc.w -4,  4,  8,  0	; up
+	dc.w -4, -4,  0,  8	; right
+	dc.w  4, -4, -8,  0	; down
+	dc.w  4,  4,  0, -8	; left
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_110AA:
-	move.w	($FFFFF8CC).w,d4
+;sub_110AA:
+IceBlock_LoadSingleBullet:
+	move.w	(Addr_NextFreeShooterObjectSlot).w,d4
 	beq.s	return_110CE
 	move.w	d4,a0
-	move.w	$A(a0),($FFFFF8CC).w
-	move.w	($FFFFF8CA).w,$A(a0)
-	move.w	a0,($FFFFF8CA).w
+	move.w	$A(a0),(Addr_NextFreeShooterObjectSlot).w
+	move.w	(Addr_FirstShooterObjectSlot).w,$A(a0)
+	move.w	a0,(Addr_FirstShooterObjectSlot).w
 	move.w	d3,(a0)+
 	move.w	d1,(a0)+
 	move.w	d2,(a0)+
@@ -23552,10 +23568,10 @@ sub_110AA:
 
 return_110CE:
 	rts
-; End of function sub_110AA
+; End of function IceBlock_LoadSingleBullet
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_110D0:
 	move.l	d0,-(sp)
@@ -23583,7 +23599,7 @@ loc_1110E:
 	move.w	d4,$1E(a1)
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23600,15 +23616,15 @@ sub_11120:
 	moveq	#0,d4
 	move.b	(a1,d0.w),d4
 	move.w	d4,(a0)
-	move.l	($FFFFF8B6).w,a1
+	move.l	(FGUpdateQueueCell_NextSlot).w,a1
 	move.w	d0,(a1)+
 	move.w	d1,(a1)+
 	move.w	d4,(a1)+
-	move.l	a1,($FFFFF8B6).w
+	move.l	a1,(FGUpdateQueueCell_NextSlot).w
 	move.b	#$6F,(a0)
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
+	move.b	#0,palette_line(a3)
 	move.l	#stru_111CE,d7
 	jsr	(j_Init_Animation).w
 	tst.w	$4C(a5)
@@ -23616,13 +23632,13 @@ sub_11120:
 	moveq	#3,d0
 
 loc_1117A:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_1117A
 	moveq	#3,d0
 
 loc_11188:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_11188
 	bra.s	loc_111B2
@@ -23632,18 +23648,18 @@ loc_11196:
 	moveq	#3,d0
 
 loc_11198:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_11198
 	moveq	#3,d0
 
 loc_111A6:
-	addq.w	#2,$1E(a3)
+	addq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_111A6
 
 loc_111B2:
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
@@ -23666,7 +23682,7 @@ stru_111CE:
 	dc.b 0
 	dc.b 0
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_111F4:
 	movem.l	d4/a0-a2,-(sp)
@@ -23739,7 +23755,7 @@ loc_1125C:
 loc_11296:
 	movem.l	(sp)+,d4/a0-a2
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23748,14 +23764,14 @@ sub_1129C:
 	move.w	$44(a5),d1
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	move.l	$36(a5),a3
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.b	#0,$10(a3)
+	move.b	#0,palette_line(a3)
+	move.b	#0,priority(a3)
 	move.b	#0,$12(a3)
-	move.w	#$3C,$3A(a3)
-	move.w	#(LnkTo_unk_E0E8E-Data_Index),$22(a3)
+	move.w	#$3C,object_meta(a3)
+	move.w	#(LnkTo_unk_E0E8E-Data_Index),addroffset_sprite(a3)
 	move.w	#3,d3
 	move.l	d0,-(sp)
 	moveq	#sfx_Berzerker_moving_block,d0
@@ -23767,7 +23783,7 @@ loc_112E2:
 	move.w	$4C(a5),d6
 	cmpi.w	#3,d6
 	bne.s	loc_112FE
-	addq.w	#4,$1A(a3)
+	addq.w	#4,x_pos(a3)
 	addq.w	#1,d3
 	cmpi.w	#4,d3
 	beq.s	loc_11334
@@ -23775,7 +23791,7 @@ loc_112E2:
 ; ---------------------------------------------------------------------------
 
 loc_112FE:
-	subq.w	#4,$1A(a3)
+	subq.w	#4,x_pos(a3)
 	addq.w	#1,d3
 	cmpi.w	#4,d3
 	beq.s	loc_1130C
@@ -23823,7 +23839,7 @@ loc_11358:
 ; End of function sub_1129C
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 loc_11364:
 	move.l	d0,-(sp)
@@ -23855,7 +23871,7 @@ loc_11364:
 loc_113BA:
 	movem.l	(sp)+,d0/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23865,16 +23881,16 @@ sub_113C0:
 	move.w	$46(a5),d2
 	move.l	$48(a5),a1
 	move.l	$36(a5),a3
-	st	$14(a3)
+	st	is_moved(a3)
 	st	$13(a3)
-	move.b	#0,$11(a3)
-	move.b	#0,$10(a3)
+	move.b	#0,palette_line(a3)
+	move.b	#0,priority(a3)
 	move.b	#0,$12(a3)
-	move.w	#(LnkTo_unk_E0EBE-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_E0EBE-Data_Index),addroffset_sprite(a3)
 	move.w	#7,d0
 
 loc_113F4:
-	subq.w	#2,$1E(a3)
+	subq.w	#2,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_113F4
 	move.w	#$E710,d0
@@ -23882,19 +23898,19 @@ loc_113F4:
 	bsr.w	sub_11530
 	addq.w	#1,d2
 	add.w	(Level_width_tiles).w,a1
-	bsr.w	sub_11542
-	addi.w	#$10,$1E(a3)
+	bsr.w	EraseBlockFromLevelLayout
+	addi.w	#$10,y_pos(a3)
 	move.w	#$F,d0
 
 loc_1141E:
-	subq.w	#1,$1E(a3)
+	subq.w	#1,y_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_1141E
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_113C0
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR j_loc_DF22
+; START	OF FUNCTION CHUNK FOR j_Initialize_EvanescShooterObjectSlots
 
 return_1142E:
 	rts
@@ -23950,7 +23966,7 @@ loc_11474:
 loc_11496:
 	movem.l	(sp)+,d4/a0-a1
 	rts
-; END OF FUNCTION CHUNK	FOR j_loc_DF22
+; END OF FUNCTION CHUNK	FOR j_Initialize_EvanescShooterObjectSlots
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -23984,7 +24000,7 @@ sub_114C0:
 	bsr.w	sub_11530
 	move.w	#8,-(sp)
 	jsr	(j_Hibernate_Object).w
-	bsr.w	sub_11542
+	bsr.w	EraseBlockFromLevelLayout
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_114C0
 
@@ -24018,27 +24034,30 @@ loc_1152C:
 
 
 sub_11530:
-	move.l	($FFFFF8B6).w,a0
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
 	move.w	d0,(a1)
 	move.w	d1,(a0)+
 	move.w	d2,(a0)+
 	move.w	d0,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 	rts
 ; End of function sub_11530
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
-
-sub_11542:
+; d1: x pos
+; d2: y pos
+; a1: pointer into Level_Layout
+; ---------------------------------------------------------------------------
+;sub_11542:
+EraseBlockFromLevelLayout:
 	move.w	d2,d0
 	add.w	d0,d0
 	lea	($FFFF4BB8).l,a0
 	move.w	(a0,d0.w),a0
 	addi.l	#$FF0000,a0
 	moveq	#0,d0
-	move.b	(a0,d1.w),d0
+	move.b	(a0,d1.w),d0	; skin(?) of cell entry in Level_Layout
 	move.w	d1,-(sp)
 	move.w	(Foreground_theme).w,d1
 	add.w	d1,d1
@@ -24046,18 +24065,18 @@ sub_11542:
 	move.l	(LnkTo_ThemeCollision_Index).l,a0
 	move.l	(a0,d1.w),a0
 	moveq	#0,d1
-	move.b	(a0,d0.w),d1
+	move.b	(a0,d0.w),d1	; collision ID of cell
 	ror.w	#4,d1
-	or.w	d1,d0
+	or.w	d1,d0	; lower 8 bits: skin, upper 4: collision
 	move.w	(sp)+,d1
-	move.l	($FFFFF8B6).w,a0
-	move.w	d0,(a1)
-	move.w	d1,(a0)+
-	move.w	d2,(a0)+
-	move.w	d0,(a0)+
-	move.l	a0,($FFFFF8B6).w
+	move.l	(FGUpdateQueueCell_NextSlot).w,a0
+	move.w	d0,(a1)	; update cell entry in Level_Layout with collision
+	move.w	d1,(a0)+	; x pos
+	move.w	d2,(a0)+	; y pos
+	move.w	d0,(a0)+	; updated cell value
+	move.l	a0,(FGUpdateQueueCell_NextSlot).w
 	rts
-; End of function sub_11542
+; End of function EraseBlockFromLevelLayout
 
 ; ---------------------------------------------------------------------------
 ; filler
@@ -24163,7 +24182,7 @@ Load_InGame:
 	jsr	(j_Initialize_Platforms).w
 	jsr	(j_sub_28FC).w
 	jsr	(j_sub_44B0).w
-	jsr	(j_sub_6526).w
+	jsr	(j_Init_Timer_and_Bonus_Flags).w
 	jsr	(j_StopMusic).l
 	move.l	#$F,-(sp)
 	jsr	(sub_E133C).l
@@ -24306,7 +24325,8 @@ loc_11B9A:
 	move.w	d1,(Level_Special_Effects).w
 	andi.w	#$F,d0
 	move.w	d0,(Background_theme).w
-	move.w	#%1010101000,d1	; bitmask telling which theme uses
+	move.w	#(1<<Hills)|(1<<Desert)|(1<<Mountain)|(1<<Forest),d1
+	;move.w	#%1010101000,d1	; bitmask telling which theme uses
 	btst	d0,d1		; which BG format
 	sne	(Background_format).w
 	beq.s	loc_11BD2
@@ -24445,12 +24465,12 @@ loc_11D0A:
 
 loc_11D0C:
 	move.l	(a0)+,a1	; background tiles
-	bsr.w	sub_1280A
+	bsr.w	Load_BackgroundMappings
 	move.l	(LnkTo_ThemeMappings_Index).l,a1
 	move.l	(a1,d7.w),(Addr_ThemeMappings).w
 	move.l	(a0)+,a1	; enemy	layout
-	move.l	(a1)+,($FFFFF8F6).w
-	move.l	a1,($FFFFF8F2).w
+	move.l	(a1)+,(Addr_EnemyLayout).w
+	move.l	a1,(Addr_EnemyLayoutHeader).w
 	move.l	(LnkTo_unk_7B8DC).l,a1
 	lea	(Block_Mappings).l,a2
 	moveq	#0,d1
@@ -24513,7 +24533,7 @@ loc_11DAC:
 	lea	Pal_12D26(pc),a1
 
 loc_11DB0:
-	lea	($FFFF4E5A).l,a2
+	lea	(Palette_Buffer+$2).l,a2
 	moveq	#$E,d1
 
 -	; loop to copy foreground palette into palette RAM
@@ -24566,10 +24586,10 @@ loc_11E12:
 
 loc_11E16:
 	move.w	(a1)+,(Palette_Buffer).l
-	lea	($FFFF4E8A).l,a2
+	lea	(Palette_Buffer+$32).l,a2
 	moveq	#6,d1
 
--	; loop to copy foreground palette into palette RAM
+-	; loop to copy background palette into palette RAM
 	move.w	(a1)+,(a2)+
 	dbf	d1,-
 
@@ -24620,7 +24640,7 @@ loc_11EA2:
 	bne.s	loc_11EC4
 	lea	Palette_Permutation_BGHill_alt(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
-	move.l	$34(a1),a0
+	move.l	ThemeArtBack_HillAlt-ThemeArtBack_Index(a1),a0
 	move.w	#$F800,d0
 	bsr.w	DecompressToRAM
 
@@ -24629,14 +24649,14 @@ loc_11EC4:
 	bne.s	loc_11EFA
 	lea	Palette_Permutation_Identity(pc),a3
 	move.l	(LnkTo_ThemeArtBack_Index).l,a1
-	move.l	$2C(a1),a0
-	cmpi.w	#Storm,(Level_Special_Effects).w
+	move.l	ThemeArtBack_CaveAlt-ThemeArtBack_Index(a1),a0
+	cmpi.w	#WeatherID_Storm,(Level_Special_Effects).w
 	beq.s	loc_11EEA
-	cmpi.w	#Storm_and_Hail,(Level_Special_Effects).w
+	cmpi.w	#WeatherID_Storm_and_Hail,(Level_Special_Effects).w
 	bne.s	loc_11EF2
 
 loc_11EEA:
-	move.l	$30(a1),a0
+	move.l	ThemeArtBack_MountainLightning-ThemeArtBack_Index(a1),a0
 	lea	Palette_Permutation_BGMountain(pc),a3
 
 loc_11EF2:
@@ -24658,9 +24678,9 @@ loc_11EFA:
 	bsr.w	sub_12B8C
 	bsr.w	sub_12C24
 	jsr	(j_sub_F06A).l
-	jsr	(j_loc_DF22).l
+	jsr	(j_Initialize_EvanescShooterObjectSlots).l
 	bsr.w	Init_SpriteAttr_HUD
-	jsr	(sub_3F57A).l
+	jsr	(j_Clear_DiamondPowerObjectRAM).l
 	move.l	#vdpComm($E000,VRAM,WRITE),4(a6)
 	move.w	#$7FF,d0
 
@@ -24749,8 +24769,9 @@ unk_1201E:
 	dc.b   bgm_Cave
 	dc.b   bgm_Forest
 	dc.b   bgm_City
-	dc.b   0
+	align 2
 ; ---------------------------------------------------------------------------
+ANIART_SHORE_SIZE = $2E0
 
 loc_1202A:
 	move.l	#LnkTo_unk_9784A,a0
@@ -24758,7 +24779,7 @@ loc_1202A:
 	addq.l	#2,d2		; d2 = DMA source address
 	jsr	(j_Stop_z80).l
 	lsr.l	#1,d2
-	move.l	#$93709401,4(a6)	; DMA length: $2E0
+	move.l	#(($9300|((ANIART_SHORE_SIZE&$1FE)>>1))<<16)|($9400|(ANIART_SHORE_SIZE>>9)),4(a6)	; DMA length
 	move.w	#$9500,d4
 	move.b	d2,d4
 	move.w	d4,4(a6)
@@ -25681,12 +25702,10 @@ loc_127F8:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_1280A:
-; FUNCTION CHUNK AT 000128BA SIZE 000000F4 BYTES
-
+;sub_1280A
+Load_BackgroundMappings:
 	tst.b	(Background_format).w
-	bne.w	loc_128BA
+	bne.w	Load_BackgroundMappings_Layered
 	cmpi.w	#$8000,(a1)
 	beq.w	loc_12824
 	movem.l	d5-d7,-(sp)
@@ -25698,8 +25717,8 @@ sub_1280A:
 loc_12824:
 	movem.l	d5-d7,-(sp)
 	addq.w	#2,a1
-	move.w	(a1)+,d5
-	move.w	(a1)+,d6
+	move.w	(a1)+,d5	; x offset when copying from other level's layout
+	move.w	(a1)+,d6	; y offset when copying from other level's layout
 	move.l	(a1),a1
 
 loc_12830:
@@ -25709,14 +25728,14 @@ loc_12830:
 	sub.w	d5,d2
 	move.w	(a1)+,d3
 	sub.w	d6,d3
-	bsr.w	sub_12848
+	bsr.w	Load_BackgroundChunk
 	bra.s	loc_12830
 ; ---------------------------------------------------------------------------
 
 loc_12842:
 	movem.l	(sp)+,d5-d7
 	rts
-; End of function sub_1280A
+; End of function Load_BackgroundMappings
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -25728,7 +25747,8 @@ loc_12842:
 	; Background_theme = Background theme
 	; Background_width = background (buffer) width
 	; $FFFF87B2 = background tile buffer
-sub_12848:
+;sub_12848
+Load_BackgroundChunk:
 	movem.l	d5-d6,-(sp)
 	move.w	d2,d7
 	move.w	d3,d6
@@ -25741,12 +25761,12 @@ sub_12848:
 	lea	($FFFF87B2).w,a2
 	muls.w	(Background_width).w,d3
 	add.w	d3,a2
-	add.w	d2,a2
+	add.w	d2,a2	; destination address in bg buffer
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	(a3,d0.w),a3
-	move.w	(a3)+,d2
-	move.w	(a3)+,d3
+	move.l	(a3,d0.w),a3	; address to chunk definition
+	move.w	(a3)+,d2	; x size of chunk
+	move.w	(a3)+,d3	; y size of chunk
 	subq.w	#1,d2
 	subq.w	#1,d3
 
@@ -25764,7 +25784,7 @@ loc_1288A:
 	bmi.s	loc_128A0
 	cmp.w	(Background_height).w,d6
 	bge.s	loc_128A0
-	move.b	(a3),(a4)
+	move.b	(a3),(a4)	; if within bounds, copy tile over
 
 loc_128A0:
 	addq.w	#1,a3
@@ -25776,25 +25796,26 @@ loc_128A0:
 	dbf	d3,loc_12884
 	movem.l	(sp)+,d5-d6
 	rts
-; End of function sub_12848
+; End of function Load_BackgroundChunk
 
 ; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_1280A
+; START	OF FUNCTION CHUNK FOR Load_BackgroundMappings
 
-loc_128BA:
+;loc_128BA:
+Load_BackgroundMappings_Layered:
 	move.l	a0,-(sp)
 	move.l	(LnkTo_off_7B3E4).l,a3
 	move.w	(Background_theme).w,d0
 	add.w	d0,d0
 	add.w	d0,d0
 	move.l	(a3,d0.w),a3
-	cmpi.w	#7,(Background_theme).w	; mountain
+	cmpi.w	#Mountain,(Background_theme).w
 	beq.s	loc_12910
-	cmpi.w	#3,(Background_theme).w	; hill
+	cmpi.w	#Hills,(Background_theme).w
 	beq.w	loc_1295E
-	cmpi.w	#5,(Background_theme).w	; desert
+	cmpi.w	#Desert,(Background_theme).w
 	beq.w	loc_12988
-	;forest
+	;Forest
 	move.w	#$780,d0
 	move.l	(a3)+,a0
 	lea	($FFFF87B2).w,a1
@@ -25869,17 +25890,17 @@ loc_12988:	; desert
 	bsr.w	EniDec
 	move.l	(sp)+,a0
 	rts
-; END OF FUNCTION CHUNK	FOR sub_1280A
+; END OF FUNCTION CHUNK	FOR Load_BackgroundMappings
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_129AE:
-	cmpi.w	#9,(Background_theme).w
+	cmpi.w	#Forest,(Background_theme).w
 	bne.s	return_129CC
-	move.w	($FFFF4E88).l,d0
-	move.w	($FFFF4E8C).l,($FFFF4E88).l
-	move.w	d0,($FFFF4E8C).l
+	move.w	(Palette_Buffer+$30).l,d0
+	move.w	(Palette_Buffer+$34).l,(Palette_Buffer+$30).l
+	move.w	d0,(Palette_Buffer+$34).l
 
 return_129CC:
 	rts
@@ -26070,7 +26091,7 @@ loc_12E96:
 	bmi.w	loc_12ED8
 	subq.w	#2,d3
 	lea	Pal_12EEC+6(pc,d0.w),a0
-	lea	($FFFF4E5C).l,a1
+	lea	(Palette_Buffer+$4).l,a1
 	moveq	#$A,d0
 
 loc_12ED2:
@@ -27425,7 +27446,7 @@ Pal_1408A:
 Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
-	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced keyboard key (Enter) starty
+	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entry
 	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_140BE
 	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1
@@ -27448,7 +27469,7 @@ loc_140D2:
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
 	lea	Pal_1408A(pc),a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#7,d0
 
 loc_140EE:
@@ -27641,17 +27662,18 @@ Init_SpriteAttr_HUD:
 ; End of function Init_SpriteAttr_HUD
 
 ; ---------------------------------------------------------------------------
+; Default parameters for HUD elements (first two entries are x and y pos)
 unk_1427C:
-	sprite_attr $1A1, $8D, 1, 1, $8231, $1
-	sprite_attr $190, $90, 0, 0, $00BC, $2
-	sprite_attr $198, $90, 0, 0, $00BC, $3
-	sprite_attr  $88, $90, 0, 0, $00BC, $4
-	sprite_attr  $90, $90, 0, 0, $86C4, $5
-	sprite_attr  $95, $90, 0, 0, $00BC, $6
-	sprite_attr  $9D, $90, 0, 0, $00BC, $7
-	sprite_attr $1A0, $A2, 1, 1, $86F2, $8
-	sprite_attr $190, $A4, 0, 0, $00BC, $9
-	sprite_attr $198, $A4, 0, 0, $00BC, $A
+	sprite_attr $1A1, $8D, 1, 1, $8231, $1	; ankh sumbol
+	sprite_attr $190, $90, 0, 0, $00BC, $2	; number lives
+	sprite_attr $198, $90, 0, 0, $00BC, $3	; x in front of ankh
+	sprite_attr  $88, $90, 0, 0, $00BC, $4	; minutes
+	sprite_attr  $90, $90, 0, 0, $86C4, $5	; colon
+	sprite_attr  $95, $90, 0, 0, $00BC, $6	; seconds upper digit
+	sprite_attr  $9D, $90, 0, 0, $00BC, $7	; seconds lower digit
+	sprite_attr $1A0, $A2, 1, 1, $86F2, $8	; diamond symbol
+	sprite_attr $190, $A4, 0, 0, $00BC, $9	; number diamonds
+	sprite_attr $198, $A4, 0, 0, $00BC, $A	; x in front of diamond
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -27890,7 +27912,7 @@ Palette_Permutation_BGHill_alt:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; Make indoor rubber block art and write it to tile $2F3-$2FA
 sub_144DA:
 	move.w	(Foreground_theme).w,d0
 	moveq	#0,d1
@@ -27916,7 +27938,7 @@ loc_14512:
 	move.l	(a2)+,(a1)+
 	dbf	d2,loc_14512
 	moveq	#7,d2
-	move.w	#$26E,d3
+	move.w	#$26E,d3	; rubber block VRAM address
 
 loc_1451E:
 	move.w	d3,d0
@@ -27947,7 +27969,7 @@ loc_14552:
 	dbf	d1,loc_1453E
 	move.l	d5,(a1)+
 	dbf	d0,loc_14538
-	move.l	#vdpComm($5E60,VRAM,WRITE),4(a6)
+	move.l	#vdpComm($5E60,VRAM,WRITE),4(a6)	; rubber block VRAM address (duplicate)
 	lea	($FFFF78B2).l,a0
 	moveq	#$3F,d0
 
@@ -27958,6 +27980,8 @@ loc_1456E:
 ; End of function sub_144DA
 
 ; ---------------------------------------------------------------------------
+; ID of some foreground block that is used for indoor areas.
+; Rubber block is drawn onto this to make indoor rubber block.
 unk_14576:
 	dc.b $10
 	dc.b  $A
@@ -27970,7 +27994,7 @@ unk_14576:
 	dc.b   1
 	dc.b $C5 ; ≈
 	dc.b $9A ; ö
-	dc.b   0
+	align 2
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -28332,7 +28356,7 @@ word_14710:
 	dc.w   $96
 ; ---------------------------------------------------------------------------
 
-Lava_Geyser:
+Obj_Lava_Geyser:
 	move.w	$16(a5),d0	;x
 	move.w	$18(a5),d1	;y
 	move.w	$1A(a5),d2	;height ($8000 = small fireball)
@@ -28434,8 +28458,8 @@ loc_1482E:
 ; ---------------------------------------------------------------------------
 
 loc_1483A:
-	moveq	#$1E,d0
-	jsr	(sub_E132C).l
+	moveq	#sfx_Lava_Geyser,d0
+	jsr	(j_PlaySound2).l
 	move.w	#$3C,-(sp)
 	jsr	(j_Hibernate_Object).w
 	bra.w	loc_1478E
@@ -28747,11 +28771,11 @@ loc_14B2A:
 	subq.w	#1,d0
 	bne.s	loc_14B2A
 	moveq	#5,d0
-	move.w	($FFFF4E86).l,d5
-	move.w	($FFFF4E84).l,($FFFF4E86).l
-	move.w	($FFFF4E82).l,($FFFF4E84).l
-	move.w	($FFFF4E80).l,($FFFF4E82).l
-	move.w	d5,($FFFF4E80).l
+	move.w	(Palette_Buffer+$2E).l,d5
+	move.w	(Palette_Buffer+$2C).l,(Palette_Buffer+$2E).l
+	move.w	(Palette_Buffer+$2A).l,(Palette_Buffer+$2C).l
+	move.w	(Palette_Buffer+$28).l,(Palette_Buffer+$2A).l
+	move.w	d5,(Palette_Buffer+$28).l
 	bra.s	loc_14B2A
 ; End of function Animation_Geyser
 
@@ -28848,7 +28872,7 @@ loc_14C5E:
 loc_14C6A:
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Lava_Geyser,4(a0)
+	move.l	#Obj_Lava_Geyser,4(a0)
 	move.l	(a4)+,$16(a0)
 	move.w	(a4)+,$1A(a0)
 	dbf	d0,loc_14C6A
@@ -28857,7 +28881,7 @@ loc_14C6A:
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
 	move.l	(LnkTo_Pal_7B8AC).l,a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
@@ -28893,7 +28917,7 @@ loc_14CEC:
 	move.l	(LnkTo_Pal_7B8CC).l,a0
 
 loc_14CF2:
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
@@ -29106,6 +29130,7 @@ ArtComp_TitleCard_mountain:	binclude    "theme/titlecard/artcomp/mountain.bin"
 ArtComp_TitleCard_cave:		binclude    "theme/titlecard/artcomp/cave.bin"
 ArtComp_TitleCard_forest:	binclude    "theme/titlecard/artcomp/forest.bin"
 ArtComp_TitleCard_city:		binclude    "theme/titlecard/artcomp/city.bin"
+	align 2
 TitleCardArt_Index:
 	dc.l	0
 	dc.l ArtComp_TitleCard_sky
@@ -29287,7 +29312,7 @@ loc_1AB26:
 	move.w	#$8120,d0
 	jsr	(j_DecompressToVRAM).l
 	lea	Pal_19C48(pc),a0
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#$F,d0
 
 loc_1AB40:
@@ -29432,14 +29457,14 @@ loc_1AC70:
 	move.l	#$3000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#1,$11(a3)
+	move.b	#1,palette_line(a3)
 	clr.w	d7
 	move.b	$44(a5),d7
 	move.w	d7,d6
 	subi.b	#$61,d7
 	add.w	d7,d7
-	move.w	#$409,$24(a3)
-	move.w	off_1AC2A(pc,d7.w),$22(a3)
+	move.w	#$409,vram_tile(a3)
+	move.w	off_1AC2A(pc,d7.w),addroffset_sprite(a3)
 	move.w	$46(a5),d0
 	move.w	$48(a5),d1
 	cmpi.w	#$83,d6
@@ -29488,8 +29513,8 @@ loc_1ACF8:
 	move.w	d7,d6
 
 loc_1ACFE:
-	move.w	d5,$1A(a3)
-	move.w	d6,$1E(a3)
+	move.w	d5,x_pos(a3)
+	move.w	d6,y_pos(a3)
 	move.w	d0,d7
 	sub.w	d5,d7
 	ext.l	d7
@@ -29508,16 +29533,16 @@ loc_1ACFE:
 
 loc_1AD2A:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	cmp.w	d7,d0
 	beq.s	loc_1AD3A
-	add.l	d2,$1A(a3)
+	add.l	d2,x_pos(a3)
 
 loc_1AD3A:
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	cmp.w	d7,d1
 	beq.s	loc_1AD2A
-	add.l	d3,$1E(a3)
+	add.l	d3,y_pos(a3)
 	bra.s	loc_1AD2A
 ; ---------------------------------------------------------------------------
 
@@ -29546,23 +29571,23 @@ loc_1AD80:
 	move.l	#$3000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#1,$11(a3)
+	move.b	#1,palette_line(a3)
 	clr.w	d7
 	move.b	#$80,d7
 	subi.b	#$61,d7
 	add.w	d7,d7
-	move.w	#$409,$24(a3)
+	move.w	#$409,vram_tile(a3)
 	lea	off_1AC2A(pc),a4
-	move.w	(a4,d7.w),$22(a3)
+	move.w	(a4,d7.w),addroffset_sprite(a3)
 	move.w	#$60,d0
-	move.w	#$FFD0,$1A(a3)
-	move.w	#$C0,$1E(a3)
+	move.w	#$FFD0,x_pos(a3)
+	move.w	#$C0,y_pos(a3)
 	move.l	#$3000004,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	st	$13(a1)
 	move.b	#1,$11(a1)
 	move.b	#$81,d7
-	tst.b	($FFFFFC39).w
+	tst.b	(Current_player).w
 	beq.s	loc_1ADEA
 	addi.b	#1,d7
 
@@ -29578,9 +29603,9 @@ loc_1ADEA:
 
 loc_1AE10:
 	jsr	(j_Hibernate_Object_1Frame).w
-	cmp.w	$1A(a3),d0
+	cmp.w	x_pos(a3),d0
 	beq.s	loc_1AE20
-	addi.w	#4,$1A(a3)
+	addi.w	#4,x_pos(a3)
 
 loc_1AE20:
 	cmp.w	$1A(a1),d1
@@ -29592,7 +29617,7 @@ loc_1AE20:
 loc_1AE2E:
 
 	jsr	(j_Hibernate_Object_1Frame).w
-	bclr	#Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
+	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_1AE2E
 	move.w	#$C,(Game_Mode).w
 	st	($FFFFFBCE).w
@@ -29945,7 +29970,7 @@ loc_1B1A4:
 
 loc_1B1E8:
 	bsr.w	sub_1B222
-	st	($FFFFFB4A).w
+	st	(Background_NoScrollFlag).w
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1BAB0,4(a0)
@@ -29992,22 +30017,19 @@ loc_1B258:
 	bsr.w	sub_1B532
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1BAC2,4(a0)
+	move.l	#Obj_TitleMenu,4(a0)	; Title menu object
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_1B5BC,4(a0)
+	move.l	#Obj_TitleTextKid,4(a0)	; Object for Kid text on title screen
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_1B6A0,4(a0)
+	move.l	#Obj_TitleTextChameleon,4(a0)	; Object loading Chameleon text on title screen
 	rts
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_1B2A4:
-
-; FUNCTION CHUNK AT 0001C4B2 SIZE 00000038 BYTES
-
 	move.w	#$1820,d0
 	move.l	#byte_2A756,a0
 	jsr	(j_DecompressToVRAM).l
@@ -30216,7 +30238,7 @@ loc_1B45A:
 	move.w	#$39,-(sp)
 	jsr	(j_Hibernate_Object).w
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	moveq	#$3F,d0
 
 loc_1B470:
@@ -30228,7 +30250,7 @@ loc_1B470:
 	bsr.w	sub_1BF24
 	bsr.w	sub_1B532
 	lea	(Palette_Buffer).l,a0
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	moveq	#$3F,d0
 
 loc_1B494:
@@ -30368,50 +30390,50 @@ Load_TitleArt:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_1B5BC:
+;sub_1B5BC:
+Obj_TitleTextKid:
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	#$A5,$1E(a3)
+	move.w	#$A5,y_pos(a3)
 	bra.s	loc_1B5E4
 ; ---------------------------------------------------------------------------
 
 loc_1B5CE:
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	#6,$2A(a3)
-	move.w	#$FFA3,$1E(a3)
+	move.w	#6,y_vel(a3)
+	move.w	#$FFA3,y_pos(a3)
 
 loc_1B5E4:
-	move.b	#2,$11(a3)
-	move.w	#$2E,$1A(a3)
-	move.w	#$4D3,$24(a3)
-	move.w	#(LnkTo_unk_E10FE-Data_Index),$22(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$2E,x_pos(a3)
+	move.w	#$4D3,vram_tile(a3)
+	move.w	#(LnkTo_unk_E10FE-Data_Index),addroffset_sprite(a3)
 	move.w	#$2A,d0
 	st	$13(a3)
 	move.w	#$1E,-(sp)
 	jsr	(j_Hibernate_Object).w
-	st	$14(a3)
+	st	is_moved(a3)
 
 loc_1B610:
 	jsr	(j_Hibernate_Object_1Frame).w
 	dbf	d0,loc_1B610
-	sf	$14(a3)
+	sf	is_moved(a3)
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
 	bsr.w	sub_1B652
-	move.w	#$2E,$1A(a3)
-	move.w	#$8C,$1E(a3)
+	move.w	#$2E,x_pos(a3)
+	move.w	#$8C,y_pos(a3)
 	move.w	#$A,-(sp)
 	jsr	(j_Hibernate_Object).w
 	bsr.w	sub_1B652
-	move.w	#$5A,$1A(a3)
-	move.w	#$98,$1E(a3)
+	move.w	#$5A,x_pos(a3)
+	move.w	#$98,y_pos(a3)
 
 loc_1B64C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bra.s	loc_1B64C
-; End of function sub_1B5BC
+; End of function Obj_TitleTextKid
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -30421,11 +30443,11 @@ sub_1B652:
 	move.l	#$2010000,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,a3
-	move.b	#2,$11(a3)
-	move.w	#$2E,$1A(a3)
-	move.w	#$40,$1E(a3)
-	move.w	#$54C,$24(a3)
-	st	$14(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$2E,x_pos(a3)
+	move.w	#$40,y_pos(a3)
+	move.w	#$54C,vram_tile(a3)
+	st	is_moved(a3)
 	st	$13(a3)
 	move.l	#stru_1B68A,d7
 	jsr	(j_Init_Animation).w
@@ -30442,8 +30464,8 @@ stru_1B68A:
 	dc.b   2
 	dc.b $15
 ; ---------------------------------------------------------------------------
-
-loc_1B6A0:
+;loc_1B6A0:
+Obj_TitleTextChameleon:
 	moveq	#0,d2
 
 loc_1B6A2:
@@ -30879,7 +30901,7 @@ loc_1BA60:
 	sf	($FFFFFBCE).w
 	moveq	#$3F,d0
 	move.w	#$AAA,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_1BA82:
 	move.w	d1,(a0)+
@@ -30914,8 +30936,8 @@ loc_1BAB4:
 	dbf	d0,loc_1BAB4
 	bra.s	loc_1BAEA
 ; ---------------------------------------------------------------------------
-
-loc_1BAC2:
+;loc_1BAC2:
+Obj_TitleMenu:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1BB10,4(a0)
@@ -30944,10 +30966,10 @@ loc_1BB10:
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#2,$11(a3)
-	move.w	#$94,$1E(a3)
-	move.w	#$4BD,$24(a3)
-	move.w	#(LnkTo_unk_E0ED6-Data_Index),$22(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$94,y_pos(a3)
+	move.w	#$4BD,vram_tile(a3)
+	move.w	#(LnkTo_unk_E0ED6-Data_Index),addroffset_sprite(a3)
 
 loc_1BB36:
 	move.w	#$10C,d0
@@ -30958,7 +30980,7 @@ loc_1BB36:
 loc_1BB44:
 	lsl.w	#3,d1
 	sub.w	d1,d0
-	move.w	d0,$1A(a3)
+	move.w	d0,x_pos(a3)
 	jsr	(j_Hibernate_Object_1Frame).w
 	bra.s	loc_1BB36
 ; ---------------------------------------------------------------------------
@@ -30977,11 +30999,11 @@ loc_1BB52:
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#2,$11(a3)
-	move.w	#$28,$1A(a3)
-	move.w	#$30,$1E(a3)
-	move.w	#$54B,$24(a3)
-	move.w	#(LnkTo_unk_E1196-Data_Index),$22(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$28,x_pos(a3)
+	move.w	#$30,y_pos(a3)
+	move.w	#$54B,vram_tile(a3)
+	move.w	#(LnkTo_unk_E1196-Data_Index),addroffset_sprite(a3)
 	move.w	#$280,d0
 	moveq	#0,d1
 
@@ -31053,7 +31075,7 @@ loc_1BBF6:
 loc_1BC0E:
 	move.w	d1,d2
 	add.w	d2,d2
-	move.w	word_1BC20(pc,d2.w),$1E(a3)
+	move.w	word_1BC20(pc,d2.w),y_pos(a3)
 	dbf	d0,Title_InputLoop
 	bra.w	loc_1BB02
 ; ---------------------------------------------------------------------------
@@ -31229,20 +31251,20 @@ loc_1BE3C:
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#2,$11(a3)
+	move.b	#2,palette_line(a3)
 	move.l	$44(a5),a0
-	move.w	(a0)+,$22(a3)
-	move.w	(a0)+,$1A(a3)
-	move.w	(a0)+,$1E(a3)
-	move.w	(a0)+,$26(a3)
-	move.w	(a0)+,$2A(a3)
+	move.w	(a0)+,addroffset_sprite(a3)
+	move.w	(a0)+,x_pos(a3)
+	move.w	(a0)+,y_pos(a3)
+	move.w	(a0)+,x_vel(a3)
+	move.w	(a0)+,y_vel(a3)
 	move.w	(a0)+,d0
-	move.w	#$26C,$24(a3)
-	st	$14(a3)
+	move.w	#$26C,vram_tile(a3)
+	st	is_moved(a3)
 
 loc_1BE74:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$4000,$2A(a3)
+	addi.l	#$4000,y_vel(a3)
 	dbf	d0,loc_1BE74
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -31251,28 +31273,28 @@ loc_1BE88:
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#3,$11(a3)
-	move.b	#1,$10(a3)
-	move.w	#$30,$1A(a3)
-	move.w	#$70,$1E(a3)
+	move.b	#3,palette_line(a3)
+	move.b	#1,priority(a3)
+	move.w	#$30,x_pos(a3)
+	move.w	#$70,y_pos(a3)
 	tst.b	($FFFFFC82).w
 	bne.s	loc_1BEBE
-	subq.w	#6,$1A(a3)
-	addq.w	#4,$1E(a3)
+	subq.w	#6,x_pos(a3)
+	addq.w	#4,y_pos(a3)
 	bra.s	loc_1BECE
 ; ---------------------------------------------------------------------------
 
 loc_1BEBE:
 	cmpi.b	#1,($FFFFFC82).w
 	beq.s	loc_1BECE
-	subq.w	#6,$1A(a3)
-	addq.w	#4,$1E(a3)
+	subq.w	#6,x_pos(a3)
+	addq.w	#4,y_pos(a3)
 
 loc_1BECE:
-	move.l	#$2F000,$26(a3)
-	move.l	#-$8F000,$2A(a3)
-	move.w	#$5EB,$24(a3)
-	st	$14(a3)
+	move.l	#$2F000,x_vel(a3)
+	move.l	#-$8F000,y_vel(a3)
+	move.w	#$5EB,vram_tile(a3)
+	st	is_moved(a3)
 	move.w	#(LnkTo_unk_E10B6-Data_Index),d0
 	tst.b	($FFFFFC82).w
 	beq.s	loc_1BF02
@@ -31282,14 +31304,14 @@ loc_1BECE:
 	move.w	#(LnkTo_unk_E10BE-Data_Index),d0
 
 loc_1BF02:
-	move.w	d0,$22(a3)
+	move.w	d0,addroffset_sprite(a3)
 	move.w	#$1C,d0
 
 loc_1BF0A:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$9000,$2A(a3)
+	addi.l	#$9000,y_vel(a3)
 	dbf	d0,loc_1BF0A
-	sf	$14(a3)
+	sf	is_moved(a3)
 
 loc_1BF1E:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -31354,8 +31376,11 @@ loc_1BF8A:
 ; End of function sub_1BF24
 
 ; ---------------------------------------------------------------------------
-off_1BFB0:	dc.l unk_2F7D0
+; Each entry is a pointer to Enigma compressed mappings and width in tiles.
+off_1BFB0:
+	dc.l unk_2F7D0
 	dc.w $12
+	; Red Stealth
 	dc.l unk_2EACE
 	dc.w $12
 	dc.l unk_2EB32
@@ -31370,6 +31395,7 @@ off_1BFB0:	dc.l unk_2F7D0
 	dc.w $12
 	dc.l unk_2EF2C
 	dc.w $11
+	; Maniaxe
 	dc.l unk_2F306
 	dc.w $10
 	dc.l unk_2F374
@@ -31384,6 +31410,7 @@ off_1BFB0:	dc.l unk_2F7D0
 	dc.w $10
 	dc.l unk_2F76A
 	dc.w $E
+	; Juggernaut
 	dc.l unk_2EF92
 	dc.w $10
 	dc.l unk_2EFFE
@@ -31640,7 +31667,7 @@ byte_1C1F4:	dc.b 0
 sub_1C204:
 	moveq	#$3F,d0
 	move.w	($FFFFFBCC).w,d1
-	lea	($FFFF4F58).l,a0
+	lea	(Palette_Buffer_3).l,a0
 
 loc_1C210:
 	move.w	d1,(a0)+
@@ -31760,7 +31787,7 @@ loc_1C4BE:
 	dbf	d0,loc_1C4BE
 	tst.b	($FFFFFC82).w
 	beq.s	return_1C4E8
-	lea	($FFFF4E72).l,a1
+	lea	(Palette_Buffer+$1A).l,a1
 	lea	Pal_1C466(pc),a0
 	cmpi.b	#1,($FFFFFC82).w
 	beq.s	loc_1C4E0
@@ -31781,7 +31808,7 @@ return_1C4E8:
 
 
 sub_1C4EA:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C28A(pc),a0
 	moveq	#$32,d0
 
@@ -31796,7 +31823,7 @@ loc_1C4F6:
 
 
 sub_1C4FE:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C2F0(pc),a0
 	moveq	#$22,d0
 
@@ -31811,7 +31838,7 @@ loc_1C50A:
 
 
 sub_1C512:
-	lea	($FFFF4ED8).l,a1
+	lea	(Palette_Buffer_2).l,a1
 	lea	Pal_1C346(pc),a0
 	moveq	#$3F,d0
 
@@ -31820,7 +31847,7 @@ loc_1C51E:
 	dbf	d0,loc_1C51E
 	tst.b	($FFFFFC82).w
 	beq.s	return_1C548
-	lea	($FFFF4F3A).l,a1
+	lea	(Palette_Buffer_2+$62).l,a1
 	lea	Pal_1C3C6(pc),a0
 	cmpi.b	#1,($FFFFFC82).w
 	beq.s	loc_1C540
@@ -31859,8 +31886,8 @@ sub_1C54A:
 sub_1C572:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	#$3A,$1A(a3)
-	move.w	#(LnkTo_unk_E10A6-Data_Index),$22(a3)
+	move.w	#$3A,x_pos(a3)
+	move.w	#(LnkTo_unk_E10A6-Data_Index),addroffset_sprite(a3)
 	moveq	#1,d0
 	bra.s	loc_1C5A4
 ; ---------------------------------------------------------------------------
@@ -31868,21 +31895,21 @@ sub_1C572:
 loc_1C58C:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.w	#$DE,$1A(a3)
-	move.w	#(LnkTo_unk_E10AE-Data_Index),$22(a3)
+	move.w	#$DE,x_pos(a3)
+	move.w	#(LnkTo_unk_E10AE-Data_Index),addroffset_sprite(a3)
 	moveq	#-1,d0
 
 loc_1C5A4:
 	st	$13(a3)
-	move.w	#$C8,$1E(a3)
-	move.w	#$140,$24(a3)
+	move.w	#$C8,y_pos(a3)
+	move.w	#$140,vram_tile(a3)
 	moveq	#$41,d1
 	move.w	#$3C,-(sp)
 	jsr	(j_Hibernate_Object).w
 
 loc_1C5BE:
 	jsr	(j_Hibernate_Object_1Frame).w
-	add.w	d0,$1A(a3)
+	add.w	d0,x_pos(a3)
 	dbf	d1,loc_1C5BE
 
 loc_1C5CA:
@@ -31993,7 +32020,7 @@ loc_1C7D2:
 ; ---------------------------------------------------------------------------
 
 loc_1C7DC:
-	cmp.b	(off_20).w,d6
+	cmp.b	(off_20).w,d6	; This is likely a programming error and they forgot the # sign
 	bne.s	loc_1C7E6
 	move.b	#$6D,d6
 
@@ -32047,7 +32074,7 @@ loc_1C82C:
 	move.w	#$EEE,(a1)
 
 loc_1C84E:
-	lea	($FFFF4E78).l,a1
+	lea	(Palette_Buffer+$20).l,a1
 	moveq	#$2F,d0
 
 loc_1C856:
@@ -32274,7 +32301,7 @@ OptionScreen_Input:
 
 ; FUNCTION CHUNK AT 0001CBC4 SIZE 00000014 BYTES
 
-	bclr	#Up,(Ctrl_Pressed).w
+	bclr	#Button_Up,(Ctrl_Pressed).w
 	beq.w	loc_1CBF2
 	tst.w	(Options_Selected_Option).w
 	beq.w	loc_1CBF2
@@ -32283,7 +32310,7 @@ OptionScreen_Input:
 
 loc_1CBF2:
 				; OptionScreen_Input+Ej
-	bclr	#Down,(Ctrl_Pressed).w
+	bclr	#Button_Down,(Ctrl_Pressed).w
 	beq.w	loc_1CC0E
 	cmpi.w	#3,(Options_Selected_Option).w
 	beq.w	loc_1CC0E
@@ -32292,7 +32319,7 @@ loc_1CBF2:
 
 loc_1CC0E:
 				; OptionScreen_Input+2Aj
-	bclr	#Right,(Ctrl_Pressed).w
+	bclr	#Button_Left,(Ctrl_Pressed).w
 	beq.w	loc_1CC2A
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -32309,7 +32336,7 @@ loc_1CC22:
 ; ---------------------------------------------------------------------------
 
 loc_1CC2A:
-	bclr	#Left,(Ctrl_Pressed).w
+	bclr	#Button_Right,(Ctrl_Pressed).w
 	beq.w	return_1CC86
 	move.w	(Options_Selected_Option).w,d7
 	add.w	d7,d7
@@ -33221,7 +33248,7 @@ loc_1D270:
 	lea	(MapEni_1E264).l,a0
 	lea	(Decompression_Buffer).l,a1
 	jsr	(j_EniDec).l
-	lea	($FFFF4E66).l,a1
+	lea	(Palette_Buffer+$E).l,a1
 	lea	Pal_1C92A(pc),a0
 	moveq	#8,d0
 
@@ -33327,7 +33354,7 @@ loc_1D418:
 	bsr.w	sub_1D7E6
 	bsr.w	sub_1D800
 	bsr.w	sub_1CDE0
-	move.l	#$EEE0EC0,($FFFF4EBA).l
+	move.l	#$EEE0EC0,(Palette_Buffer+$62).l
 	jsr	(j_Palette_to_VRAM).w
 	move.l	(Addr_PlatformLayout).w,a4
 	bsr.w	sub_1D7A8
@@ -33561,15 +33588,15 @@ loc_1D7B0:
 	beq.w	loc_1D7E0
 	move.l	(a2)+,a3
 	addi.w	#$32,d7
-	move.w	d7,$1A(a3)
+	move.w	d7,x_pos(a3)
 	moveq	#0,d7
 	move.b	(a4)+,d7
 	addi.w	#-$A0,d7
-	move.w	d7,$1E(a3)
+	move.w	d7,y_pos(a3)
 	moveq	#0,d7
 	move.b	(a4)+,d7
 	addi.w	#LnkTo_unk_E1106-Data_Index,d7
-	move.w	d7,$22(a3)
+	move.w	d7,addroffset_sprite(a3)
 	st	$13(a3)
 	bra.s	loc_1D7B0
 ; ---------------------------------------------------------------------------
@@ -33692,11 +33719,11 @@ sub_1D8B4:
 	move.l	#$1000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.b	#2,$11(a3)
-	move.w	#$3DD,$24(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.w	$48(a5),$22(a3)
+	move.b	#2,palette_line(a3)
+	move.w	#$3DD,vram_tile(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	move.w	$48(a5),addroffset_sprite(a3)
 	jsr	(j_Get_RandomNumber_byte).w
 	move.b	(V_Int_counter).w,d0
 	eor.b	d0,d7
@@ -33709,7 +33736,7 @@ sub_1D8B4:
 
 loc_1D8FA:
 	jsr	(j_Hibernate_Object_1Frame).w
-	add.l	d1,$1E(a3)
+	add.l	d1,y_pos(a3)
 	addi.l	#$800,d1
 	dbf	d0,loc_1D8FA
 	jmp	(j_Delete_CurrentObject).w
@@ -33841,13 +33868,13 @@ sub_1D9D6:
 	move.l	#$2000000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
-	move.w	#$291,$24(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.b	$48(a5),$10(a3)
+	move.w	#$291,vram_tile(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	move.b	$48(a5),priority(a3)
 	move.l	#stru_1DA0E,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_1D9D6
 
@@ -34178,7 +34205,7 @@ loc_3001E:
 	subi.w	#$20,d0
 	move.w	d0,($FFFFFAA8).w
 	move.l	d7,-(sp)
-	bsr.w	sub_3043C
+	bsr.w	BackgroundScroll_ComputeShiftData
 	move.l	(sp)+,d7
 	move.l	d7,-(sp)
 	moveq	#$1C,d6
@@ -34236,7 +34263,7 @@ loc_300BA:
 	move.l	#vdpComm($0000,VSRAM,WRITE),4(a6)
 	move.w	d0,(a6)
 	lsr.w	#2,d0
-	tst.b	($FFFFFB4A).w
+	tst.b	(Background_NoScrollFlag).w
 	beq.s	loc_300D2
 	moveq	#0,d0
 
@@ -34542,11 +34569,11 @@ loc_3038A:
 	beq.s	return_303B8
 	move.w	(Game_Mode).w,d0
 	beq.s	loc_3039C
-	addq.w	#1,($FFFFFC24).w
+	addq.w	#1,(Time_Frames).w
 
 loc_3039C:
-	bsr.w	sub_3043C
-	bsr.w	sub_304E8
+	bsr.w	BackgroundScroll_ComputeShiftData
+	bsr.w	BackgroundScroll_ComputeShiftLayers
 	tst.b	($FFFFFB49).w
 	bne.s	return_303B8
 	tst.b	(Background_format).w
@@ -34575,7 +34602,7 @@ loc_303D4:
 	move.w	4(a0),d3
 	move.l	(Addr_MapHeader).w,a0
 	move.l	$14(a0),a0
-	cmpi.w	#5,(Background_theme).w
+	cmpi.w	#Desert,(Background_theme).w
 	bne.s	loc_303EA
 	addq.w	#1,a0
 
@@ -34624,11 +34651,11 @@ return_3043A:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_3043C:
+BackgroundScroll_ComputeShiftData:
 	lea	(Horiz_Scroll_Data).l,a0
 	move.w	(Background_width).w,d6
 	move.w	(Camera_X_pos).w,d4
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	add.w	d0,d0
 	moveq	#1,d3
 
@@ -34682,7 +34709,7 @@ loc_304A8:
 	add.l	d4,d5
 	dbf	d3,loc_3048C
 	rts
-; End of function sub_3043C
+; End of function BackgroundScroll_ComputeShiftData
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -34726,8 +34753,8 @@ loc_304E0:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_304E8:
-	tst.b	($FFFFFB4A).w
+BackgroundScroll_ComputeShiftLayers:
+	tst.b	(Background_NoScrollFlag).w
 	beq.s	loc_3050A
 	move.w	(Camera_X_pos).w,d2
 	neg.w	d2
@@ -34804,14 +34831,14 @@ loc_30592:
 
 loc_30598:
 	move.w	(Background_theme).w,d0
-	cmpi.w	#9,d0
-	beq.s	loc_305AC
-	cmpi.w	#5,d0
-	beq.w	loc_3069A
+	cmpi.w	#Forest,d0
+	beq.s	BackgroundScroll_ApplyForestWaterRipple
+	cmpi.w	#Desert,d0
+	beq.w	BackgroundScroll_ApplyDesertHeatRipple
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_305AC:
+BackgroundScroll_ApplyForestWaterRipple:
 	move.w	(Camera_Y_pos).w,d1
 	lsr.w	#2,d1
 	move.l	(Addr_MapHeader).w,a0
@@ -34846,8 +34873,8 @@ loc_305E6:
 	lea	2(a0,d0.w),a0
 	move.w	(a0),d3
 	subq.w	#1,d1
-	lea	unk_3061A(pc,d2.w),a1
-	move.w	($FFFFFC24).w,d5
+	lea	BackgroundScroll_ForestWaterRippleData(pc,d2.w),a1
+	move.w	(Time_Frames).w,d5
 	lsr.w	#2,d5
 	andi.w	#$3F,d5
 	lea	(a1,d5.w),a1
@@ -34864,7 +34891,8 @@ return_30618:
 	rts
 ; ---------------------------------------------------------------------------
 ;Water ripple data
-unk_3061A:	dc.b   0
+BackgroundScroll_ForestWaterRippleData:
+	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   0
@@ -34994,7 +35022,7 @@ unk_3061A:	dc.b   0
 	dc.b   1
 ; ---------------------------------------------------------------------------
 
-loc_3069A:
+BackgroundScroll_ApplyDesertHeatRipple:
 	move.w	(Camera_Y_pos).w,d6
 	lsr.w	#2,d6
 	move.l	(Addr_MapHeader).w,a0
@@ -35028,11 +35056,11 @@ loc_306D4:
 	add.w	d0,d0
 	lea	2(a0,d0.w),a0
 	move.w	(a0),d3
-	move.w	($FFFFFC24).w,d5
+	move.w	(Time_Frames).w,d5
 	andi.w	#$30,d5
 	add.w	d2,d5
 	subq.w	#1,d1
-	lea	unk_30704(pc,d5.w),a1
+	lea	BackgroundScroll_DesertHeatRippleData(pc,d5.w),a1
 
 loc_306F4:
 	move.b	(a1)+,d4
@@ -35044,10 +35072,11 @@ loc_306F4:
 
 return_30702:
 	rts
-; End of function sub_304E8
+; End of function BackgroundScroll_ComputeShiftLayers
 
 ; ---------------------------------------------------------------------------
-unk_30704:	dc.b   0
+BackgroundScroll_DesertHeatRippleData:
+	dc.b   0
 	dc.b $FF
 	dc.b   0
 	dc.b   1
@@ -37931,8 +37960,8 @@ loc_31F9A:
 	dbf	d0,loc_31F9A
 	move.b	#$FF,($FFFFF940).w
 	move.l	#0,($FFFFF942).w
-	move.l	($FFFFF8F2).w,a0
-	move.l	($FFFFF8F6).w,a1
+	move.l	(Addr_EnemyLayoutHeader).w,a0
+	move.l	(Addr_EnemyLayout).w,a1
 	move.w	(Camera_X_pos).w,d1
 	move.b	#0,($FFFFF93F).w
 	move.w	(a0)+,d0
@@ -37954,11 +37983,11 @@ loc_31FD4:
 ; ---------------------------------------------------------------------------
 
 loc_31FE6:
-	move.l	a1,($FFFFF8F6).w
-	move.w	(a0),($FFFFF93A).w
+	move.l	a1,(Addr_EnemyLayout).w
+	move.w	(a0),(EnemyHeader7D).w
 	suba.l	#8,a0
 	move.w	(a0),($FFFFF93C).w
-	move.l	a0,($FFFFF8F2).w
+	move.l	a0,(Addr_EnemyLayoutHeader).w
 	lea	(EnemyStatus_Table).w,a2
 	move.w	(a1)+,d7
 	andi.w	#$FF,d7
@@ -37996,7 +38025,7 @@ loc_32044:
 	dbf	d7,loc_3200A
 
 loc_3204E:
-	bsr.w	sub_36D0E
+	bsr.w	Load_EnemyArtPaletteToVRAM
 	rts
 ; ---------------------------------------------------------------------------
 ; check whether object is within range, i.e. close enough to the part of the
@@ -38008,14 +38037,14 @@ Object_CheckInRange:
 ;Object_CheckInRange_CloseRange:
 	; if there are many objects, the range outside of which we unload
 	; them is smaller
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	(Camera_X_pos).w,d7
 	cmpi.w	#-$104,d7
 	blt.s	Object_OutOfRange
 	cmpi.w	#$244,d7
 	bgt.s	Object_OutOfRange
 	; object is within x range
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	sub.w	(Camera_Y_pos).w,d7
 	cmpi.w	#-$104,d7
 	blt.s	Object_OutOfRange
@@ -38050,7 +38079,7 @@ loc_320B4:
 ; ---------------------------------------------------------------------------
 ;loc_320B8
 Object_CheckInRange_NormalRange:
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	(Camera_X_pos).w,d7
 
 loc_320C0:
@@ -38059,7 +38088,7 @@ loc_320C0:
 	cmpi.w	#$2E4,d7
 	bgt.s	Object_OutOfRange
 	; object is within x range
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	sub.w	(Camera_Y_pos).w,d7
 	cmpi.w	#-$1A4,d7
 
@@ -38074,13 +38103,13 @@ loc_320D8:
 loc_320E2:
 	cmpi.w	#$14,(Number_Objects).w
 	ble.s	loc_3211A
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	(Camera_X_pos).w,d7
 	cmpi.w	#$FEFC,d7
 	blt.s	loc_32116
 	cmpi.w	#$244,d7
 	bgt.s	loc_32116
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 
 loc_32102:
 	sub.w	(Camera_Y_pos).w,d7
@@ -38098,7 +38127,7 @@ loc_32116:
 ; ---------------------------------------------------------------------------
 
 loc_3211A:
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	(Camera_X_pos).w,d7
 
 loc_32122:
@@ -38106,7 +38135,7 @@ loc_32122:
 	blt.s	loc_32116
 	cmpi.w	#$2E4,d7
 	bgt.s	loc_32116
-	move.w	$1E(a3),d7
+	move.w	y_pos(a3),d7
 	sub.w	(Camera_Y_pos).w,d7
 	cmpi.w	#$FE5C,d7
 	blt.s	loc_32116
@@ -38122,28 +38151,29 @@ loc_32146:
 
 	movem.l	d0-d1/a0,-(sp)
 	moveq	#0,d1
-	move.l	($FFFFF8F2).w,a0
+	move.l	(Addr_EnemyLayoutHeader).w,a0
 	move.w	2(a0),d7
 	andi.w	#$FF,d7
-	cmp.w	d7,d0
+	cmp.w	d7,d0	; is it the enemy type from the first slot?
 	beq.s	loc_3216C
 	addq.w	#1,d1
 
 loc_3215E:
 	move.w	4(a0),d7
 	andi.w	#$FF,d7
-	cmp.w	d7,d0
+	cmp.w	d7,d0	; is it the enemy type from the second slot?
 	beq.s	loc_3216C
 	addq.w	#1,d1
 
 loc_3216C:
-	lea	unk_36FEA(pc),a0
-	move.b	(a0,d1.w),$11(a3)
-	lea	unk_36FEE(pc),a0
+	; d1 is the slot this enemy type has been allocated
+	lea	EnemyArt_PaletteLines(pc),a0
+	move.b	(a0,d1.w),palette_line(a3)
+	lea	EnemyArt_VRAMTileAddresses(pc),a0
 	add.w	d1,d1
 
 loc_3217C:
-	move.w	(a0,d1.w),$24(a3)
+	move.w	(a0,d1.w),vram_tile(a3)
 	movem.l	(sp)+,d0-d1/a0
 	rts
 ; ---------------------------------------------------------------------------
@@ -38168,1648 +38198,19 @@ loc_321B2:
 	move.l	(sp)+,a0
 	rts
 ; ---------------------------------------------------------------------------
-byte_321BC:	dc.b 2
-	dc.b 4
-	dc.b 6
-	dc.b 0
+;Enemy05_TarMonster_Init:
+	include "code/enemy/Tar_Monster.asm"
 ; ---------------------------------------------------------------------------
-
-;loc_321C0:
-Enemy05_TarMonster_Init:
-	move.l	#$1000002,a3
-
-loc_321C6:
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	2(a0),d3
-	move.b	byte_321BC(pc,d3.w),d3
-	ext.w	d3
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-
-loc_321E4:
-	bsr.w	sub_36FF4
-	move.b	#0,$10(a3)
-	move.w	#5,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	a3,$3A(a5)
-	move.l	a3,a2
-
-loc_32200:
-	move.w	#(LnkTo_unk_C7826-Data_Index),$22(a2)
-	jsr	loc_32188(pc)
-	exg	a1,a3
-	move.l	a3,$36(a5)
-	move.w	#5,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.b	#0,$10(a3)
-	move.l	$1A(a2),$1A(a3)
-	move.l	$1E(a2),$1E(a3)
-	st	$13(a3)
-	move.w	#2,8(a3)
-	move.w	#$100,$A(a3)
-	move.l	($FFFFF86A).w,4(a3)
-	move.l	a3,($FFFFF86A).w
-
-loc_32248:
-	lea	(unk_32264).l,a0
-
-loc_3224E:
-	clr.w	$38(a3)
-	lea	off_32290(pc),a1
-
-loc_32256:
-	move.w	(a0)+,d0
-	bmi.s	loc_32248
-	moveq	#0,d7
-	move.b	d0,d7
-	move.l	(a1,d7.w),a1
-	jmp	(a1)
+;Enemy17_Hand_Init:
+	include "code/enemy/Hand.asm"
 ; ---------------------------------------------------------------------------
-unk_32264:	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b $10
-	dc.b $5A ; Z
-	dc.b   0
-	dc.b   0
-	dc.b $10
-unk_3226C:	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   7
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b $10
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b $46 ; F
-	dc.b   0
-unk_32284:	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   4
-	dc.b $14
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b $46 ; F
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-off_32290:	dc.l loc_322A8
-	dc.l loc_322BC
-	dc.l loc_322DA
-	dc.l loc_322FC
-	dc.l loc_32308
-	dc.l loc_32310
-; ---------------------------------------------------------------------------
-
-loc_322A8:
-	lsr.w	#8,d0
-
-loc_322AA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3237A
-	dbf	d0,loc_322AA
-	bra.s	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_322BC:
-	move.l	d0,-(sp)
-	moveq	#sfx_Tar_Monster_appears,d0
-
-loc_322C0:
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_322C8:
-	move.l	#stru_3272E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_322DA:
-	move.l	d0,-(sp)
-	moveq	#sfx_Tar_Monster_disappears,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	sf	$13(a2)
-	move.l	#stru_3274C,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_322FC:
-	not.b	$16(a3)
-	not.b	$16(a2)
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_32308:
-	not.b	$13(a2)
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_32310:
-	sf	$13(a2)
-	move.w	#(LnkTo_unk_C77DE-Data_Index),$22(a3)
-	moveq	#8,d0
-
-loc_3231C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3237A
-	dbf	d0,loc_3231C
-	move.l	a0,-(sp)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_32468,4(a0)
-	move.l	(sp)+,a0
-	move.w	#(LnkTo_unk_C77E6-Data_Index),$22(a3)
-	moveq	#8,d0
-
-loc_32348:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3237A
-	dbf	d0,loc_32348
-	move.w	#(LnkTo_unk_C77DE-Data_Index),$22(a3)
-
-loc_3235E:
-	moveq	#8,d0
-
-loc_32360:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3237A
-	dbf	d0,loc_32360
-	move.w	#(LnkTo_unk_C77D6-Data_Index),$22(a3)
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_3237A:
-	move.w	$38(a3),d7
-	bmi.w	loc_323E6
-	beq.w	return_3243E
-
-loc_32386:
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d7
-	beq.w	loc_323C0
-	cmpi.w	#$1C,d7
-	beq.w	loc_323C0
-	cmpi.w	#$20,d7
-	beq.w	loc_323AA
-	cmpi.w	#$24,d7
-	bne.w	return_3243E
-
-loc_323AA:
-	tst.b	(Berzerker_charging).w
-	beq.w	return_3243E
-	move.l	(Addr_GfxObject_Kid).w,a4
-	clr.l	$26(a4)
-	addq.w	#4,sp
-	bra.w	loc_323E6
-; ---------------------------------------------------------------------------
-
-loc_323C0:
-	addq.w	#4,sp
-	move.b	$13(a2),d2
-	sf	$13(a2)
-	subq.w	#1,d3
-	beq.w	loc_323E6
-	move.l	#stru_326EE,d7
-
-loc_323D6:
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.b	d2,$13(a2)
-	bra.w	loc_3224E
-; ---------------------------------------------------------------------------
-
-loc_323E6:
-	sf	$13(a2)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_32468,4(a0)
-	st	$44(a0)
-	move.l	#stru_32700,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_3242C
-	btst	#6,d0
-	beq.s	loc_3243A
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3243A
-; ---------------------------------------------------------------------------
-
-loc_3242C:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_3243A:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-return_3243E:
-	rts
-; ---------------------------------------------------------------------------
-	sf	$13(a2)
-	move.l	#stru_3274C,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#$50,d0
-
-loc_32454:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3237A
-	dbf	d0,loc_32454
-	bra.w	loc_32248
-; ---------------------------------------------------------------------------
-
-loc_32468:
-	move.l	d0,-(sp)
-	moveq	#sfx_Tar_Monster_shoots,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-
-loc_3247E:
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	tst.b	$44(a5)
-	bne.w	loc_325AC
-	subi.w	#$12,$1E(a3)
-	subi.w	#$19,$1A(a3)
-	move.w	#5,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	st	$3C(a3)
-	move.w	#(LnkTo_unk_C781E-Data_Index),$22(a3)
-	move.b	$16(a0),$16(a3)
-
-loc_324D0:
-	move.w	#$FFFC,$26(a3)
-	tst.b	$16(a3)
-	beq.s	loc_324E6
-
-loc_324DC:
-	neg.w	$26(a3)
-	addi.w	#$32,$1A(a3)
-
-loc_324E6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	bne.w	loc_324F8
-	tst.b	$19(a3)
-	beq.s	loc_324E6
-
-loc_324F8:
-	sf	$13(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325E6,4(a0)
-	move.l	#$10000,$44(a0)
-	move.l	#-$10000,$48(a0)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325E6,4(a0)
-
-loc_32534:
-	move.l	#-$10000,$44(a0)
-	move.l	#-$10000,$48(a0)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325E6,4(a0)
-	move.l	#$8000,$44(a0)
-	move.l	#-$20000,$48(a0)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325E6,4(a0)
-	move.l	#-$8000,$44(a0)
-	move.l	#-$20000,$48(a0)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325E6,4(a0)
-	move.l	#$2000,$44(a0)
-	move.l	#-$1C000,$48(a0)
-	jsr	(j_Hibernate_Object_1Frame).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_325AC:
-	subi.w	#$10,$1E(a3)
-	bra.w	loc_324F8
-; ---------------------------------------------------------------------------
-
-loc_325B6:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.l	$48(a5),d7
-	asl.l	#1,d7
-	move.l	d7,$26(a3)
-	move.w	#(LnkTo_unk_C7BDE-Data_Index),$22(a3)
-	moveq	#0,d1
-	move.w	#$16,d0
-	bra.w	loc_3261C
-; ---------------------------------------------------------------------------
-
-loc_325E6:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	move.l	$44(a5),$26(a3)
-	move.l	$48(a5),$2A(a3)
-	move.w	#(LnkTo_unk_C782E-Data_Index),$22(a3)
-	moveq	#1,d1
-
-loc_32618:
-	move.w	#5,d0
-
-loc_3261C:
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3D(a3)
-	move.b	#0,$10(a3)
-	st	$3C(a3)
-	moveq	#2,d3
-
-loc_3263C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1000,$2A(a3)
-	bsr.w	loc_32682
-	tst.b	$19(a3)
-	beq.s	loc_3263C
-
-loc_32652:
-
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-off_32656:	dc.l loc_326AA
-	dc.l loc_326AA
-	dc.l loc_326B8
-	dc.l loc_326B8
-	dc.l loc_326C6
-	dc.l loc_326DC
-	dc.l loc_326DC
-	dc.l loc_326AA
-	dc.l loc_326AA
-	dc.l loc_326B8
-	dc.l loc_32652
-; ---------------------------------------------------------------------------
-
-loc_32682:
-
-	move.w	$38(a3),d7
-	bmi.s	loc_32652
-	beq.w	return_326A8
-	tst.w	d1
-	beq.w	loc_32698
-	move.w	#(LnkTo_unk_C7836-Data_Index),$22(a3)
-
-loc_32698:
-	subq.w	#1,d3
-	bmi.s	loc_32652
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	off_32656(pc,d7.w),a0
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-return_326A8:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_326AA:
-	move.l	$26(a3),d7
-	asr.l	#1,d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_326B8:
-	move.l	$2A(a3),d7
-	asr.l	#1,d7
-	neg.l	d7
-
-loc_326C0:
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_326C6:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	$2A(a3),d6
-	neg.l	d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_326DC:
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-stru_326EE:
-	anim_frame	1, 3, LnkTo_unk_C7816-Data_Index
-	anim_frame	1, 3, LnkTo_unk_C77D6-Data_Index
-stru_326F6:
-	anim_frame	1, 3, LnkTo_unk_C7816-Data_Index
-	anim_frame	1, 3, LnkTo_unk_C77D6-Data_Index
-	dc.b 0
-	dc.b 0
-stru_32700:
-	anim_frame	  1,   9, LnkTo_unk_C77EE-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C77F6-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C77FE-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C77F6-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C77FE-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7806-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C77FE-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7806-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C780E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7806-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C780E-Data_Index
-	dc.b 0
-	dc.b 0
-stru_3272E:
-	anim_frame	  1,   4, LnkTo_unk_C77A6-Data_Index
-
-	anim_frame	  1,   4, LnkTo_unk_C77AE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77B6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77BE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77C6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77CE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77D6-Data_Index
-	dc.b 0
-	dc.b 0
-stru_3274C:
-	anim_frame	  1,   4, LnkTo_unk_C77D6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77CE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77C6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77BE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77B6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77AE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C77A6-Data_Index
-	dc.b 0
-	dc.b 0
-unk_3276A:	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FF
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b $50 ; P
-	dc.b   0
-	dc.b   2
-	dc.b $FF
-	dc.b $FF
-	dc.b $B8 ; ∏
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $FF
-	dc.b $A0 ; †
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_32782:
-Enemy17_Hand_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	move.w	2(a0),d7
-	asl.w	#3,d7
-	lea	unk_3276A(pc,d7.w),a4
-	move.w	(a4)+,$44(a5)
-	move.w	(a4)+,$46(a5)
-	move.l	(a4),$48(a5)
-
-loc_327B6:
-	st	$13(a3)
-	st	$14(a3)
-	sf	$16(a3)
-	sf	$19(a3)
-	st	$3C(a3)
-	move.b	#0,$10(a3)
-	move.w	#$17,d0
-	move.w	d0,$3A(a3)
-	bsr.w	loc_32146
-	bsr.w	loc_32AEA
-	move.l	(Addr_GfxObject_Kid).w,a2
-
-loc_327E4:
-	move.l	$48(a5),d7
-	tst.b	$16(a3)
-	beq.w	loc_327F2
-	neg.l	d7
-
-loc_327F2:
-	move.l	d7,$26(a3)
-	move.l	#stru_32B6A,d7
-	jsr	(j_Init_Animation).w
-	sf	$3D(a3)
-
-loc_32804:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3299C
-	bsr.w	loc_3284C
-	bne.w	loc_328A6
-	bsr.w	loc_32AFE
-	beq.w	loc_32AA2
-	move.l	$26(a3),d5
-	bmi.w	loc_32836
-	tst.w	d7
-	bne.s	loc_32804
-	tst.w	d6
-	beq.w	loc_328A6
-
-loc_32832:
-	bra.w	loc_32840
-; ---------------------------------------------------------------------------
-
-loc_32836:
-	tst.w	d6
-	bne.s	loc_32804
-	tst.w	d7
-	beq.w	loc_328A6
-
-loc_32840:
-	neg.l	d5
-	move.l	d5,$26(a3)
-	not.b	$16(a3)
-	bra.s	loc_32804
-; ---------------------------------------------------------------------------
-
-loc_3284C:
-	move.w	$1E(a2),d7
-	subi.w	#$10,d7
-	sub.w	$1E(a3),d7
-	bpl.w	loc_328A2
-	move.w	$1A(a2),d6
-	sub.w	$1A(a3),d6
-	tst.b	$16(a3)
-	beq.w	loc_32886
-	tst.w	d6
-	bmi.w	loc_328A2
-	cmp.w	$44(a5),d6
-	bgt.w	loc_328A2
-	neg.w	d7
-	cmp.w	d6,d7
-	bgt.w	loc_328A2
-	moveq	#1,d7
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32886:
-	tst.w	d6
-	bpl.w	loc_328A2
-	move.w	$44(a5),d4
-	neg.w	d4
-	cmp.w	d4,d6
-	blt.w	loc_328A2
-	cmp.w	d6,d7
-	blt.w	loc_328A2
-	moveq	#1,d7
-	rts
-; ---------------------------------------------------------------------------
-
-loc_328A2:
-	moveq	#0,d7
-	rts
-; ---------------------------------------------------------------------------
-
-loc_328A6:
-	move.w	$46(a5),d5
-
-loc_328AA:
-	jsr	(j_Get_RandomNumber_byte).w
-	move.w	$1E(a2),d6
-	eor.b	d6,d7
-	andi.l	#3,d7
-	add.w	d5,d7
-	neg.w	d7
-	swap	d7
-	move.l	d7,$2A(a3)
-	jsr	(j_Get_RandomNumber_byte).w
-	move.w	$1A(a2),d6
-	eor.b	d6,d7
-	andi.l	#3,d7
-	add.w	d5,d7
-	tst.b	$16(a3)
-	bne.w	loc_328E0
-	neg.w	d7
-
-loc_328E0:
-	swap	d7
-	move.l	d7,$26(a3)
-	move.l	#stru_32B56,d7
-	jsr	(j_Init_Animation).w
-
-loc_328F0:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_329F8
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_328F0
-; ---------------------------------------------------------------------------
-
-loc_32906:
-	sf	$3C(a3)
-	sf	$14(a3)
-	move.w	#$201,$A(a3)
-	jsr	(j_sub_FF6).w
-	move.l	#stru_32B50,d7
-	jsr	(j_Init_Animation).w
-	moveq	#$A,d3
-	sf	d2
-	st	$3D(a3)
-	st	($FFFFFA28).w
-
-loc_3292E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	cmpi.w	#Juggernaut,(Current_Helmet).w
-	beq.w	loc_32970
-	move.w	$1A(a2),d7
-	addq.w	#2,d7
-	tst.b	$16(a3)
-	beq.w	loc_3294C
-	subq.w	#4,d7
-
-loc_3294C:
-	move.w	d7,$1A(a3)
-	clr.w	$1C(a3)
-	move.w	$1E(a2),d7
-	subq.w	#4,d7
-	move.w	d7,$1E(a3)
-	clr.w	$20(a3)
-	move.b	$16(a2),d7
-	cmp.b	d7,d2
-	beq.s	loc_3292E
-	move.b	d7,d2
-	subq.w	#1,d3
-	bne.s	loc_3292E
-
-loc_32970:
-	move.w	#$100,$A(a3)
-	jsr	(j_sub_FF6).w
-	sf	($FFFFFA28).w
-	move.w	#9,d6
-	move.w	#$E,d7
-	bsr.w	loc_3639E
-	bne.w	loc_32AA2
-	st	$3C(a3)
-	st	$14(a3)
-	moveq	#2,d5
-	bra.w	loc_328AA
-; ---------------------------------------------------------------------------
-
-loc_3299C:
-	move.w	$38(a3),d7
-	bmi.w	loc_32AA2
-	beq.w	return_329B4
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	off_329B6(pc,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-return_329B4:
-	rts
-; ---------------------------------------------------------------------------
-off_329B6:	dc.l loc_329E2
-	dc.l loc_329E2
-	dc.l loc_32AA2
-	dc.l loc_32AA2
-	dc.l loc_329E2
-	dc.l loc_329E2
-	dc.l loc_32AA2
-	dc.l loc_329EC
-	dc.l loc_329EC
-	dc.l loc_329EC
-	dc.l loc_32AA2
-; ---------------------------------------------------------------------------
-
-loc_329E2:
-	neg.l	$26(a3)
-	not.b	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_329EC:
-	move.w	#$28,$38(a2)
-	clr.w	$3A(a2)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_329F8:
-	move.w	$38(a3),d7
-	beq.w	return_32A10
-	bmi.w	loc_32AA2
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	off_32A12(pc,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-return_32A10:
-	rts
-; ---------------------------------------------------------------------------
-off_32A12:	dc.l loc_32A44
-	dc.l loc_32A44
-	dc.l loc_32A4A
-	dc.l loc_32A3E
-	dc.l loc_32A5A
-	dc.l loc_32A70
-	dc.l return_32A10
-	dc.l loc_32A86
-	dc.l loc_32A86
-	dc.l loc_32A86
-	dc.l return_32A10
-; ---------------------------------------------------------------------------
-
-loc_32A3E:
-	clr.l	$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32A44:
-	clr.l	$26(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32A4A:
-	moveq	#0,d7
-	move.l	d7,$2A(a3)
-	move.l	d7,$26(a3)
-	addq.w	#4,sp
-	bra.w	loc_327E4
-; ---------------------------------------------------------------------------
-
-loc_32A5A:
-	bsr.w	loc_350F2
-	move.l	#$FFFE8000,$26(a3)
-	move.l	#$FFFE8000,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32A70:
-	bsr.w	loc_350F2
-	move.l	#$18000,$26(a3)
-	move.l	#$FFFE8000,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32A86:
-	cmpi.w	#Crawling,(Character_Movement).w
-	beq.s	return_32A10
-	cmpi.w	#Juggernaut,(Current_Helmet).w
-	beq.w	return_32A10
-	tst.b	($FFFFFA28).w
-	beq.w	loc_32906
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32AA2:
-	st	$3D(a3)
-	sf	$14(a3)
-	move.l	#stru_32B78,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_32AD8
-	btst	#6,d0
-	beq.s	loc_32AE6
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_32AE6
-; ---------------------------------------------------------------------------
-
-loc_32AD8:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_32AE6:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_32AEA:
-	move.w	$1E(a3),d7
-	subq.w	#8,d7
-	andi.w	#$FFF0,d7
-	addi.w	#$F,d7
-	move.w	d7,$1E(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32AFE:
-	move.w	$1E(a3),d7
-	addq.w	#1,d7
-	asr.w	#4,d7
-	add.w	d7,d7
-	lea	($FFFF4A04).l,a4
-	move.w	(a4,d7.w),a4
-	move.w	$1A(a3),d7
-	move.w	d7,d6
-	subi.w	#$E,d6
-	addi.w	#$E,d7
-	asr.w	#4,d6
-	asr.w	#4,d7
-	sub.w	d6,d7
-	add.w	d6,d6
-	add.w	d6,a4
-	move.w	(a4),d5
-	andi.w	#$4000,d5
-	moveq	#0,d4
-
-loc_32B32:
-	move.w	(a4)+,d6
-	andi.w	#$4000,d6
-	beq.w	loc_32B3E
-	moveq	#1,d4
-
-loc_32B3E:
-	dbf	d7,loc_32B32
-	move.w	d5,d6
-	move.w	-2(a4),d7
-	andi.w	#$4000,d7
-	tst.w	d4
-	rts
-; ---------------------------------------------------------------------------
-stru_32B50:
-	anim_frame	1, 1, LnkTo_unk_C79DE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_32B56:
-	anim_frame	  1,  $A, LnkTo_unk_C79C6-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C79CE-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C79D6-Data_Index
-	dc.b 0
-	dc.b 0
-	anim_frame	1, 1, LnkTo_unk_C79AE-Data_Index
-	dc.b 0
-	dc.b 0
-stru_32B6A:
-	anim_frame	  1,  $F, LnkTo_unk_C79AE-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C79B6-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C79BE-Data_Index
-	dc.b 2
-	dc.b $D
-stru_32B78:
-	anim_frame	  1,   6, LnkTo_unk_C79E6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79EE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79E6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79EE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79E6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79EE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79F6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79FE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7A06-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7A0E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7A16-Data_Index
-	dc.b 0
-	dc.b 0
-unk_32BA6:
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_32BBE:
-Enemy19_Fireball_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	#0,$10(a3)
-	move.w	#$19,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.w	#(LnkTo_unk_C7906-Data_Index),$22(a3)
-	move.w	2(a0),d7
-	asl.w	#3,d7
-	lea	unk_32BA6(pc,d7.w),a4
-	move.l	(a4)+,d0
-	move.l	(a4),d1
-	move.l	d1,d7
-	asr.l	#1,d7
-	move.l	d7,$26(a3)
-	moveq	#5,d3
-	moveq	#0,d2
-
-loc_32C1A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	add.l	d0,$2A(a3)
-	bsr.w	loc_32C60
-	bsr.w	loc_32F3E
-	bsr.w	loc_3304A
-	bra.s	loc_32C1A
-; ---------------------------------------------------------------------------
-off_32C34:	dc.l loc_32C8E
-	dc.l loc_32C8E
-	dc.l loc_32CC2
-	dc.l loc_32CC2
-	dc.l loc_32D16
-	dc.l loc_32DD2
-	dc.l loc_32E8C
-	dc.l return_32C8C
-	dc.l return_32C8C
-	dc.l return_32C8C
-	dc.l loc_32E8C
-; ---------------------------------------------------------------------------
-
-loc_32C60:
-	move.w	$38(a3),d7
-	beq.w	return_32C8C
-	bmi.w	loc_32E8C
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	tst.b	$19(a3)
-	bne.w	loc_32C86
-	move.l	d0,-(sp)
-	moveq	#sfx_Fireball_bouncing,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_32C86:
-	move.l	off_32C34(pc,d7.w),a0
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-return_32C8C:
-
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32C8E:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	(Addr_GfxObject_Kid).w,a0
-	add.l	$26(a0),d7
-	move.l	d7,$26(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	(Addr_GfxObject_Kid).w,a0
-	add.l	$26(a0),d7
-	move.l	d7,$26(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32CC2:
-	jsr	(j_Get_RandomNumber_byte).w
-	move.b	(Camera_X_pos).w,d6
-	eor.b	d6,d7
-	ext.w	d7
-	asl.w	#7,d7
-	ext.l	d7
-	add.l	$2A(a3),d7
-	neg.l	d7
-	bpl.w	loc_32CE4
-	cmp.l	d1,d7
-	bgt.w	loc_32CE4
-	move.l	d1,d7
-
-loc_32CE4:
-	move.l	d7,$2A(a3)
-	cmpi.w	#5,($FFFFFB44).w
-	bge.w	return_32D06
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_33128,4(a0)
-	addq.w	#1,($FFFFFB44).w
-
-return_32D06:
-	rts
-; ---------------------------------------------------------------------------
-	move.l	$2A(a3),d7
-	asr.l	#1,d7
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32D16:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	$2A(a3),d6
-	neg.l	d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	add.l	d7,$1A(a3)
-	add.l	d6,$1E(a3)
-	cmpi.w	#5,($FFFFFB44).w
-	bge.s	return_32D06
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_330D0,4(a0)
-	addq.w	#1,($FFFFFB44).w
-	st	$44(a0)
-	move.w	$22(a3),d7
-	asr.w	#1,d7
-	lea	(CollisionSize_Index).l,a4
-	add.w	(a4,d7.w),a4
-	move.w	$1A(a3),d7
-	sub.w	$26(a3),d7
-	tst.b	$16(a3)
-	beq.w	loc_32D7E
-	sub.w	(a4),d7
-	bra.w	loc_32D7E
-; ---------------------------------------------------------------------------
-	add.w	(a4),d7
-	add.w	2(a4),d7
-
-loc_32D7E:
-	move.w	$1E(a3),d6
-	sub.w	$2A(a3),d6
-	add.w	4(a4),d6
-	add.w	6(a4),d6
-	lea	($FFFF4A04).l,a4
-	move.w	d6,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	move.w	(a4,d5.w),a4
-	move.w	d7,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	add.w	d5,a4
-	move.w	(a4),d5
-	andi.w	#$7000,d5
-	cmpi.w	#$4000,d5
-	bne.w	return_32D06
-	move.w	d7,d5
-	andi.w	#$F,d5
-	andi.w	#$FFF0,d6
-	addi.w	#$F,d6
-	sub.w	d5,d6
-	addq.w	#2,d7
-	subq.w	#2,d6
-	move.w	d7,$46(a0)
-	move.w	d6,$48(a0)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32DD2:
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	neg.l	d7
-	neg.l	d6
-	add.l	d7,$1A(a3)
-	add.l	d6,$1E(a3)
-	cmpi.w	#5,($FFFFFB44).w
-	bge.w	return_32D06
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_330D0,4(a0)
-	addq.w	#1,($FFFFFB44).w
-	sf	$44(a0)
-	move.w	$22(a3),d7
-	asr.w	#1,d7
-	lea	(CollisionSize_Index).l,a4
-	add.w	(a4,d7.w),a4
-	move.w	$1A(a3),d7
-	sub.w	$26(a3),d7
-	tst.b	$16(a3)
-	beq.w	loc_32E3C
-	add.w	(a4),d7
-	bra.w	loc_32E3C
-; ---------------------------------------------------------------------------
-	sub.w	(a4),d7
-	sub.w	2(a4),d7
-
-loc_32E3C:
-	move.w	$1E(a3),d6
-	sub.w	$2A(a3),d6
-	add.w	4(a4),d6
-	add.w	6(a4),d6
-	lea	($FFFF4A04).l,a4
-	move.w	d6,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	move.w	(a4,d5.w),a4
-	move.w	d7,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	add.w	d5,a4
-	move.w	(a4),d5
-	andi.w	#$7000,d5
-	cmpi.w	#$5000,d5
-	bne.w	return_32D06
-	move.w	d7,d5
-	andi.w	#$F,d5
-	andi.w	#$FFF0,d6
-	add.w	d5,d6
-	subq.w	#2,d7
-	subq.w	#2,d6
-	move.w	d7,$46(a0)
-	move.w	d6,$48(a0)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_32E8C:
-
-	sf	$14(a3)
-	st	$3D(a3)
-	clr.w	$24(a3)
-	sf	$11(a3)
-	move.l	#stru_345E4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_32ECA
-	btst	#6,d0
-	beq.s	loc_32ED8
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_32ED8
-; ---------------------------------------------------------------------------
-
-loc_32ECA:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_32ED8:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-unk_32EDC:	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   1
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-; ---------------------------------------------------------------------------
-
-loc_32F3E:
-	move.l	$2A(a3),d7
-	move.l	$26(a3),d6
-	asr.l	#8,d7
-	asr.l	#8,d6
-	andi.l	#$FFFF,d7
-	andi.l	#$FFFF,d6
-	move.w	d7,d4
-	lea	unk_32EDC(pc),a4
-	tst.w	d6
-	beq.w	loc_3300A
-	bmi.w	loc_32F78
-	moveq	#3,d5
-	tst.w	d7
-	bpl.w	loc_32FE8
-	neg.w	d7
-	move.w	#0,d5
-	bra.w	loc_32FAC
-; ---------------------------------------------------------------------------
-
-loc_32F78:
-	neg.w	d6
-	moveq	#2,d5
-	tst.w	d7
-	bpl.w	loc_32FC8
-	neg.w	d7
-	moveq	#1,d5
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	move.w	#6,d6
-	cmpi.w	#$3F,d7
-	bge.w	loc_33018
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	neg.w	d6
-	addi.w	#9,d6
-	bra.w	loc_33006
-; ---------------------------------------------------------------------------
-
-loc_32FAC:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	cmpi.w	#$3F,d7
-	bge.w	loc_33018
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	bra.w	loc_33006
-; ---------------------------------------------------------------------------
-
-loc_32FC8:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	cmpi.w	#$3F,d7
-	bge.w	loc_33018
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	addi.w	#$A,d6
-	bra.w	loc_33006
-; ---------------------------------------------------------------------------
-
-loc_32FE8:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	cmpi.w	#$3F,d7
-	bge.w	loc_33018
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	neg.w	d6
-	addi.w	#$13,d6
-
-loc_33006:
-	move.w	d5,d7
-
-return_33008:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3300A:
-	move.w	#4,d6
-	tst.w	d7
-	bmi.s	return_33008
-	move.w	#$F,d6
-	rts
-; ---------------------------------------------------------------------------
-
-loc_33018:
-	move.w	#4,d6
-	tst.w	d4
-	bmi.s	loc_33006
-	move.w	#$F,d6
-	bra.s	loc_33006
-; ---------------------------------------------------------------------------
-off_33026:	dc.w LnkTo_unk_C78D6-Data_Index
-	dc.w LnkTo_unk_C78DE-Data_Index
-	dc.w LnkTo_unk_C78E6-Data_Index
-	dc.w LnkTo_unk_C78EE-Data_Index
-	dc.w LnkTo_unk_C78F6-Data_Index
-	dc.w LnkTo_unk_C78FE-Data_Index
-	dc.w LnkTo_unk_C7906-Data_Index
-	dc.w LnkTo_unk_C790E-Data_Index
-	dc.w LnkTo_unk_C7916-Data_Index
-	dc.w LnkTo_unk_C791E-Data_Index
-	dc.w LnkTo_unk_C7926-Data_Index
-	dc.w LnkTo_unk_C792E-Data_Index
-	dc.w LnkTo_unk_C7936-Data_Index
-	dc.w LnkTo_unk_C793E-Data_Index
-	dc.w LnkTo_unk_C7946-Data_Index
-	dc.w LnkTo_unk_C794E-Data_Index
-	dc.w LnkTo_unk_C7956-Data_Index
-	dc.w LnkTo_unk_C795E-Data_Index
-; ---------------------------------------------------------------------------
-
-loc_3304A:
-	add.w	d6,d6
-	move.b	byte_33080(pc,d6.w),d7
-	move.b	d7,$16(a3)
-	move.b	byte_33081(pc,d6.w),d6
-	add.w	d2,d6
-	subq.w	#1,d3
-	bne.w	loc_33072
-	move.w	#5,d3
-	tst.w	d2
-	beq.w	loc_33070
-	moveq	#0,d2
-	bra.w	loc_33072
-; ---------------------------------------------------------------------------
-
-loc_33070:
-	moveq	#1,d2
-
-loc_33072:
-	ext.w	d6
-	add.w	d6,d6
-	move.w	off_33026(pc,d6.w),d6
-	move.w	d6,$22(a3)
-	rts
-; ---------------------------------------------------------------------------
-byte_33080:	dc.b 0
-byte_33081:	dc.b 8
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b   2
-	dc.b $FF
-	dc.b   4
-	dc.b $FF
-	dc.b   6
-	dc.b $FF
-	dc.b   8
-	dc.b $FF
-	dc.b   8
-	dc.b $FF
-	dc.b  $A
-	dc.b $FF
-	dc.b  $C
-	dc.b $FF
-	dc.b  $E
-	dc.b $FF
-	dc.b $10
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b  $E
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   8
-stru_330A8:
-	anim_frame	  1,   6, LnkTo_unk_C7966-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C796E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7976-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C797E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7986-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C798E-Data_Index
-	dc.b 2
-	dc.b $19
-stru_330C2:
-	anim_frame	  1,   6, LnkTo_unk_C7996-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C799E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C79A6-Data_Index
-	dc.b 2
-	dc.b $D
-; ---------------------------------------------------------------------------
-
-loc_330D0:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	st	$13(a3)
-	move.b	#0,$10(a3)
-	move.w	#$19,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.w	#$96,d3
-	move.b	$44(a5),$16(a3)
-	move.w	$46(a5),$1A(a3)
-	move.w	$48(a5),$1E(a3)
-	move.l	#stru_330C2,d7
-	jsr	(j_Init_Animation).w
-
-loc_33110:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.w	loc_33120
-	subq.w	#1,d3
-	bne.s	loc_33110
-
-loc_33120:
-	subq.w	#1,($FFFFFB44).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_33128:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),d7
-	add.w	$26(a0),d7
-	add.w	$26(a0),d7
-	move.w	d7,$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	addi.w	#$F,$1E(a3)
-	andi.w	#$FFF0,$1E(a3)
-	move.l	#stru_330A8,d7
-	jsr	(j_Init_Animation).w
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#$19,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.w	#$96,d3
-	moveq	#8,d7
-	move.w	#$3E7,d6
-	bsr.w	loc_33286
-	bclr	#$F,d6
-	bne.w	loc_331CA
-	andi.w	#$7000,d6
-	cmpi.w	#$6000,d6
-	bne.w	loc_331CA
-	andi.w	#$7000,d5
-	cmpi.w	#$6000,d5
-	bne.w	loc_331CA
-	andi.w	#$7000,d7
-	cmpi.w	#$6000,d7
-	bne.w	loc_331CA
-
-loc_331BA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.w	loc_331CA
-	subq.w	#1,d3
-	bne.s	loc_331BA
-
-loc_331CA:
-	subq.w	#1,($FFFFFB44).w
-	jmp	(j_Delete_CurrentObject).w
+;Enemy19_Fireball_Init:
+	include "code/enemy/Fireball.asm"
 ; ---------------------------------------------------------------------------
 
 loc_331D2:
-	add.w	$1A(a3),d1
-	add.w	$1E(a3),d0
+	add.w	x_pos(a3),d1
+	add.w	y_pos(a3),d0
 	asr.w	#4,d0
 	add.w	d0,d0
 	lea	($FFFF4A04).l,a4
@@ -39824,8 +38225,8 @@ loc_331D2:
 
 loc_331F6:
 	move.w	d6,-(sp)
-	add.w	$1A(a3),d7
-	move.w	$1E(a3),d6
+	add.w	x_pos(a3),d7
+	move.w	y_pos(a3),d6
 	addi.w	#$E,d6
 	lsr.w	#4,d6
 	add.w	d6,d6
@@ -39879,12 +38280,12 @@ return_33284:
 
 loc_33286:
 	move.w	d6,-(sp)
-	add.w	$1E(a3),d7
+	add.w	y_pos(a3),d7
 	lsr.w	#4,d7
 	add.w	d7,d7
 	lea	($FFFF4A04).l,a4
 	move.w	(a4,d7.w),a4
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	subi.w	#$E,d7
 	lsr.w	#4,d7
 	add.w	d7,d7
@@ -39931,8 +38332,8 @@ return_3330C:
 ; ---------------------------------------------------------------------------
 
 loc_3330E:
-	add.w	$1A(a3),d6
-	add.w	$1E(a3),d7
+	add.w	x_pos(a3),d6
+	add.w	y_pos(a3),d7
 	lsr.w	#4,d7
 	add.w	d7,d7
 	lea	($FFFF4A04).l,a4
@@ -39944,2215 +38345,13 @@ loc_3330E:
 	andi.w	#$7000,d7
 	rts
 ; ---------------------------------------------------------------------------
-stru_33332:
-	anim_frame	1, 1, LnkTo_unk_C7B96-Data_Index
-	dc.b 0
-	dc.b 0
-unk_33338:	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
+;Enemy16_Drip_Init:
+	include "code/enemy/Drips.asm"
 ; ---------------------------------------------------------------------------
-
-;loc_3333E:
-Enemy16_Drip_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	move.w	2(a0),d7
-	add.w	d7,d7
-	lea	unk_33338(pc,d7.w),a4
-	move.b	(a4)+,$44(a5)
-	move.b	(a4)+,$45(a5)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	sf	$16(a3)
-	st	$3D(a3)
-	move.b	#0,$10(a3)
-	move.w	#$16,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	st	$3C(a3)
-	move.w	#(LnkTo_unk_C7B0E-Data_Index),$22(a3)
-	move.l	#-$10000,$2A(a3)
-	move.l	#$3000003,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	exg	a1,a3
-	move.w	#$16,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	exg	a1,a3
-	exg	a1,a2
-	move.l	#$3000003,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	st	$3D(a1)
-	move.l	a1,$3E(a5)
-	exg	a1,a3
-	move.w	#$16,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	exg	a1,a3
-	exg	a1,a2
-	moveq	#1,d3
-	lea	(off_33520).l,a0
-
-loc_333F6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	cmpi.w	#colid_ceiling,$38(a3)
-	bne.s	loc_333F6
-	clr.w	$38(a3)
-	clr.l	$2A(a3)
-
-loc_3340E:
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$FF,d7
-	asr.w	#2,d7
-	move.w	d7,d0
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d7
-	eor.b	d7,d0
-
-loc_33424:
-	jsr	(j_Hibernate_Object_1Frame).w
-	subq.w	#1,d0
-	bne.s	loc_33424
-	move.l	#stru_33F90,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	st	$13(a1)
-	st	$14(a1)
-	st	$3C(a1)
-	move.w	#(LnkTo_unk_C7B26-Data_Index),$22(a1)
-	move.l	$1A(a3),$1A(a1)
-	move.l	$1E(a3),$1E(a1)
-	clr.l	$2A(a1)
-
-loc_3345C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	addi.l	#$2000,$2A(a1)
-	cmpi.w	#$C,$38(a1)
-	bne.s	loc_3345C
-	tst.b	$19(a3)
-	bne.w	loc_33488
-	move.l	d0,-(sp)
-	moveq	#sfx_Drips_dripping,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_33488:
-	sf	$14(a1)
-	clr.w	$38(a1)
-	addi.w	#$A,$1E(a1)
-	exg	a1,a3
-	move.l	#stru_33332,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	exg	a1,a3
-	move.l	$1A(a1),$1A(a2)
-	move.l	$1E(a1),$1E(a2)
-	st	$13(a2)
-	sf	$13(a1)
-	subq.w	#1,d3
-	bne.w	loc_3340E
-	move.w	#1,d3
-	move.w	(a0)+,d7
-	bpl.w	loc_3350E
-	cmpi.w	#5,($FFFFFB42).w
-	bge.w	loc_33506
-	addq.w	#1,($FFFFFB42).w
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_335D8,4(a0)
-	move.w	$1A(a1),$44(a0)
-	addi.w	#1,$44(a0)
-	move.w	$1E(a1),d7
-	addi.w	#$A,d7
-	andi.w	#$FFF0,d7
-	move.w	d7,$46(a0)
-
-loc_33506:
-	lea	(off_33520).l,a0
-	moveq	#0,d7
-
-loc_3350E:
-	move.w	d7,$22(a2)
-	bra.w	loc_3340E
-; ---------------------------------------------------------------------------
-
-loc_33516:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bra.s	loc_33516
-; ---------------------------------------------------------------------------
-off_33520:	dc.w LnkTo_unk_C7B9E-Data_Index
-	dc.w LnkTo_unk_C7BA6-Data_Index
-	dc.b $FF
-	dc.b $FF
-; ---------------------------------------------------------------------------
-
-loc_33526:
-	moveq	#0,d7
-	moveq	#0,d6
-	tst.b	$44(a5)
-	beq.w	loc_33546
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	tst.b	$45(a5)
-	beq.w	loc_33546
-	add.l	d7,d7
-	add.l	d6,d6
-
-loc_33546:
-	add.l	d7,$26(a3)
-	add.l	d6,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_33550:
-	move.w	$38(a3),d5
-	beq.w	loc_33584
-	bmi.w	loc_33576
-	clr.w	$38(a3)
-	subi.w	#$1C,d5
-	bmi.w	loc_33584
-	asr.w	#1,d5
-	jmp	loc_3356E(pc,d5.w)
-
-loc_3356E:
-	bra.s	loc_33576
-; ---------------------------------------------------------------------------
-	dc.b $60 ; `
-	dc.b  $C
-	dc.b $60 ; `
-	dc.b  $A
-	dc.b $60 ; `
-	dc.b  $E
-; ---------------------------------------------------------------------------
-
-loc_33576:
-	clr.w	$38(a3)
-	moveq	#1,d5
-	rts
-; ---------------------------------------------------------------------------
-	tst.b	(Berzerker_charging).w
-	bne.s	loc_33576
-
-loc_33584:
-	moveq	#0,d5
-	rts
-; ---------------------------------------------------------------------------
-
-loc_33588:
-	tst.b	$19(a3)
-	bne.w	loc_335D4
-	move.w	$1A(a3),d5
-	tst.l	$26(a3)
-	bmi.w	loc_335AA
-	addq.w	#8,d5
-	cmp.w	(Level_width_pixels).w,d5
-	bge.w	loc_335D4
-	bra.w	loc_335B0
-; ---------------------------------------------------------------------------
-
-loc_335AA:
-	subq.w	#8,d5
-	bmi.w	loc_335D4
-
-loc_335B0:
-	move.w	$1E(a3),d5
-	tst.l	$2A(a3)
-	bmi.w	loc_335CA
-	addq.w	#8,d5
-	cmp.w	(Level_height_blocks).w,d5
-	bge.w	loc_335D4
-	bra.w	loc_335D0
-; ---------------------------------------------------------------------------
-
-loc_335CA:
-	subq.w	#8,d5
-	bmi.w	loc_335D4
-
-loc_335D0:
-	moveq	#0,d5
-	rts
-; ---------------------------------------------------------------------------
-
-loc_335D4:
-	moveq	#1,d5
-	rts
-; ---------------------------------------------------------------------------
-
-loc_335D8:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	st	$13(a3)
-	move.b	#0,$10(a3)
-	move.w	#$16,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.l	$A(a5),a4
-	move.b	$44(a4),$44(a5)
-	move.b	$45(a4),$45(a5)
-	move.l	#$3000,$26(a3)
-	jsr	(j_Get_RandomNumber_byte).w
-	bclr	#2,d7
-	beq.w	loc_33630
-	not.b	$16(a3)
-	neg.l	$26(a3)
-
-loc_33630:
-	move.l	#stru_33FA6,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	#stru_33F14,d7
-	jsr	(j_Init_Animation).w
-	st	$14(a3)
-	bsr.w	loc_33526
-
-loc_33650:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#0,d6
-	moveq	#-8,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	moveq	#0,d1
-	moveq	#8,d0
-	bsr.w	loc_331D2
-	cmpi.w	#$6000,d0
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338EA
-	moveq	#6,d7
-	tst.b	$16(a3)
-	beq.w	loc_336AA
-	neg.w	d7
-	bsr.w	loc_331F6
-	cmpi.w	#$6000,d6
-	beq.w	loc_3393C
-	cmpi.w	#$5000,d6
-	beq.w	loc_33A40
-	cmpi.w	#$6000,d5
-	beq.s	loc_33650
-	cmpi.w	#$4000,d5
-	beq.w	loc_33A2C
-	bra.w	loc_33982
-; ---------------------------------------------------------------------------
-
-loc_336AA:
-	bsr.w	loc_331F6
-	cmpi.w	#$4000,d6
-	beq.w	loc_339DC
-	cmpi.w	#$6000,d6
-	beq.w	loc_33996
-	cmpi.w	#$6000,d5
-	beq.s	loc_33650
-	cmpi.w	#$5000,d5
-	beq.w	loc_33A18
-	bra.w	loc_339C8
-; ---------------------------------------------------------------------------
-
-loc_336D0:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#0,d6
-	moveq	#8,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	moveq	#0,d1
-	moveq	#-8,d0
-	bsr.w	loc_331D2
-	cmpi.w	#$6000,d0
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338F8
-	moveq	#6,d7
-	tst.b	$16(a3)
-	bne.w	loc_3371A
-	neg.w	d7
-	bsr.w	loc_331F6
-	cmpi.w	#$6000,d5
-	beq.w	loc_3396E
-	cmpi.w	#$6000,d6
-	beq.s	loc_336D0
-	bra.w	loc_33950
-; ---------------------------------------------------------------------------
-
-loc_3371A:
-	bsr.w	loc_331F6
-	cmpi.w	#$6000,d5
-	beq.w	loc_339B4
-	cmpi.w	#$6000,d6
-	beq.s	loc_336D0
-	bra.w	loc_339AA
-; ---------------------------------------------------------------------------
-
-loc_33730:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#8,d6
-	moveq	#0,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	moveq	#-8,d1
-	moveq	#0,d0
-	bsr.w	loc_331D2
-	cmpi.w	#$6000,d0
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338F8
-	moveq	#6,d7
-	tst.l	$2A(a3)
-	bpl.w	loc_33782
-	neg.w	d7
-	bsr.w	loc_33286
-	cmpi.w	#$6000,d6
-	beq.w	loc_33964
-	cmpi.w	#$6000,d5
-	beq.s	loc_33730
-	cmpi.w	#$5000,d5
-	beq.w	loc_339FA
-	bra.w	loc_339D2
-; ---------------------------------------------------------------------------
-
-loc_33782:
-	bsr.w	loc_33286
-	cmpi.w	#$6000,d6
-	beq.w	loc_33946
-	cmpi.w	#$5000,d6
-	beq.w	loc_33A72
-	cmpi.w	#$6000,d5
-	beq.s	loc_33730
-	bra.w	loc_339A0
-; ---------------------------------------------------------------------------
-
-loc_337A0:
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#-8,d6
-	moveq	#0,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	moveq	#8,d1
-	moveq	#0,d0
-	bsr.w	loc_331D2
-	cmpi.w	#$6000,d0
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338F8
-	moveq	#6,d7
-	tst.l	$2A(a3)
-	bpl.w	loc_337F2
-	neg.w	d7
-	bsr.w	loc_33286
-	cmpi.w	#$6000,d5
-	beq.w	loc_339BE
-	cmpi.w	#$6000,d6
-	beq.s	loc_337A0
-	cmpi.w	#$4000,d6
-	beq.w	loc_33A04
-	bra.w	loc_33978
-; ---------------------------------------------------------------------------
-
-loc_337F2:
-	bsr.w	loc_33286
-	cmpi.w	#$6000,d5
-	beq.w	loc_3398C
-	cmpi.w	#$4000,d5
-	beq.w	loc_33A5E
-	cmpi.w	#$6000,d6
-	beq.s	loc_337A0
-	bra.w	loc_3395A
-; ---------------------------------------------------------------------------
-
-loc_33810:
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#-8,d6
-	moveq	#-8,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338F8
-	move.w	$1A(a3),d7
-	andi.w	#$F,d7
-	move.w	$1E(a3),d6
-	andi.w	#$F,d6
-	add.w	d6,d7
-	cmpi.w	#$F,d7
-	bne.s	loc_33810
-	moveq	#5,d7
-	tst.l	$2A(a3)
-	bpl.w	loc_33878
-	neg.w	d7
-	move.w	#5,d6
-	bsr.w	loc_3330E
-	cmpi.w	#$4000,d7
-	beq.s	loc_33810
-	cmpi.w	#$6000,d7
-	bne.w	loc_339E6
-	bra.w	loc_33A54
-; ---------------------------------------------------------------------------
-
-loc_33866:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bra.s	loc_33866
-; ---------------------------------------------------------------------------
-	cmpi.w	#$4000,d6
-	beq.w	loc_337A0
-	bra.w	loc_33978
-; ---------------------------------------------------------------------------
-
-loc_33878:
-	move.w	#$FFFB,d6
-	bsr.w	loc_3330E
-	cmpi.w	#$4000,d7
-	beq.s	loc_33810
-	cmpi.w	#$6000,d7
-	beq.w	loc_33A36
-	bra.w	loc_33A0E
-; ---------------------------------------------------------------------------
-
-loc_33892:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#8,d6
-	moveq	#-8,d7
-	bsr.w	loc_33550
-	bne.w	loc_338F8
-	bsr.w	loc_33588
-	bne.w	loc_338F8
-	moveq	#5,d7
-	tst.l	$2A(a3)
-	bmi.w	loc_338CE
-	move.w	#5,d6
-	bsr.w	loc_3330E
-	cmpi.w	#$5000,d7
-	beq.s	loc_33892
-	cmpi.w	#$6000,d7
-	beq.w	loc_33A22
-	bra.w	loc_339F0
-; ---------------------------------------------------------------------------
-
-loc_338CE:
-	neg.w	d7
-	move.w	#$FFFB,d6
-	bsr.w	loc_3330E
-	cmpi.w	#$5000,d7
-	beq.s	loc_33892
-	cmpi.w	#$6000,d7
-	bne.w	loc_33A4A
-	bra.w	loc_33A68
-; ---------------------------------------------------------------------------
-
-loc_338EA:
-	move.l	#stru_33FB4,d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3392C
-; ---------------------------------------------------------------------------
-
-loc_338F8:
-	add.w	d6,$1A(a3)
-	add.w	d7,$1E(a3)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_325B6,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
-	move.l	$26(a3),$48(a0)
-	move.l	#stru_33F06,d7
-	jsr	(j_Init_Animation).w
-
-loc_3392C:
-	sf	$14(a3)
-	jsr	(j_sub_105E).w
-	subq.w	#1,($FFFFFB42).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3393C:
-	lea	(unk_33C80).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33946:
-	lea	(unk_33C30).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33950:
-	lea	(unk_33BC0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_3395A:
-	lea	(unk_33C00).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33964:
-	lea	(unk_33C70).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_3396E:
-	lea	(unk_33C40).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33978:
-	lea	(unk_33BD0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33982:
-	lea	(unk_33BF0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_3398C:
-	lea	(unk_33C90).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33996:
-	lea	(unk_33C20).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339A0:
-	lea	(unk_33BB0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339AA:
-	lea	(unk_33C10).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339B4:
-	lea	(unk_33C60).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339BE:
-	lea	(unk_33C50).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339C8:
-	lea	(unk_33BA0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339D2:
-	lea	(unk_33BE0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339DC:
-	lea	(unk_33CA0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339E6:
-	lea	(unk_33CB0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_339F0:
-	lea	(unk_33D70).l,a2
-	bra.w	loc_33AF6
+;Enemy07_Archer_Init:
+	include "code/enemy/Archer.asm"
 ; ---------------------------------------------------------------------------
 
-loc_339FA:
-	lea	(unk_33D80).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A04:
-	lea	(unk_33CF0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A0E:
-	lea	(unk_33D90).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A18:
-	lea	(unk_33CC0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A22:
-	lea	(unk_33CD0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A2C:
-	lea	(unk_33CE0).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A36:
-	lea	(unk_33D00).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A40:
-	lea	(unk_33D10).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A4A:
-	lea	(unk_33D20).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A54:
-	lea	(unk_33D30).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A5E:
-	lea	(unk_33D40).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A68:
-	lea	(unk_33D50).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A72:
-	lea	(unk_33D60).l,a2
-	bra.w	loc_33AF6
-; ---------------------------------------------------------------------------
-
-loc_33A7C:
-
-	jsr	(j_Hibernate_Object_1Frame).w
-	bra.s	loc_33A7C
-; ---------------------------------------------------------------------------
-off_33A82:	dc.l stru_33E10
-	dc.l stru_33E1E
-	dc.l stru_33E2C
-	dc.l stru_33E3A
-	dc.l stru_33E80
-	dc.l stru_33EB2
-	dc.l stru_33F14
-	dc.l stru_33F52
-	dc.l stru_33E48
-	dc.l stru_33E56
-	dc.l stru_33E64
-	dc.l stru_33E72
-	dc.l stru_33EE6
-	dc.l stru_33DA0
-	dc.l stru_33DF4
-	dc.l stru_33E02
-	dc.l stru_33DAE
-	dc.l stru_33DBC
-	dc.l stru_33DCA
-	dc.l stru_33DD8
-	dc.l stru_33DE6
-	dc.l stru_33EF6
-off_33ADA:	dc.l loc_33650
-	dc.l loc_336D0
-	dc.l loc_33730
-	dc.l loc_337A0
-	dc.l loc_33A7C
-	dc.l loc_33810
-	dc.l loc_33892
-; ---------------------------------------------------------------------------
-
-loc_33AF6:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	clr.w	$1C(a3)
-	clr.w	$20(a3)
-	moveq	#0,d7
-	move.b	(a2)+,d6
-	ext.w	d6
-	move.w	(a3,d6.w),d7
-	move.b	(a2)+,d5
-	ext.w	d5
-	add.w	d5,d7
-	andi.w	#$FFF0,d7
-	move.b	(a2)+,d5
-	ext.w	d5
-	add.w	d5,d7
-	swap	d7
-	move.l	d7,(a3,d6.w)
-	tst.b	(a2)+
-	beq.w	loc_33B30
-	not.b	$16(a3)
-
-loc_33B30:
-	move.b	(a2)+,d7
-	ext.w	d7
-	add.w	d7,$1A(a3)
-	move.b	(a2)+,d7
-	ext.w	d7
-	add.w	d7,$1E(a3)
-	lea	off_33A82(pc),a4
-	move.b	(a2)+,d7
-	ext.w	d7
-	move.l	(a4,d7.w),d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	tst.b	(a2)+
-	beq.w	loc_33B5E
-	not.b	$16(a3)
-
-loc_33B5E:
-	move.b	(a2)+,d7
-	ext.w	d7
-	add.w	d7,$1A(a3)
-	move.b	(a2)+,d7
-	ext.w	d7
-	add.w	d7,$1E(a3)
-	move.w	(a2)+,d7
-	ext.l	d7
-	add.l	d7,$26(a3)
-	move.w	(a2)+,d7
-	ext.l	d7
-	add.l	d7,$2A(a3)
-	lea	off_33A82(pc),a4
-	move.b	(a2)+,d7
-	ext.w	d7
-	move.l	(a4,d7.w),d7
-	jsr	(j_Init_Animation).w
-	bsr.w	loc_33526
-	lea	off_33ADA(pc),a4
-	move.b	(a2)+,d7
-	ext.w	d7
-	move.l	(a4,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-unk_33BA0:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b   8
-unk_33BB0:	dc.b $1E
-	dc.b   8
-	dc.b   1
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1C
-	dc.b   4
-unk_33BC0:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b  $C
-unk_33BD0:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b   5
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33BE0:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33BF0:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b  $C
-unk_33C00:	dc.b $1E
-	dc.b   8
-	dc.b   1
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1C
-	dc.b   4
-unk_33C10:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   1
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b   8
-unk_33C20:	dc.b $1A
-	dc.b   8
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b   0
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b  $C
-unk_33C30:	dc.b $1E
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $FF
-	dc.b   5
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33C40:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   1
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b   8
-unk_33C50:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   1
-	dc.b $24 ; $
-	dc.b   0
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1C
-	dc.b   4
-unk_33C60:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $20
-	dc.b $FF
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b  $C
-unk_33C70:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   1
-	dc.b $24 ; $
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $1C
-	dc.b   4
-unk_33C80:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $2C ; ,
-	dc.b $FF
-	dc.b   0
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b   8
-unk_33C90:	dc.b $1E
-	dc.b   8
-	dc.b   1
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b $28 ; (
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33CA0:	dc.b $1A
-	dc.b   8
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $34 ; 4
-	dc.b   0
-	dc.b   4
-	dc.b $FD ; ˝
-	dc.b $20
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b $14
-unk_33CB0:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b   1
-	dc.b $38 ; 8
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33CC0:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b   2
-	dc.b   1
-	dc.b $3C ; <
-	dc.b   0
-	dc.b   3
-	dc.b   4
-	dc.b $20
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $54 ; T
-	dc.b $18
-unk_33CD0:	dc.b $1E
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b $40 ; @
-	dc.b $FF
-	dc.b   5
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33CE0:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   1
-	dc.b $3C ; <
-	dc.b   0
-	dc.b $FE ; ˛
-	dc.b   3
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $54 ; T
-	dc.b $14
-unk_33CF0:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $4C ; L
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b $14
-unk_33D00:	dc.b $1E
-	dc.b   8
-	dc.b   1
-	dc.b   0
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $40 ; @
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33D10:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b $34 ; 4
-	dc.b   0
-	dc.b $FC ; ¸
-	dc.b $FD ; ˝
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b $18
-unk_33D20:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FE ; ˛
-	dc.b   1
-	dc.b $38 ; 8
-	dc.b   0
-	dc.b $FE ; ˛
-	dc.b $FF
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-unk_33D30:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $44 ; D
-	dc.b $FF
-	dc.b   0
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b  $C
-unk_33D40:	dc.b $1E
-	dc.b   8
-	dc.b   1
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b $48 ; H
-	dc.b   0
-	dc.b $FE ; ˛
-	dc.b   2
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $54 ; T
-	dc.b $14
-unk_33D50:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $FD ; ˝
-	dc.b $44 ; D
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $D0 ; –
-	dc.b   0
-	dc.b $14
-	dc.b   8
-unk_33D60:	dc.b $1E
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $48 ; H
-	dc.b   0
-	dc.b   3
-	dc.b   4
-	dc.b $20
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $54 ; T
-	dc.b $18
-unk_33D70:	dc.b $1A
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   3
-	dc.b $50 ; P
-	dc.b $FF
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b   8
-unk_33D80:	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $4C ; L
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b $18
-unk_33D90:	dc.b $1A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b   3
-	dc.b $50 ; P
-	dc.b  $F
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b $10
-	dc.b  $C
-stru_33DA0:
-	anim_frame	  1,   8, LnkTo_unk_C7A1E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A26-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A2E-Data_Index
-	dc.b 0
-	dc.b 0
-stru_33DAE:
-	anim_frame	  1,   8, LnkTo_unk_C7A2E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A26-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A1E-Data_Index
-	dc.b 0
-	dc.b 0
-stru_33DBC:
-	anim_frame	  1,   8, LnkTo_unk_C7A36-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A3E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A46-Data_Index
-	dc.b 0
-	dc.b 0
-stru_33DCA:
-	anim_frame	  1,   8, LnkTo_unk_C7A46-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A3E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A36-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33DD8:
-	anim_frame	  1,   8, LnkTo_unk_C7A4E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A56-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A5E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33DE6:
-	anim_frame	  1,   8, LnkTo_unk_C7A5E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A56-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A4E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33DF4:
-	anim_frame	  1,   8, LnkTo_unk_C7A66-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A6E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A76-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E02:
-	anim_frame	  1,   8, LnkTo_unk_C7A76-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A6E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A66-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E10:
-	anim_frame	  1,   8, LnkTo_unk_C7A7E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A86-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A8E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E1E:
-	anim_frame	  1,   8, LnkTo_unk_C7A8E-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A86-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A7E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E2C:
-	anim_frame	  1,   8, LnkTo_unk_C7A96-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A9E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7AA6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E3A:
-	anim_frame	  1,   8, LnkTo_unk_C7AA6-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7A9E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7A96-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E48:
-	anim_frame	  1,   8, LnkTo_unk_C7ADE-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7AE6-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7AEE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E56:
-	anim_frame	  1,   8, LnkTo_unk_C7AEE-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7AE6-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7ADE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E64:
-	anim_frame	  1,   8, LnkTo_unk_C7AF6-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7AFE-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7B06-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E72:
-	anim_frame	  1,   8, LnkTo_unk_C7B06-Data_Index
-
-	anim_frame	  1,   8, LnkTo_unk_C7AFE-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7AF6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33E80:
-	anim_frame	  1,  $C, LnkTo_unk_C7B66-Data_Index
-
-	anim_frame	  1,  $C, LnkTo_unk_C7B6E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B76-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B66-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B6E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B76-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B66-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B6E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B76-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B66-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BF6-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B76-Data_Index
-	dc.b 2
-	dc.b $31
-stru_33EB2:
-	anim_frame	  1,  $C, LnkTo_unk_C7B7E-Data_Index
-
-	anim_frame	  1,  $C, LnkTo_unk_C7B86-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B8E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B7E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B86-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B8E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B7E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B86-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B8E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B7E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BFE-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B8E-Data_Index
-	anim_frame	  2, $31, 0
-stru_33EE6:
-	anim_frame	  1,  $A, LnkTo_unk_C7ACE-Data_Index
-
-	anim_frame	  1,  $A, LnkTo_unk_C7AD6-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7AC6-Data_Index
-	anim_frame	  2,  $D, 0
-stru_33EF6:
-	anim_frame	  1,  $A, LnkTo_unk_C7AAE-Data_Index
-
-	anim_frame	  1,  $A, LnkTo_unk_C7AB6-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7ABE-Data_Index
-	anim_frame	  2,  $D, 0
-stru_33F06:
-	anim_frame	  1,   4, LnkTo_unk_C7BC6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7BCE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7BD6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33F14:
-	anim_frame	  1,  $C, LnkTo_unk_C7B46-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B3E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B36-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B46-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B3E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B36-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B46-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B3E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B36-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B46-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BE6-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B36-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B46-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BE6-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B36-Data_Index
-	dc.b 2
-	dc.b $3D
-stru_33F52:
-	anim_frame	  1,  $C, LnkTo_unk_C7B5E-Data_Index
-
-	anim_frame	  1,  $C, LnkTo_unk_C7B56-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B4E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B5E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B56-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B4E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B5E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B56-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B4E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B5E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BEE-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B4E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B5E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7BEE-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7B4E-Data_Index
-	dc.b   2
-	dc.b $3D ; =
-stru_33F90:
-	anim_frame	  1,  $A, LnkTo_unk_C7B0E-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7B16-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7B2E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7B1E-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C7B0E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33FA6:
-	anim_frame	  1,  $A, LnkTo_unk_C7BAE-Data_Index
-
-	anim_frame	  1,  $A, LnkTo_unk_C7BB6-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7BBE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33FB4:
-	anim_frame	  1,  $A, LnkTo_unk_C7BBE-Data_Index
-
-	anim_frame	  1,  $A, LnkTo_unk_C7BB6-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7BAE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_33FC2:
-	anim_frame	  1,   5, LnkTo_unk_C81B8-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C81F0-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C81C8-Data_Index
-	anim_frame	  1, $23, LnkTo_unk_C81D0-Data_Index
-	dc.b   0
-	dc.b   0
-word_33FD4:	dc.w $1E
-	dc.b   0
-	dc.b $14
-	dc.b   0
-	dc.b  $A
-; ---------------------------------------------------------------------------
-
-;loc_33FDA:
-Enemy07_Archer_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	jsr	loc_32188(pc)
-	exg	a1,a3
-	move.l	a3,$36(a5)
-	move.l	a1,$3A(a5)
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	move.w	2(a0),d7
-	add.w	d7,d7
-	move.w	word_33FD4(pc,d7.w),d7
-	move.w	d7,$4A(a5)
-	st	$13(a3)
-	st	$14(a3)
-	sf	$16(a3)
-	move.b	#0,$10(a3)
-	move.w	#7,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	sf	$3C(a3)
-	move.w	#(LnkTo_unk_C8188-Data_Index),$22(a3)
-	move.w	#$C8,d3
-	st	$13(a1)
-	move.b	#0,$10(a1)
-	exg	a1,a3
-	move.w	#7,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	exg	a1,a3
-	move.w	#2,8(a3)
-	move.w	#$100,$A(a3)
-	move.l	($FFFFF86A).w,4(a3)
-	move.l	a3,($FFFFF86A).w
-	st	$3D(a1)
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$FF,d7
-	move.b	(Camera_X_pos).w,d6
-	eor.b	d6,d7
-	move.w	d7,-(sp)
-	jsr	(j_Hibernate_Object).w
-
-loc_3408C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_34128
-	sf	$16(a3)
-	lea	unk_34102(pc),a2
-	subi.w	#$1E,$1E(a3)
-	bsr.w	loc_34458
-	addi.w	#$1E,$1E(a3)
-	cmpi.w	#6,d6
-	bge.w	loc_340C0
-	st	$16(a3)
-	bra.w	loc_3419A
-; ---------------------------------------------------------------------------
-
-loc_340C0:
-	cmpi.w	#$D,d6
-	ble.w	loc_3419A
-	lea	unk_340DC(pc),a2
-	cmpi.w	#$14,d6
-	ble.w	loc_3419A
-	st	$16(a3)
-	bra.w	loc_3419A
-; ---------------------------------------------------------------------------
-unk_340DC:	dc.b   0
-	dc.b  $D
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b  $C
-	dc.b $90 ; ê
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $94 ; î
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b  $C
-	dc.b  $C
-	dc.b $98 ; ò
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b $9C ; ú
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b $FF
-	dc.b $EF ; Ô
-	dc.b $FF
-	dc.b $FF
-unk_34102:	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b $64 ; d
-	dc.b  $C
-	dc.b $80 ; Ä
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $84 ; Ñ
-	dc.b $FF
-	dc.b $F5 ; ı
-	dc.b $FF
-	dc.b $E5 ; Â
-	dc.b   0
-	dc.b  $C
-	dc.b  $C
-	dc.b $88 ; à
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b $8C ; å
-	dc.b $FF
-	dc.b $F2 ; Ú
-	dc.b $FF
-	dc.b $E2 ; ‚
-	dc.b $FF
-	dc.b $FF
-; ---------------------------------------------------------------------------
-
-loc_34128:
-	move.w	$38(a3),d7
-	beq.w	return_34148
-	bmi.w	loc_3414A
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d7
-	beq.w	loc_3414A
-	cmpi.w	#$1C,d7
-	beq.w	loc_3414A
-
-return_34148:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3414A:
-	st	$3D(a3)
-	move.l	#stru_33FC2,d7
-	jsr	(j_Init_Animation).w
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	#$FFFC0000,$2A(a4)
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_34188
-	btst	#6,d0
-	beq.s	loc_34196
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_34196
-; ---------------------------------------------------------------------------
-
-loc_34188:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_34196:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3419A:
-	move.l	a2,$44(a5)
-	move.w	(a2)+,d6
-	tst.b	$16(a3)
-	beq.w	loc_341AA
-	move.w	(a2),d6
-
-loc_341AA:
-	addq.w	#2,a2
-	exg	a1,a3
-	bsr.w	loc_3433E
-	exg	a1,a3
-	move.b	$16(a3),$16(a1)
-	not.b	$16(a1)
-
-loc_341BE:
-	move.w	(a2)+,d3
-	bmi.w	loc_3408C
-	bne.w	loc_34222
-	move.w	(a2)+,$22(a3)
-	move.w	#$14,d3
-	move.w	#0,$22(a1)
-	move.w	#3,d7
-	addq.w	#1,($FFFFFB46).w
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_34266,4(a0)
-	move.w	$4A(a5),$4A(a0)
-	move.w	(a2)+,$44(a0)
-	move.w	(a2)+,$46(a0)
-	move.l	$44(a5),a4
-	move.w	(a4)+,$48(a0)
-	tst.b	$16(a3)
-	beq.w	loc_34216
-	neg.w	d7
-	neg.w	$44(a0)
-	move.w	(a4)+,$48(a0)
-
-loc_34216:
-	add.w	d7,$1A(a1)
-	add.w	d7,$1E(a1)
-	bra.w	loc_34248
-; ---------------------------------------------------------------------------
-
-loc_34222:
-	move.w	(a2)+,$22(a3)
-	move.w	(a2)+,d6
-	move.w	(a2)+,d7
-	tst.b	$16(a3)
-	beq.w	loc_34234
-	neg.w	d6
-
-loc_34234:
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	add.w	d6,$1A(a1)
-	add.w	d7,$1E(a1)
-
-loc_34248:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_34128
-	dbf	d3,loc_34248
-	cmpi.w	#2,($FFFFFB46).w
-	bge.w	loc_3408C
-	bra.w	loc_341BE
-; ---------------------------------------------------------------------------
-
-loc_34266:
-	move.l	d0,-(sp)
-	moveq	#sfx_Archer_shoots,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	move.w	$44(a5),d6
-	move.w	$46(a5),d7
-	add.w	d6,$1A(a3)
-	add.w	d7,$1E(a3)
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#7,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	st	$3C(a3)
-	move.w	#(LnkTo_unk_C81F8-Data_Index),$22(a3)
-	move.w	$4A(a5),d3
-	move.w	$48(a5),d6
-	move.w	d6,d2
-	bsr.w	loc_3433E
-
-loc_342D6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.w	loc_34336
-	tst.w	$38(a3)
-	bne.w	loc_34336
-	subq.w	#1,d3
-	bne.s	loc_342D6
-	move.w	$4A(a5),d3
-	bsr.w	loc_34458
-	move.w	#$FFF2,d5
-	cmp.w	d2,d6
-	beq.w	loc_3432E
-	ble.w	loc_34308
-	move.w	#$E,d5
-
-loc_34308:
-	sub.w	d2,d6
-	cmp.w	d5,d6
-	bge.w	loc_34320
-	addq.w	#1,d2
-	cmpi.w	#$1B,d2
-	ble.w	loc_3432E
-	moveq	#0,d2
-	bra.w	loc_3432E
-; ---------------------------------------------------------------------------
-
-loc_34320:
-	subq.w	#1,d2
-	bpl.w	loc_3432E
-	beq.w	loc_3432E
-	move.w	#$1B,d2
-
-loc_3432E:
-	move.w	d2,d6
-	bsr.w	loc_3433E
-	bra.s	loc_342D6
-; ---------------------------------------------------------------------------
-
-loc_34336:
-	subq.w	#1,($FFFFFB46).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3433E:
-	asl.w	#2,d6
-	move.b	byte_3437A(pc,d6.w),d7
-	move.b	d7,$16(a3)
-	moveq	#0,d7
-	move.b	byte_3437C(pc,d6.w),d7
-	ext.w	d7
-	swap	d7
-	asr.l	#4,d7
-	move.l	d7,$26(a3)
-	moveq	#0,d7
-	move.b	byte_3437D(pc,d6.w),d7
-	ext.w	d7
-	swap	d7
-	asr.l	#4,d7
-	move.l	d7,$2A(a3)
-	move.b	byte_3437B(pc,d6.w),d6
-	ext.w	d6
-	add.w	d6,d6
-	move.w	off_343EA(pc,d6.w),d6
-	move.w	d6,$22(a3)
-	rts
-; ---------------------------------------------------------------------------
-byte_3437A:	dc.b 0
-byte_3437B:	dc.b 0
-byte_3437C:	dc.b $20
-byte_3437D:	dc.b 0
-	dc.b   0
-	dc.b   1
-	dc.b $20
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   2
-	dc.b $1C
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b   3
-	dc.b $18
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   4
-	dc.b $10
-	dc.b $E4 ; ‰
-	dc.b   0
-	dc.b   5
-	dc.b   8
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b $FF
-	dc.b   6
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b $FF
-	dc.b   5
-	dc.b $F8 ; ¯
-	dc.b $E0 ; ‡
-	dc.b $FF
-	dc.b   4
-	dc.b $F0 ; 
-	dc.b $E4 ; ‰
-	dc.b $FF
-	dc.b   3
-	dc.b $E8 ; Ë
-	dc.b $E8 ; Ë
-	dc.b $FF
-	dc.b   2
-	dc.b $E4 ; ‰
-	dc.b $F0 ; 
-	dc.b $FF
-	dc.b   1
-	dc.b $E0 ; ‡
-	dc.b $F8 ; ¯
-	dc.b $FF
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $FF
-	dc.b   0
-	dc.b $E0 ; ‡
-	dc.b   0
-	dc.b $FF
-	dc.b   7
-	dc.b $E0 ; ‡
-	dc.b   8
-	dc.b $FF
-	dc.b   8
-	dc.b $E4 ; ‰
-	dc.b $10
-	dc.b $FF
-	dc.b   9
-	dc.b $E8 ; Ë
-	dc.b $18
-	dc.b $FF
-	dc.b  $A
-	dc.b $F0 ; 
-	dc.b $1C
-	dc.b $FF
-	dc.b  $B
-	dc.b $F8 ; ¯
-	dc.b $20
-	dc.b $FF
-	dc.b  $C
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b  $B
-	dc.b   8
-	dc.b $20
-	dc.b   0
-	dc.b  $A
-	dc.b $10
-	dc.b $1C
-	dc.b   0
-	dc.b   9
-	dc.b $18
-	dc.b $18
-	dc.b   0
-	dc.b   8
-	dc.b $1C
-	dc.b $10
-	dc.b   0
-	dc.b   7
-	dc.b $20
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-off_343EA:	dc.w LnkTo_unk_C81F8-Data_Index
-	dc.w LnkTo_unk_C8200-Data_Index
-	dc.w LnkTo_unk_C8208-Data_Index
-	dc.w LnkTo_unk_C8210-Data_Index
-	dc.w LnkTo_unk_C8218-Data_Index
-	dc.w LnkTo_unk_C8220-Data_Index
-	dc.w LnkTo_unk_C8228-Data_Index
-	dc.w LnkTo_unk_C8230-Data_Index
-	dc.w LnkTo_unk_C8238-Data_Index
-	dc.w LnkTo_unk_C8240-Data_Index
-	dc.w LnkTo_unk_C8248-Data_Index
-	dc.w LnkTo_unk_C8250-Data_Index
-	dc.w LnkTo_unk_C8258-Data_Index
-unk_34404:	dc.b   0
-	dc.b   1
-	dc.b   1
-	dc.b   2
-	dc.b   2
-	dc.b   2
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   3
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   4
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-	dc.b   5
-; ---------------------------------------------------------------------------
-
-loc_34458:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	move.w	$1E(a4),d7
-	subi.w	#$10,d7
-	sub.w	$1E(a3),d7
-	move.w	d7,d4
-	lea	unk_34404(pc),a4
-	tst.w	d6
-	beq.w	loc_34530
-	bmi.w	loc_34492
-	moveq	#3,d5
-	tst.w	d7
-	bpl.w	loc_3450A
-	neg.w	d7
-	move.w	#0,d5
-	bra.w	loc_344C6
-; ---------------------------------------------------------------------------
-
-loc_34492:
-	neg.w	d6
-	moveq	#2,d5
-	tst.w	d7
-	bpl.w	loc_344E6
-	neg.w	d7
-	moveq	#1,d5
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	move.w	#6,d6
-	cmpi.w	#$3F,d7
-	bge.w	loc_34546
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	neg.w	d6
-	addi.w	#$D,d6
-	bra.w	loc_3452C
-; ---------------------------------------------------------------------------
-
-loc_344C6:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	move.w	#6,d6
-	cmpi.w	#$3F,d7
-	bge.w	loc_34546
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	bra.w	loc_3452C
-; ---------------------------------------------------------------------------
-
-loc_344E6:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	move.w	#6,d6
-	cmpi.w	#$3F,d7
-	bge.w	loc_34546
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	addi.w	#$E,d6
-	bra.w	loc_3452C
-; ---------------------------------------------------------------------------
-
-loc_3450A:
-	asl.w	#3,d7
-	andi.l	#$FFFF,d7
-	divs.w	d6,d7
-	move.w	#6,d6
-	cmpi.w	#$3F,d7
-	bge.w	loc_34546
-	move.b	(a4,d7.w),d6
-	ext.w	d6
-	neg.w	d6
-	addi.w	#$1B,d6
-
-loc_3452C:
-	move.w	d5,d7
-
-return_3452E:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34530:
-	move.w	#6,d6
-	move.w	#0,d7
-	tst.w	d7
-	bmi.s	return_3452E
-	move.w	#$15,d6
-	move.w	#3,d7
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34546:
-	move.w	#6,d6
-	tst.w	d4
-	bmi.s	loc_3452C
-	move.w	#$15,d6
-	bra.s	loc_3452C
-; ---------------------------------------------------------------------------
 unk_34554:	dc.b $FF
 	dc.b   1
 	dc.b   2
@@ -42297,3603 +38496,39 @@ unk_34554:	dc.b $FF
 	dc.b   3
 	dc.b $D8 ; ÿ
 	dc.b $F1 ; Ò
-stru_345E4:
+
+stru_345E4: ; fireball and flying dragon?
 	anim_frame	  1,   2, LnkTo_unk_E0F2E-Data_Index
 	anim_frame	  1,   2, LnkTo_unk_E0F36-Data_Index
 	anim_frame	  1,   2, LnkTo_unk_E0F3E-Data_Index
 	anim_frame	  1,   2, LnkTo_unk_E0F46-Data_Index
 	dc.b 0
 	dc.b 0
-off_345F6:	dc.w LnkTo_unk_C75FE-Data_Index
-	dc.w LnkTo_unk_C7616-Data_Index
-	dc.w LnkTo_unk_C761E-Data_Index
-	dc.w LnkTo_unk_C762E-Data_Index
-	dc.w LnkTo_unk_C7636-Data_Index
-stru_34600:
-	anim_frame	  1,   7, LnkTo_unk_C75EE-Data_Index
 
-	anim_frame	  1,   7, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7606-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75EE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7606-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75EE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7606-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C760E-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7606-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C760E-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7606-Data_Index
-	dc.b 2
-	dc.b $51
-stru_34652:
-	anim_frame	  1,   4, LnkTo_unk_C75EE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C75F6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C75FE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7606-Data_Index
-	dc.b 2
-	dc.b $11
+;Enemy0C_Dragon_flying_Init:
+	include "code/enemy/Dragon_Flying.asm"
 ; ---------------------------------------------------------------------------
-
-;loc_34664:
-Enemy0C_Dragon_flying_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	move.w	6(a0),$44(a5)
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#$C,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	st	$3C(a3)
-	move.w	2(a0),d7
-	move.w	d7,$46(a5)
-	add.w	d7,d7
-	add.w	d7,d7
-	lea	off_346EE(pc),a4
-	add.w	d7,a4
-	move.l	(a4),$48(a5)
-
-loc_346C0:
-	move.l	$48(a5),a0
-
-loc_346C4:
-	move.l	#stru_34600,d7
-	jsr	(j_Init_Animation).w
-	clr.w	$38(a3)
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-
-loc_346DA:
-	moveq	#0,d1
-	lea	off_3471E(pc),a1
-	move.w	(a0)+,d0
-	bmi.s	loc_346C0
-	moveq	#0,d7
-	move.b	d0,d7
-	move.l	(a1,d7.w),a1
-	jmp	(a1)
-; ---------------------------------------------------------------------------
-off_346EE:	dc.l unk_34710
-	dc.l unk_34706
-	dc.l unk_346FA
-unk_346FA:	dc.b $70 ; p
-	dc.b $14
-	dc.b $70 ; p
-	dc.b $14
-	dc.b   0
-	dc.b  $C
-	dc.b $50 ; P
-	dc.b $14
-	dc.b   0
-	dc.b $18
-	dc.b $FF
-	dc.b $FF
-unk_34706:	dc.b $28 ; (
-	dc.b $14
-	dc.b $1E
-	dc.b $14
-	dc.b $32 ; 2
-	dc.b $14
-	dc.b   0
-	dc.b $18
-	dc.b $FF
-	dc.b $FF
-unk_34710:	dc.b $70 ; p
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b $50 ; P
-	dc.b   4
-	dc.b $32 ; 2
-	dc.b   0
-	dc.b $78 ; x
-	dc.b   4
-	dc.b   0
-	dc.b $18
-	dc.b $FF
-	dc.b $FF
-off_3471E:	dc.l loc_34804
-	dc.l loc_34776
-	dc.l loc_34768
-	dc.l loc_3473A
-	dc.l loc_3487E
-	dc.l loc_34774
-	dc.l loc_34B44
-; ---------------------------------------------------------------------------
-
-loc_3473A:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d7
-	cmp.w	$1A(a4),d7
-	blt.w	loc_34758
-	sf	$16(a3)
-	move.l	#$FFFF8000,$26(a3)
-	bra.s	loc_346DA
-; ---------------------------------------------------------------------------
-
-loc_34758:
-	st	$16(a3)
-	move.l	#$8000,$26(a3)
-	bra.w	loc_346DA
-; ---------------------------------------------------------------------------
-
-loc_34768:
-	not.b	$16(a3)
-	neg.l	$26(a3)
-	bra.w	loc_346DA
-; ---------------------------------------------------------------------------
-
-loc_34774:
-	moveq	#1,d1
-
-loc_34776:
-	lsr.w	#8,d0
-	move.l	#$800,$26(a3)
-	tst.b	$16(a3)
-	bne.w	loc_3478C
-	neg.l	$26(a3)
-
-loc_3478C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	$26(a3),d7
-	bmi.w	loc_347B2
-	addi.l	#$200,d7
-	cmpi.l	#$18000,d7
-	blt.w	loc_347C8
-	move.l	#$18000,d7
-	bra.w	loc_347C8
-; ---------------------------------------------------------------------------
-
-loc_347B2:
-	subi.l	#$200,d7
-	cmpi.l	#$FFFE8000,d7
-	bgt.w	loc_347C8
-	move.l	#$FFFE8000,d7
-
-loc_347C8:
-	move.l	d7,$26(a3)
-	tst.w	d1
-	beq.w	loc_347D6
-	bsr.w	loc_34836
-
-loc_347D6:
-	move.w	$38(a3),d6
-	beq.s	loc_347FC
-	bmi.w	loc_3492C
-	cmpi.w	#$2C,d6
-	beq.w	loc_3492C
-	cmpi.w	#$1C,d6
-	beq.w	loc_3492C
-	clr.w	$38(a3)
-	not.b	$16(a3)
-	neg.l	$26(a3)
-
-loc_347FC:
-	dbf	d0,loc_3478C
-	bra.w	loc_346DA
-; ---------------------------------------------------------------------------
-
-loc_34804:
-	lsr.w	#8,d0
-	clr.l	$26(a3)
-
-loc_3480A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	beq.w	loc_3482E
-	bmi.w	loc_3492C
-	cmpi.w	#$2C,d7
-	beq.w	loc_3492C
-	cmpi.w	#$1C,d7
-	beq.w	loc_3492C
-	clr.w	$38(a3)
-
-loc_3482E:
-	dbf	d0,loc_3480A
-	bra.w	loc_346DA
-; ---------------------------------------------------------------------------
-
-loc_34836:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1E(a4),d7
-	cmp.w	$1E(a3),d7
-	blt.w	return_3487C
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	move.w	d7,d6
-	add.w	d7,d7
-	add.w	d6,d7
-	tst.b	$16(a3)
-	beq.w	loc_34860
-	sub.w	d6,d7
-	neg.w	d7
-
-loc_34860:
-	add.w	$1E(a3),d7
-	move.w	$1E(a4),d6
-	cmp.w	d7,d6
-	bgt.w	return_3487C
-	subq.w	#8,d7
-	cmp.w	d7,d6
-	blt.w	return_3487C
-	addq.w	#4,sp
-	bra.w	loc_3487E
-; ---------------------------------------------------------------------------
-
-return_3487C:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3487E:
-
-	lea	unk_34554(pc),a2
-	sf	$15(a3)
-	move.l	$1E(a3),d0
-
-loc_3488A:
-	move.w	(a2)+,d3
-	cmpi.w	#$D8F1,d3
-	beq.w	loc_346C4
-	cmpi.w	#$DD48,d3
-	bne.s	loc_348A0
-	not.b	$16(a3)
-	bra.s	loc_3488A
-; ---------------------------------------------------------------------------
-
-loc_348A0:
-	cmpi.w	#$E19F,d3
-	bne.s	loc_348CE
-	exg	a0,a1
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_34BAC,4(a0)
-	move.w	$26(a3),$44(a0)
-	move.w	#3,$46(a0)
-	move.b	$16(a3),$48(a0)
-	exg	a0,a1
-	bra.s	loc_3488A
-; ---------------------------------------------------------------------------
-
-loc_348CE:
-	move.b	d3,d2
-	ext.w	d2
-	move.w	d2,$2A(a3)
-	move.w	d3,d2
-	lsr.w	#8,d2
-	ext.w	d2
-	tst.b	$16(a3)
-	beq.s	loc_348E4
-	neg.w	d2
-
-loc_348E4:
-	move.w	d2,$26(a3)
-	move.w	(a2)+,d3
-	clr.l	d2
-	move.b	d3,d2
-	lsr.w	#8,d3
-	lea	off_345F6(pc),a1
-	move.w	(a1,d3.w),$22(a3)
-	subq.w	#1,d2
-
-loc_348FC:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	beq.w	loc_34924
-	bmi.w	loc_3492C
-	cmpi.w	#$1C,d7
-	beq.w	loc_3492C
-	cmpi.w	#$2C,d7
-	beq.w	loc_3492C
-	move.w	$38(a3),d7
-	bra.w	loc_349DE
-; ---------------------------------------------------------------------------
-
-loc_34924:
-	dbf	d2,loc_348FC
-	bra.w	loc_3488A
-; ---------------------------------------------------------------------------
-
-loc_3492C:
-	move.l	#stru_345E4,d7
-	jsr	(j_Init_Animation).w
-	sf	$14(a3)
-	clr.w	$24(a3)
-	move.w	#2,-(sp)
-	jsr	(j_Hibernate_Object).w
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3CD16,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),d7
-	addi.w	#$10,d7
-	move.w	d7,$46(a0)
-	move.b	$16(a3),$48(a0)
-	move.w	$46(a5),$4A(a0)
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_34998
-	btst	#6,d0
-	beq.s	loc_349A6
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_349A6
-; ---------------------------------------------------------------------------
-
-loc_34998:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_349A6:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-	move.w	$1E(a3),d7
-	cmp.w	$44(a5),d7
-	ble.w	loc_349C0
-	move.l	#$FFFFC000,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_349C0:
-	clr.l	$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-off_349C6:	dc.l loc_34A24
-	dc.l loc_34A00
-	dc.l loc_34A48
-	dc.l loc_34A68
-	dc.l loc_34A88
-	dc.l loc_34ADC
-; ---------------------------------------------------------------------------
-
-loc_349DE:
-	bmi.w	loc_3492C
-	clr.w	$38(a3)
-	cmpi.w	#$1C,d7
-	bge.w	loc_3488A
-	subq.w	#4,d7
-	move.l	off_349C6(pc,d7.w),a4
-	move.l	#stru_34652,d7
-	jsr	(j_Init_Animation).w
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-loc_34A00:
-	clr.l	$2A(a3)
-	move.w	#2,$26(a3)
-
-loc_34A0A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	subi.l	#$1000,$26(a3)
-	ble.w	loc_34B44
-	bra.s	loc_34A0A
-; ---------------------------------------------------------------------------
-
-loc_34A24:
-	clr.l	$2A(a3)
-	move.w	#$FFFE,$26(a3)
-
-loc_34A2E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	addi.l	#$1000,$26(a3)
-	bge.w	loc_34B44
-	bra.s	loc_34A2E
-; ---------------------------------------------------------------------------
-
-loc_34A48:
-	move.w	#$FFFD,$2A(a3)
-
-loc_34A4E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	addi.l	#$5000,$2A(a3)
-	bge.w	loc_34B44
-	bra.s	loc_34A4E
-; ---------------------------------------------------------------------------
-
-loc_34A68:
-	move.w	#3,$2A(a3)
-
-loc_34A6E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	subi.l	#$2000,$2A(a3)
-	ble.w	loc_34B44
-	bra.s	loc_34A6E
-; ---------------------------------------------------------------------------
-
-loc_34A88:
-	bsr.w	loc_34B96
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$3C(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	d0,$1A(a3)
-	move.l	d1,$1E(a3)
-	st	$3C(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#stru_34652,d7
-	jsr	(j_Init_Animation).w
-	move.w	#$FFFE,$26(a3)
-	move.w	#$FFFE,$2A(a3)
-
-loc_34AC2:
-	addi.l	#$2000,$2A(a3)
-	beq.w	loc_34B44
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	bra.s	loc_34AC2
-; ---------------------------------------------------------------------------
-
-loc_34ADC:
-	bsr.w	loc_34B96
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$3C(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	d0,$1A(a3)
-	move.l	d1,$1E(a3)
-	st	$3C(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#stru_34652,d7
-	jsr	(j_Init_Animation).w
-	move.w	#2,$26(a3)
-	move.w	#$FFFE,$2A(a3)
-
-loc_34B16:
-	addi.l	#$2000,$2A(a3)
-	beq.w	loc_34B44
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	bne.w	loc_34B30
-	bra.s	loc_34B16
-; ---------------------------------------------------------------------------
-
-loc_34B30:
-	cmpi.w	#$2C,d7
-	beq.w	loc_3492C
-	cmpi.w	#$1C,d7
-	beq.w	loc_3492C
-	bra.w	loc_346C4
-; ---------------------------------------------------------------------------
-
-loc_34B44:
-	clr.l	$26(a3)
-	move.l	$44(a5),d0
-
-loc_34B4C:
-	move.l	$1E(a3),d7
-	cmp.l	d0,d7
-	ble.w	loc_346C4
-	move.l	$2A(a3),d7
-	subi.l	#$400,d7
-	cmpi.l	#$FFFF1000,d7
-	bge.w	loc_34B70
-	move.l	#$FFFF8000,d7
-
-loc_34B70:
-	move.l	d7,$2A(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	beq.s	loc_34B4C
-	bmi.w	loc_3492C
-	cmpi.w	#$2C,d7
-	beq.w	loc_3492C
-	cmpi.w	#$1C,d7
-	beq.w	loc_3492C
-	bra.w	loc_346C4
-; ---------------------------------------------------------------------------
-
-loc_34B96:
-	move.l	$26(a3),d0
-	neg.l	d0
-	move.l	$2A(a3),d1
-	neg.l	d1
-	add.l	$1A(a3),d0
-	add.l	$1E(a3),d1
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34BAC:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	addi.w	#$A,$1E(a3)
-	move.w	#$FFF6,d0
-	moveq	#-1,d1
-	move.b	$48(a5),$16(a3)
-	tst.b	$16(a3)
-	beq.s	loc_34BE6
-	neg.w	d0
-	neg.w	d1
-
-loc_34BE6:
-	add.w	d0,$1A(a3)
-	move.w	d1,$26(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	#0,$10(a3)
-	move.w	#$C,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	move.w	$46(a5),$2A(a3)
-	move.w	$44(a5),$26(a3)
-	move.w	#(LnkTo_unk_C75CE-Data_Index),$22(a3)
-	move.w	#6,d0
-
-loc_34C26:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	bne.s	loc_34C4A
-	dbf	d0,loc_34C26
-	move.w	#(LnkTo_unk_C75D6-Data_Index),$22(a3)
-
-loc_34C3A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	bne.s	loc_34C4A
-	tst.b	$19(a3)
-	beq.s	loc_34C3A
-
-loc_34C4A:
-	sf	$3C(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	move.w	#(LnkTo_unk_C75DE-Data_Index),$22(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	#(LnkTo_unk_C75E6-Data_Index),$22(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-stru_34C7E:
-	anim_frame	  1,   5, LnkTo_unk_C8418-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C8420-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C8428-Data_Index
-	dc.b 2
-	dc.b $D
-	anim_frame	1, 5, LnkTo_unk_C8400-Data_Index
-	dc.b 0
-	dc.b 0
-stru_34C92:
-	anim_frame	  1,   5, LnkTo_unk_C83E8-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C83F0-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C83F8-Data_Index
-	dc.b 2
-	dc.b $D
-stru_34CA0:
-	anim_frame	  1,   7, LnkTo_unk_C83B0-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C83B8-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C83C0-Data_Index
-	dc.b 2
-	dc.b $D
-stru_34CAE:
-	anim_frame	  1,   7, LnkTo_unk_C8358-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C8360-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C8368-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C8360-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C8368-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C8360-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C8368-Data_Index
-	anim_frame	  1, $E7, LnkTo_unk_C8360-Data_Index
-	dc.b 0
-	dc.b 0
-stru_34CD0:
-	anim_frame	  1,   6, LnkTo_unk_C8370-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8378-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8380-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8388-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8390-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8398-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8370-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8378-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8380-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8388-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8348-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8350-Data_Index
-	dc.b 2
-	dc.b $31
-stru_34D02:
-	anim_frame	  1, $42, LnkTo_unk_C83D0-Data_Index
-	anim_frame	  1, $21, LnkTo_unk_C83D8-Data_Index
-	anim_frame	  1, $2C, LnkTo_unk_C83C8-Data_Index
-	anim_frame	  1, $21, LnkTo_unk_C83D8-Data_Index
-	anim_frame	  1, $42, LnkTo_unk_C83D0-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C83D8-Data_Index
-	anim_frame	  1, $37, LnkTo_unk_C83D0-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C83D8-Data_Index
-	anim_frame	  1, $2C, LnkTo_unk_C83C8-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C83E0-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C83A8-Data_Index
-	anim_frame	  1, $21, LnkTo_unk_C83C8-Data_Index
-	anim_frame	  1, $21, LnkTo_unk_C83D0-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C83D8-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C83E0-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C83A8-Data_Index
-	anim_frame	  1, $21, LnkTo_unk_C83C8-Data_Index
-	dc.b 2
-	dc.b $45
-unk_34D48:
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-; ---------------------------------------------------------------------------
-;$44(a5)	word counter
-;$46(a5)	flag whether UFO is shooting
-;$47(a5)	flag ?
-;$4C(a5)	flag ?
-;$4D(a5)	flag ?
-;$4E(a5)	flag ?
-;$4F(a5)	flag ?
-;$50(a5)	flag whether UFO is on screen
-;d0	x acceleration
-;d1
-;d2	y acceleration
-;d3
-; ---------------------------------------------------------------------------
-;loc_34D54:
-Enemy0F_UFO_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	sf	$19(a3)
-	sf	$46(a5)
-	sf	$47(a5)
-	sf	$14(a3)
-	sf	$50(a5)
-	move.w	2(a0),d7
-	add.w	d7,d7
-	add.w	d7,d7
-	lea	unk_34D48(pc,d7.w),a4
-	move.b	(a4)+,$4C(a5)
-	move.b	(a4)+,$4D(a5)
-	move.b	(a4)+,$4E(a5)
-	move.b	(a4)+,$4F(a5)
-	move.b	#1,$10(a3)
-	move.w	#$F,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	move.l	#stru_34C7E,d7
-	jsr	(j_Init_Animation).w
-	move.l	(Addr_GfxObject_Kid).w,a2
-
-;loc_34DD6
-Enemy0F_UFO_1SecLoop:
-	; this part happens once per second (every $3C frames)
-	bsr.w	loc_35326	; randomness?
-	bsr.w	loc_34E10
-	move.w	#$3C,$44(a5)
-
-;loc_34DE4
-Enemy0F_UFO_Loop:
-	; this part happens every frame
-	bsr.w	Enemy_HandleAcceleration
-	bsr.w	loc_34E2A
-	bsr.w	Enemy0F_UFO_ChkShoot
-	bsr.w	Enemy0F_UFO_ChkLoadBeam
-	bsr.w	Enemy0F_UFO_SpeedToPos
-	bsr.w	Enemy0F_UFO_ChkOnScreen
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	loc_35280	; loading/unloading
-	bsr.w	Enemy0F_UFO_ExecCollisionBehavior
-	subq.w	#1,$44(a5)
-	bne.s	Enemy0F_UFO_Loop
-	bra.s	Enemy0F_UFO_1SecLoop
-; ---------------------------------------------------------------------------
-
-loc_34E10:
-	tst.b	$4E(a5)
-	beq.w	loc_34E1C
-	; double acceleration?
-	add.l	d0,d0
-	add.l	d2,d2
-
-loc_34E1C:
-	tst.b	$4F(a5)
-	beq.w	return_34E28
-	; double terminal speed?
-	add.l	d1,d1
-	add.l	d3,d3
-
-return_34E28:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34E2A:	; adjust x-vel/accel towards kid if Kid is close and below UFO
-	tst.b	$4D(a5)
-	beq.w	return_34E9A
-	tst.b	(Some_UFO_Shooting).w
-	bne.w	return_34E9A
-	move.w	$1E(a2),d7
-	cmp.w	$1E(a3),d7	; is Kid lower than UFO?
-	ble.w	return_34E9A	; no
-	; yes
-	move.w	$1A(a3),d7
-	move.w	$1A(a2),d6
-	move.w	d6,d5
-	subi.w	#$30,d6
-	cmp.w	d6,d7
-	blt.w	return_34E9A
-	addi.w	#$60,d6
-	cmp.w	d6,d7
-	bgt.w	return_34E9A
-	; Kid's x-position is close to UFO's x-position
-	moveq	#0,d2
-	moveq	#0,d3
-	move.l	d2,$2A(a3)	; clear vertical velocity
-	cmp.w	d5,d7
-	blt.w	loc_34E86
-	move.l	#-$20000,d1	; speed we want to achieve
-	move.l	#-$1000,d0	; acceleration (towards that speed)
-	sf	$16(a3)
-	bra.w	loc_34E96
-; ---------------------------------------------------------------------------
-
-loc_34E86:
-	move.l	#$20000,d1
-	move.l	#$1000,d0
-	st	$16(a3)
-
-loc_34E96:
-	bsr.w	loc_34E10
-
-return_34E9A:
-	rts
-; ---------------------------------------------------------------------------
-;loc_34E9C
-Enemy0F_UFO_ChkShoot:
-	tst.b	$4C(a5)
-	beq.w	return_34F16
-	tst.b	$46(a5)
-	bne.w	return_34F16
-	tst.b	(Some_UFO_Shooting).w
-	bne.w	return_34F16
-	move.w	$1E(a2),d7
-	cmp.w	$1E(a3),d7	; is Kid lower than UFO?
-	ble.w	return_34F16	; no
-	; yes
-	move.w	$1A(a3),d7
-	move.w	$1A(a2),d6
-	subq.w	#2,d6
-	cmp.w	d6,d7
-	blt.w	return_34F16
-	addq.w	#4,d6
-	cmp.w	d6,d7
-	bgt.w	return_34F16
-	; Kid is directly below UFO
-	tst.b	$19(a3)
-	bne.w	loc_34EEC
-	move.l	d0,-(sp)
-	moveq	#sfx_UFO_shoots,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_34EEC:
-	move.w	#4,$48(a5)
-	move.w	#5,$4A(a5)
-	st	$46(a5)
-	st	(Some_UFO_Shooting).w
-	moveq	#0,d0
-	moveq	#0,d1
-	moveq	#0,d2
-	moveq	#0,d3
-	move.l	d0,$26(a3)	; clear velocities and acceleration,
-	move.l	d0,$2A(a3)	; i.e. UFO stays in place
-	move.w	#$32,$44(a5)
-
-return_34F16:
-	rts
-; ---------------------------------------------------------------------------
-;loc_35008
-Enemy0F_UFO_ChkOnScreen:
-	move.w	$1A(a3),d7
-	sub.w	$1A(a2),d7
-	cmpi.w	#-$A0,d7
-	blt.w	loc_34F6E
-	cmpi.w	#$A0,d7
-	bgt.w	loc_34F6E
-	; UFO's x-position is within $A0 pixels of Kid's x-position
-	move.w	$1E(a3),d7
-	sub.w	$1E(a2),d7
-	cmpi.w	#-$A0,d7
-	blt.w	loc_34F6E
-	cmpi.w	#$50,d7
-	bgt.w	loc_34F6E
-	; UFO is also not too far away in y-position
-	; --> UFO is on screen
-	tst.b	$50(a5)
-	bne.w	return_34F6C
-	move.b	(Number_UFOs_OnScreen).w,d7
-	bne.w	loc_34F64
-	move.l	d0,-(sp)
-	moveq	#sfx_UFO_hovering,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_34F64:
-	addq.w	#1,(Number_UFOs_OnScreen).w
-	st	$50(a5)
-
-return_34F6C:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34F6E:
-	; UFO is off screen
-	tst.b	$50(a5)
-	beq.s	return_34F6C
-	subq.w	#1,(Number_UFOs_OnScreen).w
-	bne.w	loc_34F88
-	move.l	d0,-(sp)
-	moveq	#$19,d0
-	jsr	(sub_E132C).l
-	move.l	(sp)+,d0
-
-loc_34F88:
-	sf	$50(a5)
-	rts
-; ---------------------------------------------------------------------------
-;loc_34F8E
-Enemy0F_UFO_ChkLoadBeam:
-	tst.b	$46(a5)
-	bne.w	loc_34FD6
-	tst.b	(Some_UFO_Shooting).w
-	bne.w	return_34FFC
-	tst.b	$4C(a5)
-	bne.w	return_34FFC
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$FF,d7
-	cmpi.w	#4,d7
-	bgt.w	return_34FFC
-	move.l	d0,-(sp)
-	moveq	#sfx_UFO_shoots,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.w	#4,$48(a5)
-	move.w	#5,$4A(a5)
-	st	$46(a5)
-	st	(Some_UFO_Shooting).w
-
-loc_34FD6:
-	subq.w	#1,$4A(a5)
-	bne.w	return_34FFC
-	move.w	#5,$4A(a5)
-	subq.w	#1,$48(a5)
-	beq.w	loc_34FFE
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#Enemy0F_UFOBeam_Init,4(a0)	; laser beam
-
-return_34FFC:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_34FFE:
-	sf	$46(a5)
-	sf	(Some_UFO_Shooting).w
-	rts
-; ---------------------------------------------------------------------------
-;loc_35008
-Enemy_HandleAcceleration:
-	move.l	d0,d7	; d0 = x acceleration?
-	bmi.w	loc_3501E
-	add.l	$26(a3),d7
-	cmp.l	d1,d7	; d1 = desired x speed?
-	blt.w	loc_3502A
-	move.l	d1,d7	; cap the speed at the desired value
-	bra.w	loc_3502A
-; ---------------------------------------------------------------------------
-
-loc_3501E:
-	add.l	$26(a3),d7
-	cmp.l	d1,d7
-	bgt.w	loc_3502A
-	move.l	d1,d7
-
-loc_3502A:
-	move.l	d7,$26(a3)
-
-	move.l	d2,d7
-	bmi.w	loc_35044
-	add.l	$2A(a3),d7
-	cmp.l	d3,d7
-	blt.w	loc_35050
-	move.l	d3,d7
-	bra.w	loc_35050
-; ---------------------------------------------------------------------------
-
-loc_35044:
-	add.l	$2A(a3),d7
-	cmp.l	d3,d7
-	bgt.w	loc_35050
-	move.l	d3,d7
-
-loc_35050:
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35056:
-	move.w	$38(a3),d7
-	bmi.w	loc_35070
-	beq.w	return_3506E
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	(a4,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-return_3506E:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35070:
-	clr.w	$38(a3)
-	rts
-; ---------------------------------------------------------------------------
-;loc_35076
-Enemy0F_UFO_ExecCollisionBehavior:
-	lea	Enemy0F_UFO_CollisionBehaviors(pc),a4
-	bra.s	loc_35056
-; ---------------------------------------------------------------------------
-;off_3507C
-Enemy0F_UFO_CollisionBehaviors:
-	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceUpSlope
-	dc.l Enemy0F_UFO_BounceDownSlope
-	dc.l Enemy0F_UFO_Hurt	; hit by e.g. projectile
-	dc.l return_350A8	; touching kid
-	dc.l return_350A8	; touching kid
-	dc.l return_350A8	; touching kid
-	dc.l Enemy0F_UFO_Hurt	; kid jumped on top
-; ---------------------------------------------------------------------------
-
-return_350A8:
-	rts
-; ---------------------------------------------------------------------------
-;loc_350AA
-Enemy0F_UFO_BounceUpSlope:
-	bsr.w	loc_350F2
-	move.l	#-$10000,d7
-	move.l	d7,$26(a3)
-	move.l	d7,$2A(a3)
-	move.l	#$800,d7
-	move.l	d7,d0
-	move.l	d7,d2
-	moveq	#0,d1
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-;loc_350CC
-Enemy0F_UFO_BounceDownSlope:
-	bsr.w	loc_350F2
-	move.l	#$10000,d7
-	move.l	d7,$26(a3)
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	move.l	#$800,d7
-	move.l	d7,d2
-	neg.l	d7
-	move.l	d7,d0
-	moveq	#0,d1
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-
-loc_350F2:
-	move.l	$26(a3),d7
-	sub.l	d7,$1A(a3)
-	move.l	$2A(a3),d7
-	sub.l	d7,$1E(a3)
-	rts
-; ---------------------------------------------------------------------------
-;loc_35104
-Enemy0F_UFO_BounceWall:
-	moveq	#0,d1
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	bmi.w	loc_35120
-	tst.l	d0
-	bmi.w	return_35128
-	neg.l	d0
-	bra.w	return_35128
-; ---------------------------------------------------------------------------
-
-loc_35120:
-	tst.l	d0
-	bpl.w	return_35128
-	neg.l	d0
-
-return_35128:
-	rts
-; ---------------------------------------------------------------------------
-;loc_3512A
-Enemy0F_UFO_BounceFloorCeil:
-	moveq	#0,d3
-	move.l	$2A(a3),d7
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	bmi.w	loc_35146
-	tst.l	d2
-	bmi.w	return_3514E
-	neg.l	d2
-	bra.w	return_3514E
-; ---------------------------------------------------------------------------
-
-loc_35146:
-	tst.l	d2
-	bpl.w	return_3514E
-	neg.l	d2
-
-return_3514E:
-	rts
-; ---------------------------------------------------------------------------
-;loc_35150
-Enemy0F_UFO_Hurt:
-	tst.b	$47(a5)
-	beq.w	loc_351EE
-	tst.b	$50(a5)
-	beq.w	loc_35174
-	subq.w	#1,(Number_UFOs_OnScreen).w
-	bne.w	loc_35174
-	move.l	d0,-(sp)
-	moveq	#$19,d0
-	jsr	(sub_E132C).l
-	move.l	(sp)+,d0
-
-loc_35174:
-	tst.b	$46(a5)
-	beq.w	loc_35180
-	sf	(Some_UFO_Shooting).w
-
-loc_35180:
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_355E2,4(a0)	; UFO Driver?
-	move.w	#$FFFF,$46(a0)
-	move.w	$26(a3),$44(a0)
-	sf	$13(a1)
-	st	$14(a3)
-	move.l	#$30000,$2A(a3)
-	move.l	#stru_34CA0,d7
-	jsr	(j_Init_Animation).w
-
-loc_351B6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	beq.s	loc_351B6
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-unk_351C4:	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $F9 ; ˘
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b   1
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   3
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b   0
-	dc.b   4
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b   0
-	dc.b   5
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_351EE:
-	lea	unk_351C4(pc),a4
-
-loc_351F2:
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_354DA,4(a0)
-	moveq	#0,d7
-	move.w	(a4)+,d7
-	beq.w	loc_35228
-	swap	d7
-	asr.l	#1,d7
-	move.l	$26(a3),d6
-	asr.l	#1,d6
-	add.l	d6,d7
-	move.l	d7,$44(a0)
-	moveq	#0,d7
-	move.w	(a4)+,d7
-	swap	d7
-	asr.l	#1,d7
-	move.l	d7,$48(a0)
-	bra.s	loc_351F2
-; ---------------------------------------------------------------------------
-
-loc_35228:
-	st	$47(a5)
-	jsr	loc_32188(pc)
-	move.l	a1,$3A(a5)
-	move.w	#$F,d0
-	exg	a1,a3
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	#stru_34D02,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	st	$13(a1)
-	sf	$19(a1)
-	sf	$14(a1)
-	sf	$3C(a1)
-	move.b	#1,$10(a1)
-	move.l	#stru_34C92,d7
-	jsr	(j_Init_Animation).w
-	addi.l	#$40000,$2A(a3)
-	move.l	#$FFFFF400,d2
-	moveq	#0,d3
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35280:
-	bsr.w	loc_320E2
-	bne.w	loc_3528A
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3528A:
-	tst.b	$50(a5)
-	beq.w	loc_352A6
-	subq.w	#1,(Number_UFOs_OnScreen).w
-	bne.w	loc_352A6
-	move.l	d0,-(sp)
-	moveq	#$19,d0
-	jsr	(sub_E132C).l
-	move.l	(sp)+,d0
-
-loc_352A6:
-	tst.b	$46(a5)
-	beq.w	loc_352B2
-	sf	(Some_UFO_Shooting).w
-
-loc_352B2:
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_352D2
-	btst	#6,d0
-	beq.s	loc_352E0
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_352E0
-; ---------------------------------------------------------------------------
-
-loc_352D2:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_352E0:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-Enemy0F_UFO_SpeedToPos:
-	move.l	$26(a3),d7
-	add.l	d7,$1A(a3)
-	move.l	$2A(a3),d7
-	add.l	d7,$1E(a3)
-	tst.b	$47(a5)
-	beq.w	return_35324
-	move.b	$16(a3),$16(a1)
-	move.w	$1E(a3),d7
-	subi.w	#$B,d7
-	move.w	d7,$1E(a1)
-	move.w	#4,d6
-	tst.b	$16(a1)
-	beq.s	loc_3531A
-	neg.w	d6
-
-loc_3531A:
-	move.w	$1A(a3),d7
-	sub.w	d6,d7
-	move.w	d7,$1A(a1)
-
-return_35324:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35326:
-	jsr	(j_Get_RandomNumber_byte).w
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d6
-	eor.b	d6,d7
-	andi.w	#$F,d7
-	asl.w	#4,d7
-	lea	unk_35344(pc),a4
-	add.w	d7,a4
-	bra.w	loc_35444
-; ---------------------------------------------------------------------------
-; each entry is 4 longs
-unk_35344:
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $C
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F4 ; Ù
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F8 ; ¯
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $F0 ; 
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_35444:
-	st	$16(a3)
-	move.l	(a4)+,d1
-	bpl.w	loc_35452
-	sf	$16(a3)
-
-loc_35452:
-	move.l	(a4)+,d3
-	move.l	(a4)+,d0
-	bne.w	loc_3546E
-	move.l	#$C00,d0
-	tst.l	$26(a3)
-	bmi.w	loc_35496
-	neg.l	d0
-	bra.w	loc_35496
-; ---------------------------------------------------------------------------
-
-loc_3546E:
-	move.l	$26(a3),d7
-	bmi.w	loc_35488
-	tst.l	d1
-	bmi.w	loc_35496
-	cmp.l	d7,d1
-	bge.w	loc_35496
-	neg.l	d0
-	bra.w	loc_35496
-; ---------------------------------------------------------------------------
-
-loc_35488:
-	tst.l	d1
-	bpl.w	loc_35496
-	cmp.l	d7,d1
-	ble.w	loc_35496
-	neg.l	d0
-
-loc_35496:
-	move.l	(a4)+,d2
-	bne.w	loc_354B0
-	move.l	#$C00,d2
-	tst.l	$2A(a3)
-	bmi.w	return_354D8
-	neg.l	d2
-	bra.w	return_354D8
-; ---------------------------------------------------------------------------
-
-loc_354B0:
-	move.l	$2A(a3),d7
-	bmi.w	loc_354CA
-	tst.l	d3
-	bmi.w	return_354D8
-	cmp.l	d7,d3
-	bge.w	return_354D8
-	neg.l	d2
-	bra.w	return_354D8
-; ---------------------------------------------------------------------------
-
-loc_354CA:
-	tst.l	d3
-	bpl.w	return_354D8
-	cmp.l	d7,d3
-	ble.w	return_354D8
-	neg.l	d2
-
-return_354D8:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_354DA:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.l	$44(a5),$26(a3)
-	move.l	$48(a5),$2A(a3)
-	move.w	$1A(a0),$1A(a3)
-	subi.w	#$B,$1A(a3)
-	tst.b	$16(a3)
-	beq.w	loc_35512
-	addi.w	#$16,$1A(a3)
-
-loc_35512:
-	move.w	$1E(a0),$1E(a3)
-	subi.w	#$18,$1E(a3)
-	st	$13(a3)
-	st	$14(a3)
-	sf	$3C(a3)
-	sf	$19(a3)
-	move.b	#1,$10(a3)
-	move.w	#$F,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.w	#(LnkTo_unk_C8408-Data_Index),$22(a3)
-	move.w	#5,d0
-
-loc_3554A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	subq.w	#1,d0
-	bne.s	loc_3555A
-	not.b	$16(a3)
-	move.w	#$A,d0
-
-loc_3555A:
-	addi.l	#$3000,$2A(a3)
-	tst.b	$19(a3)
-	beq.s	loc_3554A
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-;loc_3556C
-Enemy0F_UFOBeam_Init:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	addi.w	#$A,$1E(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	#1,$10(a3)
-	move.w	#$F,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	move.w	#(LnkTo_unk_C83A0-Data_Index),$22(a3)
-	move.l	#$30000,$2A(a3)
-	subi.w	#4,$1A(a3)
-	tst.b	$16(a0)
-	beq.w	Enemy0F_UFOBeam_Loop
-	addi.w	#8,$1A(a3)
-
-;loc_355D4
-Enemy0F_UFOBeam_Loop:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	beq.s	Enemy0F_UFOBeam_Loop
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_355E2:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	subi.w	#$B,$1E(a3)
-	move.b	$16(a0),$16(a3)
-	move.w	$46(a5),$2A(a3)
-	move.w	$44(a5),$26(a3)
-	st	$13(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	st	$3D(a3)
-	sf	$19(a3)
-	move.b	#1,$10(a3)
-	move.w	#$F,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	#stru_34CD0,d7
-	jsr	(j_Init_Animation).w
-
-loc_3564C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	moveq	#1,d0
-	bsr.w	Object_CheckInRange
-	addi.l	#$2000,$2A(a3)
-	lea	(off_3569E).l,a4
-	moveq	#1,d0
-	bsr.w	loc_35762
-	bra.s	loc_3564C
-; ---------------------------------------------------------------------------
-
-loc_3566C:
-	move.l	#$FFFF8000,$26(a3)
-	tst.b	$16(a3)
-	beq.w	loc_35680
-	neg.l	$26(a3)
-
-loc_35680:
-	sf	$3D(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	lea	(off_356B6).l,a4
-	moveq	#0,d0
-	bsr.w	loc_35762
-	bsr.w	loc_35724
-	bra.s	loc_35680
-; ---------------------------------------------------------------------------
-off_3569E:	dc.l loc_357FA
-	dc.l loc_357FA
-	dc.l loc_3581E
-	dc.l loc_35810
-	dc.l loc_35838
-	dc.l loc_35864
-off_356B6:	dc.l loc_356CE
-	dc.l loc_356CE
-	dc.l loc_3571E
-	dc.l loc_3571E
-	dc.l loc_356F2
-	dc.l loc_356F2
-; ---------------------------------------------------------------------------
-
-loc_356CE:
-
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	lsl.l	#2,d7
-	add.l	d7,$1A(a3)
-	not.b	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-word_356E4:	dc.w $FFFF
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $FF
-	dc.b $FD ; ˝
-	dc.b $FF
-	dc.b $FC ; ¸
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b $FF
-	dc.b $FA ; ˙
-	dc.b $FF
-	dc.b $F9 ; ˘
-; ---------------------------------------------------------------------------
-
-loc_356F2:
-
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$2F,d7
-	cmpi.w	#$A,d7
-	bgt.s	loc_356CE
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#6,d7
-	move.w	word_356E4(pc,d7.w),d7
-	move.w	d7,$2A(a3)
-	move.l	$26(a3),d7
-	asl.l	#1,d7
-	move.l	d7,$26(a3)
-	bra.w	loc_3564C
-; ---------------------------------------------------------------------------
-
-loc_3571E:
-	addq.w	#4,sp
-	bra.w	loc_35680
-; ---------------------------------------------------------------------------
-
-loc_35724:
-	move.w	$1A(a3),d7
-	subi.w	#$F,d7
-	tst.b	$16(a3)
-	beq.w	loc_35738
-	addi.w	#$1E,d7
-
-loc_35738:
-	move.w	$1E(a3),d6
-	addi.w	#8,d6
-	lea	($FFFF4A04).l,a4
-	lsr.w	#4,d6
-	add.w	d6,d6
-	move.w	(a4,d6.w),a4
-	lsr.w	#4,d7
-	add.w	d7,d7
-	add.w	d7,a4
-	move.w	(a4),d7
-	andi.w	#$7000,d7
-	cmpi.w	#$6000,d7
-	bne.s	loc_356F2
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35762:
-	move.w	$38(a3),d7
-	beq.s	return_357C0
-	bmi.w	loc_357C2
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d7
-	beq.s	loc_357C2
-	cmpi.w	#$1C,d7
-	beq.s	loc_357C2
-	bgt.w	loc_35788
-	subq.w	#4,d7
-	move.l	(a4,d7.w),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-loc_35788:
-	cmpi.w	#$28,d7
-	bge.w	return_357C0
-	tst.b	(Berzerker_charging).w
-	beq.w	return_357C0
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	$26(a4),d7
-	asr.l	#1,d7
-	move.l	d7,$26(a3)
-	move.l	#$FFFC0000,$2A(a3)
-	sf	$3C(a3)
-	move.l	#stru_34CAE,d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_357E6
-; ---------------------------------------------------------------------------
-
-return_357C0:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_357C2:
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	sf	$3C(a3)
-	move.l	#stru_34CAE,d7
-	jsr	(j_Init_Animation).w
-	tst.w	d0
-	bne.w	loc_357E6
-	jsr	(j_sub_105E).w
-
-loc_357E2:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_357E6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$4000,$2A(a3)
-	tst.b	$19(a3)
-	beq.s	loc_357E6
-	bra.s	loc_357E2
-; ---------------------------------------------------------------------------
-
-loc_357FA:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	lsl.l	#2,d7
-	add.l	d7,$1A(a3)
-	not.b	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35810:
-	move.l	$2A(a3),d7
-	neg.l	d7
-	asr.l	#1,d7
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3581E:
-	addq.w	#4,sp
-	clr.l	$2A(a3)
-	clr.w	$20(a3)
-	addi.w	#8,$1E(a3)
-	andi.w	#$FFF0,$1E(a3)
-	bra.w	loc_3566C
-; ---------------------------------------------------------------------------
-
-loc_35838:
-	move.l	#-$10000,$26(a3)
-	move.l	#-$10000,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	neg.l	d7
-	asr.l	#1,d7
-	move.l	$2A(a3),d6
-	neg.l	d6
-	asr.w	#1,d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35864:
-	move.l	#$10000,$26(a3)
-	move.l	#-$10000,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	asr.l	#1,d7
-	asr.l	#1,d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-unk_3588C:	dc.b   0
-	dc.b $3C ; <
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $FF
-	dc.b   0
-	dc.b   0
-	dc.b $1E
-	dc.b $FF
-	dc.b $FF
-; ---------------------------------------------------------------------------
-
-;loc_35898:
-Enemy18_Tornado_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	move.b	#0,$10(a3)
-	move.w	#$18,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.w	2(a0),d7
-	add.w	d7,d7
-	add.w	d7,d7
-	lea	unk_3588C(pc,d7.w),a4
-	move.w	(a4)+,$48(a5)
-	move.b	(a4)+,$46(a5)
-	move.b	(a4)+,$47(a5)
-	move.l	#stru_35B10,d7
-	jsr	(j_Init_Animation).w
-	lea	unk_35A0C(pc),a0
-	bsr.w	loc_35326
-	bsr.w	loc_3592E
-	move.w	$48(a5),$44(a5)
-
-loc_35908:
-	bsr.w	Enemy_HandleAcceleration
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_35948
-	subq.w	#1,$44(a5)
-	bne.s	loc_35908
-	bsr.w	loc_359F2
-	bsr.w	loc_3592E
-	move.w	$48(a5),$44(a5)
-	bra.s	loc_35908
-; ---------------------------------------------------------------------------
-
-loc_3592E:
-	tst.b	$46(a5)
-	beq.w	loc_3593A
-	add.l	d0,d0
-	add.l	d2,d2
-
-loc_3593A:
-	tst.b	$47(a5)
-	beq.w	return_35946
-	add.l	d1,d1
-	add.l	d3,d3
-
-return_35946:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35948:
-	lea	off_35950(pc),a4
-	bra.w	loc_35056
-; ---------------------------------------------------------------------------
-off_35950:	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceWall
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceFloorCeil
-	dc.l Enemy0F_UFO_BounceUpSlope
-	dc.l Enemy0F_UFO_BounceDownSlope
-	dc.l loc_359B2
-	dc.l loc_3597E
-	dc.l loc_35984
-	dc.l return_3597C
-	dc.l loc_359B2
-; ---------------------------------------------------------------------------
-
-return_3597C:
-
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3597E:
-	moveq	#2,d7
-	bra.w	loc_35986
-; ---------------------------------------------------------------------------
-
-loc_35984:
-	moveq	#-2,d7
-
-loc_35986:
-	tst.b	(Cyclone_flying).w
-	beq.s	return_3597C
-	move.l	(Addr_GfxObject_Kid).w,a4
-	swap	d7
-	move.l	d7,$26(a4)
-	neg.l	d7
-	asr.l	#1,d7
-	move.l	d7,$26(a3)
-	move.w	$1E(a4),d7
-	cmp.w	$1E(a3),d7
-	blt.w	loc_359B2
-	move.w	#$28,$38(a4)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_359B2:
-
-	move.l	#stru_35B1E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_359E0
-	btst	#6,d0
-	beq.s	loc_359EE
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_359EE
-; ---------------------------------------------------------------------------
-
-loc_359E0:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_359EE:
-	jsr	(j_Delete_CurrentObject).w
-
-loc_359F2:
-	move.l	(a0),d7
-	cmpi.l	#1,d7
-	bne.w	loc_35A02
-	lea	unk_35A0C(pc),a0
-
-loc_35A02:
-	move.l	a0,a4
-	addi.w	#$10,a0
-	bra.w	loc_35444
-; ---------------------------------------------------------------------------
-unk_35A0C:	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; ˛
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $E8 ; Ë
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $18
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-stru_35B10:
-	anim_frame	  1,   5, LnkTo_unk_C784E-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7856-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C785E-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_35B1E:
-	anim_frame	  1,   6, LnkTo_unk_C783E-Data_Index
-
-	anim_frame	  1,   3, LnkTo_unk_C7846-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C783E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7846-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C783E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7846-Data_Index
-	dc.b   0
-	dc.b   0
-dword_35B38:	dc.l $FFFFD000
-	dc.l $FFFFB000
-	dc.l $FFFF9000
-; ---------------------------------------------------------------------------
-
-;loc_35B44:
-Enemy0E_Cloud_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	clr.l	$2A(a3)
-	move.w	2(a0),d7
-	asl.w	#2,d7
-	move.l	dword_35B38(pc,d7.w),$26(a3)
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	bsr.w	sub_36FF4
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#$E,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	st	$3C(a3)
-	sf	$19(a3)
-	moveq	#1,d3
-	moveq	#5,d2
-	moveq	#0,d1
-	st	$44(a5)
-	sf	$45(a5)
-	move.l	#stru_35EA0,d7
-	jsr	(j_Init_Animation).w
-
-loc_35BAC:
-	lea	(unk_35BC4).l,a0
-
-loc_35BB2:
-	lea	off_35BCE(pc),a1
-	move.w	(a0)+,d0
-	bmi.s	loc_35BAC
-	clr.l	d7
-	move.b	d0,d7
-	move.l	(a1,d7.w),a1
-	jmp	(a1)
-; ---------------------------------------------------------------------------
-unk_35BC4:	dc.b $78 ; x
-	dc.b   0
-	dc.b   0
-	dc.b   4
-	dc.b $1E
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b $FF
-	dc.b $FF
-off_35BCE:	dc.l loc_35C54
-	dc.l loc_35C72
-	dc.l loc_35C7A
-	dc.l loc_35C82
-; ---------------------------------------------------------------------------
-
-loc_35BDE:
-	move.w	$38(a3),d6
-	beq.s	return_35C0C
-	bmi.w	loc_35C0E
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d6
-	beq.w	loc_35C0E
-	cmpi.w	#$1C,d6
-	beq.w	loc_35C0E
-	bge.w	return_35C0C
-	move.w	#$3C,d3
-	neg.l	$26(a3)
-	not.b	$16(a3)
-
-return_35C0C:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35C0E:
-	addq.w	#4,sp
-	clr.l	$26(a3)
-	move.l	#stru_35EBA,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_35C42
-	btst	#6,d0
-	beq.s	loc_35C50
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_35C50
-; ---------------------------------------------------------------------------
-
-loc_35C42:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_35C50:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_35C54:
-	lsr.w	#8,d0
-
-loc_35C56:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_35BDE
-	bsr.w	loc_35CA2
-	bsr.w	loc_35CD8
-	dbf	d0,loc_35C56
-	bra.w	loc_35BB2
-; ---------------------------------------------------------------------------
-
-loc_35C72:
-	st	$44(a5)
-	bra.w	loc_35BB2
-; ---------------------------------------------------------------------------
-
-loc_35C7A:
-	sf	$44(a5)
-	bra.w	loc_35BB2
-; ---------------------------------------------------------------------------
-
-loc_35C82:
-	move.l	#stru_35EC8,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_35BAC
-; ---------------------------------------------------------------------------
-off_35C94:	dc.w LnkTo_unk_C787E-Data_Index
-	dc.w LnkTo_unk_C7886-Data_Index
-	dc.w LnkTo_unk_C788E-Data_Index
-	dc.w LnkTo_unk_C7896-Data_Index
-	dc.w LnkTo_unk_C788E-Data_Index
-	dc.w LnkTo_unk_C7886-Data_Index
-	dc.w $FFFF
-; ---------------------------------------------------------------------------
-
-loc_35CA2:
-	tst.b	$44(a5)
-	beq.s	return_35CD6
-	tst.b	$45(a5)
-	bne.w	return_35CD6
-	subq.w	#1,d2
-	bne.s	return_35CD6
-	jsr	(j_Get_RandomNumber_byte).w
-	andi.w	#$2F,d7
-	cmpi.w	#$A,d7
-	bgt.s	loc_35CD2
-	bclr	#0,d7
-	lea	off_35C94(pc),a4
-	move.w	(a4,d7.w),d7
-	move.w	d7,$22(a3)
-
-loc_35CD2:
-	move.w	#5,d2
-
-return_35CD6:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35CD8:
-	tst.b	$45(a5)
-	bne.w	loc_35DAE
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1E(a4),d7
-	sub.w	$1E(a3),d7
-	bmi.w	loc_35D40
-	tst.b	$16(a3)
-	bne.s	loc_35D1E
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	bpl.s	loc_35D40
-	neg.w	d6
-	cmp.w	d6,d7
-	bgt.s	loc_35D40
-	subi.w	#$10,d6
-	cmp.w	d6,d7
-	blt.s	loc_35D40
-	move.w	#3,d1
-	neg.w	d1
-	swap	d1
-	move.w	#3,d1
-	bra.w	loc_35D9E
-; ---------------------------------------------------------------------------
-
-loc_35D1E:
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	bmi.s	loc_35D40
-	cmp.w	d6,d7
-	bgt.s	loc_35D40
-	subi.w	#$10,d6
-	cmp.w	d6,d7
-	blt.s	loc_35D40
-	move.w	#3,d1
-	swap	d1
-	move.w	#3,d1
-	bra.s	loc_35D9E
-; ---------------------------------------------------------------------------
-
-loc_35D40:
-	tst.w	d7
-	bmi.w	loc_35D62
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	cmpi.w	#$10,d6
-	bgt.s	loc_35D62
-	cmpi.w	#$FFF0,d6
-	ble.s	loc_35D62
-	moveq	#0,d1
-	move.w	#6,d1
-	bra.s	loc_35D9E
-; ---------------------------------------------------------------------------
-
-loc_35D62:
-	cmpi.w	#$FFE8,d7
-	blt.w	return_35DAC
-	cmpi.w	#$18,d7
-	bgt.w	return_35DAC
-	tst.b	$16(a3)
-	bne.s	loc_35D8C
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	bpl.s	return_35DAC
-	moveq	#0,d1
-	move.w	#$FFFA,d1
-	swap	d1
-	bra.s	loc_35D9E
-; ---------------------------------------------------------------------------
-
-loc_35D8C:
-	move.w	$1A(a4),d6
-	sub.w	$1A(a3),d6
-	bmi.s	return_35DAC
-	moveq	#0,d1
-	move.w	#6,d1
-	swap	d1
-
-loc_35D9E:
-	move.l	#stru_35EC8,d7
-	jsr	(j_Init_Animation).w
-	st	$45(a5)
-
-return_35DAC:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35DAE:
-	tst.b	$18(a3)
-	bne.w	loc_35DB8
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35DB8:
-	move.l	a0,-(sp)
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_35DF0,4(a0)
-	move.w	d1,$46(a0)
-	swap	d1
-	move.w	d1,$44(a0)
-	move.b	$16(a3),d7
-	not.b	d7
-	move.b	d7,$48(a0)
-	move.l	(sp)+,a0
-	move.l	#stru_35EA0,d7
-	jsr	(j_Init_Animation).w
-	sf	$45(a5)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_35DF0:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	subi.w	#$B,$1E(a3)
-	move.b	$48(a5),$16(a3)
-	move.w	$46(a5),$2A(a3)
-	move.w	$44(a5),$26(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	#2,$11(a3)
-	move.b	#0,$10(a3)
-	move.w	#$409,$24(a3)
-	move.b	#0,$10(a3)
-	move.w	#$E,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	sf	$19(a3)
-	move.w	#(LnkTo_unk_C786E-Data_Index),$22(a3)
-	tst.w	$26(a3)
-	beq.s	loc_35E8A
-	move.w	#(LnkTo_unk_C7866-Data_Index),$22(a3)
-	tst.w	$2A(a3)
-	beq.s	loc_35E8A
-	move.w	#(LnkTo_unk_C7876-Data_Index),$22(a3)
-	addi.w	#4,$1A(a3)
-	tst.b	$16(a3)
-	beq.s	loc_35E8A
-	subi.w	#8,$1A(a3)
-
-loc_35E8A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	bne.s	loc_35E9C
-	tst.b	$19(a3)
-	bne.s	loc_35E9C
-	bra.s	loc_35E8A
-; ---------------------------------------------------------------------------
-
-loc_35E9C:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-stru_35EA0:
-	anim_frame	  1,  $B, LnkTo_unk_C78B6-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C78BE-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C78C6-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C78CE-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C78C6-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C78BE-Data_Index
-	dc.b 2
-	dc.b $19
-stru_35EBA:
-	anim_frame	  1,   7, LnkTo_unk_C789E-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C78A6-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C78AE-Data_Index
-	dc.b 0
-	dc.b 0
-stru_35EC8:
-	anim_frame	  1,   3, LnkTo_unk_C787E-Data_Index
-
-	anim_frame	  1,   3, LnkTo_unk_C7886-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C787E-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C7886-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C787E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7886-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C788E-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C7886-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C788E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7896-Data_Index
-	dc.b 0
-	dc.b 0
+;Enemy0F_UFO_Init:
+	include "code/enemy/UFO.asm"
 ; ---------------------------------------------------------------------------
-;loc_35EF2
-Enemy06_Sphere_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w	; --> loads an object data slot at a3
-	move.l	$44(a5),a0	; address to position in enemy layout
-	move.w	4(a0),$1A(a3)	; x position
-	move.w	6(a0),$1E(a3)	; y position
-	bsr.w	sub_36FF4	; FFFAD2 x_pos adjustment
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#6,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)	; initializes $11(a3) and $24(a3)
-	st	$3C(a3)
-	move.l	#stru_36174,d7
-	jsr	(j_Init_Animation).w	; init anim
-	sf	$19(a3)
-	move.w	#0,$2A(a3)	; y velocity
-	move.l	#$10000,$26(a3)	; x velocity
-	move.w	#$A,d1
-
-;loc_35F4E
-Enemy06_Sphere_Loop:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	subq.w	#1,d1
-	bne.w	+
-	move.w	#$96,d1
-	clr.l	d0
-
-+
-	addi.l	#$800,$2A(a3)	; apply gravity
-	tst.w	$38(a3)
-	bne.s	Enemy06_Sphere_ExecCollisionBehavior
-	bra.s	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;off_35F72
-Enemy06_Sphere_CollisionBehaviors:
-	dc.l Enemy06_Sphere_BounceWall	; bounce on wall
-	dc.l Enemy06_Sphere_BounceWall	; bounce on wall
-	dc.l Enemy06_Sphere_BounceFloor	; bounce on floor
-	dc.l Enemy06_Sphere_BounceCeiling	; bounce on ceiling
-	dc.l Enemy06_Sphere_SlopeUp	; bounce on slope?
-	dc.l Enemy06_Sphere_SlopeDown	; bounce on slope?
-	dc.l Enemy06_Sphere_Kill	; kill sphere
-	dc.l Enemy06_Sphere_Loop	; do nothing
-	dc.l Enemy06_Sphere_Loop	; do nothing
-	dc.l Enemy06_Sphere_Loop	; do nothing
-	dc.l Enemy06_Sphere_Kill	; kill sphere
-; ---------------------------------------------------------------------------
-;loc_35F9E
-Enemy06_Sphere_ExecCollisionBehavior:
-	bmi.w	Enemy06_Sphere_Kill
-	move.w	#1,d0
-	clr.l	d7
-	move.w	$38(a3),d7
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	Enemy06_Sphere_CollisionBehaviors(pc,d7.w),a0
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-;loc_35FB8
-Enemy06_Sphere_BounceWall:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	d7,$26(a3)
-	bra.s	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-
-loc_35FC4:
-	jmp	loc_35FC4(pc)
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	(Addr_GfxObject_Kid).w,a0
-	add.l	$26(a0),d7
-	move.l	d7,$26(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	(Addr_GfxObject_Kid).w,a0
-	add.l	$26(a0),d7
-	move.l	d7,$26(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;loc_35FF4
-Enemy06_Sphere_BounceFloor:
-	move.l	$2A(a3),d7
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;loc_36002
-Enemy06_Sphere_BounceCeiling:
-	move.l	$2A(a3),d7
-	asr.l	#1,d7
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;loc_36012
-Enemy06_Sphere_SlopeUp:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	$2A(a3),d6
-	neg.l	d6
-	add.l	d7,$1A(a3)
-	add.l	d6,$1E(a3)
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;loc_36032
-Enemy06_Sphere_SlopeDown:
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
-	neg.l	d7
-	neg.l	d6
-	add.l	d7,$1A(a3)
-	add.l	d6,$1E(a3)
-	bra.w	Enemy06_Sphere_Loop
-; ---------------------------------------------------------------------------
-;loc_36052
-Enemy06_Sphere_Kill:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	move.l	#stru_36182,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_36088
-	btst	#6,d0
-	beq.s	loc_36096
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_36096
-; ---------------------------------------------------------------------------
-
-loc_36088:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_36096:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	st	$3C(a3)
-	move.b	$48(a5),$16(a3)
-	st	$13(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#6,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	$4A(a5),d7
-	jsr	(j_Init_Animation).w
-	sf	$19(a3)
-	move.w	$46(a5),$2A(a3)
-	move.w	$44(a5),$26(a3)
-
-loc_360F4:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.s	loc_3610E
-	tst.w	d0
-	beq.s	loc_36106
-	subq.w	#1,d0
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-
-loc_36106:
-	tst.w	$38(a3)
-	bne.s	loc_3610E
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-
-loc_3610E:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-	move.w	#6,d0
-	clr.l	d7
-	move.w	$38(a3),d7
-	subq.w	#4,d7
-	clr.w	$38(a3)
-	move.l	off_3612A(pc,d7.w),a0
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_36128:
-	bra.s	loc_36128
-; ---------------------------------------------------------------------------
-off_3612A:
-	dc.l loc_36148
-	dc.l loc_36148
-	dc.l loc_36142
-	dc.l loc_36142
-	dc.l loc_3614E
-	dc.l loc_36164
-; ---------------------------------------------------------------------------
-
-loc_36142:
-	neg.l	$2A(a3)
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-
-loc_36148:
-	neg.l	$26(a3)
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-
-loc_3614E:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	$2A(a3),$26(a3)
-	neg.l	$26(a3)
-	move.l	d7,$2A(a3)
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-
-loc_36164:
-	move.l	$26(a3),d7
-	move.l	$2A(a3),$26(a3)
-	move.l	d7,$2A(a3)
-	bra.s	loc_360F4
-; ---------------------------------------------------------------------------
-stru_36174:	; sphere normal?
-	anim_frame	  1,   9, LnkTo_unk_C8120-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C8128-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C8130-Data_Index
-	dc.b   2, $D	; go back $D bytes, i.e. to beginning of anim list
-stru_36182:	; sphere disappearing?
-	anim_frame	  1,  $A, LnkTo_unk_C8108-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C8110-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C8118-Data_Index
-	dc.b   0	; stop animating
-	dc.b   0
-	anim_frame	1, 9, LnkTo_unk_C80F8-Data_Index
-	dc.b   2
-	dc.b   5
-	anim_frame	1, 9, LnkTo_unk_C80F0-Data_Index
-	dc.b   2
-	dc.b   5
-	anim_frame	1, 9, LnkTo_unk_C8100-Data_Index
-	dc.b   2
-	dc.b   5
-word_361A2:	dc.w $50
-word_361A4:	dc.w $2000
-	dc.b   0
-	dc.b $3C ; <
-	dc.b $30 ; 0
-	dc.b   0
-	dc.b   0
-	dc.b $28 ; (
-	dc.b $40 ; @
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_361AE:
-Enemy1B_EmoRock_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	2(a0),d7
-	add.w	d7,d7
-	add.w	d7,d7
-	move.w	word_361A2(pc,d7.w),d1
-	moveq	#0,d2
-	move.w	word_361A4(pc,d7.w),d2
-	add.l	d2,d2
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	st	$13(a3)
-	st	$14(a3)
-	move.w	#$1B,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	(Addr_GfxObject_Kid).w,a2
-
-loc_361F4:
-	move.w	#$3C,d0
-	jsr	(j_Get_RandomNumber_byte).w
-	move.w	$1A(a2),d6
-	eor.b	d6,d7
-	bclr	#7,d7
-	ext.w	d7
-	add.w	d7,d0
-	st	$3D(a3)
-	sf	$3C(a3)
-
-loc_36212:
-	jsr	(j_Hibernate_Object_1Frame).w
-	subq.w	#1,d0
-	bne.s	loc_36212
-
-loc_3621A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1E(a2),d7
-	sub.w	d1,d7
-	move.w	d7,$1E(a3)
-	move.w	$1A(a2),$1A(a3)
-	move.w	#$1C,d6
-	move.w	#$E,d7
-	bsr.w	loc_3639E
-	bne.s	loc_3621A
-	move.l	d0,-(sp)
-	moveq	#sfx_Voice_die,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.l	#stru_3647E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	st	$3C(a3)
-	sf	$3D(a3)
-
-loc_3625E:
-	move.l	$2A(a3),d7
-	add.l	d2,d7
-	cmpi.l	#$60000,d7
-	ble.w	loc_36274
-	move.l	#$40000,d7
-
-loc_36274:
-	move.l	d7,$2A(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
-	beq.s	loc_3625E
-	bmi.w	loc_36346
-	clr.w	$38(a3)
-	cmpi.w	#$1C,d7
-	bge.s	loc_3625E
-	sf	$16(a3)
-	move.w	$1A(a2),d7
-	cmp.w	$1A(a3),d7
-	blt.w	loc_362A4
-	st	$16(a3)
-
-loc_362A4:
-	clr.l	$2A(a3)
-	sf	$3C(a3)
-	move.l	#stru_363FE,d7
-	jsr	(j_Init_Animation).w
-
-loc_362B6:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$18(a3)
-	bne.w	loc_36320
-	move.w	$38(a3),d7
-	beq.s	loc_362B6
-	bmi.w	loc_36346
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d7
-	beq.w	loc_36346
-	cmpi.w	#$1C,d7
-	beq.w	loc_36346
-	cmpi.w	#$20,d7
-	beq.w	loc_362EE
-	cmpi.w	#$24,d7
-	bne.s	loc_362B6
-
-loc_362EE:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_362B6
-	st	$3D(a3)
-	sf	$3C(a3)
-	move.l	$26(a2),$26(a3)
-	move.l	#$FFFD0000,$2A(a3)
-
-loc_3630A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.w	loc_36346
-	addi.l	#$6000,$2A(a3)
-	bra.s	loc_3630A
-; ---------------------------------------------------------------------------
-
-loc_36320:
-	st	$3D(a3)
-	move.l	d0,-(sp)
-	moveq	#sfx_Emo_Rock_disappears,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.l	#stru_36456,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	clr.w	$22(a3)
-	bra.w	loc_361F4
-; ---------------------------------------------------------------------------
-
-loc_36346:
-	st	$3D(a3)
-	sf	$14(a3)
-	move.l	#stru_36468,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	d0,-(sp)
-	moveq	#sfx_Prize_block,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	jsr	(j_sub_105E).w
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_3638C
-	btst	#6,d0
-	beq.s	loc_3639A
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3639A
-; ---------------------------------------------------------------------------
-
-loc_3638C:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_3639A:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3639E:
-	move.w	$1E(a3),d4
-	move.w	d4,d5
-	sub.w	d6,d4
-	bmi.w	loc_363FA
-	asr.w	#4,d4
-	asr.w	#4,d5
-	sub.w	d4,d5
-	add.w	d4,d4
-	lea	($FFFF4A04).l,a0
-	move.w	(a0,d4.w),a0
-	move.w	$1A(a3),d4
-	move.w	d4,d6
-	sub.w	d7,d4
-	bmi.w	loc_363FA
-	add.w	d7,d6
-	cmp.w	(Level_width_pixels).w,d6
-	bge.w	loc_363FA
-	asr.w	#4,d4
-	asr.w	#4,d6
-	sub.w	d4,d6
-	add.w	d4,d4
-	add.w	d4,a0
-
-loc_363DC:
-	move.w	d6,d7
-	move.w	a0,a1
-
-loc_363E0:
-	move.w	(a1)+,d4
-	andi.w	#$4000,d4
-	bne.w	loc_363FA
-	dbf	d7,loc_363E0
-	add.w	(Level_width_tiles).w,a0
-	dbf	d5,loc_363DC
-	moveq	#0,d7
-	rts
-; ---------------------------------------------------------------------------
-
-loc_363FA:
-	moveq	#1,d7
-	rts
-; ---------------------------------------------------------------------------
-stru_363FE:
-	anim_frame	  1, $14, LnkTo_unk_C7F40-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7F58-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7F60-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	dc.b   0
-	dc.b   0
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	dc.b   0
-	dc.b   0
-stru_36456:
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F98-Data_Index
-	dc.b   0
-	dc.b   0
-stru_36468:
-	anim_frame	  1,   6, LnkTo_unk_C7F68-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F70-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F78-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F80-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F88-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3647E:
-	anim_frame	  1,   4, LnkTo_unk_C7F48-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F50-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F48-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F50-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7F38-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F48-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F50-Data_Index
-	anim_frame	  1, $28, LnkTo_unk_C7F38-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_364A0:
-Enemy1D_BigHoppingSkull_Init:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
-	move.w	($FFFFF93C).w,$3E(a3)
-	move.w	($FFFFF93A).w,$40(a3)
-	addi.w	#$40,$3E(a3)
-	subi.w	#$40,$40(a3)
-	st	$3C(a3)
-	st	$13(a3)
-	st	$16(a3)
-	st	$14(a3)
-	move.b	#0,$10(a3)
-	move.w	#$1D,d0
-	move.w	d0,$3A(a3)
-	jsr	loc_32146(pc)
-	move.l	(Addr_GfxObject_Kid).w,a2
-	move.w	#(LnkTo_unk_C7FC0-Data_Index),$22(a3)
-	move.w	2(a0),d0
-	cmpi.w	#0,d0
-	bne.s	loc_3650E
-	move.w	#2,d2
-	bra.s	loc_3651E
-; ---------------------------------------------------------------------------
-
-loc_3650E:
-	cmpi.w	#1,d0
-	bne.s	loc_3651A
-	move.w	#3,d2
-	bra.s	loc_3651E
-; ---------------------------------------------------------------------------
-
-loc_3651A:
-	move.w	#4,d2
-
-loc_3651E:
-	clr.w	$2A(a3)
-	move.w	#$FFFE,$2A(a3)
-	move.w	#1,$26(a3)
-
-loc_3652E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	move.l	#stru_367BE,d7
-	jsr	(j_Init_Animation).w
-
-loc_36540:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	bsr.w	loc_3656C
-	addi.l	#$FA0,$2A(a3)
-	bsr.w	loc_3674E
-	tst.b	$18(a3)
-	beq.s	loc_36540
-	addi.l	#$FA0,$2A(a3)
-	bsr.w	loc_3656C
-	bra.s	loc_3652E
-; ---------------------------------------------------------------------------
-
-loc_3656C:
-	move.w	$1E(a3),d4
-	cmp.w	(Level_height_blocks).w,d4
-	blt.w	return_3657C
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-return_3657C:
-	rts
-; ---------------------------------------------------------------------------
-	rts
-; ---------------------------------------------------------------------------
-
-loc_36580:
-	addq.w	#4,sp
-	move.w	#8,d7
-	bsr.w	loc_33286
-	cmpi.w	#$6000,d6
-	bne.w	loc_366D0
-	sf	$3C(a3)
-	move.l	$26(a3),d0
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	move.l	#stru_367AE,d7
-	jsr	(j_Init_Animation).w
-
-loc_365AC:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	move.w	#8,d7
-	bsr.w	loc_33286
-	tst.w	d6
-	beq.w	loc_366D0
-	move.w	$38(a3),d7
-	beq.w	loc_366B6
-	cmpi.w	#$1C,d7
-	beq.s	loc_365D8
-	cmpi.w	#$2C,d7
-	bne.w	loc_366B6
-
-loc_365D8:
-	st	$3D(a3)
-	move.w	#$FFFD,$2A(a2)
-	subq.w	#1,d2
-	beq.w	loc_3664E
-	move.l	#stru_367CC,d7
-	jsr	(j_Init_Animation).w
-
-loc_365F2:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	cmpi.w	#(LnkTo_unk_C7FB0-Data_Index),$22(a3)
-	bne.s	loc_36616
-	cmpi.w	#6,$32(a3)
-	bne.s	loc_36616
-	move.l	d0,-(sp)
-	moveq	#sfx_Big_Hopping_Skull_groan,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_36616:
-	cmpi.w	#(LnkTo_unk_C7FE0-Data_Index),$22(a3)
-	bne.s	loc_36632
-	cmpi.w	#$C,$32(a3)
-	bne.s	loc_36632
-	move.l	d0,-(sp)
-	moveq	#sfx_Voice_die,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-
-loc_36632:
-	move.w	#8,d7
-	bsr.w	loc_33286
-	tst.w	d6
-	beq.w	loc_366D0
-	tst.b	$18(a3)
-	beq.s	loc_365F2
-	sf	$3D(a3)
-	bra.w	loc_366B6
-; ---------------------------------------------------------------------------
-
-loc_3664E:
-	move.l	d0,-(sp)
-	moveq	#sfx_Big_Hopping_Skull_dies,d0
-	jsr	(j_PlaySound).l
-	move.l	(sp)+,d0
-	move.l	#stru_367FA,d7
-	jsr	(j_Init_Animation).w
-
-loc_36664:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	Object_CheckInRange
-	move.w	#8,d7
-	bsr.w	loc_33286
-	tst.w	d6
-	bne.s	loc_3667E
-	move.w	#2,$2A(a3)
-
-loc_3667E:
-	tst.b	$18(a3)
-	beq.s	loc_36664
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_366A4
-	btst	#6,d0
-	beq.s	loc_366B2
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_366B2
-; ---------------------------------------------------------------------------
-
-loc_366A4:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_366B2:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_366B6:
-	bsr.w	loc_3656C
-	tst.b	$18(a3)
-	beq.w	loc_365AC
-	move.l	#stru_367B4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_366D0:
-	move.w	#$FFFE,$2A(a3)
-	move.l	d0,$26(a3)
-	st	$3C(a3)
-	bsr.w	loc_36770
-	bra.w	loc_3652E
-; ---------------------------------------------------------------------------
-
-loc_366E6:
-	neg.l	$2A(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_366EC:
-	move.l	$26(a3),d7
-	sub.l	d7,$1A(a3)
-	sub.l	d7,$1A(a3)
-	clr.l	$2A(a3)
-	neg.l	$26(a3)
-	not.b	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_36706:
-	move.l	$26(a3),d7
-	neg.l	d7
-	move.l	$2A(a3),d6
-	neg.l	d6
-	move.l	d7,$2A(a3)
-	move.l	d6,$26(a3)
-	not.b	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-
-loc_36720:
-	move.l	$26(a3),d7
-	move.l	$2A(a3),d6
-	move.l	d7,$2A(a3)
-	move.l	d6,$26(a3)
-	not.b	$16(a3)
-	rts
+;Enemy18_Tornado_Init: 
+	include "code/enemy/Tornado.asm"
 ; ---------------------------------------------------------------------------
-off_36736:	dc.l loc_366EC
-	dc.l loc_366EC
-	dc.l loc_36580
-	dc.l loc_366E6
-	dc.l loc_36706
-	dc.l loc_36720
+;Enemy0E_Cloud_Init:
+	include "code/enemy/Cloud.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3674E:
-	move.w	$38(a3),d7
-	beq.w	return_3676E
-	clr.w	$38(a3)
-	cmpi.w	#$1C,d7
-	bge.w	return_3676E
-	subq.w	#4,d7
-	lea	off_36736(pc),a4
-	move.l	(a4,d7.w),a4
-	jsr	(a4)
-
-return_3676E:
-	rts
+;Enemy06_Sphere_Init: 
+	include "code/enemy/Sphere.asm"
 ; ---------------------------------------------------------------------------
-
-loc_36770:
-	move.w	$1A(a3),d4
-	cmp.w	$3E(a3),d4
-	ble.s	loc_36782
-	cmp.w	$40(a3),d4
-	bge.s	loc_36798
-	rts
+;Enemy1B_EmoRock_Init:	
+	include "code/enemy/Emo_Rock.asm"
 ; ---------------------------------------------------------------------------
-
-loc_36782:
-	clr.w	$2A(a3)
-	move.w	#$FFFE,$2A(a3)
-	move.w	#1,$26(a3)
-	st	$16(a3)
-	rts
+;Enemy1D_BigHoppingSkull_Init: 
+	include "code/enemy/Big_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 
-loc_36798:
-	clr.w	$2A(a3)
-	move.w	#$FFFE,$2A(a3)
-	move.w	#$FFFF,$26(a3)
-	sf	$16(a3)
-	rts
-; ---------------------------------------------------------------------------
-stru_367AE:
-	anim_frame	1, $50, LnkTo_unk_C7FC0-Data_Index
-	dc.b   0
-	dc.b   0
-stru_367B4:
-	anim_frame	1, $C, LnkTo_unk_C7FC8-Data_Index 
-	anim_frame	1, 1, LnkTo_unk_C7FD0-Data_Index
-	dc.b   0
-	dc.b   0
-stru_367BE:
-	anim_frame	  1,   7, LnkTo_unk_C7FD0-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7FD8-Data_Index
-	anim_frame	  1, $78, LnkTo_unk_C7FE0-Data_Index
-	dc.b   0
-	dc.b   0
-stru_367CC:
-	anim_frame	  1, $18, LnkTo_unk_C7FA0-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FB8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7FB0-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FB8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7FB0-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FA8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7FB0-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FA8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7FB0-Data_Index
-	anim_frame	  1, $10, LnkTo_unk_C7FB8-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FE0-Data_Index
-	dc.b   0
-	dc.b   0
-stru_367FA:
-	anim_frame	  1, $18, LnkTo_unk_C7FA0-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7FE8-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7FF0-Data_Index
-	anim_frame	  1, $64, LnkTo_unk_C7FF8-Data_Index
-	dc.b   0
+unk_3680C:
 	dc.b   0
-unk_3680C:	dc.b   0
 	dc.b $F0 ; 
 	dc.b   1
 	dc.b $E0 ; ‡
@@ -45902,14 +38537,13 @@ unk_3680C:	dc.b   0
 	dc.b   3
 	dc.b $C0 ; ¿
 ; ---------------------------------------------------------------------------
-; not 100% sure about this one
 ;loc_36814
 Manage_EnemyLoading:
 	tst.b	($FFFFFB6A).w
 	bne.s	return_3682A
-	cmpi.w	#$10,(Game_Mode).w
+	cmpi.w	#$10,(Game_Mode).w ; intro video
 	bne.s	loc_3682C
-	cmpi.w	#$15,(Current_LevelID).w
+	cmpi.w	#L_Knights_Isle,(Current_LevelID).w ; load enemies in this level for intro video
 	beq.s	loc_3682C
 
 return_3682A:
@@ -45917,7 +38551,7 @@ return_3682A:
 ; ---------------------------------------------------------------------------
 
 loc_3682C:
-	move.l	($FFFFF8F6).w,a1
+	move.l	(Addr_EnemyLayout).w,a1
 	move.w	(a1)+,d7
 	andi.w	#$FF,d7
 	move.w	d7,d6
@@ -46055,7 +38689,7 @@ loc_36968:
 
 sub_36972:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$4A(a5),d0
 	lsr.w	#4,d0
@@ -46066,7 +38700,7 @@ sub_36972:
 	lea	($FFFF4A04).l,a0
 	add.w	d0,d0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$48(a5),d0
 	add.w	$48(a5),d1
@@ -46180,7 +38814,7 @@ loc_36A4A:
 
 sub_36A58:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$4A(a5),d0
 	lsr.w	#4,d0
@@ -46191,7 +38825,7 @@ sub_36A58:
 	lea	($FFFF4A04).l,a0
 	add.w	d0,d0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$48(a5),d0
 	add.w	$48(a5),d1
@@ -46305,7 +38939,7 @@ loc_36B2E:
 
 sub_36B3C:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$4A(a5),d0
 	subq.w	#1,d1
@@ -46322,7 +38956,7 @@ loc_36B5A:
 	lea	($FFFF4A04).l,a0
 	add.w	d0,d0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$48(a5),d0
 	add.w	$48(a5),d1
@@ -46383,7 +39017,7 @@ loc_36BC2:
 
 sub_36BD6:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$4A(a5),d0
 	subi.w	#1,d1
@@ -46400,7 +39034,7 @@ loc_36BF6:
 	lea	($FFFF4A04).l,a0
 	add.w	d0,d0
 	move.w	(a0,d0.w),a0
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	move.w	d0,d1
 	sub.w	$48(a5),d0
 	add.w	$48(a5),d1
@@ -46459,7 +39093,7 @@ loc_36C56:
 
 sub_36C6A:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	subq.w	#1,d4
 	lsr.w	#4,d4
 	addq.w	#1,d4
@@ -46474,7 +39108,7 @@ loc_36C82:
 	lea	($FFFF4A04).l,a0
 	add.w	d4,d4
 	move.w	(a0,d4.w),a0
-	move.w	$1A(a3),d4
+	move.w	x_pos(a3),d4
 	move.w	d4,d5
 	sub.w	$48(a5),d4
 	add.w	$48(a5),d5
@@ -46500,7 +39134,7 @@ loc_36CAA:
 
 sub_36CB8:
 	move.l	a0,-(sp)
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	sub.w	$4A(a5),d4
 	lsr.w	#4,d4
 	subq.w	#1,d4
@@ -46521,7 +39155,7 @@ loc_36CD8:
 	lea	($FFFF4A04).l,a0
 	add.w	d4,d4
 	move.w	(a0,d4.w),a0
-	move.w	$1A(a3),d4
+	move.w	x_pos(a3),d4
 	move.w	d4,d5
 	sub.w	$48(a5),d4
 	add.w	$48(a5),d5
@@ -46545,16 +39179,16 @@ loc_36D00:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_36D0E:
+Load_EnemyArtPaletteToVRAM:
 	moveq	#0,d7
-	move.l	($FFFFF8F2).w,a1
+	move.l	(Addr_EnemyLayoutHeader).w,a1	; pointer to enemy layout
 	addq.w	#2,a1
 
 loc_36D16:
 	move.w	(a1)+,d1
-	move.w	d1,d4
+	move.w	d1,d4	; enemy ID whose art/palette to load
 	cmpi.w	#$FFFF,d4
-	beq.w	loc_36E42
+	beq.w	loc_36E42	; blank entry
 	andi.w	#$FFF,d1
 	lsl.w	#3,d1
 	lea	EnemyLoad_Index(pc),a2
@@ -46577,84 +39211,91 @@ loc_36D52:
 	move.l	(a0,d2.w),a0
 	move.w	d7,d0
 	add.w	d0,d0
-	lea	unk_36E4E(pc),a2
+	lea	EnemyArt_VRAMAddresses(pc),a2
 	move.w	(a2,d0.w),d0
 	moveq	#0,d6
 	andi.w	#$FFF,d4
-	cmpi.w	#$12,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$1F,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$F,d4
-	beq.s	loc_36D9A
-	cmpi.w	#3,d4
-	beq.s	loc_36DFC
-	cmpi.w	#$20,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$22,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$23,d4
-	beq.s	loc_36D9A
-	cmpi.w	#$24,d4
-	beq.s	loc_36D9A
-	bra.s	loc_36DAC
+	cmpi.w	#objid_Lion,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_invalid1F,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_UFO,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_Robot,d4
+    if minorBugFixes = 0
+	beq.s	Load_EnemyArtToVRAM
+    else
+	beq.s	Load_EnemyPaletteLong
+    endif
+	cmpi.w	#objid_HeadyMetal,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_Shiskaboss,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_BoomerangBosses,d4
+	beq.s	Load_EnemyPaletteLong
+	cmpi.w	#objid_BagelBrothers,d4
+	beq.s	Load_EnemyPaletteLong
+	bra.s	Load_EnemyPaletteNormal
 ; ---------------------------------------------------------------------------
 
-loc_36D9A:
-	lea	($FFFF4E9A).l,a2
+Load_EnemyPaletteLong:
+	; enemies with more palette entries
+	lea	(Palette_Buffer+$42).l,a2
 	moveq	#$E,d5
 
-loc_36DA2:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DA2
-	bra.w	loc_36DFC
+	dbf	d5,-
+	bra.w	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DAC:
+Load_EnemyPaletteNormal:
 	cmpi.w	#1,d7
-	beq.s	loc_36DCC
-	bge.s	loc_36DE4
-	lea	($FFFF4E7A).l,a2
+	beq.s	Load_EnemyPalette_SecondEnemy
+	bge.s	Load_EnemyPalette_ThirdEnemy
+	; first enemy type
+	lea	(Palette_Buffer+$22).l,a2
 	moveq	#6,d5
 
-loc_36DBC:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DBC
-	move.w	#0,($FFFF4E88).l
-	bra.s	loc_36DFC
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$30).l
+	bra.s	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DCC:
-	lea	($FFFF4E9A).l,a2
+Load_EnemyPalette_SecondEnemy:	; 2nd enemy type
+	lea	(Palette_Buffer+$42).l,a2
 	moveq	#6,d5
 
-loc_36DD4:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DD4
-	move.w	#0,($FFFF4EA8).l
-	bra.s	loc_36DFC
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$50).l
+	bra.s	Load_EnemyArtToVRAM
 ; ---------------------------------------------------------------------------
 
-loc_36DE4:
-	lea	($FFFF4EAA).l,a2
+Load_EnemyPalette_ThirdEnemy:	; 3rd enemy type
+	lea	(Palette_Buffer+$52).l,a2
 	moveq	#6,d5
 
-loc_36DEC:
+-
 	move.w	(a0)+,(a2)+
-	dbf	d5,loc_36DEC
-	move.w	#0,($FFFF4EA8).l
+	dbf	d5,-
+	move.w	#0,(Palette_Buffer+$50).l
 	moveq	#1,d6
 
-loc_36DFC:
+Load_EnemyArtToVRAM:
 	lea	(Data_Index).l,a0
-	move.l	(a0,d3.w),a0
+	move.l	(a0,d3.w),a0	; compressed art address
 	movem.l	d7/a1,-(sp)
 	tst.w	d7
 	bne.s	loc_36E2C
-	cmpi.w	#9,(Background_theme).w
+	; first enemy type
+	cmpi.w	#Forest,(Background_theme).w
 	bne.s	loc_36E2C
 	lea	unk_36E54(pc),a3
-	cmpi.w	#5,d4
+	cmpi.w	#objid_TarMonster,d4
 	bne.s	loc_36E24
 	lea	unk_36E64(pc),a3
 
@@ -46681,16 +39322,18 @@ loc_36E42:
 	cmpi.w	#3,d7
 	bne.w	loc_36D16
 	rts
-; End of function sub_36D0E
+; End of function Load_EnemyArtPaletteToVRAM
 
 ; ---------------------------------------------------------------------------
-unk_36E4E:	dc.b $5F ; _
-	dc.b $60 ; `
-	dc.b $81 ; Å
-	dc.b $20
-	dc.b $A2 ; ¢
-	dc.b $E0 ; ‡
-unk_36E54:	dc.b   0
+; 36E4E
+; The games allows for three different enemies per level. Their art is loaded
+; into 3 slots in VRAM, starting at the following addresses:
+EnemyArt_VRAMAddresses:
+	dc.w $5F60
+	dc.w $8120
+	dc.w $A2E0
+unk_36E54:
+	dc.b   0
 	dc.b   1
 	dc.b   2
 	dc.b   3
@@ -46706,7 +39349,8 @@ unk_36E54:	dc.b   0
 	dc.b  $D
 	dc.b  $E
 	dc.b  $F
-unk_36E64:	dc.b   0
+unk_36E64:
+	dc.b   0
 	dc.b   1
 	dc.b   2
 	dc.b   3
@@ -46743,26 +39387,27 @@ unk_36E64:	dc.b   0
 
 
 sub_36E84:
-	move.l	($FFFFF8F2).w,a4
+	move.l	(Addr_EnemyLayoutHeader).w,a4
 	moveq	#0,d4
 	move.w	2(a4),d3
 	andi.w	#$FFF,d3
-	cmp.w	d3,d5
+	cmp.w	d3,d5	; is it the enemy type from the first slot?
 	beq.s	loc_36EA6
 	addq.w	#1,d4
 	move.w	4(a4),d3
 	andi.w	#$FFF,d3
-	cmp.w	d3,d5
+	cmp.w	d3,d5	; is it the enemy type from the second slot?
 	beq.s	loc_36EA6
 	addq.w	#1,d4
 
 loc_36EA6:
-	lea	unk_36FEA(pc),a4
-	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
+	; d4 is the slot this enemy type has been allocated
+	lea	EnemyArt_PaletteLines(pc),a4
+	move.b	(a4,d4.w),palette_line(a3)
+	lea	EnemyArt_VRAMTileAddresses(pc),a4
 	move.w	d4,$3E(a3)
 	add.w	d4,d4
-	move.w	(a4,d4.w),$24(a3)
+	move.w	(a4,d4.w),vram_tile(a3)
 	rts
 ; End of function sub_36E84
 
@@ -46801,29 +39446,28 @@ EnemyLoad_Index:
 	enemyloaddata	0, 0, 0
 	enemyloaddata	0, 0, 0
 	enemyloaddata	LnkTo_Pal_A2382-Data_Index, LnkTo_unk_DD8BB-Data_Index, Enemy20_HeadyMetal_Init	;20 - Heady Metal (final boss)
-	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332	;21 - ?
+	enemyloaddata	LnkTo_Pal_A23A0-Data_Index, LnkTo_unk_DE3E3-Data_Index, sub_37332		;21 - Boss eyes/attacks
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy22_Shiskaboss_Init	;22 - Shiskaboss (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy23_BoomerangBosses_Init	;23 - Boomerang bosses (all three heads)
 	enemyloaddata	LnkTo_Pal_A23AE-Data_Index, LnkTo_unk_DEA20-Data_Index, Enemy24_BagelBrothers_Init	;24 - Bagel Brothers (one head)
-unk_36FEA:	dc.b   1
+EnemyArt_PaletteLines:
+	dc.b   1
 	dc.b   2
 	dc.b   2
 	dc.b   0
-unk_36FEE:	dc.b   2
-	dc.b $FB ; ˚
-	dc.b   4
-	dc.b   9
-	dc.b   5
-	dc.b $17
+EnemyArt_VRAMTileAddresses:
+	dc.w   $2FB
+	dc.w   $409
+	dc.w   $517
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; used by most enemies
 sub_36FF4:
 	clr.w	d5
 	move.b	($FFFFFAD2).w,d5
 	lsl.w	#4,d5
-	add.w	d5,$1E(a3)
+	add.w	d5,y_pos(a3)
 	rts
 ; End of function sub_36FF4
 
@@ -46838,30 +39482,30 @@ sub_37002:
 	move.l	(sp)+,d0
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$20,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	st	$13(a3)
-	st	$14(a3)
-	sf	$16(a3)
-	move.w	#(LnkTo_unk_C8460-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	sf	x_direction(a3)
+	move.w	#(LnkTo_unk_C8460-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#4,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.w	#$3C,d0
 
 loc_37054:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	cmpi.w	#$1C,d7
 	beq.s	loc_370C2
 	cmpi.w	#$2C,d7
 	beq.s	loc_370C2
 	cmpi.w	#$FFFF,d7
 	beq.s	loc_370C2
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	subq.w	#1,d0
 	bne.s	loc_37078
 	bra.s	loc_370C2
@@ -46870,38 +39514,38 @@ loc_37054:
 loc_37078:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d6
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	cmp.w	d5,d3
 	bgt.s	loc_3709E
-	st	$16(a3)
-	addi.l	#$FA0,$26(a3)
+	st	x_direction(a3)
+	addi.l	#$FA0,x_vel(a3)
 	bra.s	loc_370AA
 ; ---------------------------------------------------------------------------
 
 loc_3709E:
-	sf	$16(a3)
-	addi.l	#-$FA0,$26(a3)
+	sf	x_direction(a3)
+	addi.l	#-$FA0,x_vel(a3)
 
 loc_370AA:
 	cmp.w	d6,d4
 	bgt.s	loc_370B8
-	addi.l	#$FA0,$2A(a3)
+	addi.l	#$FA0,y_vel(a3)
 	bra.s	loc_370C0
 ; ---------------------------------------------------------------------------
 
 loc_370B8:
-	addi.l	#-$FA0,$2A(a3)
+	addi.l	#-$FA0,y_vel(a3)
 
 loc_370C0:
 	bra.s	loc_37054
 ; ---------------------------------------------------------------------------
 
 loc_370C2:
-	clr.w	$38(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
+	clr.w	collision_type(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_37002
 
@@ -46916,16 +39560,16 @@ sub_370D2:
 	move.l	(sp)+,d0
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$20,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	st	$13(a3)
-	st	$14(a3)
-	sf	$16(a3)
-	move.w	#(LnkTo_unk_C8460-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	sf	x_direction(a3)
+	move.w	#(LnkTo_unk_C8460-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#3,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.w	#$78,d0
@@ -46934,21 +39578,21 @@ sub_370D2:
 
 loc_3712E:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$2710,$2A(a3)
+	addi.l	#$2710,y_vel(a3)
 	tst.b	$18(a3)
 	beq.s	loc_3712E
-	move.l	#0,$2A(a3)
+	move.l	#0,y_vel(a3)
 
 loc_37148:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	cmpi.w	#$1C,d7
 	beq.s	loc_371B6
 	cmpi.w	#$2C,d7
 	beq.s	loc_371B6
 	cmpi.w	#$FFFF,d7
 	beq.s	loc_371B6
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	subq.w	#1,d0
 	bne.s	loc_3716C
 	bra.s	loc_371D4
@@ -46957,47 +39601,47 @@ loc_37148:
 loc_3716C:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d6
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	cmp.w	d5,d3
 	bgt.s	loc_37192
-	st	$16(a3)
-	addi.l	#$7D0,$26(a3)
+	st	x_direction(a3)
+	addi.l	#$7D0,x_vel(a3)
 	bra.s	loc_3719E
 ; ---------------------------------------------------------------------------
 
 loc_37192:
-	sf	$16(a3)
-	addi.l	#-$7D0,$26(a3)
+	sf	x_direction(a3)
+	addi.l	#-$7D0,x_vel(a3)
 
 loc_3719E:
 	cmp.w	d6,d4
 	bgt.s	loc_371AC
-	addi.l	#$7D0,$2A(a3)
+	addi.l	#$7D0,y_vel(a3)
 	bra.s	loc_371B4
 ; ---------------------------------------------------------------------------
 
 loc_371AC:
-	addi.l	#-$7D0,$2A(a3)
+	addi.l	#-$7D0,y_vel(a3)
 
 loc_371B4:
 	bra.s	loc_37148
 ; ---------------------------------------------------------------------------
 
 loc_371B6:
-	clr.w	$38(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
+	clr.w	collision_type(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
 	move.l	#stru_37BC6,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
 loc_371D4:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
 	move.b	($FFFFF809).w,d7
 	andi.b	#1,d7
 	beq.s	loc_371F4
@@ -47020,27 +39664,27 @@ loc_37200:
 
 loc_3720A:
 	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	cmpi.w	#$1C,d7
 	beq.s	loc_371B6
 	cmpi.w	#$2C,d7
 	beq.s	loc_371B6
 	cmpi.w	#$FFFF,d7
 	beq.s	loc_371B6
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d6
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	cmp.w	d5,d3
 	bgt.s	loc_37246
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_3724A
 ; ---------------------------------------------------------------------------
 
 loc_37246:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_3724A:
 	tst.b	$18(a3)
@@ -47048,18 +39692,18 @@ loc_3724A:
 	move.w	#$6000,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_37002,4(a0)
-	move.w	$1E(a3),d6
+	move.w	y_pos(a3),d6
 	addi.w	#8,d6
 	move.w	d6,$46(a0)
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_37280
-	move.w	$1A(a3),d5
+	move.w	x_pos(a3),d5
 	addi.w	#-5,d5
 	move.w	d5,$44(a0)
 	bsr.s	sub_3728C
 
 loc_37280:
-	move.w	$1A(a3),d5
+	move.w	x_pos(a3),d5
 	addi.w	#5,d5
 	move.w	d5,$44(a0)
 ; End of function sub_370D2
@@ -47071,7 +39715,7 @@ loc_37280:
 sub_3728C:
 	move.l	#stru_37BFC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_3728C
 
@@ -47082,23 +39726,23 @@ sub_3728C:
 sub_3729E:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$20,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
 	st	$13(a3)
-	st	$14(a3)
-	sf	$16(a3)
-	move.w	#(LnkTo_unk_C8460-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	sf	x_direction(a3)
+	move.w	#(LnkTo_unk_C8460-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#1,$A(a3)
 	jsr	(j_sub_FF6).w
 	move.w	#$64,d0
 	addq.b	#1,($FFFFFB4F).w
 	move.l	#stru_37BEA,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 
 loc_372F6:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -47110,15 +39754,15 @@ loc_372F6:
 loc_37300:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	cmp.w	d5,d3
 	bgt.s	loc_37316
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_3731A
 ; ---------------------------------------------------------------------------
 
 loc_37316:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_3731A:
 	bra.s	loc_372F6
@@ -47127,7 +39771,7 @@ loc_3731A:
 loc_3731C:
 	move.l	#stru_37BFC,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subq.b	#1,($FFFFFB4F).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_3729E
@@ -47139,37 +39783,37 @@ loc_3731C:
 sub_37332:
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	st	$3D(a3)
+	st	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	addq.w	#2,$A(a3)
 	jsr	(j_sub_FF6).w
-	move.w	#$FFFC,$2A(a3)
+	move.w	#$FFFC,y_vel(a3)
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	cmp.w	d5,d3
 	bge.s	loc_37394
-	move.l	#$FFFF8001,$26(a3)
+	move.l	#$FFFF8001,x_vel(a3)
 	bra.s	loc_3739C
 ; ---------------------------------------------------------------------------
 
 loc_37394:
-	move.l	#$7FFF,$26(a3)
+	move.l	#$7FFF,x_vel(a3)
 
 loc_3739C:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$BB8,$2A(a3)
+	addi.l	#$BB8,y_vel(a3)
 	bsr.w	sub_37AF0
-	move.w	d6,$22(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_373BE
 	jmp	(j_Delete_CurrentObject).w
@@ -47285,9 +39929,9 @@ loc_37582:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$28,d4
 	cmp.w	d5,d3
 	bgt.s	loc_375AA
@@ -47330,8 +39974,8 @@ loc_375DE:
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_370D2,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	subq.w	#1,$3E(a3)
 	move.w	$3E(a3),d2
 	bne.s	loc_3761E
@@ -47428,8 +40072,8 @@ loc_376F2:
 	move.l	(a4)+,d4
 	beq.w	loc_37702
 	move.l	d4,a3
-	move.l	d6,$26(a3)
-	move.l	d7,$2A(a3)
+	move.l	d6,x_vel(a3)
+	move.l	d7,y_vel(a3)
 
 loc_37702:
 	dbf	d5,loc_376F2
@@ -47448,9 +40092,9 @@ sub_37708:
 
 loc_37710:
 	move.l	($FFFFFB72).w,a3
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	loc_377BC
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	cmpi.w	#$2C,d7
 	beq.s	loc_3772A
 	bne.w	loc_377BC
@@ -47491,13 +40135,13 @@ loc_37778:
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_3729E,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#sub_37332,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	jsr	(j_loc_1078).w
 	clr.l	(a1)
 
@@ -47505,7 +40149,7 @@ loc_377BC:
 	move.l	($FFFFFB72).w,a3
 	cmpi.w	#$25,$3E(a3)
 	blt.w	return_3787A
-	st	$3D(a3)
+	st	has_kid_collision(a3)
 	st	($FFFFFB4E).w
 	move.l	($FFFFFB72).w,a3
 	tst.w	$40(a3)
@@ -47579,15 +40223,15 @@ return_3787A:
 
 
 sub_3787C:
-	add.l	d6,$26(a3)
+	add.l	d6,x_vel(a3)
 	move.l	($FFFFFB76).w,a3
-	add.l	d7,$26(a3)
+	add.l	d7,x_vel(a3)
 	move.l	($FFFFFB7A).w,a3
-	add.l	d7,$2A(a3)
+	add.l	d7,y_vel(a3)
 	move.l	($FFFFFBAE).w,a3
-	add.l	d6,$26(a3)
+	add.l	d6,x_vel(a3)
 	move.l	($FFFFFBB2).w,a3
-	add.l	d7,$26(a3)
+	add.l	d7,x_vel(a3)
 	rts
 ; End of function sub_3787C
 
@@ -47596,15 +40240,15 @@ sub_3787C:
 
 
 sub_378A2:
-	add.l	d7,$26(a3)
+	add.l	d7,x_vel(a3)
 	move.l	($FFFFFB76).w,a3
-	add.l	d6,$26(a3)
+	add.l	d6,x_vel(a3)
 	move.l	($FFFFFB7A).w,a3
-	add.l	d6,$2A(a3)
+	add.l	d6,y_vel(a3)
 	move.l	($FFFFFBAE).w,a3
-	add.l	d7,$26(a3)
+	add.l	d7,x_vel(a3)
 	move.l	($FFFFFBB2).w,a3
-	add.l	d6,$26(a3)
+	add.l	d6,x_vel(a3)
 	rts
 ; End of function sub_378A2
 
@@ -47621,20 +40265,20 @@ sub_378C8:
 ; ---------------------------------------------------------------------------
 
 loc_378D6:
-	addi.l	#-$26D18,$26(a3)
+	addi.l	#-$26D18,x_vel(a3)
 	move.l	($FFFFFB76).w,a3
-	addi.l	#$26D18,$26(a3)
+	addi.l	#$26D18,x_vel(a3)
 	move.l	($FFFFFB7A).w,a3
-	addi.l	#$13880,$2A(a3)
-	move.w	#(LnkTo_unk_C8458-Data_Index),$22(a3)
+	addi.l	#$13880,y_vel(a3)
+	move.w	#(LnkTo_unk_C8458-Data_Index),addroffset_sprite(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
 	move.l	($FFFFFBAE).w,a3
-	addi.l	#-$26D18,$26(a3)
+	addi.l	#-$26D18,x_vel(a3)
 	move.l	($FFFFFBB2).w,a3
-	addi.l	#$26D18,$26(a3)
+	addi.l	#$26D18,x_vel(a3)
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -47808,7 +40452,7 @@ sub_379E8:
 	andi.w	#$1F,d2
 	move.w	d2,d7
 	add.w	d7,d7
-	move.w	(a2,d7.w),($FFFF4EB6).l
+	move.w	(a2,d7.w),(Palette_Buffer+$5E).l
 	rts
 ; End of function sub_379E8
 
@@ -47834,7 +40478,7 @@ off_37A02:	dc.w LnkTo_unk_C8488-Data_Index
 
 
 sub_37A22:
-	tst.b	($FFFFF5B8).w
+	tst.b	(Diamond_power_active).w
 	beq.s	loc_37A3E
 	move.b	($FFFFF809).w,d7
 	andi.b	#8,d7
@@ -47856,8 +40500,8 @@ loc_37A3E:
 	lea	off_37A02(pc),a2
 	move.w	$1A(a1),d5
 	move.w	$1E(a1),d7
-	move.w	$1A(a3),d3
-	move.w	$1E(a3),d4
+	move.w	x_pos(a3),d3
+	move.w	y_pos(a3),d4
 	addq.w	#4,d4
 	cmp.w	d4,d7
 	bgt.s	loc_37A78
@@ -47938,7 +40582,7 @@ loc_37AC6:
 	beq.s	loc_37AD4
 	move.l	d4,a3
 	bsr.w	sub_37AF0
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 
 loc_37AD4:
 	addq.w	#4,a0
@@ -47961,7 +40605,7 @@ off_37AE0:	dc.w LnkTo_unk_C8488-Data_Index
 
 
 sub_37AF0:
-	tst.b	($FFFFF5B8).w
+	tst.b	(Diamond_power_active).w
 	beq.s	loc_37B0C
 	move.b	($FFFFF809).w,d6
 	andi.b	#8,d6
@@ -47983,8 +40627,8 @@ loc_37B0C:
 	lea	off_37AE0(pc),a2
 	move.w	$1A(a1),d5
 	move.w	$1E(a1),d7
-	move.w	$1A(a3),d3
-	move.w	$1E(a3),d4
+	move.w	x_pos(a3),d3
+	move.w	y_pos(a3),d4
 	addq.w	#4,d4
 	cmp.w	d4,d7
 	bgt.s	loc_37B46
@@ -48118,75 +40762,75 @@ Enemy24_BagelBrothers_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39478,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	#1,$1E(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39022,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_390BA,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39598,4(a0)
-	addi.w	#-$96,$1E(a3)
-	addi.w	#-$64,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$96,y_pos(a3)
+	addi.w	#-$64,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	#1,$1E(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39152,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_391EA,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_396BE,4(a0)
-	addi.w	#-$12C,$1E(a3)
-	addi.w	#0,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$12C,y_pos(a3)
+	addi.w	#0,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	#1,$1E(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39282,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3931A,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -48195,88 +40839,88 @@ Enemy23_BoomerangBosses_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_37F30,4(a0)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38C92,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38D2A,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38012,4(a0)
-	addi.w	#-$C8,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$C8,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38DC2,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38E5A,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_380F4,4(a0)
-	addi.w	#-$1C2,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$1C2,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38EF2,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38F8A,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
 loc_37F30:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$23,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB7A).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_398F0).l,a2
 	moveq	#1,d0
 	move.w	#1,d1
@@ -48293,9 +40937,9 @@ loc_37F80:
 loc_37F94:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_37F80
@@ -48304,15 +40948,15 @@ loc_37F94:
 	bgt.s	loc_37F80
 	cmp.w	d5,d3
 	bgt.s	loc_37FC2
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_37FC6
 ; ---------------------------------------------------------------------------
 
 loc_37FC2:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_37FC6:
-	move.b	$16(a3),($FFFFFB86).w
+	move.b	x_direction(a3),($FFFFFB86).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -48348,18 +40992,18 @@ loc_38008:
 loc_38012:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$23,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB7E).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39988).l,a2
 	moveq	#1,d0
 	move.w	#1,d1
@@ -48376,9 +41020,9 @@ loc_38062:
 loc_38076:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_38062
@@ -48387,15 +41031,15 @@ loc_38076:
 	bgt.s	loc_38062
 	cmp.w	d5,d3
 	bgt.s	loc_380A4
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_380A8
 ; ---------------------------------------------------------------------------
 
 loc_380A4:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_380A8:
-	move.b	$16(a3),($FFFFFB87).w
+	move.b	x_direction(a3),($FFFFFB87).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -48431,18 +41075,18 @@ loc_380EA:
 loc_380F4:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$23,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#BoomerangBoss_HitPointsPerHead,$3E(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB82).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39A1A).l,a2
 	moveq	#1,d0
 	move.w	#1,d1
@@ -48459,9 +41103,9 @@ loc_38144:
 loc_38158:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_38144
@@ -48470,15 +41114,15 @@ loc_38158:
 	bgt.s	loc_38144
 	cmp.w	d5,d3
 	bgt.s	loc_38186
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_3818A
 ; ---------------------------------------------------------------------------
 
 loc_38186:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_3818A:
-	move.b	$16(a3),($FFFFFB88).w
+	move.b	x_direction(a3),($FFFFFB88).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -48516,127 +41160,127 @@ Enemy22_Shiskaboss_Init:
 	move.l	#$1000002,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39478,4(a0)	; head 1
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38902,4(a0)	; eye 1
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3899A,4(a0)	; eye 2
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_39598,4(a0)	; head 2
-	addi.w	#$48,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$48,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38A32,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38ACA,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_396BE,4(a0)	; head 3
-	addi.w	#$90,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$90,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38B62,4(a0)
-	addi.w	#-$25,$1E(a3)
-	addi.w	#-$C,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$25,y_pos(a3)
+	addi.w	#-$C,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38BFA,4(a0)
-	addi.w	#$18,$1A(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$18,x_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.l	$44(a5),a0
-	move.w	4(a0),$1A(a3)
-	move.w	6(a0),$1E(a3)
+	move.w	4(a0),x_pos(a3)
+	move.w	6(a0),y_pos(a3)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38494,4(a0)	; skewer pieces?
-	addi.w	#-$5A,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#-$5A,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38512,4(a0)
-	addi.w	#$28,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$28,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38590,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3860E,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3868C,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_3870A,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38788,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38806,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	move.w	#0,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_38884,4(a0)
-	addi.w	#$20,$1E(a3)
-	move.w	$1A(a3),$44(a0)
-	move.w	$1E(a3),$46(a0)
+	addi.w	#$20,y_pos(a3)
+	move.w	x_pos(a3),$44(a0)
+	move.w	y_pos(a3),$46(a0)
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -48644,16 +41288,16 @@ loc_38494:
 	; skewer piece 1
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F8-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F8-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48666,13 +41310,13 @@ loc_384D6:
 ; ---------------------------------------------------------------------------
 
 loc_384E8:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$FFFF2000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$FFFF2000,x_vel(a3)
 
 loc_384F6:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38510
 	jmp	(j_Delete_CurrentObject).w
@@ -48686,16 +41330,16 @@ loc_38512:
 	; skewer piece 2
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48708,13 +41352,13 @@ loc_38554:
 ; ---------------------------------------------------------------------------
 
 loc_38566:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$E000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$E000,x_vel(a3)
 
 loc_38574:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_3858E
 	jmp	(j_Delete_CurrentObject).w
@@ -48728,16 +41372,16 @@ loc_38590:
 	; skewer piece 3
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48750,13 +41394,13 @@ loc_385D2:
 ; ---------------------------------------------------------------------------
 
 loc_385E4:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$FFFF4000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$FFFF4000,x_vel(a3)
 
 loc_385F2:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_3860C
 	jmp	(j_Delete_CurrentObject).w
@@ -48770,16 +41414,16 @@ loc_3860E:
 	; skewer piece 4
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48792,13 +41436,13 @@ loc_38650:
 ; ---------------------------------------------------------------------------
 
 loc_38662:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$C000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$C000,x_vel(a3)
 
 loc_38670:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_3868A
 	jmp	(j_Delete_CurrentObject).w
@@ -48812,16 +41456,16 @@ loc_3868C:
 	; skewer piece 5
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48834,13 +41478,13 @@ loc_386CE:
 ; ---------------------------------------------------------------------------
 
 loc_386E0:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$FFFF6000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$FFFF6000,x_vel(a3)
 
 loc_386EE:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38708
 	jmp	(j_Delete_CurrentObject).w
@@ -48854,16 +41498,16 @@ loc_3870A:
 	; skewer piece 6
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48876,13 +41520,13 @@ loc_3874C:
 ; ---------------------------------------------------------------------------
 
 loc_3875E:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$A000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$A000,x_vel(a3)
 
 loc_3876C:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38786
 	jmp	(j_Delete_CurrentObject).w
@@ -48896,16 +41540,16 @@ loc_38788:
 	; skewer piece 7
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48918,13 +41562,13 @@ loc_387CA:
 ; ---------------------------------------------------------------------------
 
 loc_387DC:
-	move.w	#$FFF9,$2A(a3)
-	move.l	#$FFFF8000,$26(a3)
+	move.w	#$FFF9,y_vel(a3)
+	move.l	#$FFFF8000,x_vel(a3)
 
 loc_387EA:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38804
 	jmp	(j_Delete_CurrentObject).w
@@ -48938,16 +41582,16 @@ loc_38806:
 	; skewer piece 8
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85F0-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85F0-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -48960,13 +41604,13 @@ loc_38848:
 ; ---------------------------------------------------------------------------
 
 loc_3885A:
-	move.w	#$FFF8,$2A(a3)
-	move.l	#$8000,$26(a3)
+	move.w	#$FFF8,y_vel(a3)
+	move.l	#$8000,x_vel(a3)
 
 loc_38868:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38882
 	jmp	(j_Delete_CurrentObject).w
@@ -48980,16 +41624,16 @@ loc_38884:
 	; skewer piece 9
 	move.l	#$1010002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$22,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C85E8-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C85E8-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 
@@ -49002,13 +41646,13 @@ loc_388C6:
 ; ---------------------------------------------------------------------------
 
 loc_388D8:
-	move.w	#$FFFA,$2A(a3)
-	move.l	#$FFFF6000,$26(a3)
+	move.w	#$FFFA,y_vel(a3)
+	move.l	#$FFFF6000,x_vel(a3)
 
 loc_388E6:
 	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1B58,$2A(a3)
-	move.w	$1E(a3),d5
+	addi.l	#$1B58,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38900
 	jmp	(j_Delete_CurrentObject).w
@@ -49021,16 +41665,16 @@ loc_38900:
 loc_38902:
 	move.l	#$1020002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_3893E:
@@ -49039,7 +41683,7 @@ loc_3893E:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_38962
 	move.b	$16(a2),d0
@@ -49048,15 +41692,15 @@ loc_3893E:
 
 loc_38962:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_38976:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38998
 	jmp	(j_Delete_CurrentObject).w
@@ -49069,16 +41713,16 @@ loc_38998:
 loc_3899A:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_389D6:
@@ -49087,7 +41731,7 @@ loc_389D6:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_389FA
 	move.b	$16(a2),d0
@@ -49096,15 +41740,15 @@ loc_389D6:
 
 loc_389FA:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38A0E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38A30
 	jmp	(j_Delete_CurrentObject).w
@@ -49117,16 +41761,16 @@ loc_38A30:
 loc_38A32:
 	move.l	#$1020002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38A6E:
@@ -49135,7 +41779,7 @@ loc_38A6E:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_38A92
 	move.b	$16(a2),d0
@@ -49144,15 +41788,15 @@ loc_38A6E:
 
 loc_38A92:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_38AA6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38AC8
 	jmp	(j_Delete_CurrentObject).w
@@ -49165,16 +41809,16 @@ loc_38AC8:
 loc_38ACA:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38B06:
@@ -49183,7 +41827,7 @@ loc_38B06:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_38B2A
 	move.b	$16(a2),d0
@@ -49192,15 +41836,15 @@ loc_38B06:
 
 loc_38B2A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38B3E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38B60
 	jmp	(j_Delete_CurrentObject).w
@@ -49213,16 +41857,16 @@ loc_38B60:
 loc_38B62:
 	move.l	#$1020002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38B9E:
@@ -49231,7 +41875,7 @@ loc_38B9E:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_38BC2
 	move.b	$16(a2),d0
@@ -49240,15 +41884,15 @@ loc_38B9E:
 
 loc_38BC2:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#-$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#-$4000,x_vel(a3)
 
 loc_38BD6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38BF8
 	jmp	(j_Delete_CurrentObject).w
@@ -49261,16 +41905,16 @@ loc_38BF8:
 loc_38BFA:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38C36:
@@ -49279,7 +41923,7 @@ loc_38C36:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_38C5A
 	move.b	$16(a2),d0
@@ -49288,15 +41932,15 @@ loc_38C36:
 
 loc_38C5A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38C6E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38C90
 	jmp	(j_Delete_CurrentObject).w
@@ -49309,16 +41953,16 @@ loc_38C90:
 loc_38C92:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38CCE:
@@ -49327,7 +41971,7 @@ loc_38CCE:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_38CF2
 	move.b	$16(a2),d0
@@ -49336,15 +41980,15 @@ loc_38CCE:
 
 loc_38CF2:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_38D06:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38D28
 	jmp	(j_Delete_CurrentObject).w
@@ -49357,16 +42001,16 @@ loc_38D28:
 loc_38D2A:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38D66:
@@ -49375,7 +42019,7 @@ loc_38D66:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_38D8A
 	move.b	$16(a2),d0
@@ -49384,15 +42028,15 @@ loc_38D66:
 
 loc_38D8A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38D9E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38DC0
 	jmp	(j_Delete_CurrentObject).w
@@ -49405,16 +42049,16 @@ loc_38DC0:
 loc_38DC2:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38DFE:
@@ -49423,7 +42067,7 @@ loc_38DFE:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_38E22
 	move.b	$16(a2),d0
@@ -49432,15 +42076,15 @@ loc_38DFE:
 
 loc_38E22:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_38E36:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38E58
 	jmp	(j_Delete_CurrentObject).w
@@ -49453,16 +42097,16 @@ loc_38E58:
 loc_38E5A:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38E96:
@@ -49471,7 +42115,7 @@ loc_38E96:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_38EBA
 	move.b	$16(a2),d0
@@ -49480,15 +42124,15 @@ loc_38E96:
 
 loc_38EBA:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38ECE:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38EF0
 	jmp	(j_Delete_CurrentObject).w
@@ -49501,16 +42145,16 @@ loc_38EF0:
 loc_38EF2:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38F2E:
@@ -49519,7 +42163,7 @@ loc_38F2E:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_38F52
 	move.b	$16(a2),d0
@@ -49528,15 +42172,15 @@ loc_38F2E:
 
 loc_38F52:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_38F66:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_38F88
 	jmp	(j_Delete_CurrentObject).w
@@ -49549,16 +42193,16 @@ loc_38F88:
 loc_38F8A:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#1,$10(a3)
+	move.b	#1,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_38FC6:
@@ -49567,7 +42211,7 @@ loc_38FC6:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_38FEA
 	move.b	$16(a2),d0
@@ -49576,15 +42220,15 @@ loc_38FC6:
 
 loc_38FEA:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_38FFE:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_39020
 	jmp	(j_Delete_CurrentObject).w
@@ -49597,16 +42241,16 @@ loc_39020:
 loc_39022:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_3905E:
@@ -49615,7 +42259,7 @@ loc_3905E:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_39082
 	move.b	$16(a2),d0
@@ -49624,15 +42268,15 @@ loc_3905E:
 
 loc_39082:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_39096:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_390B8
 	jmp	(j_Delete_CurrentObject).w
@@ -49645,16 +42289,16 @@ loc_390B8:
 loc_390BA:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_390F6:
@@ -49663,7 +42307,7 @@ loc_390F6:
 	move.b	($FFFFFB86).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB72).w
 	bne.s	loc_3911A
 	move.b	$16(a2),d0
@@ -49672,15 +42316,15 @@ loc_390F6:
 
 loc_3911A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_3912E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_39150
 	jmp	(j_Delete_CurrentObject).w
@@ -49693,16 +42337,16 @@ loc_39150:
 loc_39152:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_3918E:
@@ -49711,7 +42355,7 @@ loc_3918E:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_391B2
 	move.b	$16(a2),d0
@@ -49720,15 +42364,15 @@ loc_3918E:
 
 loc_391B2:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_391C6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_391E8
 	jmp	(j_Delete_CurrentObject).w
@@ -49741,16 +42385,16 @@ loc_391E8:
 loc_391EA:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_39226:
@@ -49759,7 +42403,7 @@ loc_39226:
 	move.b	($FFFFFB87).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB74).w
 	bne.s	loc_3924A
 	move.b	$16(a2),d0
@@ -49768,15 +42412,15 @@ loc_39226:
 
 loc_3924A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_3925E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_39280
 	jmp	(j_Delete_CurrentObject).w
@@ -49789,16 +42433,16 @@ loc_39280:
 loc_39282:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_392BE:
@@ -49807,7 +42451,7 @@ loc_392BE:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_393C8
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_392E2
 	move.b	$16(a2),d0
@@ -49816,15 +42460,15 @@ loc_392BE:
 
 loc_392E2:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$FFFFC000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$FFFFC000,x_vel(a3)
 
 loc_392F6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_39318
 	jmp	(j_Delete_CurrentObject).w
@@ -49837,16 +42481,16 @@ loc_39318:
 loc_3931A:
 	move.l	#$1030002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8488-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8488-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	sf	d0
 
 loc_39356:
@@ -49855,7 +42499,7 @@ loc_39356:
 	move.b	($FFFFFB88).w,d2
 	bsr.w	sub_39420
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
+	move.w	d6,addroffset_sprite(a3)
 	tst.w	($FFFFFB76).w
 	bne.s	loc_3937A
 	move.b	$16(a2),d0
@@ -49864,15 +42508,15 @@ loc_39356:
 
 loc_3937A:
 	jsr	(sub_393B2).l
-	move.w	#$FFFD,$2A(a3)
-	move.l	#$4000,$26(a3)
+	move.w	#$FFFD,y_vel(a3)
+	move.l	#$4000,x_vel(a3)
 
 loc_3938E:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_37A22
-	move.w	d6,$22(a3)
-	addi.l	#$7D0,$2A(a3)
-	move.w	$1E(a3),d5
+	move.w	d6,addroffset_sprite(a3)
+	addi.l	#$7D0,y_vel(a3)
+	move.w	y_pos(a3),d5
 	cmp.w	(Level_height_blocks).w,d5
 	ble.s	loc_393B0
 	jmp	(j_Delete_CurrentObject).w
@@ -49909,9 +42553,9 @@ sub_393C8:
 
 loc_393DE:
 	add.w	$1A(a2),d7
-	move.w	d7,$1A(a3)
-	move.w	$1E(a2),$1E(a3)
-	subi.w	#$25,$1E(a3)
+	move.w	d7,x_pos(a3)
+	move.w	$1E(a2),y_pos(a3)
+	subi.w	#$25,y_pos(a3)
 	cmp.b	$16(a2),d0
 	beq.s	return_3940A
 	tst.b	d0
@@ -49956,9 +42600,9 @@ sub_39420:
 
 loc_39436:
 	add.w	$1A(a2),d7
-	move.w	d7,$1A(a3)
-	move.w	$1E(a2),$1E(a3)
-	subi.w	#$25,$1E(a3)
+	move.w	d7,x_pos(a3)
+	move.w	$1E(a2),y_pos(a3)
+	subi.w	#$25,y_pos(a3)
 	cmp.b	$16(a2),d0
 	beq.s	return_39462
 	tst.b	d0
@@ -49997,7 +42641,7 @@ word_3946E:	dc.w $C
 loc_39478:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$22,d0
 	tst.w	d2
 	beq.s	loc_39494
@@ -50005,16 +42649,16 @@ loc_39478:
 
 loc_39494:
 	; head 1
-	move.w	d0,$3A(a3)
-	bset	#7,$3A(a3)
+	move.w	d0,object_meta(a3)
+	bset	#7,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	st	is_moved(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB7A).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 	move.w	#0,d1
@@ -50049,9 +42693,9 @@ loc_394FA:
 loc_39506:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_394E8
@@ -50060,15 +42704,15 @@ loc_39506:
 	bgt.s	loc_394E8
 	cmp.w	d5,d3
 	bgt.s	loc_39534
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_39538
 ; ---------------------------------------------------------------------------
 
 loc_39534:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_39538:
-	move.b	$16(a3),($FFFFFB86).w
+	move.b	x_direction(a3),($FFFFFB86).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -50122,7 +42766,7 @@ loc_3958E:
 loc_39598:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$22,d0
 	tst.w	d2
 	beq.s	loc_395B4
@@ -50130,17 +42774,17 @@ loc_39598:
 
 loc_395B4:
 	; head 2
-	move.w	d0,$3A(a3)
-	bset	#7,$3A(a3)
+	move.w	d0,object_meta(a3)
+	bset	#7,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#$1E,$3E(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB7E).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 	move.w	#0,d1
@@ -50175,9 +42819,9 @@ loc_39620:
 loc_3962C:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_3960E
@@ -50186,15 +42830,15 @@ loc_3962C:
 	bgt.s	loc_3960E
 	cmp.w	d5,d3
 	bgt.s	loc_3965A
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_3965E
 ; ---------------------------------------------------------------------------
 
 loc_3965A:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_3965E:
-	move.b	$16(a3),($FFFFFB87).w
+	move.b	x_direction(a3),($FFFFFB87).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -50248,7 +42892,7 @@ loc_396B4:
 loc_396BE:
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$22,d0
 	tst.w	d2
 	beq.s	loc_396DA
@@ -50256,17 +42900,17 @@ loc_396BE:
 
 loc_396DA:
 	; head 3
-	move.w	d0,$3A(a3)
-	bset	#7,$3A(a3)
+	move.w	d0,object_meta(a3)
+	bset	#7,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#$1E,$3E(a3)
-	move.w	#(LnkTo_unk_C8600-Data_Index),$22(a3)
+	move.w	#(LnkTo_unk_C8600-Data_Index),addroffset_sprite(a3)
 	move.l	a3,($FFFFFB82).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
 	lea	(unk_39872).l,a2
 	moveq	#1,d0
 	move.w	#0,d1
@@ -50301,9 +42945,9 @@ loc_39746:
 loc_39752:
 	move.l	(Addr_GfxObject_Kid).w,a1
 	move.w	$1A(a1),d5
-	move.w	$1A(a3),d3
+	move.w	x_pos(a3),d3
 	move.w	$1E(a1),d7
-	move.w	$1E(a3),d4
+	move.w	y_pos(a3),d4
 	addi.w	#-$40,d4
 	cmp.w	d4,d7
 	blt.s	loc_39734
@@ -50312,15 +42956,15 @@ loc_39752:
 	bgt.s	loc_39734
 	cmp.w	d5,d3
 	bgt.s	loc_39780
-	st	$16(a3)
+	st	x_direction(a3)
 	bra.s	loc_39784
 ; ---------------------------------------------------------------------------
 
 loc_39780:
-	sf	$16(a3)
+	sf	x_direction(a3)
 
 loc_39784:
-	move.b	$16(a3),($FFFFFB88).w
+	move.b	x_direction(a3),($FFFFFB88).w
 	move.l	#stru_39FC6,d7
 	jsr	(j_Init_Animation).w
 
@@ -50388,10 +43032,10 @@ loc_397FA:
 	move.l	#loc_3A1EA,4(a0)
 
 loc_3980A:
-	move.w	$1A(a3),d6
-	move.w	$1E(a3),$46(a0)
-	move.b	$16(a3),$49(a0)
-	tst.b	$16(a3)
+	move.w	x_pos(a3),d6
+	move.w	y_pos(a3),$46(a0)
+	move.b	x_direction(a3),$49(a0)
+	tst.b	x_direction(a3)
 	bne.s	loc_3982C
 	move.w	#$FFFD,$48(a0)
 	addi.w	#-$18,d6
@@ -50431,12 +43075,12 @@ loc_39858:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_39846
 
@@ -50487,12 +43131,12 @@ loc_398D6:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_398C4
 
@@ -50547,12 +43191,12 @@ loc_3996E:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_3995C
 
@@ -50606,12 +43250,12 @@ loc_39A00:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_399EE
 
@@ -50666,12 +43310,12 @@ loc_39A98:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_39A86
 
@@ -50764,12 +43408,12 @@ loc_39C14:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_39C02
 
@@ -50855,12 +43499,12 @@ loc_39D66:
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$26(a3)
+	move.l	d7,x_vel(a3)
 	moveq	#0,d7
 	move.w	(a2)+,d7
 	swap	d7
 	asr.l	#1,d7
-	move.l	d7,$2A(a3)
+	move.l	d7,y_vel(a3)
 	rts
 ; End of function sub_39D54
 
@@ -50931,7 +43575,7 @@ sub_39EB4:
 ; ---------------------------------------------------------------------------
 
 loc_39EBE:
-	st	$3D(a3)
+	st	has_kid_collision(a3)
 	addq.b	#1,($FFFFFB4E).w
 	cmpi.b	#3,($FFFFFB4E).w
 	bne.s	loc_39EE2
@@ -50944,32 +43588,32 @@ loc_39EBE:
 loc_39EE2:
 	move.l	#stru_39FEE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A004,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A016,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A028,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A03A,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A050,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A062,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A074,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	d0,-(sp)
 	moveq	#sfx_Boss_dies,d0
 	jsr	(j_PlaySound).l
@@ -50979,18 +43623,18 @@ loc_39EE2:
 loc_39F7A:
 	move.l	#stru_3A086,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A09C,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	move.l	#stru_3A0AE,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	eori.b	#$FF,$16(a3)
+	jsr	(j_Hibernate_UntilAnimFinished).w
+	eori.b	#$FF,x_direction(a3)
 	move.l	#stru_3A0C0,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	subq.w	#1,d0
 	bne.s	loc_39F7A
 	jmp	(j_Delete_CurrentObject).w
@@ -51106,19 +43750,19 @@ loc_3A0D2:
 	move.l	(sp)+,d0
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$21,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	loc_32146(pc)
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#$32,$40(a3)
 	move.w	#$C8,$42(a3)
-	move.w	#(LnkTo_unk_C8510-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.w	$48(a5),$26(a3)
+	move.w	#(LnkTo_unk_C8510-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	move.w	$48(a5),x_vel(a3)
 	move.l	#stru_3A1CC,d7
 	jsr	(j_Init_Animation).w
 
@@ -51126,7 +43770,7 @@ loc_3A134:
 	jsr	(j_Hibernate_Object_1Frame).w
 	cmpi.w	#0,$40(a3)
 	bne.s	loc_3A168
-	clr.l	$26(a3)
+	clr.l	x_vel(a3)
 	move.l	#stru_3A1D6,d7
 	jsr	(j_Init_Animation).w
 
@@ -51152,9 +43796,9 @@ loc_3A168:
 
 
 sub_3A172:
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	return_3A1A4
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	cmpi.w	#$1C,d7
 	beq.s	loc_3A192
 	cmpi.w	#$2C,d7
@@ -51165,7 +43809,7 @@ sub_3A172:
 loc_3A192:
 	move.l	#stru_3A1E0,d7
 	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
+	jsr	(j_Hibernate_UntilAnimFinished).w
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
@@ -51178,9 +43822,9 @@ return_3A1A4:
 
 
 sub_3A1A6:
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	return_3A1CA
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	cmpi.w	#$1C,d7
 	beq.s	loc_3A1C6
 	cmpi.w	#$2C,d7
@@ -51221,18 +43865,18 @@ loc_3A1EA:
 	move.l	(sp)+,d0
 	move.l	#$1040002,a3
 	jsr	(j_Load_GfxObjectSlot).w
-	move.b	#0,$10(a3)
+	move.b	#0,priority(a3)
 	move.w	#$23,d0
-	move.w	d0,$3A(a3)
+	move.w	d0,object_meta(a3)
 	jsr	(loc_32146).l
-	sf	$3D(a3)
+	sf	has_kid_collision(a3)
 	st	$13(a3)
-	st	$14(a3)
+	st	is_moved(a3)
 	move.w	#$190,$40(a3)
-	move.w	#(LnkTo_unk_C8530-Data_Index),$22(a3)
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.w	$48(a5),$26(a3)
+	move.w	#(LnkTo_unk_C8530-Data_Index),addroffset_sprite(a3)
+	move.w	$44(a5),x_pos(a3)
+	move.w	$46(a5),y_pos(a3)
+	move.w	$48(a5),x_vel(a3)
 	move.b	$48(a5),d0
 	move.l	#stru_3A308,d7
 	jsr	(j_Init_Animation).w
@@ -51241,12 +43885,12 @@ loc_3A24C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	tst.b	d0
 	beq.s	loc_3A25E
-	addi.l	#$7D0,$26(a3)
+	addi.l	#$7D0,x_vel(a3)
 	bra.s	loc_3A266
 ; ---------------------------------------------------------------------------
 
 loc_3A25E:
-	addi.l	#-$7D0,$26(a3)
+	addi.l	#-$7D0,x_vel(a3)
 
 loc_3A266:
 	subq.w	#1,$40(a3)
@@ -51255,13 +43899,13 @@ loc_3A266:
 ; ---------------------------------------------------------------------------
 
 loc_3A270:
-	cmpi.w	#0,$1A(a3)
+	cmpi.w	#0,x_pos(a3)
 	bgt.s	loc_3A27C
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
 loc_3A27C:
-	move.w	$1A(a3),d5
+	move.w	x_pos(a3),d5
 	cmp.w	(Level_width_pixels).w,d5
 	ble.s	loc_3A28A
 	jmp	(j_Delete_CurrentObject).w
@@ -51275,12 +43919,12 @@ loc_3A28A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; used by boss
 sub_3A292:
 	swap	d1
-	move.w	$38(a3),d7
+	move.w	collision_type(a3),d7
 	beq.w	loc_3A2E0
-	clr.w	$38(a3)
+	clr.w	collision_type(a3)
 	cmpi.w	#$1C,d7
 	beq.s	loc_3A2C0
 	cmpi.w	#$2C,d7
@@ -51307,12 +43951,12 @@ loc_3A2E0:
 	tst.b	d1
 	beq.s	loc_3A2EE
 	subq.b	#1,d1
-	move.b	#3,$11(a3)
+	move.b	#3,palette_line(a3)
 	bra.s	loc_3A2F4
 ; ---------------------------------------------------------------------------
 
 loc_3A2EE:
-	move.b	#2,$11(a3)
+	move.b	#2,palette_line(a3)
 
 loc_3A2F4:
 	swap	d1
@@ -51323,11 +43967,10 @@ loc_3A2F4:
 loc_3A2FA:
 	swap	d1
 	move.w	#1,d7
-	move.b	#3,$11(a3)
+	move.b	#3,palette_line(a3)
 	rts
 ; End of function sub_3A292
 
-; ---------------------------------------------------------------------------
 stru_3A308:
 	anim_frame	  1,   4, LnkTo_unk_C8530-Data_Index
 	anim_frame	  1,   4, LnkTo_unk_C8538-Data_Index
@@ -51335,2380 +43978,49 @@ stru_3A308:
 	anim_frame	  1,   4, LnkTo_unk_C8548-Data_Index
 	dc.b   2
 	dc.b $11
-stru_3A31A:
-	anim_frame	  1,   6, LnkTo_unk_C771E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7726-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7736-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7726-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3A334:
-	anim_frame	  1,   3, LnkTo_unk_C771E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7726-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7736-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7726-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3A34E:
-	anim_frame	  1,   2, LnkTo_unk_C771E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7726-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7736-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C773E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C771E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7726-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C772E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7736-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C773E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3A378:
-	anim_frame	  1,   3, LnkTo_unk_C7746-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C774E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7756-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C775E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7766-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C776E-Data_Index
-	dc.b   0
-	dc.b   0
 ; ---------------------------------------------------------------------------
 
-;loc_3A392:
-Enemy00_FireDemon_Init:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	addi.w	#1,($FFFFFA06).w
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3A3D2
-	st	$16(a3)
-
-loc_3A3D2:
-	st	$13(a3)
-	st	$15(a3)
-	move.w	#0,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	bset	#6,$3A(a3)
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#3,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#4,d7
-	blt.s	loc_3A414
-	beq.s	loc_3A40C
-	move.l	#$8000,$50(a5)
-
-loc_3A40C:
-	addi.l	#$8000,$50(a5)
-
-loc_3A414:
-	addi.l	#$8000,$50(a5)
-	move.w	#$20,$4A(a5)
-	move.w	#$B,$48(a5)
-	tst.b	($FFFFFB50).w
-	bne.s	loc_3A444
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3A48E,4(a0)
-	addi.b	#1,($FFFFFB50).w
-
-loc_3A444:
-	move.l	#loc_3A542,a0
-	cmpi.w	#5,d7
-	bne.s	loc_3A464
-	move.l	#stru_3A334,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3A334,$62(a5)
-	bra.s	loc_3A476
-; ---------------------------------------------------------------------------
-
-loc_3A464:
-	move.l	#stru_3A31A,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3A31A,$62(a5)
-
-loc_3A476:
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-dword_3A482:	dc.l $FFFF4E7A
-	dc.l $FFFF4E9A
-	dc.l $FFFF4EAA
-; ---------------------------------------------------------------------------
-
-loc_3A48E:
-	move.l	$A(a5),a4
-	move.l	$36(a4),a4
-	move.w	$3E(a4),d1
-	lsl.w	#2,d1
-	move.l	dword_3A482(pc,d1.w),a3
-	move.w	#$634,d7
-	move.w	$40(a4),d4
-	beq.s	loc_3A4B8
-	cmpi.w	#1,d4
-	beq.s	loc_3A4B4
-	addi.w	#$C,d7
-
-loc_3A4B4:
-	addi.w	#$C,d7
-
-loc_3A4B8:
-	lea	(Data_Index).l,a4
-	move.l	(a4,d7.w),a2
-
-loc_3A4C2:
-	move.w	#3,-(sp)
-	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
-	beq.s	loc_3A53E
-	move.l	a3,a1
-	move.l	a2,a0
-	moveq	#6,d0
-
-loc_3A4D6:
-	move.w	(a0)+,(a1)+
-	dbf	d0,loc_3A4D6
-	move.w	#3,-(sp)
-	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
-	beq.s	loc_3A53E
-	move.l	a3,a1
-	move.l	a2,a0
-	addi.l	#$E,a0
-	moveq	#6,d0
-
-loc_3A4F6:
-	move.w	(a0)+,(a1)+
-	dbf	d0,loc_3A4F6
-	move.w	#3,-(sp)
-	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
-	beq.s	loc_3A53E
-	move.l	a3,a1
-	move.l	a2,a0
-	addi.l	#$1C,a0
-	moveq	#6,d0
-
-loc_3A516:
-	move.w	(a0)+,(a1)+
-	dbf	d0,loc_3A516
-	move.w	#3,-(sp)
-	jsr	(j_Hibernate_Object).w
-	tst.b	($FFFFFB50).w
-	beq.s	loc_3A53E
-	move.l	a3,a1
-	move.l	a2,a0
-	addi.l	#$E,a0
-	moveq	#6,d0
-
-loc_3A536:
-	move.w	(a0)+,(a1)+
-	dbf	d0,loc_3A536
-	bra.s	loc_3A4C2
-; ---------------------------------------------------------------------------
-
-loc_3A53E:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3A542:
-	cmpi.w	#(LnkTo_unk_C771E-Data_Index),$22(a3)
-	bne.s	loc_3A586
-	cmpi.w	#2,$40(a3)
-	beq.s	loc_3A55C
-	cmpi.w	#6,$32(a3)
-	bne.s	loc_3A586
-	bra.s	loc_3A564
-; ---------------------------------------------------------------------------
-
-loc_3A55C:
-	cmpi.w	#3,$32(a3)
-	bne.s	loc_3A586
-
-loc_3A564:
-	cmpi.w	#7,($FFFFFB44).w
-	bge.w	loc_3A586
-	exg	a0,a4
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3A63C,4(a0)
-	exg	a0,a4
-	addq.w	#1,($FFFFFB44).w
-
-loc_3A586:
-	move.w	$38(a3),d4
-	bmi.s	loc_3A5A6
-	beq.s	loc_3A5D4
-	cmpi.w	#$20,d4
-	beq.s	loc_3A5E4
-	cmpi.w	#$24,d4
-	beq.s	loc_3A5E4
-	cmpi.w	#$1C,d4
-	bne.s	loc_3A5D4
-	subq.w	#1,$44(a3)
-	bne.s	loc_3A5BE
-
-loc_3A5A6:
-	move.l	#stru_3A378,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	subi.b	#1,($FFFFFB50).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3A5BE:
-	move.l	#stru_3A34E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-
-loc_3A5D4:
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3A5E4:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3A5D4
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C773E-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3A610:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3A610
-; ---------------------------------------------------------------------------
-stru_3A622:
-	anim_frame	  1,   6, LnkTo_unk_C7776-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C777E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7786-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C778E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7796-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C779E-Data_Index
-	dc.b   2
-	dc.b $19
-; ---------------------------------------------------------------------------
-
-loc_3A63C:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	addi.w	#$F,$1E(a3)
-	andi.w	#$FFF0,$1E(a3)
-	move.b	#0,$10(a3)
-	st	$13(a3)
-	st	$14(a3)
-	move.w	$3A(a0),$3A(a3)
-	move.w	$24(a0),$24(a3)
-	move.b	$11(a0),$11(a3)
-	move.l	#stru_3A622,d7
-	jsr	(j_Init_Animation).w
-	move.w	#$96,d3
-	moveq	#8,d7
-	move.w	#$3E7,d6
-	bsr.w	loc_33286
-	bclr	#$F,d6
-	bne.w	loc_3A6DA
-	andi.w	#$7000,d6
-	cmpi.w	#$6000,d6
-	bne.w	loc_3A6DA
-	andi.w	#$7000,d5
-	cmpi.w	#$6000,d5
-	bne.w	loc_3A6DA
-	andi.w	#$7000,d7
-	cmpi.w	#$6000,d7
-	bne.w	loc_3A6DA
-
-loc_3A6CA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.w	loc_3A6DA
-	subq.w	#1,d3
-	bne.s	loc_3A6CA
-
-loc_3A6DA:
-	subq.w	#1,($FFFFFB44).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-stru_3A6E2:
-	anim_frame	  1,   9, LnkTo_unk_C82A8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82B0-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82B8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82C0-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82C8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82D0-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3A6FC:
-	anim_frame	  1,   4, LnkTo_unk_C82A8-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82B0-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82B8-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82C0-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82C8-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82D0-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3A716:
-	anim_frame	  1,   9, LnkTo_unk_C82D8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82E0-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82E8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82F0-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C82F8-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C8300-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3A730:
-	anim_frame	  1,   4, LnkTo_unk_C8290-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C8298-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C82A0-Data_Index
-	dc.b   2
-	dc.b  $D
-	anim_frame	1, 9, LnkTo_unk_C8308-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3A744:
-	anim_frame	1, 9, LnkTo_unk_C8310-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3A74A:
-	anim_frame	1, 9, LnkTo_unk_C8318-Data_Index
-	anim_frame	1, 9, LnkTo_unk_C8320-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3A754:
-	anim_frame	  1,   3, LnkTo_unk_C8278-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C8280-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C8288-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_3A762:
-	anim_frame	  1,   3, LnkTo_unk_C8260-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C8268-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C8270-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3A770:
-Enemy03_Robot_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3A7AC
-	st	$16(a3)
-
-loc_3A7AC:
-	st	$13(a3)
-	move.w	#3,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#2,$11(a3)
-	move.b	#0,$10(a3)
-	move.w	#$20,$4A(a5)
-	move.w	#$B,$48(a5)
-	move.w	$40(a3),d7
-	addi.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3A7EE
-	move.l	#$8000,$50(a5)
-
-loc_3A7EE:
-	addi.l	#$8000,$50(a5)
-	move.l	#stru_3A6E2,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	move.b	#0,$10(a1)
-	move.w	$4A(a3),$4A(a1)
-	move.w	$48(a3),$48(a1)
-	st	$13(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.b	$16(a3),$16(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$3A(a3),$3A(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	subi.w	#$10,$1E(a1)
-	move.w	#$10,$46(a1)
-	exg	a1,a3
-	move.l	#stru_3A716,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	move.l	#loc_3A890,a0
-	move.l	#$10001,$54(a5)
-	tst.b	$19(a3)
-	bne.s	loc_3A884
-	moveq	#sfx_Robot_jumping_on,d0
-	jsr	(j_PlaySound).l
-
-loc_3A884:
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3A890:
-	cmpi.w	#(LnkTo_unk_C82A8-Data_Index),$22(a3)
-	bne.s	loc_3A8AE
-	cmpi.w	#4,$32(a3)
-	bne.s	loc_3A8AE
-	tst.b	$19(a3)
-	bne.s	loc_3A8AE
-	moveq	#sfx_Robot_jumping_on,d0
-	jsr	(j_PlaySound).l
-
-loc_3A8AE:
-	move.w	$38(a3),d5
-	bmi.w	loc_3A9D2
-	cmpi.w	#$800,d5
-	beq.w	loc_3A9F0
-	cmpi.w	#$1C,d5
-	beq.s	loc_3A8FC
-	move.l	$3A(a5),a2
-	move.w	$38(a2),d4
-	bmi.w	loc_3A96C
-	beq.w	loc_3A958
-	cmpi.w	#$1C,d4
-	beq.s	loc_3A8FC
-	cmpi.w	#$20,d4
-	beq.w	loc_3A9CC
-	cmpi.w	#$24,d4
-	beq.w	loc_3A9CC
-	cmpi.w	#$2C,d4
-	beq.s	loc_3A8FC
-	cmpi.w	#$800,d4
-	beq.w	loc_3A9F0
-	bra.w	loc_3A958
-; ---------------------------------------------------------------------------
-
-loc_3A8FC:
-	st	$3D(a2)
-	tst.b	$4E(a5)
-	bne.s	loc_3A90C
-	move.w	#(LnkTo_unk_C8308-Data_Index),$22(a2)
-
-loc_3A90C:
-	addi.w	#4,$1E(a2)
-	move.l	#stru_3A744,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	subi.w	#1,$44(a3)
-	beq.s	loc_3A96C
-	tst.b	$19(a3)
-	bne.s	loc_3A936
-	moveq	#sfx_Robot_jumping_on,d0
-	jsr	(j_PlaySound).l
-
-loc_3A936:
-	sf	$3D(a2)
-	subi.w	#4,$1E(a2)
-	move.l	#stru_3A6E2,d7
-	jsr	(j_Init_Animation).w
-	exg	a3,a2
-	move.l	#stru_3A716,d7
-	jsr	(j_Init_Animation).w
-	exg	a3,a2
-
-loc_3A958:
-	clr.w	$38(a2)
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3A96C:
-	clr.w	$4E(a5)
-	sf	$13(a2)
-	st	$3D(a3)
-	st	$3D(a2)
-	move.l	#stru_3A74A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	st	$13(a2)
-	move.l	#stru_3A6FC,d7
-	jsr	(j_Init_Animation).w
-	exg	a2,a3
-	move.l	#stru_3A730,d7
-	jsr	(j_Init_Animation).w
-	exg	a2,a3
-	move.l	#$28000,$50(a5)
-	move.w	#$800,$38(a2)
-	move.w	#$800,$38(a3)
-	move.w	#$F,$54(a5)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3A9CC:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3A958
-; START	OF FUNCTION CHUNK FOR sub_3C4F8
-
-loc_3A9D2:
-	sf	$13(a2)
-	st	$3D(a2)
-	st	$3D(a3)
-	move.l	#stru_3A74A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; END OF FUNCTION CHUNK	FOR sub_3C4F8
-; ---------------------------------------------------------------------------
-
-loc_3A9F0:
-	subi.w	#1,$54(a5)
-	bne.s	loc_3AA0C
-	jsr	(j_Get_RandomNumber_byte).w
-	lsr.w	#1,d7
-	addi.w	#$F,d7
-	move.w	d7,$54(a5)
-	eori.b	#$FF,$16(a3)
-
-loc_3AA0C:
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_3C4F8
-
-loc_3AA18:
-	exg	a0,a1
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3ABB6,4(a0)
-	exg	a0,a1
-	move.l	$3A(a5),a2
-	sf	$15(a2)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C8328-Data_Index),$22(a2)
-	move.w	#(LnkTo_unk_C8330-Data_Index),$22(a3)
-	addi.w	#3,$1E(a2)
-	moveq	#8,d0
-
-loc_3AA4C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a2)
-	bne.w	loc_3AAD4
-	dbf	d0,loc_3AA4C
-	tst.b	$16(a2)
-	beq.s	loc_3AA68
-	move.w	#$FFFC,d1
-	bra.s	loc_3AA6C
-; ---------------------------------------------------------------------------
-
-loc_3AA68:
-	move.w	#4,d1
-
-loc_3AA6C:
-	add.w	d1,$1A(a2)
-	moveq	#4,d0
-
-loc_3AA72:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a2)
-	bne.w	loc_3AAD4
-	dbf	d0,loc_3AA72
-	sub.w	d1,$1A(a2)
-	moveq	#$A,d0
-
-loc_3AA88:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a2)
-	bne.w	loc_3AAD4
-	dbf	d0,loc_3AA88
-	subi.w	#3,$1E(a2)
-
-loc_3AA9E:
-	st	$15(a2)
-	move.l	#stru_3A6E2,a1
-	addi.w	#$14,a1
-	move.l	a1,$2E(a3)
-	move.w	2(a1),$22(a3)
-	st	$15(a3)
-	sf	$18(a3)
-	move.w	#9,$32(a3)
-
-loc_3AAC4:
-	clr.w	$38(a2)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3AAD4:
-	move.w	$38(a2),d0
-	cmpi.w	#$2C,d0
-	beq.s	loc_3AB04
-	cmpi.w	#$1C,d4
-	beq.s	loc_3AB04
-	cmpi.w	#colid_hurt,$38(a3)
-	beq.s	loc_3AB04
-	cmpi.w	#$20,d4
-	beq.w	loc_3AAFA
-	cmpi.w	#$24,d4
-	bne.s	loc_3AA9E
-
-loc_3AAFA:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3AA9E
-	bra.w	loc_3A9D2
-; ---------------------------------------------------------------------------
-
-loc_3AB04:
-	st	$3D(a2)
-	tst.b	$4E(a5)
-	bne.s	loc_3AB14
-	move.w	#(LnkTo_unk_C8308-Data_Index),$22(a2)
-
-loc_3AB14:
-	addi.w	#4,$1E(a2)
-	move.l	#stru_3A744,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	subi.w	#1,$44(a3)
-	beq.s	loc_3AB56
-	sf	$3D(a2)
-	subi.w	#4,$1E(a2)
-	move.l	#stru_3A6E2,d7
-	jsr	(j_Init_Animation).w
-	exg	a3,a2
-	move.l	#stru_3A716,d7
-	jsr	(j_Init_Animation).w
-	exg	a3,a2
-	bra.w	loc_3AAC4
-; ---------------------------------------------------------------------------
-
-loc_3AB56:
-	clr.w	$4E(a5)
-	sf	$13(a2)
-	st	$3D(a3)
-	st	$3D(a2)
-	move.l	#stru_3A74A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	st	$13(a2)
-	move.l	#stru_3A6FC,d7
-	jsr	(j_Init_Animation).w
-	exg	a2,a3
-	move.l	#stru_3A730,d7
-	jsr	(j_Init_Animation).w
-	exg	a2,a3
-	move.l	#$28000,$50(a5)
-	move.w	#$800,$38(a2)
-	move.w	#$800,$38(a3)
-	move.w	#$F,$54(a5)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; END OF FUNCTION CHUNK	FOR sub_3C4F8
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3ABB6:
-	move.w	#$A,-(sp)
-	jsr	(j_Hibernate_Object).w
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$3A(a0),a1
-	move.l	$36(a0),a0
-	move.b	#1,$10(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	$11(a0),$11(a3)
-	move.w	$3E(a0),$3E(a3)
-	move.w	$24(a0),$24(a3)
-	move.w	#$FFFB,d0
-	move.w	#$FFE6,d1
-	move.b	$16(a1),$16(a3)
-	beq.s	loc_3AC0C
-	neg.w	d0
-	neg.w	d1
-
-loc_3AC0C:
-	move.w	d0,$26(a3)
-	move.w	$1A(a0),$1A(a3)
-	add.w	d1,$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	move.w	$46(a1),d0
-	subi.w	#2,d0
-	sub.w	d0,$1E(a3)
-	move.l	#stru_3A754,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.s	loc_3AC48
-	moveq	#sfx_Robot_shoots,d0
-	jsr	(j_PlaySound).l
-
-loc_3AC48:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1A(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FF80,d0
-	blt.s	loc_3AC7E
-	cmpi.w	#$1C0,d0
-	bgt.s	loc_3AC7E
-	move.w	$1E(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FF80,d0
-	blt.s	loc_3AC7E
-	cmpi.w	#$1C0,d0
-	bgt.s	loc_3AC7E
-	tst.w	$38(a3)
-	beq.s	loc_3AC48
-
-loc_3AC7E:
-	move.l	#0,$26(a3)
-	move.w	#$FFF8,d0
-	tst.b	$16(a3)
-	beq.s	loc_3AC92
-	neg.w	d0
-
-loc_3AC92:
-	add.w	d0,$1A(a3)
-	move.l	#stru_3A762,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3ABB6
-
-; ---------------------------------------------------------------------------
-stru_3ACA8:
-	anim_frame	  1,   6, LnkTo_unk_C8160-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8168-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8170-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8178-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8180-Data_Index
-	dc.b   2
-	dc.b $15
-stru_3ACBE:
-	anim_frame	1, $A, LnkTo_unk_C8158-Data_Index 
-	dc.b   0
-	dc.b   0
-stru_3ACC4:
-	anim_frame	  1,   8, LnkTo_unk_C8158-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C8138-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C8140-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C8148-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C8150-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3ACDA:
-Enemy01_Diamond_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3AD16
-	st	$16(a3)
-
-loc_3AD16:
-	st	$13(a3)
-	move.w	#1,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	bset	#6,$3A(a3)
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	bgt.s	loc_3AD7C
-	blt.s	loc_3AD4C
-	move.l	#$8000,$50(a5)
-
-loc_3AD4C:
-	addi.l	#$10000,$50(a5)
-	move.w	#$20,$4A(a5)
-	move.w	#$A,$48(a5)
-	move.l	#stru_3ACA8,d7
-	jsr	(j_Init_Animation).w
-	move.l	#loc_3AEC4,a0
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3AD7C:
-	st	$14(a3)
-	st	$3C(a3)
-	move.l	#stru_3ACA8,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$18000,$26(a3)
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	bmi.s	loc_3ADA4
-	neg.l	$26(a3)
-
-loc_3ADA4:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	move.w	$38(a3),d4
-	beq.w	loc_3AE78
-	cmpi.w	#$1C,d4
-	beq.s	loc_3ADFA
-	cmpi.w	#$C,d4
-	beq.s	loc_3ADA4
-	cmpi.w	#4,d4
-	beq.w	loc_3AE3E
-	cmpi.w	#8,d4
-	beq.w	loc_3AE3E
-	cmpi.w	#$10,d4
-	beq.s	loc_3AE3E
-	cmpi.w	#$14,d4
-	beq.s	loc_3AE4A
-	cmpi.w	#$18,d4
-	beq.w	loc_3AE68
-	cmpi.w	#$20,d4
-	beq.w	loc_3AE84
-	cmpi.w	#$24,d4
-	beq.w	loc_3AE84
-	bra.s	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3ADFA:
-	subq.w	#1,$44(a3)
-	beq.s	loc_3AE28
-	sf	$14(a3)
-	move.l	#stru_3ACBE,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	st	$14(a3)
-	clr.w	$38(a3)
-	move.l	#stru_3ACA8,d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE28:
-	sf	$14(a3)
-	move.l	#stru_3ACC4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3AE3E:
-	neg.l	$26(a3)
-	neg.l	$2A(a3)
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE4A:
-	tst.l	$26(a3)
-	bmi.s	loc_3AE5C
-
-loc_3AE50:
-	move.l	#-$18000,$2A(a3)
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE5C:
-	move.l	#$18000,$2A(a3)
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE68:
-	tst.l	$26(a3)
-	bmi.s	loc_3AE50
-	bra.s	loc_3AE5C
-; ---------------------------------------------------------------------------
-	clr.l	$2A(a3)
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE78:
-	move.l	#$1C000,$2A(a3)
-	bra.w	loc_3ADA4
-; ---------------------------------------------------------------------------
-
-loc_3AE84:
-	tst.b	(Berzerker_charging).w
-	beq.w	loc_3ADA4
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C8160-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#-$48000,$2A(a3)
-
-loc_3AEB2:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3AEB2
-; ---------------------------------------------------------------------------
-
-loc_3AEC4:
-	move.w	$38(a3),d4
-	beq.s	loc_3AF14
-	bmi.s	loc_3AEE6
-	cmpi.w	#$20,d4
-	beq.s	loc_3AF24
-	cmpi.w	#$24,d4
-	beq.s	loc_3AF24
-	cmpi.w	#$1C,d4
-	bne.s	loc_3AF14
-	subq.w	#1,$44(a3)
-	bne.w	loc_3AEF8
-
-loc_3AEE6:
-	move.l	#stru_3ACC4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3AEF8:
-	move.l	#stru_3ACBE,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	clr.w	$38(a3)
-	move.l	#stru_3ACA8,d7
-	jsr	(j_Init_Animation).w
-
-loc_3AF14:
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3AF24:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3AF14
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C8160-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#-$48000,$2A(a3)
-
-loc_3AF50:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3AF50
-; ---------------------------------------------------------------------------
-stru_3AF62:
-	anim_frame	  1,   8, LnkTo_unk_C7C1E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C26-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C2E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7C36-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C3E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C46-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3AF7C:
-	anim_frame	1, 8, LnkTo_unk_C7C16-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3AF82:
-	anim_frame	  1, $14, LnkTo_unk_C7C16-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7C06-Data_Index
-	anim_frame	  1, $1E, LnkTo_unk_C7C0E-Data_Index
-	dc.b   0
-	dc.b   0
-	anim_frame	1, $14, LnkTo_unk_C7C4E-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3AF96:
-Enemy09_Crab_Init:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3AFD0
-	st	$16(a3)
-
-loc_3AFD0:
-	st	$13(a3)
-	st	$15(a3)
-	move.w	#9,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3B00A
-	move.l	#$10000,$50(a5)
-	move.l	#$10000,$5E(a5)
-
-loc_3B00A:
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-	move.w	#$1E,$4A(a5)
-	move.w	#$C,$48(a5)
-	move.l	#stru_3AF62,d7
-	jsr	(j_Init_Animation).w
-	addi.w	#1,($FFFFFA06).w
-	move.l	#loc_3B048,a0
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3B048:
-	move.w	$38(a3),d4
-	beq.s	loc_3B0BE
-	bmi.s	loc_3B094
-	cmpi.w	#$20,d4
-	beq.w	loc_3B180
-	cmpi.w	#$24,d4
-	beq.w	loc_3B180
-	cmpi.w	#$1C,d4
-	bne.s	loc_3B0BE
-	cmpi.w	#(LnkTo_unk_C7C4E-Data_Index),$22(a3)
-	beq.s	loc_3B0BE
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	tst.w	d7
-	bmi.s	loc_3B086
-	tst.b	$16(a3)
-	beq.s	loc_3B08C
-	bra.s	loc_3B0BE
-; ---------------------------------------------------------------------------
-
-loc_3B086:
-	tst.b	$16(a3)
-	beq.s	loc_3B0BE
-
-loc_3B08C:
-	subi.w	#1,$44(a3)
-	bne.s	loc_3B0A6
-
-loc_3B094:
-	move.l	#stru_3AF82,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3B0A6:
-	move.l	#stru_3AF7C,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	#stru_3AF62,d7
-	jsr	(j_Init_Animation).w
-
-loc_3B0BE:
-	clr.w	$38(a3)
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	tst.b	$6E(a5)
-	bne.w	loc_3B142
-	tst.w	d7
-	bmi.s	loc_3B0E0
-	sf	$16(a3)
-	bra.s	loc_3B0E4
+;Enemy00_FireDemon_Init: 
+	include "code/enemy/Fire_Demon.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3B0E0:
-	st	$16(a3)
-
-loc_3B0E4:
-	cmpi.w	#$40,d7
-	bgt.s	loc_3B11E
-	cmpi.w	#$FFC0,d7
-	blt.s	loc_3B11E
-	tst.b	$16(a4)
-	beq.s	loc_3B0FE
-	tst.b	$16(a3)
-	beq.s	loc_3B11E
-	bra.s	loc_3B104
-; ---------------------------------------------------------------------------
-
-loc_3B0FE:
-	tst.b	$16(a3)
-	bne.s	loc_3B11E
-
-loc_3B104:
-	sf	$15(a3)
-	bset	#7,$3A(a3)
-	move.w	#(LnkTo_unk_C7C4E-Data_Index),$22(a3)
-	move.l	#0,$50(a5)
-	bra.s	loc_3B174
-; ---------------------------------------------------------------------------
-
-loc_3B11E:
-	cmpi.w	#(LnkTo_unk_C7C4E-Data_Index),$22(a3)
-	bne.s	loc_3B174
-	st	$15(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	#stru_3AF62,d7
-	jsr	(j_Init_Animation).w
-	bclr	#7,$3A(a3)
-	bra.s	loc_3B174
-; ---------------------------------------------------------------------------
-
-loc_3B142:
-	cmpi.w	#$E0,d7
-	bgt.s	loc_3B170
-	cmpi.w	#$FF20,d7
-	blt.s	loc_3B170
-	cmpi.w	#$40,d7
-	bgt.s	loc_3B174
-	cmpi.w	#$FFC0,d7
-	blt.s	loc_3B174
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	$26(a4),d6
-	tst.w	d7
-	bmi.s	loc_3B16C
-	tst.l	d6
-	ble.s	loc_3B174
-	bra.s	loc_3B170
-; ---------------------------------------------------------------------------
-
-loc_3B16C:
-	tst.l	d6
-	bge.s	loc_3B174
-
-loc_3B170:
-	sf	$6E(a5)
-
-loc_3B174:
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3B180:
-	tst.b	(Berzerker_charging).w
-	beq.w	loc_3B0BE
-	st	$3C(a3)
-	st	$14(a3)
-	clr.w	$38(a3)
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.l	$26(a4),d4
-	add.l	d4,d4
-	move.l	d4,$26(a3)
-	clr.l	$2A(a3)
-
-loc_3B1A6:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.l	$26(a3)
-	bmi.s	loc_3B1BE
-	subi.l	#$4000,$26(a3)
-	bra.s	loc_3B1C6
-; ---------------------------------------------------------------------------
-
-loc_3B1BE:
-	addi.l	#$4000,$26(a3)
-
-loc_3B1C6:
-	cmpi.l	#$8000,$26(a3)
-	bgt.s	loc_3B1DA
-	cmpi.l	#$FFFF8000,$26(a3)
-	bgt.s	loc_3B254
-
-loc_3B1DA:
-	move.w	$38(a3),d4
-	beq.s	loc_3B218
-	cmpi.w	#4,d4
-	beq.s	loc_3B24C
-	cmpi.w	#8,d4
-	beq.s	loc_3B24C
-	cmpi.w	#$14,d4
-	beq.s	loc_3B1F8
-	cmpi.w	#$18,d4
-	bne.s	loc_3B1A6
-
-loc_3B1F8:
-	tst.l	$26(a3)
-	bmi.s	loc_3B212
-	cmpi.w	#$14,d4
-	beq.s	loc_3B24C
-
-loc_3B204:
-	move.l	$2A(a3),d7
-	lsr.l	#1,d7
-	neg.l	d7
-	move.l	d7,$2A(a3)
-	bra.s	loc_3B1A6
-; ---------------------------------------------------------------------------
-
-loc_3B212:
-	cmpi.w	#$18,d4
-	bne.s	loc_3B204
-
-loc_3B218:
-	tst.l	$2A(a3)
-	bne.s	loc_3B226
-	move.l	#$10000,$2A(a3)
-
-loc_3B226:
-	addi.l	#$4000,$2A(a3)
-	tst.l	$26(a3)
-	bmi.s	loc_3B240
-	addi.l	#$4000,$26(a3)
-	bra.w	loc_3B1A6
-; ---------------------------------------------------------------------------
-
-loc_3B240:
-	subi.l	#$4000,$26(a3)
-	bra.w	loc_3B1A6
-; ---------------------------------------------------------------------------
-
-loc_3B24C:
-	neg.l	$26(a3)
-	bra.w	loc_3B1A6
-; ---------------------------------------------------------------------------
-
-loc_3B254:
-	sf	$14(a3)
-	sf	$3C(a3)
-	move.l	#0,$26(a3)
-	move.l	#0,$2A(a3)
-	bra.w	loc_3B0BE
-; ---------------------------------------------------------------------------
-stru_3B270:
-	anim_frame	  1,   6, LnkTo_unk_C7ED0-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7ED8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7EE0-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_3B27E:
-	anim_frame	  1, $37, LnkTo_unk_C7EC8-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7F20-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F28-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7F20-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7EC8-Data_Index
-	dc.b   2
-	dc.b $15
-stru_3B294:
-	anim_frame	1, $3C, LnkTo_unk_C7F30-Data_Index
-	dc.b   2
-	dc.b   5
-stru_3B29A:
-	anim_frame	  1, $10, LnkTo_unk_C7EB8-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7EC0-Data_Index
-	anim_frame	  1, $3C, LnkTo_unk_C7F18-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3B2A8:
-Enemy0A_RockTank_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3B2E4
-	st	$16(a3)
-
-loc_3B2E4:
-	st	$13(a3)
-	move.w	#$A,d5
-	move.w	#$B,d6
-	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
-	moveq	#0,d4
-	move.w	2(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3B31E
-	cmp.w	d3,d6
-	beq.s	loc_3B31E
-	addq.w	#1,d4
-	move.w	4(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3B31E
-	cmp.w	d3,d6
-	beq.s	loc_3B31E
-	addq.w	#1,d4
-
-loc_3B31E:
-	lea	unk_36FEA(pc),a4
-	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
-	add.w	d4,d4
-	move.w	(a4,d4.w),$24(a3)
-	move.w	d4,$3E(a3)
-	bset	#7,$3A(a3)
-	move.b	#0,$10(a3)
-	move.w	#$20,$4A(a5)
-	move.w	#$B,$48(a5)
-	move.w	$40(a3),d7
-	addq.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3B372
-	beq.s	loc_3B36A
-	move.l	#$8000,$50(a5)
-
-loc_3B36A:
-	addi.l	#$8000,$50(a5)
-
-loc_3B372:
-	addi.l	#$8000,$50(a5)
-	move.l	#stru_3B270,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	move.b	#0,$10(a1)
-	move.w	$4A(a3),$4A(a1)
-	move.w	$48(a3),$48(a1)
-	st	$13(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.b	$16(a3),$16(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$3A(a3),$3A(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	subi.w	#8,$1E(a1)
-	move.w	#8,$46(a1)
-	exg	a1,a3
-	move.l	#stru_3B27E,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	move.l	#loc_3B41C,a0
-	lea	($FFFFFA34).w,a4
-	tst.b	(a4,d5.w)
-	bne.s	loc_3B40A
-	tst.b	$19(a3)
-	bne.s	loc_3B40A
-	moveq	#sfx_Tank_driving,d0
-	jsr	(j_PlaySound).l
-
-loc_3B40A:
-	addi.b	#1,(a4,d5.w)
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3B41C:
-	tst.w	$38(a3)
-	bmi.s	loc_3B480
-	move.l	$3A(a5),a2
-	cmpi.w	#(LnkTo_unk_C7F20-Data_Index),$22(a2)
-	bne.s	loc_3B446
-	cmpi.w	#$A,$32(a2)
-	bne.s	loc_3B446
-	tst.b	$19(a3)
-	bne.s	loc_3B444
-	moveq	#sfx_Tank_mouth_open,d0
-	jsr	(j_PlaySound).l
-
-loc_3B444:
-	bra.s	loc_3B464
-; ---------------------------------------------------------------------------
-
-loc_3B446:
-	cmpi.w	#(LnkTo_unk_C7EC8-Data_Index),$22(a2)
-	bne.s	loc_3B464
-	cmpi.w	#$37,$32(a2)
-	bne.s	loc_3B464
-	tst.b	$19(a3)
-	bne.s	loc_3B464
-	moveq	#sfx_Tank_mouth_closed,d0
-	jsr	(j_PlaySound).l
-
-loc_3B464:
-	move.w	$38(a2),d4
-	beq.s	loc_3B4BA
-	bmi.s	loc_3B480
-	cmpi.w	#$2C,d4
-	beq.s	loc_3B478
-	cmpi.w	#$1C,d4
-	bne.s	loc_3B4BA
-
-loc_3B478:
-	subi.w	#1,$44(a3)
-	bne.s	loc_3B49A
-
-loc_3B480:
-	sf	$13(a2)
-	st	$3D(a2)
-	move.l	#stru_3B29A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3B49A:
-	move.l	#0,$50(a5)
-	move.w	#6,$46(a2)
-	move.l	#stru_3B294,d7
-	jsr	(j_Init_Animation).w
-	move.w	#5,-(sp)
-	jsr	(j_Hibernate_Object).w
-
-loc_3B4BA:
-	clr.w	$38(a2)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-stru_3B4CA:
-	anim_frame	  1,   6, LnkTo_unk_C7ED0-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7ED8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7EE0-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_3B4D8:
-	anim_frame	  1, $37, LnkTo_unk_C7EC8-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7F00-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F08-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F10-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C7F08-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7F00-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7EC8-Data_Index
-	dc.b   2
-	dc.b $1D
-stru_3B4F6:
-	anim_frame	  1, $37, LnkTo_unk_C7EC8-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7F00-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F08-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7F10-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C7F08-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7F00-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7EC8-Data_Index
-	anim_frame	  1, $74, LnkTo_unk_C7EC8-Data_Index
-	dc.b   2
-	dc.b $21 ; !
-stru_3B518:
-	anim_frame	  1, $10, LnkTo_unk_C7EB8-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7EC0-Data_Index
-	anim_frame	  1, $3C, LnkTo_unk_C7EF8-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3B526:
-	anim_frame	  1,   6, LnkTo_unk_C7EE8-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7EF0-Data_Index
-	dc.b   2
-	dc.b   9
-; ---------------------------------------------------------------------------
-
-;loc_3B530:
-Enemy0B_RockTank_shooting_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3B56C
-	st	$16(a3)
-
-loc_3B56C:
-	st	$13(a3)
-	move.w	#$A,d6
-	move.w	#$B,d5
-	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
-	moveq	#0,d4
-	move.w	2(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3B5A6
-	cmp.w	d3,d6
-	beq.s	loc_3B5A6
-	addq.w	#1,d4
-	move.w	4(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3B5A6
-	cmp.w	d3,d6
-	beq.s	loc_3B5A6
-	addq.w	#1,d4
-
-loc_3B5A6:
-	lea	unk_36FEA(pc),a4
-	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
-	add.w	d4,d4
-	move.w	(a4,d4.w),$24(a3)
-	move.w	d4,$3E(a3)
-	bset	#7,$3A(a3)
-	move.b	#0,$10(a3)
-	move.w	#$20,$4A(a5)
-	move.w	#$B,$48(a5)
-	move.w	$40(a3),d7
-	addq.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3B5FA
-	beq.s	loc_3B5F2
-	move.l	#$8000,$50(a5)
-
-loc_3B5F2:
-	addi.l	#$8000,$50(a5)
-
-loc_3B5FA:
-	addi.l	#$8000,$50(a5)
-	move.w	#$49,$54(a5)
-	move.l	#stru_3B4CA,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	move.b	#0,$10(a1)
-	move.w	$4A(a3),$4A(a1)
-	move.w	$48(a3),$48(a1)
-	st	$13(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.b	$16(a3),$16(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$3A(a3),$3A(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	subi.w	#8,$1E(a1)
-	move.w	#8,$46(a1)
-	cmpi.w	#4,d7
-	bne.s	loc_3B682
-	exg	a1,a3
-	move.l	#stru_3B4D8,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	bra.s	loc_3B690
-; ---------------------------------------------------------------------------
-
-loc_3B682:
-	exg	a1,a3
-	move.l	#stru_3B4F6,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-
-loc_3B690:
-	move.l	#loc_3B6C0,a0
-	lea	($FFFFFA34).w,a4
-	tst.b	(a4,d5.w)
-	bne.s	loc_3B6AE
-	tst.b	$19(a3)
-	bne.s	loc_3B6AE
-	moveq	#sfx_Tank_driving,d0
-	jsr	(j_PlaySound).l
-
-loc_3B6AE:
-	addi.b	#1,(a4,d5.w)
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3B6C0:
-	tst.w	$38(a3)
-	bmi.s	loc_3B6E6
-	move.l	$3A(a5),a2
-	move.w	$38(a2),d4
-	beq.s	loc_3B720
-	bmi.s	loc_3B6E6
-	cmpi.w	#$2C,d4
-	beq.s	loc_3B6DE
-	cmpi.w	#$1C,d4
-	bne.s	loc_3B720
-
-loc_3B6DE:
-	subi.w	#1,$44(a3)
-	bne.s	loc_3B700
-
-loc_3B6E6:
-	sf	$13(a2)
-	st	$3D(a2)
-	move.l	#stru_3B518,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
-; ---------------------------------------------------------------------------
-
-loc_3B700:
-	move.l	#0,$50(a5)
-	move.w	#6,$46(a2)
-	move.l	#stru_3B294,d7
-	jsr	(j_Init_Animation).w
-	move.w	#5,-(sp)
-	jsr	(j_Hibernate_Object).w
-
-loc_3B720:
-	clr.w	$38(a2)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3B730:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a4
-	move.l	$3A(a4),a1
-	move.l	$36(a4),a2
-	move.b	#1,$10(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.b	$11(a2),$11(a3)
-	move.w	$3E(a2),$3E(a3)
-	move.w	$24(a2),$24(a3)
-	move.w	#$FFFD,d4
-	move.w	#$FFF1,d5
-	move.b	$16(a2),$16(a3)
-	beq.s	loc_3B77E
-	neg.w	d4
-	neg.w	d5
-
-loc_3B77E:
-	move.w	d4,$26(a3)
-	move.w	$1A(a2),$1A(a3)
-	add.w	d5,$1A(a3)
-	move.w	$1E(a2),$1E(a3)
-	move.w	$46(a1),d4
-	addi.w	#6,d4
-	sub.w	d4,$1E(a3)
-	move.l	#stru_3B526,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.b	$19(a3)
-	bne.s	loc_3B7BA
-	moveq	#sfx_Tank_shoots,d0
-	jsr	(j_PlaySound).l
-
-loc_3B7BA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1A(a3),d4
-	sub.w	(Camera_X_pos).w,d4
-	cmpi.w	#$FF80,d4
-	blt.s	loc_3B7EC
-	cmpi.w	#$1C0,d4
-	bgt.s	loc_3B7EC
-	move.w	$1E(a3),d4
-	sub.w	(Camera_Y_pos).w,d4
-	cmpi.w	#$FF80,d4
-	blt.s	loc_3B7EC
-	cmpi.w	#$1C0,d4
-	bgt.s	loc_3B7EC
-	move.w	$38(a3),d4
-	beq.s	loc_3B7BA
-
-loc_3B7EC:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-stru_3B7F0:
-	anim_frame	  1,   6, LnkTo_unk_C7D36-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D3E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D46-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D4E-Data_Index
-	dc.b   2
-	dc.b $11
-stru_3B802:
-	anim_frame	  1, $24, LnkTo_unk_C7D26-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D2E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D26-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_3B810:
-	anim_frame	1, $2D, LnkTo_unk_C7CCE-Data_Index
-	dc.b   0
-	dc.b   0
-	anim_frame	1, $A, LnkTo_unk_C7CD6-Data_Index
-	dc.b   2
-	dc.b   5
-stru_3B81C:
-	anim_frame	  1,   6, LnkTo_unk_C7CF6-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7CFE-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7D06-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D0E-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7D16-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7D1E-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3B836:
-	anim_frame	1, $14, LnkTo_unk_C7CDE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3B83C:
-	anim_frame	  1, $19, LnkTo_unk_C7CDE-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7CE6-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C7CEE-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3B84A:
-Enemy14_SpinningTwins_Init:
-	addi.w	#1,($FFFFFA06).w
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	st	$13(a3)
-	move.w	#$14,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	bset	#7,$3A(a3)
-	move.b	#0,$10(a3)
-	move.l	#stru_3B7F0,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$1010002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	move.b	#0,$10(a1)
-	st	$13(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.b	$16(a3),$16(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	subi.w	#$1A,$1E(a1)
-	subi.w	#$FFF0,$1A(a1)
-	exg	a1,a3
-	move.l	#stru_3B802,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	clr.w	d1
-	move.w	$22(a3),d3
-	move.w	$1A(a3),d2
-	move.b	#$A,$5B(a5)
-
-loc_3B904:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	move.w	$38(a3),d7
-	bmi.s	loc_3B93C
-	cmpi.w	#$2C,d7
-	beq.s	loc_3B93C
-	cmpi.w	#$1C,d7
-	beq.s	loc_3B93C
-	cmpi.w	#1,$32(a3)
-	bne.s	loc_3B904
-	addq.w	#1,d1
-	andi.w	#7,d1
-	move.w	d1,d5
-	add.w	d5,d5
-	move.w	d2,d4
-	add.w	word_3B9A0(pc,d5.w),d4
-	move.w	d4,$1A(a1)
-	bra.s	loc_3B904
-; ---------------------------------------------------------------------------
-
-loc_3B93C:
-	clr.w	$44(a3)
-	move.l	$3A(a5),a4
-	sf	$13(a4)
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3BA74,4(a0)
-	move.l	a0,a4
-	move.w	#$6000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3BA74,4(a0)
-	move.l	a4,$5C(a0)
-	move.l	a0,$5C(a4)
-	move.b	$42(a5),$42(a0)
-	move.b	$42(a5),$42(a4)
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3B9B0,4(a0)
-	move.l	#stru_3B810,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-word_3B9A0:	dc.w $FFF0
-	dc.b $FF
-	dc.b $F6 ; ˆ
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b $11
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b  $A
-	dc.b $FF
-	dc.b $FB ; ˚
-	dc.b $FF
-	dc.b $EF ; Ô
-; ---------------------------------------------------------------------------
-
-loc_3B9B0:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a2
-	move.l	$36(a2),a4
-	move.w	$1A(a4),$1A(a3)
-	move.w	$1E(a4),$1E(a3)
-	subi.w	#$40,$1E(a3)
-	subi.w	#$13,$1A(a3)
-	move.b	#1,$10(a3)
-	st	$13(a3)
-	move.b	$11(a4),$11(a3)
-	move.w	$3E(a4),$3E(a3)
-	move.w	$24(a4),$24(a3)
-	move.w	#(LnkTo_unk_C7D26-Data_Index),$22(a3)
-	clr.w	d0
-	moveq	#4,d1
-
-loc_3BA00:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1A(a3),d7
-	sub.w	(Camera_X_pos).w,d7
-	cmpi.w	#$FEFC,d7
-	blt.s	loc_3BA5C
-	cmpi.w	#$244,d7
-	bgt.s	loc_3BA5C
-	move.w	$1E(a3),d7
-	sub.w	(Camera_Y_pos).w,d7
-	cmpi.w	#$FEFC,d7
-	blt.s	loc_3BA5C
-	cmpi.w	#$1E4,d7
-	bgt.s	loc_3BA5C
-	move.w	d0,d6
-	add.w	d6,d6
-	add.w	d6,d6
-	move.l	dword_3BA60(pc,d6.w),d5
-	tst.b	d3
-	bpl.s	loc_3BA3C
-	neg.l	d5
-
-loc_3BA3C:
-	add.l	d5,$1A(a3)
-	addi.w	#1,$1E(a3)
-	subq.w	#1,d1
-	bne.s	loc_3BA00
-	moveq	#4,d1
-	addq.w	#1,d0
-	cmpi.w	#5,d0
-	bne.s	loc_3BA00
-	eori.b	#$FF,d3
-	moveq	#0,d0
-	bra.s	loc_3BA00
-; ---------------------------------------------------------------------------
-
-loc_3BA5C:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-dword_3BA60:	dc.l $12000
-	dc.b   0
-	dc.b   1
-	dc.b $20
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b $80 ; Ä
-	dc.b   0
-	dc.b   0
-	dc.b   2
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_3BA74:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a2
-	move.l	$36(a2),a4
-	move.w	$1A(a4),$1A(a3)
-	move.w	$1E(a4),$1E(a3)
-	move.w	$40(a4),$40(a3)
-	move.b	#0,$10(a3)
-	st	$13(a3)
-	move.b	$11(a4),$11(a3)
-	move.w	$3E(a4),$3E(a3)
-	move.w	$24(a4),$24(a3)
-	move.w	$40(a3),d7
-	addi.w	#1,d7
-	move.w	d7,$44(a3)
-	move.l	#$18000,$50(a5)
-	move.w	#$1C,$4A(a5)
-	move.w	#$B,$48(a5)
-	move.w	#$14,$3A(a3)
-	move.w	#(LnkTo_unk_C7CDE-Data_Index),$22(a3)
-	addi.w	#1,($FFFFFA06).w
-	st	$3C(a3)
-	st	$14(a3)
-	tst.w	$44(a4)
-	bne.s	loc_3BB06
-	st	$16(a3)
-	move.w	#1,$44(a4)
-	subi.w	#$20,$1A(a3)
-	bra.s	loc_3BB0C
-; ---------------------------------------------------------------------------
-
-loc_3BB06:
-	addi.w	#$20,$1A(a3)
-
-loc_3BB0C:
-	tst.b	$16(a3)
-	beq.s	loc_3BB1C
-	move.l	#$FFFC8000,$26(a3)
-	bra.s	loc_3BB24
-; ---------------------------------------------------------------------------
-
-loc_3BB1C:
-	move.l	#$38000,$26(a3)
-
-loc_3BB24:
-	move.l	#-$10000,$2A(a3)
-
-loc_3BB2C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	tst.l	$2A(a3)
-	beq.s	loc_3BB42
-	addi.l	#$2800,$2A(a3)
-
-loc_3BB42:
-	tst.b	$16(a3)
-	beq.s	loc_3BB52
-	addi.l	#$1200,$26(a3)
-	bra.s	loc_3BB5A
-; ---------------------------------------------------------------------------
-
-loc_3BB52:
-	subi.l	#$1200,$26(a3)
-
-loc_3BB5A:
-	cmpi.l	#$3000,$26(a3)
-	bgt.s	loc_3BB6E
-	cmpi.l	#$FFFFD000,$26(a3)
-	bgt.s	loc_3BB94
-
-loc_3BB6E:
-	move.w	$38(a3),d4
-	cmpi.w	#$C,d4
-	beq.s	loc_3BB8A
-	cmpi.w	#4,d4
-	beq.s	loc_3BB94
-	cmpi.w	#8,d4
-	beq.s	loc_3BB94
-	clr.w	$38(a3)
-	bra.s	loc_3BB2C
+;Enemy03_Robot_Init: 
+	include "code/enemy/Robot.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BB8A:
-	clr.w	$38(a3)
-	clr.l	$2A(a3)
-	bra.s	loc_3BB2C
-; ---------------------------------------------------------------------------
-
-loc_3BB94:
-	clr.w	$38(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$3C(a3)
-	sf	$14(a3)
-	move.l	#stru_3B81C,d7
-	jsr	(j_Init_Animation).w
-	move.l	#loc_3BBC4,a0
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
-; ---------------------------------------------------------------------------
-
-loc_3BBC4:
-	move.w	$38(a3),d4
-	beq.s	loc_3BBE6
-	bmi.w	loc_3BC56
-	cmpi.w	#$2C,d4
-	beq.s	loc_3BC34
-	cmpi.w	#$1C,d4
-	beq.s	loc_3BC34
-	cmpi.w	#$20,d4
-	beq.s	loc_3BBF6
-	cmpi.w	#$24,d4
-	beq.s	loc_3BBF6
-
-loc_3BBE6:
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-; ---------------------------------------------------------------------------
-
-loc_3BBF6:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3BBE6
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7CDE-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3BC22:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3C3CE
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3BC22
-; ---------------------------------------------------------------------------
-
-loc_3BC34:
-	subi.w	#1,$44(a3)
-	beq.s	loc_3BC56
-	move.l	#stru_3B836,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	#stru_3B81C,d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3BBE6
-; ---------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR sub_3C3CE
-
-loc_3BC56:
-	subi.w	#1,($FFFFFA06).w
-	cmpi.b	#$A,$5B(a5)
-	beq.s	loc_3BC78
-	move.l	#stru_3B83C,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	tst.b	$5B(a5)
-	beq.s	loc_3BCA6
-
-loc_3BC78:
-	moveq	#0,d0
-	move.b	$42(a5),d0
-	bpl.s	loc_3BC98
-	btst	#6,d0
-	beq.s	loc_3BCA2
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3BCA2
-; ---------------------------------------------------------------------------
-
-loc_3BC98:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	clr.w	(a0,d0.w)
-
-loc_3BCA2:
-	jmp	(j_Delete_CurrentObject).w
+;Enemy01_Diamond_Init: 
+	include "code/enemy/Diamond.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BCA6:
-	move.l	$5C(a5),a2
-	st	$5B(a2)
-	jmp	(j_Delete_CurrentObject).w
-; END OF FUNCTION CHUNK	FOR sub_3C3CE
-; ---------------------------------------------------------------------------
-stru_3BCB2:
-	anim_frame	  1,   9, LnkTo_unk_C80E0-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C80E8-Data_Index
-	dc.b   2
-	dc.b   9
-stru_3BCBC:
-	anim_frame	  1,   6, LnkTo_unk_C80A8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C80B0-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C80B8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C80C0-Data_Index
-	dc.b   2
-	dc.b $11
-stru_3BCCE:
-	anim_frame	1, $1E, LnkTo_unk_C80D8-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3BCD4:
-	anim_frame	  1,  $A, LnkTo_unk_C80D8-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C80C8-Data_Index
-	anim_frame	  1, $28, LnkTo_unk_C80D0-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3BCE2:
-	anim_frame	  1,  $A, LnkTo_unk_C8090-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C8098-Data_Index
-	anim_frame	  1, $2D, LnkTo_unk_C80A0-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3BCF0:
-Enemy1A_Driller_Init:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3BD2A
-	st	$16(a3)
-
-loc_3BD2A:
-	st	$13(a3)
-	st	$15(a3)
-	move.w	#$1A,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	#$10,$4A(a5)
-	move.w	#$C,$48(a5)
-	move.w	$40(a3),d7
-	addi.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3BD74
-	beq.s	loc_3BD6C
-	move.l	#$8000,$50(a5)
-
-loc_3BD6C:
-	addi.l	#$8000,$50(a5)
-
-loc_3BD74:
-	addi.l	#$8000,$50(a5)
-	move.l	#stru_3BCB2,d7
-	jsr	(j_Init_Animation).w
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	st	$13(a1)
-	st	$3C(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	move.l	#$FFFF8000,$26(a1)
-	subi.w	#$18,$1A(a1)
-	move.w	$3A(a3),$3A(a1)
-	bset	#6,$3A(a1)
-	exg	a1,a3
-	move.l	#stru_3BCBC,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3E(a5)
-	st	$13(a1)
-	st	$16(a1)
-	st	$3C(a1)
-	move.b	$11(a3),$11(a1)
-	move.w	$3E(a3),$3E(a1)
-	move.w	$24(a3),$24(a1)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	move.l	#$8000,$26(a1)
-	addi.w	#$18,$1A(a1)
-	move.w	$3A(a3),$3A(a1)
-	bset	#6,$3A(a1)
-	exg	a1,a3
-	move.l	#stru_3BCBC,d7
-	jsr	(j_Init_Animation).w
-	exg	a1,a3
-	lea	($FFFFFA34).w,a4
-	tst.b	(a4,d5.w)
-	bne.s	loc_3BE60
-	tst.b	$19(a3)
-	bne.s	loc_3BE60
-	moveq	#sfx_Drill_moving,d0
-	jsr	(j_PlaySound).l
-
-loc_3BE60:
-	addi.b	#1,(a4,d5.w)
-	move.l	#loc_3BE78,a0
-	tst.b	$16(a3)
-	beq.w	loc_3C0D2
-	bra.w	loc_3C026
+;Enemy09_Crab_Init: 
+	include "code/enemy/Crab.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BE78:
-	move.l	$3A(a5),a4
-	moveq	#1,d0
-	moveq	#8,d1
-	tst.b	$16(a3)
-	beq.s	loc_3BE8E
-	move.l	$3E(a5),a4
-	moveq	#3,d0
-	moveq	#4,d1
-
-loc_3BE8E:
-	move.w	$38(a4),d4
-	beq.w	loc_3BF02
-	cmp.w	d1,d4
-	bne.w	loc_3BF02
-	clr.w	$38(a4)
-	move.w	$1A(a4),d6
-	move.w	$1E(a4),d7
-	subi.w	#$10,d7
-	move.w	d7,d5
-	lsr.w	#4,d5
-	add.w	d5,d5
-	lea	($FFFF4A04).l,a4
-	move.w	(a4,d5.w),a4
-	move.w	d6,d5
-	lsr.w	#4,d5
-	add.w	d5,d5
-	add.w	d5,a4
-	move.w	(a4),d5
-	bpl.s	loc_3BF02
-	andi.w	#$F00,d5
-	beq.s	loc_3BEDE
-	cmpi.w	#$100,d5
-	beq.s	loc_3BEDE
-	cmpi.w	#$200,d5
-	beq.s	loc_3BEF2
-	bra.w	loc_3BF02
+;Enemy0A_RockTank_Init: 
+	include "code/enemy/Tank.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BEDE:
-	move.w	a4,d3
-	jsr	(j_sub_FACE).l
-	move.w	d0,d6
-	jsr	(j_sub_10E86).l
-	bra.w	loc_3BF02
+;Enemy0B_RockTank_shooting_Init: 
+	include "code/enemy/Tank_Shooting.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BEF2:
-	move.w	a4,d3
-	jsr	(j_sub_FACE).l
-	move.w	d0,d6
-	jsr	(j_sub_10F44).l
-
-loc_3BF02:
-	move.w	$38(a3),d4
-	beq.s	loc_3BF66
-	bmi.s	loc_3BF1C
-	clr.w	$38(a3)
-	cmpi.w	#$2C,d4
-	bne.s	loc_3BF66
-	subi.w	#1,$44(a3)
-	bne.s	loc_3BF4E
-
-loc_3BF1C:
-	move.l	#stru_3BCD4,d7
-	jsr	(j_Init_Animation).w
-	exg	a0,a3
-	move.l	$3A(a5),a3
-	move.l	#stru_3BCE2,d7
-	jsr	(j_Init_Animation).w
-	move.l	$3E(a5),a3
-	move.l	#stru_3BCE2,d7
-	jsr	(j_Init_Animation).w
-	exg	a0,a3
-	jsr	(j_sub_105E).w
-	bra.w	loc_3C46E
+;Enemy14_SpinningTwins_Init: 
+	include "code/enemy/Spinning_Twins.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3BF4E:
-	move.l	#stru_3BCCE,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	#stru_3BCB2,d7
-	jsr	(j_Init_Animation).w
-
-loc_3BF66:
-	tst.b	$16(a3)
-	beq.w	loc_3C0FA
-	bra.w	loc_3C04E
-
+;Enemy1A_Driller_Init: 
+	include "code/enemy/Driller.asm"
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_3BF72:
-	move.w	$3A(a3),d7
+	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.w	loc_3BFD4
 	move.l	$3A(a5),a4
-	move.w	$1A(a3),$1A(a4)
-	move.w	$1E(a3),$1E(a4)
+	move.w	x_pos(a3),x_pos(a4)
+	move.w	y_pos(a3),y_pos(a4)
 	move.w	$46(a4),d4
-	sub.w	d4,$1E(a4)
-	cmpi.w	#3,d7
+	sub.w	d4,y_pos(a4)
+	cmpi.w	#objid_Robot,d7
 	beq.s	loc_3BFA8
 
 loc_3BFA0:
-	move.b	$16(a3),$16(a4)
+	move.b	x_direction(a3),$16(a4)
 
 return_3BFA6:
 	rts
@@ -53720,39 +44032,39 @@ loc_3BFA8:
 	tst.w	$40(a3)
 	beq.s	loc_3BFA0
 	move.b	$16(a4),d7
-	cmp.b	$16(a3),d7
+	cmp.b	x_direction(a3),d7
 	beq.s	return_3BFA6
 	tst.b	d7
 	beq.s	loc_3BFCC
-	subi.w	#4,$1A(a4)
+	subi.w	#4,x_pos(a4)
 	bra.s	return_3BFA6
 ; ---------------------------------------------------------------------------
 
 loc_3BFCC:
-	addi.w	#4,$1A(a4)
+	addi.w	#4,x_pos(a4)
 	bra.s	return_3BFA6
 ; ---------------------------------------------------------------------------
 
 loc_3BFD4:
 	move.l	$3A(a5),a4
 	move.l	$3E(a5),a2
-	move.w	$1A(a3),d4
-	move.w	$1E(a3),d5
-	move.w	d4,$1A(a4)
+	move.w	x_pos(a3),d4
+	move.w	y_pos(a3),d5
+	move.w	d4,x_pos(a4)
 	move.w	d4,$1A(a2)
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	bne.s	loc_3C000
-	subi.w	#$18,$1A(a4)
+	subi.w	#$18,x_pos(a4)
 	addi.w	#$17,$1A(a2)
 	bra.s	loc_3C00C
 ; ---------------------------------------------------------------------------
 
 loc_3C000:
-	subi.w	#$17,$1A(a4)
+	subi.w	#$17,x_pos(a4)
 	addi.w	#$18,$1A(a2)
 
 loc_3C00C:
-	move.w	d5,$1E(a4)
+	move.w	d5,y_pos(a4)
 	move.w	d5,$1E(a2)
 	move.l	#$FFFF8000,$26(a4)
 	move.l	#$8000,$26(a2)
@@ -53763,9 +44075,9 @@ loc_3C00C:
 ; START	OF FUNCTION CHUNK FOR sub_3C4F8
 
 loc_3C026:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	st	$16(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
+	st	x_direction(a3)
 	addq.b	#4,$5A(a5)
 	beq.w	loc_3C464
 
@@ -53779,7 +44091,7 @@ loc_3C044:
 	bsr.w	sub_3C3CE
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-
+; Code used by Crab, Diamond, Driller, Fire_Demon, Robot, Spinning_Twins, Tank, Tank_Shooting
 loc_3C04E:
 	bsr.w	sub_3C4F8
 	bsr.w	sub_36972
@@ -53787,7 +44099,7 @@ loc_3C04E:
 	bne.w	loc_3C464
 	tst.w	d6
 	bmi.w	loc_3C17A
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	move.l	d0,d1
 	add.l	$50(a5),d1
 	move.l	d1,d2
@@ -53810,7 +44122,7 @@ loc_3C04E:
 	add.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1A(a3)
+	move.l	d0,x_pos(a3)
 	bra.w	loc_3C17A
 ; ---------------------------------------------------------------------------
 
@@ -53831,15 +44143,15 @@ loc_3C0B4:
 ; ---------------------------------------------------------------------------
 
 loc_3C0C6:
-	move.l	d2,$1A(a3)
+	move.l	d2,x_pos(a3)
 	sf	$5A(a5)
 	bra.w	loc_3C03A
 ; ---------------------------------------------------------------------------
 
 loc_3C0D2:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$16(a3)
+	clr.l	x_vel(a3)
+	clr.l	y_vel(a3)
+	sf	x_direction(a3)
 	addq.b	#4,$5A(a5)
 	beq.w	loc_3C464
 
@@ -53853,7 +44165,7 @@ loc_3C0F0:
 	bsr.w	sub_3C3CE
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-
+; Code used by Crab, Diamond, Driller, Fire_Demon, Robot, Spinning_Twins, Tank, Tank_Shooting
 loc_3C0FA:
 	bsr.w	sub_3C4F8
 	bsr.w	sub_36A58
@@ -53861,7 +44173,7 @@ loc_3C0FA:
 	bne.w	loc_3C464
 	tst.w	d6
 	bmi.w	loc_3C266
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	move.l	d0,d1
 	sub.l	$50(a5),d1
 	move.l	d1,d2
@@ -53884,7 +44196,7 @@ loc_3C0FA:
 	sub.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1A(a3)
+	move.l	d0,x_pos(a3)
 	bra.w	loc_3C266
 ; ---------------------------------------------------------------------------
 
@@ -53905,14 +44217,14 @@ loc_3C160:
 ; ---------------------------------------------------------------------------
 
 loc_3C172:
-	move.l	d2,$1A(a3)
+	move.l	d2,x_pos(a3)
 	bra.w	loc_3C0E6
 ; ---------------------------------------------------------------------------
 
 loc_3C17A:
-	clr.l	$2A(a3)
-	move.l	$50(a5),$26(a3)
-	addq.w	#1,$1E(a3)
+	clr.l	y_vel(a3)
+	move.l	$50(a5),x_vel(a3)
+	addq.w	#1,y_pos(a3)
 	bra.s	loc_3C19C
 ; END OF FUNCTION CHUNK	FOR sub_3C4F8
 ; ---------------------------------------------------------------------------
@@ -53930,9 +44242,9 @@ loc_3C19C:
 	bsr.w	sub_36B3C
 	tst.w	d5
 	bne.w	loc_3C464
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	move.l	d0,d1
-	add.l	$26(a3),d1
+	add.l	x_vel(a3),d1
 	move.l	d1,d2
 	swap	d0
 	swap	d1
@@ -53948,19 +44260,19 @@ loc_3C19C:
 	add.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1A(a3)
-	clr.l	$26(a3)
+	move.l	d0,x_pos(a3)
+	clr.l	x_vel(a3)
 	bra.s	loc_3C1E4
 ; ---------------------------------------------------------------------------
 
 loc_3C1DE:
-	move.l	d2,$1A(a3)
+	move.l	d2,x_pos(a3)
 	move.l	d2,d0
 
 loc_3C1E4:
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	move.l	d0,d1
-	add.l	$2A(a3),d1
+	add.l	y_vel(a3),d1
 	move.l	d1,d2
 	swap	d0
 	swap	d1
@@ -53977,8 +44289,8 @@ loc_3C1E4:
 	sub.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1E(a3)
-	clr.l	$2A(a3)
+	move.l	d0,y_pos(a3)
+	clr.l	y_vel(a3)
 	bra.s	loc_3C246
 ; ---------------------------------------------------------------------------
 
@@ -53993,30 +44305,30 @@ loc_3C220:
 	add.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1E(a3)
+	move.l	d0,y_pos(a3)
 	bra.w	loc_3C026
 ; ---------------------------------------------------------------------------
 
 loc_3C242:
-	move.l	d2,$1E(a3)
+	move.l	d2,y_pos(a3)
 
 loc_3C246:
-	move.l	$2A(a3),d0
+	move.l	y_vel(a3),d0
 	addi.l	#$2000,d0
 	cmpi.l	#$80000,d0
 	blt.s	loc_3C25E
 	move.l	#$80000,d0
 
 loc_3C25E:
-	move.l	d0,$2A(a3)
+	move.l	d0,y_vel(a3)
 	bra.w	loc_3C18A
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_3C4F8
 
 loc_3C266:
-	clr.l	$2A(a3)
-	move.l	$50(a5),$26(a3)
-	addq.w	#1,$1E(a3)
+	clr.l	y_vel(a3)
+	move.l	$50(a5),x_vel(a3)
+	addq.w	#1,y_pos(a3)
 	bra.s	loc_3C288
 ; ---------------------------------------------------------------------------
 
@@ -54033,9 +44345,9 @@ loc_3C288:
 	bsr.w	sub_36BD6
 	tst.w	d5
 	bne.w	loc_3C464
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	move.l	d0,d1
-	sub.l	$26(a3),d1
+	sub.l	x_vel(a3),d1
 	move.l	d1,d2
 	swap	d0
 	swap	d1
@@ -54051,19 +44363,19 @@ loc_3C288:
 	sub.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1A(a3)
-	clr.l	$26(a3)
+	move.l	d0,x_pos(a3)
+	clr.l	x_vel(a3)
 	bra.s	loc_3C2D0
 ; ---------------------------------------------------------------------------
 
 loc_3C2CA:
-	move.l	d2,$1A(a3)
+	move.l	d2,x_pos(a3)
 	move.l	d2,d0
 
 loc_3C2D0:
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	move.l	d0,d1
-	add.l	$2A(a3),d1
+	add.l	y_vel(a3),d1
 	move.l	d1,d2
 	swap	d0
 	swap	d1
@@ -54080,8 +44392,8 @@ loc_3C2D0:
 	sub.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1E(a3)
-	clr.l	$2A(a3)
+	move.l	d0,y_pos(a3)
+	clr.l	y_vel(a3)
 	bra.s	loc_3C332
 ; ---------------------------------------------------------------------------
 
@@ -54096,22 +44408,22 @@ loc_3C30C:
 	add.w	d3,d0
 	swap	d0
 	clr.w	d0
-	move.l	d0,$1E(a3)
+	move.l	d0,y_pos(a3)
 	bra.w	loc_3C0D2
 ; ---------------------------------------------------------------------------
 
 loc_3C32E:
-	move.l	d2,$1E(a3)
+	move.l	d2,y_pos(a3)
 
 loc_3C332:
-	move.l	$2A(a3),d0
+	move.l	y_vel(a3),d0
 	addi.l	#$2000,d0
 	cmpi.l	#$80000,d0
 	blt.s	loc_3C34A
 	move.l	#$80000,d0
 
 loc_3C34A:
-	move.l	d0,$2A(a3)
+	move.l	d0,y_vel(a3)
 	bra.w	loc_3C276
 ; END OF FUNCTION CHUNK	FOR sub_3C4F8
 
@@ -54119,15 +44431,15 @@ loc_3C34A:
 
 
 sub_3C352:
-	move.w	$3A(a3),d7
+	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
 	clr.w	d6
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.s	loc_3C372
 	addi.w	#1,d6
-	cmpi.w	#$A,d7
+	cmpi.w	#objid_RockTank,d7
 	beq.s	loc_3C372
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	bne.s	return_3C3CC
 
 loc_3C372:
@@ -54140,7 +44452,7 @@ loc_3C372:
 	bne.s	loc_3C3C6
 	lea	(byte_3C46C).l,a4
 	move.b	(a4,d6.w),d0
-	jsr	(sub_E132C).l
+	jsr	(j_PlaySound2).l
 	bra.s	loc_3C3C6
 ; ---------------------------------------------------------------------------
 
@@ -54169,35 +44481,32 @@ return_3C3CC:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; Used by Diamond, Fire_Demon, Spinning_Twins
 sub_3C3CE:
-
-; FUNCTION CHUNK AT 0003BC56 SIZE 0000005C BYTES
-
 	bsr.s	sub_3C352
-	cmpi.w	#$FFE0,$1A(a3)
+	cmpi.w	#$FFE0,x_pos(a3)
 	ble.s	loc_3C436
-	cmpi.w	#$FFE0,$1E(a3)
+	cmpi.w	#$FFE0,y_pos(a3)
 	ble.s	loc_3C436
 	move.w	(Level_width_pixels).w,d7
 	addi.w	#$20,d7
-	cmp.w	$1A(a3),d7
+	cmp.w	x_pos(a3),d7
 	blt.s	loc_3C436
 	move.w	(Level_height_blocks).w,d7
 	addi.w	#$20,d7
-	cmp.w	$1E(a3),d7
+	cmp.w	y_pos(a3),d7
 	blt.s	loc_3C436
 	cmpi.w	#$A,(Number_Objects).w
 	ble.s	return_3C434
 	cmpi.w	#$14,(Number_Objects).w
 	ble.s	loc_3C43A
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	sub.w	(Camera_X_pos).w,d0
 	cmpi.w	#$FEFC,d0
 	blt.s	loc_3C436
 	cmpi.w	#$244,d0
 	bgt.s	loc_3C436
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	sub.w	(Camera_Y_pos).w,d0
 	cmpi.w	#$FEFC,d0
 	blt.s	loc_3C436
@@ -54213,13 +44522,13 @@ loc_3C436:
 ; ---------------------------------------------------------------------------
 
 loc_3C43A:
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	sub.w	(Camera_X_pos).w,d0
 	cmpi.w	#$FE5C,d0
 	blt.s	loc_3C436
 	cmpi.w	#$2E4,d0
 	bgt.s	loc_3C436
-	move.w	$1E(a3),d0
+	move.w	y_pos(a3),d0
 	sub.w	(Camera_Y_pos).w,d0
 	cmpi.w	#$FE5C,d0
 	blt.s	loc_3C436
@@ -54229,25 +44538,26 @@ loc_3C43A:
 ; ---------------------------------------------------------------------------
 
 loc_3C464:
-	move.w	#$FFFF,$38(a3)
+	move.w	#$FFFF,collision_type(a3)
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-byte_3C46C:	dc.b $B
-	dc.b $1F
+byte_3C46C:
+	dc.b sfx_Drill_moving
+	dc.b sfx_Tank_driving
 ; ---------------------------------------------------------------------------
 
 loc_3C46E:
 	clr.w	d6
-	move.w	$3A(a3),d7
+	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$14,d7
+	cmpi.w	#objid_SpinningTwins,d7
 	beq.w	loc_3BC56
-	cmpi.w	#$1A,d7
+	cmpi.w	#objid_Driller,d7
 	beq.s	loc_3C494
 	addq.w	#1,d6
-	cmpi.w	#$A,d7
+	cmpi.w	#objid_RockTank,d7
 	beq.s	loc_3C494
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	bne.s	loc_3C4C0
 
 loc_3C494:
@@ -54268,11 +44578,11 @@ loc_3C4A8:
 	bne.s	loc_3C4C0
 	move.b	byte_3C46C(pc,d6.w),d0
 	ext.w	d0
-	jsr	(sub_E132C).l
+	jsr	(j_PlaySound2).l
 
 loc_3C4C0:
 	moveq	#0,d0
-	subi.w	#1,($FFFFFA06).w
+	subi.w	#1,(Number_of_Enemy).w
 	move.b	$42(a5),d0
 	bpl.s	loc_3C4E6
 	btst	#6,d0
@@ -54296,20 +44606,14 @@ loc_3C4F4:
 
 
 ; =============== S U B	R O U T	I N E =======================================
-
+; used by robot
 
 sub_3C4F8:
-
-; FUNCTION CHUNK AT 0003A9D2 SIZE 0000001E BYTES
-; FUNCTION CHUNK AT 0003AA18 SIZE 0000019E BYTES
-; FUNCTION CHUNK AT 0003C026 SIZE 00000164 BYTES
-; FUNCTION CHUNK AT 0003C266 SIZE 000000EC BYTES
-
-	move.w	$3A(a3),d7
+	move.w	object_meta(a3),d7
 	andi.w	#$FFF,d7
-	cmpi.w	#$B,d7
+	cmpi.w	#objid_RockTank_shooting,d7
 	beq.s	loc_3C50E
-	cmpi.w	#3,d7
+	cmpi.w	#objid_Robot,d7
 	beq.s	loc_3C538
 	rts
 ; ---------------------------------------------------------------------------
@@ -54356,7 +44660,7 @@ loc_3C56A:
 	cmpi.w	#1,$40(a3)
 	blt.s	loc_3C5EE
 	move.l	(Addr_GfxObject_Kid).w,a2
-	move.w	$1A(a4),d7
+	move.w	x_pos(a4),d7
 	sub.w	$1A(a2),d7
 	bmi.s	loc_3C588
 	tst.b	$16(a4)
@@ -54403,20 +44707,21 @@ loc_3C5D8:
 
 loc_3C5EE:
 	move.l	(sp)+,d7
-	bra.w	loc_3AA18
+	bra.w	Enemy03_Robot_Shoot
 ; ---------------------------------------------------------------------------
 
 return_3C5F4:
 	rts
 ; ---------------------------------------------------------------------------
-off_3C5F6:	dc.w LnkTo_unk_C8338-Data_Index
+off_3C5F6:
+	dc.w LnkTo_unk_C8338-Data_Index
 	dc.w LnkTo_unk_C8340-Data_Index
 	dc.w LnkTo_unk_C8338-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_3C5FC:
 	move.l	(Addr_GfxObject_Kid).w,a2
-	move.w	$1A(a3),d7
+	move.w	x_pos(a3),d7
 	sub.w	$1A(a2),d7
 	bmi.s	loc_3C612
 	tst.b	$16(a4)
@@ -54439,3959 +44744,29 @@ loc_3C618:
 ; ---------------------------------------------------------------------------
 	rts
 ; ---------------------------------------------------------------------------
-stru_3C632:
-	anim_frame	  1,  $B, LnkTo_unk_C76EE-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C76F6-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C76FE-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C7706-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C770E-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C7716-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C64C:
-	anim_frame	  1,   6, LnkTo_unk_C76EE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C76F6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C76FE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7706-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C770E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7716-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C666:
-	anim_frame	  1,   4, LnkTo_unk_C76A6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76AE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76B6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76BE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76C6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76CE-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C680:
-	anim_frame	  1,   2, LnkTo_unk_C76A6-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76AE-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76B6-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76BE-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76C6-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76CE-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C69A:
-	anim_frame	  1, $16, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C76D6-Data_Index
-	anim_frame	  1,   1, LnkTo_unk_C76DE-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C76E6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3C6D0:
-	anim_frame	1, $14, LnkTo_unk_C76D6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3C6D6:
-	anim_frame	1, $14, LnkTo_unk_C76EE-Data_Index
-	dc.b   0
-	dc.b   0
+;Enemy04_Armadillo_Init: 
+	include "code/enemy/Armadillo.asm"
 ; ---------------------------------------------------------------------------
-
-;loc_3C6DC:
-Enemy04_Armadillo_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3C718
-	st	$16(a3)
-
-loc_3C718:
-	st	$13(a3)
-	move.w	#4,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#1,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#2,d7
-	blt.s	loc_3C766
-	beq.s	loc_3C756
-	move.w	#1,$4C(a5)
-	move.l	#$10000,$50(a5)
-	addi.l	#$10000,$5E(a5)
-
-loc_3C756:
-	addi.l	#$10000,$50(a5)
-	addi.l	#$10000,$5E(a5)
-
-loc_3C766:
-	addi.w	#3,$4C(a5)
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-	move.w	#$10,$4A(a5)
-	move.w	#9,$48(a5)
-	move.l	#$32012C,$6E(a5)
-	move.w	#$32,$54(a5)
-	move.l	#loc_3DEA0,$6A(a5)
-	cmpi.w	#2,d7
-	bge.s	loc_3C7C0
-	move.l	#stru_3C632,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C632,$62(a5)
-	move.l	#stru_3C666,$66(a5)
-	bra.s	loc_3C7F8
+;Enemy10_Goat_Init: 
+	include "code/enemy/Goat.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C7C0:
-	bgt.s	loc_3C7DE
-	move.l	#stru_3C64C,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C64C,$62(a5)
-	move.l	#stru_3C666,$66(a5)
-	bra.s	loc_3C7F8
+;Enemy0D_Dragon_Init: 
+	include "code/enemy/Dragon.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C7DE:
-	move.l	#stru_3C64C,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C64C,$62(a5)
-	move.l	#stru_3C680,$66(a5)
-
-loc_3C7F8:
-	move.w	#$12C,$54(a5)
-	move.l	#loc_3C810,a0
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
+;Enemy08_Orca_Init: 
+	include "code/enemy/Orca.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C810:
-	bclr	#6,$3A(a3)
-	btst	#7,$3A(a3)
-	beq.s	loc_3C824
-	bset	#6,$3A(a3)
-
-loc_3C824:
-	move.w	$38(a3),d4
-	bmi.s	loc_3C87E
-	beq.w	loc_3C91A
-	cmpi.w	#$1C,d4
-	beq.s	loc_3C848
-	cmpi.w	#$20,d4
-	beq.s	loc_3C898
-	cmpi.w	#$24,d4
-	beq.s	loc_3C898
-	cmpi.w	#$2C,d4
-	bne.w	loc_3C91A
-
-loc_3C848:
-	tst.w	$42(a3)
-	bgt.w	loc_3C91A
-	subi.w	#1,$44(a3)
-	beq.s	loc_3C87E
-	move.l	#stru_3C6D0,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3C91A
+;Enemy11_Ninja_Init: 
+	include "code/enemy/Ninja.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C87E:
-	tst.b	$5C(a5)
-	bne.w	loc_3C93C
-
-loc_3C886:
-	move.l	#stru_3C69A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
+;Enemy13_Scorpion_Init: 
+	include "code/enemy/Scorpion.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C898:
-	tst.b	(Berzerker_charging).w
-	beq.w	loc_3C91A
-	tst.w	$42(a3)
-	bgt.s	loc_3C8DE
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C76D6-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3C8CC:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3C8CC
+;Enemy12_Lion_Init: 
+	include "code/enemy/Lion.asm"
 ; ---------------------------------------------------------------------------
-
-loc_3C8DE:
-	tst.b	$16(a3)
-	bne.s	loc_3C8EC
-	addi.w	#$14,$1A(a3)
-	bra.s	loc_3C8F2
-; ---------------------------------------------------------------------------
-
-loc_3C8EC:
-	subi.w	#$14,$1A(a3)
-
-loc_3C8F2:
-	move.l	#stru_3C6D6,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bclr	#7,$3A(a3)
-
-loc_3C91A:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3C930
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3C930:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3C93C:
-	move.l	#0,$26(a3)
-	move.l	#$2C000,$2A(a3)
-	st	$3C(a3)
-	st	$14(a3)
-
-loc_3C954:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d4
-	beq.s	loc_3C954
-	cmpi.w	#$C,d4
-	bne.s	loc_3C954
-	sf	$3C(a3)
-	sf	$14(a3)
-	move.l	#0,$2A(a3)
-	bra.w	loc_3C886
-; ---------------------------------------------------------------------------
-stru_3C97C:
-	anim_frame	  1,   8, LnkTo_unk_C7C9E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7CA6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7CAE-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7CB6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7CBE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7CC6-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C996:
-	anim_frame	  1,   6, LnkTo_unk_C7C9E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7CA6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7CAE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7CB6-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7CBE-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7CC6-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C9B0:
-	anim_frame	  1,   8, LnkTo_unk_C7C5E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C66-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C6E-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7C76-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C7E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C86-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C9CA:
-	anim_frame	  1,   6, LnkTo_unk_C7C5E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7C66-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7C6E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7C76-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7C7E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7C86-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3C9E4:
-	anim_frame	1, $14, LnkTo_unk_C7C56-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3C9EA:
-	anim_frame	  1, $1E, LnkTo_unk_C7C56-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7C8E-Data_Index
-	anim_frame	  1, $37, LnkTo_unk_C7C96-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3C9F8:
-Enemy10_Goat_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3CA30
-	st	$16(a3)
-
-loc_3CA30:
-	st	$13(a3)
-	move.w	#$10,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#3,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#4,d7
-	blt.s	loc_3CA7E
-	beq.s	loc_3CA6E
-	move.w	#1,$4C(a5)
-	move.l	#$10000,$50(a5)
-	addi.l	#$10000,$5E(a5)
-
-loc_3CA6E:
-	addi.l	#$10000,$50(a5)
-	addi.l	#$10000,$5E(a5)
-
-loc_3CA7E:
-	addi.w	#3,$4C(a5)
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-	move.w	#$10,$4A(a5)
-	move.w	#9,$48(a5)
-	move.l	#loc_3CC18,$6A(a5)
-	cmpi.w	#4,d7
-	bge.s	loc_3CACA
-	move.l	#stru_3C97C,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C97C,$62(a5)
-	move.l	#stru_3C9B0,$66(a5)
-	bra.s	loc_3CB02
-; ---------------------------------------------------------------------------
-
-loc_3CACA:
-	bgt.s	loc_3CAE8
-	move.l	#stru_3C996,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C996,$62(a5)
-	move.l	#stru_3C9B0,$66(a5)
-	bra.s	loc_3CB02
-; ---------------------------------------------------------------------------
-
-loc_3CAE8:
-	move.l	#stru_3C996,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3C996,$62(a5)
-	move.l	#stru_3C9CA,$66(a5)
-
-loc_3CB02:
-	move.l	#loc_3CB14,a0
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3CB14:
-	move.w	$38(a3),d4
-	bmi.s	loc_3CB64
-	beq.w	loc_3CBF6
-	cmpi.w	#$1C,d4
-	beq.s	loc_3CB38
-	cmpi.w	#$20,d4
-	beq.s	loc_3CB76
-	cmpi.w	#$24,d4
-	beq.s	loc_3CB76
-	cmpi.w	#$2C,d4
-	bne.w	loc_3CBF6
-
-loc_3CB38:
-	subq.w	#1,$44(a3)
-	beq.s	loc_3CB64
-	move.l	#stru_3C9E4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3CBF6
-; ---------------------------------------------------------------------------
-
-loc_3CB64:
-	move.l	#stru_3C9EA,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3CB76:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3CBF6
-	tst.w	$42(a3)
-	bgt.s	loc_3CBBA
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7C56-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3CBA8:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3CBA8
-; ---------------------------------------------------------------------------
-
-loc_3CBBA:
-	tst.b	$16(a3)
-	bne.s	loc_3CBC8
-	addi.w	#$14,$1A(a3)
-	bra.s	loc_3CBCE
-; ---------------------------------------------------------------------------
-
-loc_3CBC8:
-	subi.w	#$14,$1A(a3)
-
-loc_3CBCE:
-	move.l	#stru_3C9E4,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bclr	#7,$3A(a3)
-
-loc_3CBF6:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3CC0C
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3CC0C:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3CC18:
-	tst.w	$42(a3)
-	bgt.s	loc_3CC52
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	cmpi.w	#$20,d7
-	bgt.s	loc_3CC36
-	cmpi.w	#$FFE0,d7
-	bge.s	loc_3CC52
-
-loc_3CC36:
-	tst.w	d7
-	bge.s	loc_3CC46
-	tst.b	$16(a3)
-	bne.w	loc_3E3B2
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3CC46:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E546
-; ---------------------------------------------------------------------------
-
-loc_3CC52:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-stru_3CC5E:
-	anim_frame	  1,   9, LnkTo_unk_C7596-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C759E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75A6-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75AE-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75B6-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75BE-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7596-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C759E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75A6-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75AE-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75C6-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C75BE-Data_Index
-	dc.b   2
-	dc.b $31 ; 1
-stru_3CC90:
-	anim_frame	  1,   6, LnkTo_unk_C7596-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C759E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75A6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75AE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75B6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75BE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7596-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C759E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75A6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75AE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75C6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75BE-Data_Index
-	dc.b   2
-	dc.b $31 ; 1
-stru_3CCC2:
-	anim_frame	1, $63, LnkTo_unk_C758E-Data_Index
-	dc.b   2
-	dc.b   5
-stru_3CCC8:
-	anim_frame	  1,   8, LnkTo_unk_C7576-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C757E-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7586-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C757E-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7586-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C757E-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7586-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3CCE6:
-	anim_frame	1, $19, LnkTo_unk_C755E-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3CCEC:
-	anim_frame	  1,   7, LnkTo_unk_C755E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C75C6-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C755E-Data_Index
-	anim_frame	  1, $16, LnkTo_unk_C7566-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C756E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7566-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C756E-Data_Index
-	anim_frame	  1,  $C, LnkTo_unk_C7566-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C756E-Data_Index
-	anim_frame	  1, $63, LnkTo_unk_C7566-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-loc_3CD16:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.w	$44(a5),$1A(a3)
-	move.w	$46(a5),$1E(a3)
-	move.b	$48(a5),$16(a3)
-	move.w	$4A(a5),$40(a3)
-	st	$5C(a5)
-	bra.w	loc_3CD70
-; ---------------------------------------------------------------------------
-
-;loc_3CD46:
-Enemy0D_Dragon_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-
-loc_3CD70:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3CD82
-	st	$16(a3)
-
-loc_3CD82:
-	move.w	#$D,d5
-	move.w	#$C,d6
-	move.w	d5,$3A(a3)
-	move.l	($FFFFF8F2).w,a4
-	moveq	#0,d4
-	move.w	2(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3CDB8
-	cmp.w	d3,d6
-	beq.s	loc_3CDB8
-	addq.w	#1,d4
-	move.w	4(a4),d3
-	andi.w	#$FFF,d3
-	cmp.w	d3,d5
-	beq.s	loc_3CDB8
-	cmp.w	d3,d6
-	beq.s	loc_3CDB8
-	addq.w	#1,d4
-
-loc_3CDB8:
-	lea	unk_36FEA(pc),a4
-	move.b	(a4,d4.w),$11(a3)
-	lea	unk_36FEE(pc),a4
-	add.w	d4,d4
-	move.w	(a4,d4.w),$24(a3)
-	move.w	d4,$3E(a3)
-	st	$13(a3)
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#1,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	bne.s	loc_3CDFC
-	move.l	#$10000,$50(a5)
-	move.l	#$10000,$5E(a5)
-
-loc_3CDFC:
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-	move.w	#$10,$4A(a5)
-	move.w	#9,$48(a5)
-	move.l	#$32012C,$6E(a5)
-	move.w	#$32,$54(a5)
-	move.l	#loc_3DEA0,$6A(a5)
-	cmpi.w	#3,d7
-	bne.s	loc_3CE48
-	move.l	#stru_3CC90,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3CC90,$62(a5)
-	bra.s	loc_3CE5A
-; ---------------------------------------------------------------------------
-
-loc_3CE48:
-	move.l	#stru_3CC5E,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3CC5E,$62(a5)
-
-loc_3CE5A:
-	move.w	#$A,$42(a3)
-	move.w	#$12C,$66(a5)
-	move.w	#$12C,$54(a5)
-	move.l	#loc_3CE90,a0
-	tst.b	$5C(a5)
-	beq.s	loc_3CE84
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3CE84:
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3CE90:
-	subi.w	#1,$66(a5)
-	beq.w	loc_3CF6E
-
-loc_3CE9A:
-	move.w	$38(a3),d4
-	bmi.s	loc_3CEE4
-	beq.w	loc_3CF4C
-	cmpi.w	#$1C,d4
-	beq.s	loc_3CEBE
-	cmpi.w	#$20,d4
-	beq.s	loc_3CF0E
-	cmpi.w	#$24,d4
-	beq.s	loc_3CF0E
-	cmpi.w	#$2C,d4
-	bne.w	loc_3CF4C
-
-loc_3CEBE:
-	subq.w	#1,$44(a3)
-	ble.s	loc_3CEE4
-	tst.b	$5C(a5)
-	bne.w	loc_3CF4C
-	move.l	#stru_3CCE6,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3CF4C
-; ---------------------------------------------------------------------------
-
-loc_3CEE4:
-	cmpi.w	#$FFFF,d4
-	beq.s	loc_3CEFC
-	st	$3D(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3CEFC
-	move.w	#$FFFE,$38(a3)
-	bra.s	loc_3CF50
-; ---------------------------------------------------------------------------
-
-loc_3CEFC:
-	move.l	#stru_3CCEC,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3CF0E:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3CF4C
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C755E-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3CF3A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3CF3A
-; ---------------------------------------------------------------------------
-
-loc_3CF4C:
-	clr.w	$38(a3)
-
-loc_3CF50:
-	tst.b	$5C(a5)
-	beq.s	loc_3CF62
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3CF62:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3CF6E:
-	move.w	#$1F4,$66(a5)
-	move.b	#0,$5B(a5)
-	tst.b	$5C(a5)
-	bne.w	loc_3D00C
-	tst.b	$19(a3)
-	bne.s	loc_3CF90
-	moveq	#sfx_Dragon_flame_breath,d0  ; NO SOUND!
-	jsr	(j_PlaySound).l
-
-loc_3CF90:
-	exg	a0,a1
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3D02A,4(a0)
-	exg	a0,a1
-	move.l	#stru_3CCC2,d7
-	jsr	(j_Init_Animation).w
-
-loc_3CFAE:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d4
-	bmi.w	loc_3CE9A
-	beq.s	loc_3CFE4
-	cmpi.w	#$1C,d4
-	beq.s	loc_3CFDA
-	cmpi.w	#$2C,d4
-	beq.s	loc_3CFDA
-	cmpi.w	#$20,d4
-	beq.s	loc_3CFD4
-	cmpi.w	#$24,d4
-	bne.s	loc_3CFE4
-
-loc_3CFD4:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3CFE4
-
-loc_3CFDA:
-	move.b	#1,$5B(a1)
-	bra.w	loc_3CE9A
-; ---------------------------------------------------------------------------
-
-loc_3CFE4:
-	move.b	$5B(a5),d4
-	beq.s	loc_3CFAE
-	jsr	(j_Hibernate_Object_1Frame).w
-	cmpi.w	#2,$40(a3)
-	bne.s	loc_3D002
-	move.l	#stru_3CC90,d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3D00C
-; ---------------------------------------------------------------------------
-
-loc_3D002:
-	move.l	#stru_3CC5E,d7
-	jsr	(j_Init_Animation).w
-
-loc_3D00C:
-	tst.b	$5C(a5)
-	beq.s	loc_3D01E
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3D01E:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3D02A:
-	move.l	#$3000003,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.l	$36(a0),a0
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	st	$13(a3)
-	move.b	$11(a0),$11(a3)
-	move.w	$3E(a0),$3E(a3)
-	move.w	$16(a0),$16(a3)
-	move.w	$24(a0),$24(a3)
-	move.w	#$FFE4,d0
-	tst.b	$16(a0)
-	beq.s	loc_3D070
-	neg.w	d0
-
-loc_3D070:
-	add.w	d0,$1A(a3)
-	st	$13(a3)
-	move.l	#stru_3CCC8,d7
-	jsr	(j_Init_Animation).w
-
-loc_3D082:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.b	$5B(a5),d0
-	bne.w	loc_3D09E
-	tst.b	$18(a3)
-	beq.s	loc_3D082
-	move.l	$A(a5),a0
-	move.b	#1,$5B(a0)
-
-loc_3D09E:
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-stru_3D0A2:
-	anim_frame	  1,   9, LnkTo_unk_C766E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7676-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C767E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7686-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C768E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7696-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C766E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7676-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C767E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7686-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C769E-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C7696-Data_Index
-	dc.b   2
-	dc.b $31 ; 1
-stru_3D0D4:
-	anim_frame	  1,   4, LnkTo_unk_C766E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7676-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C767E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7686-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C768E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7696-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C766E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7676-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C767E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7686-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C769E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7696-Data_Index
-	dc.b   2
-	dc.b $31 ; 1
-	anim_frame	  1,  $B, LnkTo_unk_C7656-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C765E-Data_Index
-	anim_frame	  1,  $B, LnkTo_unk_C7666-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7656-Data_Index
-	dc.b   2
-	dc.b $11
-stru_3D118:
-	anim_frame	1, $F, LnkTo_unk_C7656-Data_Index 
-	dc.b   0
-	dc.b   0
-stru_3D11E:
-	anim_frame	  1,   9, LnkTo_unk_C7656-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7696-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7656-Data_Index
-	anim_frame	  1, $11, LnkTo_unk_C763E-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7646-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C763E-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7646-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C763E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7646-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C763E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7646-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C763E-Data_Index
-	anim_frame	  1,   2, LnkTo_unk_C7646-Data_Index
-	anim_frame	  1, $63, LnkTo_unk_C764E-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3D158:
-Enemy08_Orca_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3D194
-	st	$16(a3)
-
-loc_3D194:
-	st	$13(a3)
-	move.w	#8,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.l	#$8000,$50(a5)
-	move.l	#$8000,$5E(a5)
-	move.w	#$1B,$4A(a5)
-	move.w	#$E,$48(a5)
-	move.w	#$12C,$6E(a5)
-	move.w	#$32,$54(a5)
-	move.l	#loc_3D2DE,$6A(a5)
-	move.l	#stru_3D0A2,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3D0A2,$62(a5)
-	move.l	#stru_3D0D4,$66(a5)
-	move.w	#$5CC,$4A(a3)
-	move.w	#4,$44(a3)
-	move.w	#$12C,$54(a5)
-	move.w	#3,$4C(a5)
-	move.l	#loc_3D21E,a0
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3D21E:
-	move.w	$38(a3),d4
-	bmi.s	loc_3D268
-	cmpi.w	#$1C,d4
-	beq.s	loc_3D23E
-	cmpi.w	#$20,d4
-	beq.s	loc_3D27E
-	cmpi.w	#$24,d4
-	beq.s	loc_3D27E
-	cmpi.w	#$2C,d4
-	bne.w	loc_3D2BC
-
-loc_3D23E:
-	subq.w	#1,$44(a3)
-	beq.s	loc_3D268
-	move.l	#stru_3D118,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3D2BC
-; ---------------------------------------------------------------------------
-
-loc_3D268:
-	st	$3D(a3)
-	move.l	#stru_3D11E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3D27E:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3D2BC
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7656-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3D2AA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3D2AA
-; ---------------------------------------------------------------------------
-
-loc_3D2BC:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3D2D2
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3D2D2:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3D2DE:
-	tst.w	$42(a3)
-	bgt.w	loc_3D2F4
-	subq.w	#1,$54(a5)
-	bne.w	loc_3D466
-	move.w	$6E(a5),$54(a5)
-
-loc_3D2F4:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d0
-	sub.w	$1A(a4),d0
-	cmpi.w	#$FFD0,d0
-	blt.w	loc_3D466
-	cmpi.w	#$30,d0
-	bgt.w	loc_3D466
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7656-Data_Index),$22(a3)
-	moveq	#5,d1
-
-loc_3D320:
-	jsr	(j_Hibernate_Object_1Frame).w
-	tst.w	$38(a3)
-	bne.w	loc_3D21E
-	dbf	d1,loc_3D320
-	tst.b	$16(a3)
-	bne.s	loc_3D340
-	move.l	#$FFFD0000,$26(a3)
-	bra.s	loc_3D348
-; ---------------------------------------------------------------------------
-
-loc_3D340:
-	move.l	#$30000,$26(a3)
-
-loc_3D348:
-	move.l	#$FFFD8000,$2A(a3)
-	addi.w	#4,$22(a3)
-	st	$3C(a3)
-
-loc_3D35A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	move.w	$38(a3),d4
-	beq.s	loc_3D3B4
-	cmpi.w	#$C,d4
-	beq.w	loc_3D420
-	cmpi.w	#4,d4
-	beq.w	loc_3D40C
-	cmpi.w	#8,d4
-	beq.w	loc_3D40C
-	cmpi.w	#$10,d4
-	beq.w	loc_3D47A
-	cmpi.w	#$14,d4
-	beq.s	loc_3D3DE
-	cmpi.w	#$18,d4
-	beq.s	loc_3D3DE
-	cmpi.w	#$1C,d4
-	beq.w	loc_3D472
-	cmpi.w	#$2C,d4
-	beq.w	loc_3D472
-	cmpi.w	#$20,d4
-	beq.w	loc_3D4DE
-	cmpi.w	#$24,d4
-	beq.w	loc_3D4DE
-
-loc_3D3B4:
-	addi.l	#$1800,$2A(a3)
-	tst.b	$5C(a5)
-	bne.s	loc_3D35A
-	tst.w	$16(a3)
-	bne.s	loc_3D3D2
-	addi.l	#-$200,$26(a3)
-	bra.s	loc_3D35A
-; ---------------------------------------------------------------------------
-
-loc_3D3D2:
-	addi.l	#$200,$26(a3)
-	bra.w	loc_3D35A
-; ---------------------------------------------------------------------------
-
-loc_3D3DE:
-	clr.w	$38(a3)
-	eori.b	#$FF,$16(a3)
-	move.w	#(LnkTo_unk_C7656-Data_Index),$22(a3)
-	moveq	#5,d1
-	sf	$3C(a3)
-	sf	$5C(a5)
-	move.l	#0,$26(a3)
-	move.l	#0,$2A(a3)
-	bra.w	loc_3D320
-; ---------------------------------------------------------------------------
-
-loc_3D40C:
-	clr.w	$38(a3)
-	move.l	#0,$26(a3)
-	st	$5C(a5)
-	bra.w	loc_3D35A
-; ---------------------------------------------------------------------------
-
-loc_3D420:
-	clr.w	$38(a3)
-	move.l	#0,$26(a3)
-	move.l	#0,$2A(a3)
-	sf	$5C(a5)
-	sf	$3C(a3)
-	sf	$14(a3)
-	addi.w	#4,$22(a3)
-	move.w	#5,d1
-
-loc_3D44A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	dbf	d1,loc_3D44A
-	st	$15(a3)
-	move.l	#stru_3D0A2,d7
-	jsr	(j_Init_Animation).w
-	move.l	#loc_3D21E,a0
-
-loc_3D466:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3D472:
-	subi.w	#1,$44(a3)
-	beq.s	loc_3D48A
-
-loc_3D47A:
-	clr.w	$38(a3)
-	move.l	#$18000,$2A(a3)
-	bra.w	loc_3D35A
-; ---------------------------------------------------------------------------
-
-loc_3D48A:
-	move.l	#$18000,$2A(a3)
-	st	$3D(a3)
-
-loc_3D496:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$1800,$2A(a3)
-	move.w	$38(a3),d4
-	cmpi.w	#$C,d4
-	beq.s	loc_3D4BC
-	cmpi.w	#$14,d4
-	beq.s	loc_3D4BC
-	cmpi.w	#$18,d4
-	bne.s	loc_3D496
-
-loc_3D4BC:
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	sf	$14(a3)
-	sf	$3C(a3)
-	move.l	#stru_3D11E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3D4DE:
-	tst.b	(Berzerker_charging).w
-	beq.w	loc_3D3B4
-	bra.w	loc_3D21E
-; ---------------------------------------------------------------------------
-stru_3D4EA:
-	anim_frame	  1,   8, LnkTo_unk_C7D96-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7D9E-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DA6-Data_Index
-	anim_frame	  1,   8, LnkTo_unk_C7DAE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DB6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DBE-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3D504:
-	anim_frame	1, $14, LnkTo_unk_C7D56-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3D50A:
-	anim_frame	  1, $14, LnkTo_unk_C7D56-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7D5E-Data_Index
-	anim_frame	  1, $2D, LnkTo_unk_C7D66-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3D518:
-Enemy11_Ninja_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3D554
-	st	$16(a3)
-
-loc_3D554:
-	st	$13(a3)
-	move.w	#$11,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	#$1D,$4A(a5)
-	move.w	#$B,$48(a5)
-	move.w	$40(a3),d7
-	addi.w	#2,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#3,d7
-	blt.s	loc_3D5AA
-	beq.s	loc_3D59A
-	move.l	#$8000,$50(a5)
-	move.l	#$8000,$5E(a5)
-
-loc_3D59A:
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-
-loc_3D5AA:
-	addi.l	#$8000,$50(a5)
-	addi.l	#$8000,$5E(a5)
-	move.l	#$32012C,$6E(a5)
-	move.w	#$32,$54(a5)
-	move.l	#loc_3D92A,$6A(a5)
-	move.w	#$A00,$4A(a3)
-	move.l	#stru_3D4EA,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3D4EA,$62(a5)
-	move.w	#$A,$42(a3)
-	move.w	#$12C,$54(a5)
-	move.l	#loc_3D606,a0
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3D606:
-	tst.b	$5C(a5)
-	bne.w	loc_3D878
-	move.w	$38(a3),d4
-	clr.w	$38(a3)
-	tst.w	d4
-	beq.w	loc_3D6DA
-	bmi.w	loc_3DB4E
-	cmpi.w	#$1C,d4
-	beq.s	loc_3D65A
-	cmpi.w	#$2C,d4
-	beq.s	loc_3D65A
-	cmpi.w	#$20,d4
-	beq.s	loc_3D698
-	cmpi.w	#$24,d4
-	beq.s	loc_3D698
-
-loc_3D638:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3D64E
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3D64E:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3D65A:
-	tst.b	$4C(a5)
-	beq.s	loc_3D670
-	tst.b	$19(a3)
-	bne.s	loc_3D66E
-	moveq	#sfx_Ninja_blocking,d0
-	jsr	(j_PlaySound).l
-
-loc_3D66E:
-	bra.s	loc_3D638
-; ---------------------------------------------------------------------------
-
-loc_3D670:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3DB4E
-	move.l	#stru_3D504,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3D638
-; ---------------------------------------------------------------------------
-
-loc_3D698:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3D638
-	st	$3D(a3)
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7D7E-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3D6C8:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3D6C8
-; ---------------------------------------------------------------------------
-
-loc_3D6DA:
-	tst.b	$4C(a5)
-	beq.s	loc_3D706
-	bpl.w	loc_3D79C
-	cmpi.w	#Red_Stealth,(Current_Helmet).w
-	bne.w	loc_3D79C
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1E(a4),d7
-	sub.w	$1E(a3),d7
-	cmpi.w	#$FFFC,d7
-	blt.w	loc_3D84E
-	bra.w	loc_3D79C
-; ---------------------------------------------------------------------------
-
-loc_3D706:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1E(a4),d4
-	sub.w	$1E(a3),d4
-	cmpi.w	#$FFB0,d4
-	blt.s	loc_3D734
-	cmpi.w	#$FFE0,d4
-	bgt.s	loc_3D734
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$FFF0,d4
-	blt.s	loc_3D734
-	cmpi.w	#$10,d4
-	blt.w	loc_3D84E
-
-loc_3D734:
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$FFB0,d4
-	blt.w	loc_3D776
-	cmpi.w	#$50,d4
-	bgt.s	loc_3D776
-	tst.b	(Berzerker_charging).w
-	bne.w	loc_3D9A4
-	cmpi.w	#$FFD0,d4
-	blt.s	loc_3D776
-	cmpi.w	#$30,d4
-	bgt.s	loc_3D776
-	move.w	$1E(a4),d5
-	sub.w	$1E(a3),d5
-	cmpi.w	#$FFFC,d5
-	blt.s	loc_3D776
-	cmpi.w	#Red_Stealth,(Current_Helmet).w
-	beq.w	loc_3D826
-
-loc_3D776:
-	move.l	($FFFFF866).w,d4
-	beq.s	loc_3D79C
-	cmpi.w	#Maniaxe,(Current_Helmet).w
-	bne.s	loc_3D79C
-	move.l	d4,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$FFA6,d4
-	blt.s	loc_3D79C
-	cmpi.w	#$5A,d4
-	blt.w	loc_3D826
-
-loc_3D79C:
-	tst.b	$4C(a5)
-	beq.s	loc_3D7EE
-	bpl.s	loc_3D7FA
-	tst.l	($FFFFF866).w
-	bne.s	loc_3D7EE
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$FFD0,d4
-	blt.s	loc_3D7CA
-	cmpi.w	#$30,d4
-	bgt.s	loc_3D7CA
-	cmpi.w	#Red_Stealth,(Current_Helmet).w
-	beq.s	loc_3D7EE
-
-loc_3D7CA:
-	sf	$4C(a5)
-	move.l	#stru_3D4EA,d7
-	jsr	(j_Init_Animation).w
-	st	$15(a3)
-	move.l	$5E(a5),$50(a5)
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3D7EE:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3D7FA:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1E(a4),d4
-	sub.w	$1E(a3),d4
-	cmpi.w	#$FFA0,d4
-	blt.s	loc_3D7CA
-	tst.w	d4
-	bge.s	loc_3D7CA
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$FFF0,d4
-	blt.s	loc_3D7CA
-	cmpi.w	#$10,d4
-	bgt.s	loc_3D7CA
-	bra.s	loc_3D7EE
-; ---------------------------------------------------------------------------
-
-loc_3D826:
-	st	$4C(a5)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7D8E-Data_Index),$22(a3)
-	move.l	#0,$50(a5)
-	sf	$16(a3)
-	tst.w	d4
-	bmi.w	loc_3D79C
-	st	$16(a3)
-	bra.w	loc_3D79C
-; ---------------------------------------------------------------------------
-
-loc_3D84E:
-	sf	$15(a3)
-	move.b	#1,$4C(a5)
-	move.w	#(LnkTo_unk_C7D86-Data_Index),$22(a3)
-	move.l	#0,$50(a5)
-	sf	$16(a3)
-	tst.w	d4
-	bmi.w	loc_3D79C
-	st	$16(a3)
-	bra.w	loc_3D79C
-; ---------------------------------------------------------------------------
-
-loc_3D878:
-	move.w	$38(a3),d4
-	clr.w	$38(a3)
-	tst.w	d4
-	beq.s	loc_3D89C
-	bmi.w	loc_3DB4E
-	cmpi.w	#$20,d4
-	beq.s	loc_3D8A8
-	cmpi.w	#$24,d4
-	beq.s	loc_3D8A8
-	cmpi.w	#$2C,d4
-	beq.w	loc_3D8BC
-
-loc_3D89C:
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3D8A8:
-	cmpi.w	#Berzerker,(Current_Helmet).w
-	bne.s	loc_3D89C
-	move.l	(Addr_GfxObject_Kid).w,a4
-	cmpi.w	#(LnkTo_unk_ADFC8-Data_Index),$22(a4)
-	bgt.s	loc_3D89C
-
-loc_3D8BC:
-	subq.w	#1,$44(a3)
-	beq.w	loc_3D8D6
-	move.l	#$18000,$2A(a3)
-	move.l	#0,$26(a3)
-	bra.s	loc_3D89C
-; ---------------------------------------------------------------------------
-
-loc_3D8D6:
-	move.l	#$18000,$2A(a3)
-	st	$14(a3)
-	st	$3C(a3)
-
-loc_3D8E6:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$1800,$2A(a3)
-	cmpi.w	#colid_floor,$38(a3)
-	bne.s	loc_3D8E6
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	sf	$14(a3)
-	sf	$3C(a3)
-	andi.l	#$FFFF0000,$1E(a3)
-	addi.w	#$F,$1E(a3)
-	andi.w	#$FFF0,$1E(a3)
-	bra.w	loc_3DB4E
-; ---------------------------------------------------------------------------
-
-loc_3D92A:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$80,d4
-	bgt.s	loc_3D978
-	cmpi.w	#$FF80,d4
-	blt.s	loc_3D978
-
-loc_3D942:
-	subq.w	#1,$54(a5)
-	bne.s	loc_3D998
-	cmpi.w	#(LnkTo_unk_C7DBE-Data_Index),$22(a3)
-	bne.s	loc_3D958
-	cmpi.w	#3,$32(a3)
-	beq.s	loc_3D960
-
-loc_3D958:
-	move.w	#1,$54(a5)
-	bra.s	loc_3D998
-; ---------------------------------------------------------------------------
-
-loc_3D960:
-	move.l	$6E(a5),d0
-	swap	d0
-	move.l	d0,$6E(a5)
-	move.w	d0,$54(a5)
-	tst.b	$4C(a5)
-	bne.s	loc_3D998
-	bra.w	loc_3D9A4
-; ---------------------------------------------------------------------------
-
-loc_3D978:
-	tst.w	d4
-	bmi.s	loc_3D98A
-	tst.b	$16(a3)
-	bne.s	loc_3D942
-	eori.b	#$FF,$16(a3)
-	bra.s	loc_3D942
-; ---------------------------------------------------------------------------
-
-loc_3D98A:
-	tst.b	$16(a3)
-	beq.s	loc_3D942
-	eori.b	#$FF,$16(a3)
-	bra.s	loc_3D942
-; ---------------------------------------------------------------------------
-
-loc_3D998:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3D9A4:
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	bne.s	loc_3D9B8
-	move.l	#$FFFE8000,$26(a3)
-	bra.s	loc_3D9C0
-; ---------------------------------------------------------------------------
-
-loc_3D9B8:
-	move.l	#$10000,$26(a3)
-
-loc_3D9C0:
-	move.l	#$FFFB8000,$2A(a3)
-	st	$3C(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7D6E-Data_Index),$22(a3)
-
-loc_3D9DA:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$2800,$2A(a3)
-	cmpi.l	#$FFFF8000,$2A(a3)
-	blt.s	loc_3DA0C
-	cmpi.l	#$8000,$2A(a3)
-	bgt.s	loc_3DA06
-	move.w	#(LnkTo_unk_C7D76-Data_Index),$22(a3)
-	bra.s	loc_3DA0C
-; ---------------------------------------------------------------------------
-
-loc_3DA06:
-	move.w	#(LnkTo_unk_C7D7E-Data_Index),$22(a3)
-
-loc_3DA0C:
-	move.w	$38(a3),d4
-	clr.w	$38(a3)
-	cmpi.w	#$C,d4
-	beq.s	loc_3DA56
-	cmpi.w	#4,d4
-	beq.s	loc_3DA46
-	cmpi.w	#8,d4
-	beq.s	loc_3DA46
-	cmpi.w	#$10,d4
-	beq.w	loc_3DAB0
-	cmpi.w	#$2C,d4
-	beq.s	loc_3DA98
-	cmpi.w	#$20,d4
-	beq.w	loc_3DB0A
-	cmpi.w	#$24,d4
-	beq.w	loc_3DB0A
-	bra.s	loc_3D9DA
-; ---------------------------------------------------------------------------
-
-loc_3DA46:
-	clr.w	$38(a3)
-	neg.l	$26(a3)
-	eori.b	#$FF,$16(a3)
-	bra.s	loc_3D9DA
-; ---------------------------------------------------------------------------
-
-loc_3DA56:
-	clr.w	$38(a3)
-	move.l	#0,$26(a3)
-	move.l	#0,$2A(a3)
-	move.l	#stru_3D4EA,d7
-	jsr	(j_Init_Animation).w
-	clr.w	$38(a3)
-	move.l	#0,$2A(a3)
-	sf	$14(a3)
-	sf	$3C(a3)
-	st	$15(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3DA98:
-	move.l	#$38000,$2A(a3)
-	subi.w	#1,$44(a3)
-	beq.s	loc_3DABC
-	clr.w	$38(a3)
-	bra.w	loc_3D9DA
-; ---------------------------------------------------------------------------
-
-loc_3DAB0:
-	clr.w	$38(a3)
-	neg.l	$2A(a3)
-	bra.w	loc_3D9DA
-; ---------------------------------------------------------------------------
-
-loc_3DABC:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$1800,$2A(a3)
-	cmpi.w	#colid_floor,$38(a3)
-	bne.s	loc_3DABC
-	clr.l	$2A(a3)
-	clr.l	$26(a3)
-	sf	$14(a3)
-	sf	$3C(a3)
-	andi.l	#$FFFF0000,$1E(a3)
-	addi.w	#$F,$1E(a3)
-	andi.w	#$FFF0,$1E(a3)
-	bra.s	loc_3DB4E
-; ---------------------------------------------------------------------------
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3DB0A:
-	tst.b	(Berzerker_charging).w
-	beq.w	loc_3D9DA
-	st	$3D(a3)
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7D7E-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3DB3C:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3DB3C
-; ---------------------------------------------------------------------------
-
-loc_3DB4E:
-	move.l	#stru_3D50A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-stru_3DB60:
-	anim_frame	  1,   6, LnkTo_unk_C7DDE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DE6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DEE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DF6-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7DFE-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E06-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3DB7A:
-	anim_frame	1, $19, LnkTo_unk_C7DD6-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3DB80:
-	anim_frame	  1,  $A, LnkTo_unk_C7DD6-Data_Index
-	anim_frame	  1, $14, LnkTo_unk_C7DC6-Data_Index
-	anim_frame	  1, $2D, LnkTo_unk_C7DCE-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3DB8E:
-	anim_frame	  1,   6, LnkTo_unk_C7E0E-Data_Index
-	anim_frame	  1,  $F, LnkTo_unk_C7E16-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E0E-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3DB9C:
-Enemy13_Scorpion_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3DBD8
-	st	$16(a3)
-
-loc_3DBD8:
-	st	$13(a3)
-	move.w	#$13,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addi.w	#3,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#2,$40(a3)
-	move.l	#$18000,$50(a5)
-	move.l	#$18000,$5E(a5)
-	move.w	#$16,$4A(a5)
-	move.w	#9,$48(a5)
-	move.l	#loc_3DD7E,$6A(a5)
-	move.l	#stru_3DB60,d7
-	jsr	(j_Init_Animation).w
-	move.l	#stru_3DB60,$62(a5)
-	move.w	#$A,$42(a3)
-	move.l	#$1000002,a1
-	jsr	(j_Allocate_GfxObjectSlot_a1).w
-	move.l	a1,$3A(a5)
-	move.w	$1A(a3),$1A(a1)
-	move.w	$1E(a3),$1E(a1)
-	subi.w	#$16,$1E(a1)
-	subi.w	#1,$1A(a1)
-	move.w	#(LnkTo_unk_C7E1E-Data_Index),$22(a1)
-	move.w	#$4013,$3A(a1)
-	move.w	#1,$54(a5)
-	move.l	#loc_3DC86,a0
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3DC86:
-	move.l	$3A(a5),a4
-	move.w	$1A(a3),$1A(a4)
-	move.w	$1E(a3),$1E(a4)
-	subi.w	#$16,$1E(a4)
-	tst.b	$16(a3)
-	bne.s	loc_3DCAA
-	subi.w	#1,$1A(a4)
-	bra.s	loc_3DCB0
-; ---------------------------------------------------------------------------
-
-loc_3DCAA:
-	subi.w	#$16,$1A(a4)
-
-loc_3DCB0:
-	move.w	$38(a3),d4
-	beq.w	loc_3DD5C
-	bmi.s	loc_3DCF4
-	cmpi.w	#$20,d4
-	beq.s	loc_3DD0E
-	cmpi.w	#$24,d4
-	beq.s	loc_3DD0E
-	cmpi.w	#$1C,d4
-	beq.s	loc_3DCD4
-	cmpi.w	#$2C,d4
-	bne.w	loc_3DD5C
-
-loc_3DCD4:
-	subq.w	#1,$44(a3)
-	beq.s	loc_3DCF4
-	move.l	#stru_3DB7A,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	move.l	#stru_3DB60,d7
-	jsr	(j_Init_Animation).w
-	bra.s	loc_3DD5C
-; ---------------------------------------------------------------------------
-
-loc_3DCF4:
-	move.l	$3A(a5),a4
-	st	$3D(a4)
-	move.l	#stru_3DB80,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3DD0E:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3DD5C
-	cmpi.w	#(LnkTo_unk_C7E0E-Data_Index),$22(a3)
-	bge.s	loc_3DD5C
-	move.l	$3A(a5),a4
-	st	$3D(a4)
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C7DD6-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3DD4A:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3DD4A
-; ---------------------------------------------------------------------------
-
-loc_3DD5C:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3DD72
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3DD72:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3DD7E:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d4
-	move.w	$1A(a4),d3
-	sub.w	d3,d4
-	move.w	$1E(a3),d5
-	sub.w	$1E(a4),d5
-	tst.b	$4E(a5)
-	bne.s	loc_3DDA8
-	tst.w	d4
-	bmi.s	loc_3DDA4
-	sf	$16(a3)
-	bra.s	loc_3DDA8
-; ---------------------------------------------------------------------------
-
-loc_3DDA4:
-	st	$16(a3)
-
-loc_3DDA8:
-	cmpi.w	#$AA,d4
-	bgt.w	loc_3DE7E
-	cmpi.w	#$FF56,d4
-	blt.w	loc_3DE7E
-	cmpi.w	#1,$40(a3)
-	ble.s	loc_3DDC8
-	move.l	#$38000,$50(a5)
-
-loc_3DDC8:
-	cmpi.w	#$24,d4
-	bgt.w	loc_3DE64
-	cmpi.w	#$FFDC,d4
-	blt.w	loc_3DE64
-	tst.w	d4
-	bmi.s	loc_3DDE6
-	tst.b	$16(a3)
-	beq.s	loc_3DDEE
-	bra.w	loc_3DE64
-; ---------------------------------------------------------------------------
-
-loc_3DDE6:
-	tst.b	$16(a3)
-	beq.w	loc_3DE64
-
-loc_3DDEE:
-	st	$4E(a5)
-	cmpi.w	#$FFE0,d5
-	blt.w	loc_3DE96
-	cmpi.w	#$30,d5
-	bgt.w	loc_3DE96
-	cmpi.w	#1,$40(a3)
-	blt.s	loc_3DE3C
-	move.l	$3A(a5),a4
-	st	$3D(a4)
-	move.l	#0,$50(a5)
-	ori.w	#$C000,$3A(a3)
-	move.l	#0,$50(a5)
-	ori.w	#$C000,$3A(a3)
-	move.l	#stru_3DB8E,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3DE3C:
-	cmp.w	a2,d3
-	beq.s	loc_3DE6C
-
-loc_3DE40:
-	move.l	$3A(a5),a4
-	sf	$3D(a4)
-	move.w	#(LnkTo_unk_C7DDE-Data_Index),$22(a3)
-	move.l	#stru_3DB60,d7
-	jsr	(j_Init_Animation).w
-	move.l	$5E(a5),$50(a5)
-	andi.w	#$FFF,$3A(a3)
-
-loc_3DE64:
-	cmpi.w	#(LnkTo_unk_C7E0E-Data_Index),$22(a3)
-	bge.s	loc_3DE3C
-
-loc_3DE6C:
-	move.w	d3,a2
-	clr.w	$38(a3)
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3DE7E:
-	move.l	#$18000,$50(a5)
-	move.l	(Addr_GfxObject_Kid).w,a4
-	tst.l	$26(a4)
-	beq.s	loc_3DE64
-	sf	$4E(a5)
-	bra.s	loc_3DE64
-; ---------------------------------------------------------------------------
-
-loc_3DE96:
-	cmpi.w	#(LnkTo_unk_C7E0E-Data_Index),$22(a3)
-	bge.s	loc_3DE40
-	bra.s	loc_3DE6C
-; ---------------------------------------------------------------------------
-
-loc_3DEA0:
-	tst.w	$42(a3)
-	ble.s	loc_3DEAE
-	cmpi.w	#$A,$42(a3)
-	bne.s	loc_3DECE
-
-loc_3DEAE:
-	subq.w	#1,$54(a5)
-	bne.s	loc_3DECE
-	move.l	$6E(a5),d0
-	swap	d0
-	move.l	d0,$6E(a5)
-	move.w	d0,$54(a5)
-	tst.b	$16(a3)
-	beq.w	loc_3E392
-	bra.w	loc_3E546
-; ---------------------------------------------------------------------------
-
-loc_3DECE:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-stru_3DEDA:
-	anim_frame	  1,   7, LnkTo_unk_C7E88-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E90-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E98-Data_Index
-	anim_frame	  1,   7, LnkTo_unk_C7EA0-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7EA8-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7EB0-Data_Index
-	dc.b   2
-	dc.b $19
-stru_3DEF4:
-	anim_frame	  1,   5, LnkTo_unk_C7E88-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7E90-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7E98-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7EA0-Data_Index
-	anim_frame	  1,   4, LnkTo_unk_C7EA8-Data_Index
-	anim_frame	  1,   5, LnkTo_unk_C7EB0-Data_Index
-	dc.b   2
-	dc.b $33 ; 3
-stru_3DF0E:
-	anim_frame	  1,   6, LnkTo_unk_C7E60-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E68-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E70-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E68-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E60-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E68-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E70-Data_Index
-	anim_frame	  1,   3, LnkTo_unk_C7E78-Data_Index
-	anim_frame	  1, $19, LnkTo_unk_C7E80-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3DF34:
-	anim_frame	  1,   6, LnkTo_unk_C7E20-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E28-Data_Index
-	anim_frame	  1,   6, LnkTo_unk_C7E30-Data_Index
-	dc.b   2
-	dc.b  $D
-stru_3DF42:
-	anim_frame	1, $F, LnkTo_unk_C7E58-Data_Index 
-	dc.b   0
-	dc.b   0
-stru_3DF48:
-	anim_frame	  1,  $A, LnkTo_unk_C7E38-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7E40-Data_Index
-	anim_frame	  1,  $A, LnkTo_unk_C7E48-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3DF56:
-Enemy12_Lion_Init:
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$44(a5),a4
-	move.w	2(a4),$40(a3)
-	move.w	4(a4),$1A(a3)
-	move.w	6(a4),$1E(a3)
-	bsr.w	sub_36FF4
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	cmp.w	$1A(a3),d4
-	blt.s	loc_3DF92
-	st	$16(a3)
-
-loc_3DF92:
-	st	$13(a3)
-	move.w	#$12,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#2,$11(a3)
-	bset	#7,$3A(a3)
-	move.w	$40(a3),d7
-	addq.w	#6,d7
-	move.w	d7,$44(a3)
-	cmpi.w	#8,d7
-	bne.s	loc_3DFD8
-	move.l	#$28000,$50(a5)
-	move.l	#$28000,$5E(a5)
-	move.l	#stru_3DEF4,$62(a5)
-	bra.s	loc_3DFF0
-; ---------------------------------------------------------------------------
-
-loc_3DFD8:
-	move.l	#$18000,$50(a5)
-	move.l	#$18000,$5E(a5)
-	move.l	#stru_3DEDA,$62(a5)
-
-loc_3DFF0:
-	move.w	#$2F,$4A(a5)
-	move.w	#$14,$48(a5)
-	move.l	#loc_3E03C,$6A(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	move.w	#$A,$42(a3)
-	move.l	#$3C,$54(a5)
-	move.l	#loc_3E318,a0
-	jsr	(j_Get_RandomNumber_byte).w
-	move.b	d7,$71(a5)
-	bne.s	loc_3E030
-	addi.b	#$4B,$71(a5)
-
-loc_3E030:
-	tst.b	$16(a3)
-	beq.w	loc_3E546
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3E03C:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d4
-	sub.w	$1A(a4),d4
-	cmpi.w	#$40,d4
-	bgt.s	loc_3E054
-	cmpi.w	#$FFC0,d4
-	bgt.s	loc_3E078
-
-loc_3E054:
-	tst.b	$4E(a5)
-	beq.s	loc_3E06A
-	cmpi.w	#$A0,d4
-	bge.s	loc_3E066
-	cmpi.w	#$FF60,d4
-	bgt.s	loc_3E078
-
-loc_3E066:
-	sf	$4E(a5)
-
-loc_3E06A:
-	tst.w	d4
-	bmi.s	loc_3E074
-	sf	$16(a3)
-	bra.s	loc_3E078
-; ---------------------------------------------------------------------------
-
-loc_3E074:
-	st	$16(a3)
-
-loc_3E078:
-	subi.l	#1,$54(a5)
-	bne.w	loc_3E11E
-	move.l	#$B4,$54(a5)
-	tst.b	$5B(a5)
-	bgt.w	loc_3E11E
-	move.l	#stru_3DF0E,d7
-	jsr	(j_Init_Animation).w
-
-loc_3E09E:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d4
-	cmpi.w	#$1C,d4
-	beq.w	loc_3E318
-	cmpi.w	#$2C,d4
-	beq.w	loc_3E318
-	clr.w	$38(a3)
-	cmpi.w	#(LnkTo_unk_C7E78-Data_Index),$22(a3)
-	bne.s	loc_3E09E
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d7
-	cmp.w	$1A(a3),d7
-	bgt.s	loc_3E0D6
-	sf	$16(a3)
-	bra.s	loc_3E0DA
-; ---------------------------------------------------------------------------
-
-loc_3E0D6:
-	st	$16(a3)
-
-loc_3E0DA:
-	exg	a0,a1
-	move.w	#$8000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_3E12A,4(a0)
-	exg	a0,a1
-	addi.b	#1,$5B(a5)
-
-loc_3E0F4:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$38(a3),d4
-	cmpi.w	#$1C,d4
-	beq.w	loc_3E318
-	cmpi.w	#$2C,d4
-	beq.w	loc_3E318
-	clr.w	$38(a3)
-	tst.b	$18(a3)
-	beq.s	loc_3E0F4
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-
-loc_3E11E:
-	tst.b	$16(a3)
-	beq.w	loc_3E566
-	bra.w	loc_3E3B2
-; ---------------------------------------------------------------------------
-
-loc_3E12A:
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.l	$A(a5),a0
-	move.b	$71(a0),$71(a5)
-	move.l	$36(a0),a0
-	move.b	#2,$11(a3)
-	move.w	#$2FB,$24(a3)
-	st	$13(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	move.w	$1A(a0),$1A(a3)
-	move.w	$1E(a0),$1E(a3)
-	subi.w	#$18,$1E(a3)
-	move.w	#$A,d7
-	move.l	#$60000,d6
-	tst.b	$16(a0)
-	bne.s	loc_3E180
-	neg.w	d7
-	neg.l	d6
-
-loc_3E180:
-	add.w	d7,$1A(a3)
-	move.l	d6,$26(a3)
-	move.l	#stru_3DF34,d7
-	jsr	(j_Init_Animation).w
-
-loc_3E192:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E2CE
-	move.w	$38(a3),d4
-	beq.s	loc_3E1C2
-	cmpi.w	#$18,d4
-	ble.w	loc_3E260
-	cmpi.w	#$2C,d4
-	beq.s	loc_3E1B4
-	cmpi.w	#$1C,d4
-	bne.s	loc_3E1C2
-
-loc_3E1B4:
-	move.l	$A(a5),a0
-	subi.b	#1,$5B(a0)
-	jmp	(j_Delete_CurrentObject).w
-; ---------------------------------------------------------------------------
-
-loc_3E1C2:
-	clr.w	$38(a3)
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a3),d7
-	sub.w	$1A(a4),d7
-	bmi.s	loc_3E1F4
-	beq.w	loc_3E20E
-	subi.l	#$2000,$26(a3)
-	cmpi.l	#$FFFA0000,$26(a3)
-	bge.s	loc_3E20E
-	move.l	#$FFFA0000,$26(a3)
-	bra.s	loc_3E20E
-; ---------------------------------------------------------------------------
-
-loc_3E1F4:
-	addi.l	#$2000,$26(a3)
-	cmpi.l	#$60000,$26(a3)
-	ble.s	loc_3E20E
-	move.l	#$60000,$26(a3)
-
-loc_3E20E:
-	move.w	$1E(a3),d7
-	sub.w	$1E(a4),d7
-	subi.w	#$10,d7
-	bmi.s	loc_3E240
-	beq.w	loc_3E192
-	subi.l	#$2000,$2A(a3)
-	cmpi.l	#$FFFA0000,$2A(a3)
-	bge.w	loc_3E192
-	move.l	#$FFFA0000,$2A(a3)
-	bra.w	loc_3E192
-; ---------------------------------------------------------------------------
-
-loc_3E240:
-	addi.l	#$2000,$2A(a3)
-	cmpi.l	#$60000,$2A(a3)
-	ble.w	loc_3E192
-	move.l	#$60000,$2A(a3)
-	bra.w	loc_3E192
-; ---------------------------------------------------------------------------
-
-loc_3E260:
-	clr.w	$38(a3)
-	moveq	#$F,d0
-
-loc_3E266:
-	cmpi.w	#4,d4
-	beq.s	loc_3E2A4
-	cmpi.w	#8,d4
-	beq.s	loc_3E2A4
-	cmpi.w	#$C,d4
-	beq.w	loc_3E2C8
-	cmpi.w	#$10,d4
-	beq.w	loc_3E2C8
-	move.l	$26(a3),d5
-	sub.l	d5,$1A(a3)
-	move.l	$2A(a3),d6
-	sub.l	d6,$1E(a3)
-	move.l	d5,$2A(a3)
-	cmpi.w	#$14,d4
-	bne.s	loc_3E29E
-	neg.l	d6
-
-loc_3E29E:
-	move.l	d6,$26(a3)
-	bra.s	loc_3E2A8
-; ---------------------------------------------------------------------------
-
-loc_3E2A4:
-	neg.l	$26(a3)
-
-loc_3E2A8:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E2CE
-	move.w	$38(a3),d4
-	beq.s	loc_3E2C0
-	clr.w	$38(a3)
-	cmpi.w	#$18,d4
-	ble.s	loc_3E266
-
-loc_3E2C0:
-	dbf	d0,loc_3E2A8
-	bra.w	loc_3E192
-; ---------------------------------------------------------------------------
-
-loc_3E2C8:
-	neg.l	$2A(a3)
-	bra.s	loc_3E2A8
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3E2CE:
-	move.b	$71(a5),d6
-	move.l	$A(a5),a0
-	cmp.b	$71(a0),d6
-	bne.s	loc_3E314
-	move.w	$1A(a3),d7
-	sub.w	(Camera_X_pos).w,d7
-	cmpi.w	#$FFC0,d7
-	blt.w	loc_3E30E
-	cmpi.w	#$180,d7
-	bgt.w	loc_3E30E
-	move.w	$1E(a3),d7
-	sub.w	(Camera_Y_pos).w,d7
-	cmpi.w	#$FFC0,d7
-	blt.w	loc_3E30E
-	cmpi.w	#$120,d7
-	bgt.w	loc_3E30E
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3E30E:
-	subi.b	#1,$5B(a0)
-
-loc_3E314:
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3E2CE
-
-; ---------------------------------------------------------------------------
-
-loc_3E318:
-	move.w	$38(a3),d4
-	bmi.s	loc_3E378
-	beq.s	loc_3E356
-	cmpi.w	#$2C,d4
-	beq.s	loc_3E32C
-	cmpi.w	#$1C,d4
-	bne.s	loc_3E356
-
-loc_3E32C:
-	subi.w	#1,$44(a3)
-	beq.s	loc_3E378
-	bset	#7,$3A(a3)
-	move.l	#stru_3DF42,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bclr	#7,$3A(a3)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-
-loc_3E356:
-	clr.w	$38(a3)
-	tst.b	$5C(a5)
-	beq.s	loc_3E36C
-	tst.b	$16(a3)
-	beq.w	loc_3E7CA
-	bra.w	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3E36C:
-	tst.b	$16(a3)
-	beq.w	loc_3E560
-	bra.w	loc_3E3AC
-; ---------------------------------------------------------------------------
-
-loc_3E378:
-	st	$3D(a3)
-	move.l	#stru_3DF48,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	clr.b	$71(a5)
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3E392:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	st	$16(a3)
-	sf	$5C(a5)
-
-loc_3E3A2:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E3AC:
-	move.l	$6A(a5),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-loc_3E3B2:
-	bsr.w	sub_36972
-	btst	#2,d7
-	bne.w	loc_3E94E
-	tst.w	d6
-	bmi.w	loc_3E682
-	move.l	$1A(a3),d0
-	move.l	d0,d1
-	add.l	$50(a5),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	move.w	d0,d3
-	add.w	$48(a5),d3
-	neg.w	d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E434
-	btst	#1,d7
-	beq.s	loc_3E406
-	tst.w	d5
-	bne.s	loc_3E406
-	lsl.w	#3,d4
-	cmp.w	$48(a5),d4
-	bcs.s	loc_3E406
-	add.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1A(a3)
-	bra.w	loc_3E682
-; ---------------------------------------------------------------------------
-
-loc_3E406:
-	btst	#0,d7
-	beq.s	loc_3E434
-	move.w	$3A(a3),d7
-	andi.w	#$FF,d7
-	cmpi.w	#$10,d7
-	bne.w	loc_3E48E
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E3A2
-; ---------------------------------------------------------------------------
-
-loc_3E434:
-	cmpi.w	#$A,$42(a3)
-	beq.w	loc_3E4C6
-	tst.w	$42(a3)
-	bgt.s	loc_3E476
-	beq.s	loc_3E450
-	addi.w	#1,$42(a3)
-	bra.w	loc_3E4C6
-; ---------------------------------------------------------------------------
-
-loc_3E450:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$60,d4
-	bgt.w	loc_3E4C6
-	cmpi.w	#$FFA0,d4
-	blt.w	loc_3E4C6
-	tst.w	d4
-	bgt.w	loc_3E4CE
-	bra.w	loc_3E50A
-; ---------------------------------------------------------------------------
-
-loc_3E476:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$70,d4
-	bgt.s	loc_3E48E
-	cmpi.w	#$FF90,d4
-	bgt.s	loc_3E4C6
-
-loc_3E48E:
-	bclr	#7,$3A(a3)
-	addq.b	#1,$5A(a5)
-	st	$4E(a5)
-	cmpi.w	#$A,$42(a3)
-	beq.w	loc_3E546
-	tst.w	$42(a3)
-	ble.w	loc_3E546
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E546
-; ---------------------------------------------------------------------------
-
-loc_3E4C6:
-	move.l	d2,$1A(a3)
-	bra.w	loc_3E3A2
-; ---------------------------------------------------------------------------
-
-loc_3E4CE:
-	cmpi.w	#1,$42(a3)
-	beq.w	loc_3E3A2
-	cmpi.w	#2,$42(a3)
-	beq.w	loc_3E556
-	st	$16(a3)
-	move.w	#1,$42(a3)
-	bset	#7,$3A(a3)
-	move.l	$50(a5),$5E(a5)
-	move.w	$4C(a5),$50(a5)
-	move.l	$66(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3E50A:
-	cmpi.w	#1,$42(a3)
-	beq.w	loc_3E3A2
-	cmpi.w	#2,$42(a3)
-	beq.w	loc_3E556
-	sf	$16(a3)
-	move.w	#2,$42(a3)
-	bset	#7,$3A(a3)
-	move.l	$50(a5),$5E(a5)
-	move.w	$4C(a5),$50(a5)
-	move.l	$66(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	*+4
-
-loc_3E546:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$16(a3)
-	sf	$5C(a5)
-
-loc_3E556:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E560:
-	move.l	$6A(a5),a4
-	jmp	(a4)
-; ---------------------------------------------------------------------------
-
-loc_3E566:
-	bsr.w	sub_36A58
-	btst	#2,d7
-	bne.w	loc_3E94E
-	tst.w	d6
-	bmi.w	loc_3E79E
-	move.l	$1A(a3),d0
-	move.l	d0,d1
-	sub.l	$50(a5),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$48(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E5E8
-	btst	#1,d7
-	beq.s	loc_3E5BA
-	tst.w	d5
-	bne.s	loc_3E5BA
-	lsl.w	#3,d4
-	cmp.w	$48(a5),d4
-	bcs.s	loc_3E5BA
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1A(a3)
-	bra.w	loc_3E79E
-; ---------------------------------------------------------------------------
-
-loc_3E5BA:
-	btst	#0,d7
-	beq.s	loc_3E5E8
-	move.w	$3A(a3),d7
-	andi.w	#$FF,d7
-	cmpi.w	#$10,d7
-	bne.w	loc_3E642
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E556
-; ---------------------------------------------------------------------------
-
-loc_3E5E8:
-	cmpi.w	#$A,$42(a3)
-	beq.w	loc_3E67A
-	tst.w	$42(a3)
-	bgt.s	loc_3E62A
-	beq.s	loc_3E604
-	addi.w	#1,$42(a3)
-	bra.w	loc_3E67A
-; ---------------------------------------------------------------------------
-
-loc_3E604:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$60,d4
-	bgt.w	loc_3E67A
-	cmpi.w	#$FFA0,d4
-	blt.w	loc_3E67A
-	tst.w	d4
-	bgt.w	loc_3E4CE
-	bra.w	loc_3E50A
-; ---------------------------------------------------------------------------
-
-loc_3E62A:
-	move.l	(Addr_GfxObject_Kid).w,a4
-	move.w	$1A(a4),d4
-	sub.w	$1A(a3),d4
-	cmpi.w	#$70,d4
-	bgt.s	loc_3E642
-	cmpi.w	#$FF90,d4
-	bgt.s	loc_3E67A
-
-loc_3E642:
-	bclr	#7,$3A(a3)
-	addq.b	#1,$5A(a5)
-	st	$4E(a5)
-	cmpi.w	#$A,$42(a3)
-	beq.w	loc_3E392
-	tst.w	$42(a3)
-	ble.w	loc_3E392
-	move.w	#$FF88,$42(a3)
-	move.l	$5E(a5),$50(a5)
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3E67A:
-	move.l	d2,$1A(a3)
-	bra.w	loc_3E556
-; ---------------------------------------------------------------------------
-
-loc_3E682:
-	st	$5C(a5)
-	move.w	$4A(a3),d0
-	beq.s	loc_3E694
-	move.w	d0,$22(a3)
-	sf	$15(a3)
-
-loc_3E694:
-	clr.l	$2A(a3)
-	move.l	$50(a5),$26(a3)
-	addq.w	#1,$1E(a3)
-	bra.s	loc_3E6AE
-; ---------------------------------------------------------------------------
-
-loc_3E6A4:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E6AE:
-	bsr.w	sub_36B3C
-	tst.w	d5
-	bne.w	loc_3E94E
-	move.l	$1A(a3),d0
-	move.l	d0,d1
-	add.l	$26(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	move.w	d0,d3
-	add.w	$48(a5),d3
-	neg.w	d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E6F0
-	tst.w	d6
-	beq.w	loc_3E6F0
-	add.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1A(a3)
-	clr.l	$26(a3)
-	bra.s	loc_3E6F6
-; ---------------------------------------------------------------------------
-
-loc_3E6F0:
-	move.l	d2,$1A(a3)
-	move.l	d2,d0
-
-loc_3E6F6:
-	move.l	$1E(a3),d0
-	move.l	d0,d1
-	add.l	$2A(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	bge.s	loc_3E732
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$4A(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E77A
-	bsr.w	sub_36CB8
-	beq.w	loc_3E77A
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1E(a3)
-	clr.l	$2A(a3)
-	bra.s	loc_3E77E
-; ---------------------------------------------------------------------------
-
-loc_3E732:
-	move.w	d0,d3
-	neg.w	d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E77A
-	bsr.w	sub_36C6A
-	beq.w	loc_3E77A
-	add.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1E(a3)
-	sf	$5C(a5)
-	bclr	#7,$3A(a3)
-	move.l	$5E(a5),$50(a5)
-	cmpi.w	#$A,$42(a3)
-	beq.s	loc_3E76E
-	move.w	#$FF88,$42(a3)
-
-loc_3E76E:
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E392
-; ---------------------------------------------------------------------------
-
-loc_3E77A:
-	move.l	d2,$1E(a3)
-
-loc_3E77E:
-	move.l	$2A(a3),d0
-	addi.l	#$4000,d0
-	cmpi.l	#$180000,d0
-	blt.s	loc_3E796
-	move.l	#$180000,d0
-
-loc_3E796:
-	move.l	d0,$2A(a3)
-	bra.w	loc_3E6A4
-; ---------------------------------------------------------------------------
-
-loc_3E79E:
-	st	$5C(a5)
-	move.w	$4A(a3),d0
-	beq.s	loc_3E7B0
-	move.w	d0,$22(a3)
-	sf	$15(a3)
-
-loc_3E7B0:
-	clr.l	$2A(a3)
-	move.l	$50(a5),$26(a3)
-	addq.w	#1,$1E(a3)
-	bra.s	loc_3E7CA
-; ---------------------------------------------------------------------------
-
-loc_3E7C0:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E7CA:
-	bsr.w	sub_36BD6
-	tst.w	d5
-	bne.w	loc_3E94E
-	move.l	$1A(a3),d0
-	move.l	d0,d1
-	sub.l	$26(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$48(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E80C
-	tst.w	d6
-	beq.w	loc_3E80C
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1A(a3)
-	clr.l	$26(a3)
-	bra.s	loc_3E812
-; ---------------------------------------------------------------------------
-
-loc_3E80C:
-	move.l	d2,$1A(a3)
-	move.l	d2,d0
-
-loc_3E812:
-	move.l	$1E(a3),d0
-	move.l	d0,d1
-	add.l	$2A(a3),d1
-	move.l	d1,d2
-	swap	d0
-	swap	d1
-	sub.w	d0,d1
-	bge.s	loc_3E84E
-	neg.w	d1
-	move.w	d0,d3
-	sub.w	$4A(a5),d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E896
-	bsr.w	sub_36CB8
-	beq.w	loc_3E896
-	sub.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1E(a3)
-	clr.l	$2A(a3)
-	bra.s	loc_3E89A
-; ---------------------------------------------------------------------------
-
-loc_3E84E:
-	move.w	d0,d3
-	neg.w	d3
-	andi.w	#$F,d3
-	cmp.w	d1,d3
-	bcc.s	loc_3E896
-	bsr.w	sub_36C6A
-	beq.w	loc_3E896
-	add.w	d3,d0
-	swap	d0
-	clr.w	d0
-	move.l	d0,$1E(a3)
-	sf	$5C(a5)
-	bclr	#7,$3A(a3)
-	move.l	$5E(a5),$50(a5)
-	cmpi.w	#$A,$42(a3)
-	beq.s	loc_3E88A
-	move.w	#$FF88,$42(a3)
-
-loc_3E88A:
-	move.l	$62(a5),d7
-	jsr	(j_Init_Animation).w
-	bra.w	loc_3E546
-; ---------------------------------------------------------------------------
-
-loc_3E896:
-	move.l	d2,$1E(a3)
-
-loc_3E89A:
-	move.l	$2A(a3),d0
-	addi.l	#$4000,d0
-	cmpi.l	#$180000,d0
-	blt.s	loc_3E8B2
-	move.l	#$180000,d0
-
-loc_3E8B2:
-	move.l	d0,$2A(a3)
-	bra.w	loc_3E7C0
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3E8BA:
-	cmpi.w	#$FFE0,$1A(a3)
-	ble.s	loc_3E920
-	cmpi.w	#$FFE0,$1E(a3)
-	ble.s	loc_3E920
-	move.w	(Level_width_pixels).w,d7
-	addi.w	#$20,d7
-	cmp.w	$1A(a3),d7
-	blt.s	loc_3E920
-	move.w	(Level_height_blocks).w,d7
-	addi.w	#$20,d7
-	cmp.w	$1E(a3),d7
-	blt.s	loc_3E920
-	cmpi.w	#$A,(Number_Objects).w
-	ble.s	return_3E91E
-	cmpi.w	#$14,(Number_Objects).w
-	ble.s	loc_3E924
-	move.w	$1A(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FEFC,d0
-	blt.s	loc_3E920
-	cmpi.w	#$244,d0
-	bgt.s	loc_3E920
-	move.w	$1E(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FEFC,d0
-	blt.s	loc_3E920
-	cmpi.w	#$1E4,d0
-	bgt.s	loc_3E920
-
-return_3E91E:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3E920:
-	bra.w	loc_3E956
-; ---------------------------------------------------------------------------
-
-loc_3E924:
-	move.w	$1A(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3E920
-	cmpi.w	#$2E4,d0
-	bgt.s	loc_3E920
-	move.w	$1E(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3E920
-	cmpi.w	#$284,d0
-	bgt.s	loc_3E920
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3E94E:
-	move.w	#$FFFF,$38(a3)
-	jmp	(a0)
-; ---------------------------------------------------------------------------
-
-loc_3E956:
-	moveq	#0,d0
-	subi.w	#1,($FFFFFA06).w
-	move.b	$42(a5),d0
-	bpl.s	loc_3E97C
-	btst	#6,d0
-	beq.s	loc_3E98A
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3E98A
-; ---------------------------------------------------------------------------
-
-loc_3E97C:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_3E98A:
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3E8BA
-
-; ---------------------------------------------------------------------------
-stru_3E98E:
-	anim_frame	  1,   9, LnkTo_unk_C8058-Data_Index
-	anim_frame	  1,   9, LnkTo_unk_C8060-Data_Index
-	dc.b   2
-	dc.b   9
-stru_3E998:
-	anim_frame	1, $A, LnkTo_unk_C8020-Data_Index 
-	anim_frame	1, $1E, LnkTo_unk_C8028-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3E9A2:
-	anim_frame	1, $A, LnkTo_unk_C8000-Data_Index 
-	anim_frame	1, $1E, LnkTo_unk_C8008-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3E9AC:
-	anim_frame	1, $A, LnkTo_unk_C8040-Data_Index 
-	anim_frame	1, $1E, LnkTo_unk_C8048-Data_Index
-	dc.b   0
-	dc.b   0
-	anim_frame	1, $14, LnkTo_unk_C8020-Data_Index
-	dc.b   0
-	dc.b   0
-	anim_frame	1, $14, LnkTo_unk_C8000-Data_Index
-	dc.b   0
-	dc.b   0
-stru_3E9C2:
-	anim_frame	1, $14, LnkTo_unk_C8040-Data_Index
-	dc.b   0
-	dc.b   0
-; ---------------------------------------------------------------------------
-
-;loc_3E9C8:
-Enemy1C_MiniHoppingSkull_Init:
-	move.l	(Addr_GfxObject_Kid).w,a0
-	move.l	$44(a5),a1
-
-loc_3E9D0:
-	jsr	(j_Hibernate_Object_1Frame).w
-	move.w	$1A(a0),d4
-	sub.w	4(a1),d4
-	cmpi.w	#$FFB0,d4
-	blt.s	loc_3E9D0
-	cmpi.w	#$50,d4
-	bgt.s	loc_3E9D0
-	move.w	$1E(a0),d4
-	sub.w	6(a1),d4
-	blt.s	loc_3E9D0
-	cmpi.w	#$A0,d4
-	bgt.s	loc_3E9D0
-	addi.w	#1,($FFFFFA06).w
-	move.l	#$1000002,a3
-	jsr	(j_Load_GfxObjectSlot).w
-	move.w	2(a1),$40(a3)
-	move.w	4(a1),$1A(a3)
-	move.w	6(a1),$1E(a3)
-	bsr.w	sub_36FF4
-	move.w	#$1C,d5
-	move.w	d5,$3A(a3)
-	bsr.w	sub_36E84
-	move.b	#0,$10(a3)
-	move.w	$40(a3),d7
-	addq.w	#1,d7
-	move.w	d7,$44(a3)
-	tst.b	$19(a3)
-	bne.s	loc_3EA48
-	moveq	#sfx_Mini_Hopping_Skull_screams,d0
-	jsr	(j_PlaySound).l
-
-loc_3EA48:
-	st	$13(a3)
-	move.w	#(LnkTo_unk_C8050-Data_Index),$22(a3)
-	move.w	#$A,-(sp)
-	jsr	(j_Hibernate_Object).w
-	st	$3C(a3)
-	st	$14(a3)
-	move.l	#stru_3E98E,d7
-	jsr	(j_Init_Animation).w
-	move.l	#$28000,$2A(a3)
-	move.l	#$1200,d3
-	tst.w	$40(a3)
-	beq.s	loc_3EA88
-	addi.l	#$1000,$2A(a3)
-
-loc_3EA88:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	add.l	d3,$2A(a3)
-	tst.b	$15(a3)
-	bne.s	loc_3EAB2
-	tst.w	$2A(a3)
-	bpl.s	loc_3EAAC
-	move.w	#(LnkTo_unk_C8080-Data_Index),$22(a3)
-	bra.s	loc_3EAB2
-; ---------------------------------------------------------------------------
-
-loc_3EAAC:
-	move.w	#(LnkTo_unk_C8088-Data_Index),$22(a3)
-
-loc_3EAB2:
-	move.w	$38(a3),d4
-	beq.s	loc_3EA88
-	cmpi.w	#$1C,d4
-	bge.w	loc_3F1B8
-	cmpi.w	#8,d4
-	ble.w	loc_3F1AA
-	cmpi.w	#$C,d4
-	beq.w	loc_3EFEC
-	cmpi.w	#$10,d4
-	beq.w	loc_3F1A2
-
-loc_3EAD8:
-	sf	$14(a3)
-	sf	$15(a3)
-	sf	$3C(a3)
-	cmpi.w	#$14,d4
-	bne.w	loc_3ED6C
-	bsr.w	sub_3F366
-	tst.w	$26(a3)
-	ble.w	loc_3EC32
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-
-loc_3EB00:
-	st	$16(a3)
-	move.w	#(LnkTo_unk_C8030-Data_Index),$22(a3)
-	move.w	#$14,d1
-
-loc_3EB0E:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EB78
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EB60
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EB60
-	cmpi.w	#$24,d4
-	beq.s	loc_3EB56
-	cmpi.w	#$20,d4
-	beq.s	loc_3EB56
-	cmpi.w	#$28,d4
-	bne.s	loc_3EB78
-
-loc_3EB40:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EB78
-; ---------------------------------------------------------------------------
-
-loc_3EB56:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EB40
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EB60:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F176
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EB78:
-	dbf	d1,loc_3EB0E
-	move.w	$1A(a0),d4
-	cmp.w	$1A(a3),d4
-	ble.w	loc_3EC32
-	move.w	#(LnkTo_unk_C8038-Data_Index),$22(a3)
-	move.w	#$A,d1
-
-loc_3EB92:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EBFC
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EBE4
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EBE4
-	cmpi.w	#$24,d4
-	beq.s	loc_3EBDA
-	cmpi.w	#$20,d4
-	beq.s	loc_3EBDA
-	cmpi.w	#$28,d4
-	bne.s	loc_3EBFC
-
-loc_3EBC4:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EBFC
-; ---------------------------------------------------------------------------
-
-loc_3EBDA:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EBC4
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EBE4:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F176
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EBFC:
-	dbf	d1,loc_3EB92
-	move.l	#$FFFC8000,$2A(a3)
-	move.l	#$18000,$26(a3)
-	tst.w	$40(a3)
-	beq.s	loc_3EC26
-	addi.l	#-$10000,$2A(a3)
-	addi.l	#$4000,$26(a3)
-
-loc_3EC26:
-	st	$14(a3)
-	st	$3C(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3EC32:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	sf	$16(a3)
-	move.w	#(LnkTo_unk_C8010-Data_Index),$22(a3)
-	move.w	#$14,d1
-
-loc_3EC48:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3ECB2
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EC9A
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EC9A
-	cmpi.w	#$24,d4
-	beq.s	loc_3EC90
-	cmpi.w	#$20,d4
-	beq.s	loc_3EC90
-	cmpi.w	#$28,d4
-	bne.s	loc_3ECB2
-
-loc_3EC7A:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3ECB2
-; ---------------------------------------------------------------------------
-
-loc_3EC90:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EC7A
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EC9A:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F18C
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3ECB2:
-	dbf	d1,loc_3EC48
-	move.w	$1A(a0),d4
-	cmp.w	$1A(a3),d4
-	bgt.w	loc_3EB00
-	move.w	#(LnkTo_unk_C8018-Data_Index),$22(a3)
-	move.w	#$A,d1
-
-loc_3ECCC:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3ED36
-	cmpi.w	#$2C,d4
-	beq.w	loc_3ED1E
-	cmpi.w	#$1C,d4
-	beq.s	loc_3ED1E
-	cmpi.w	#$24,d4
-	beq.s	loc_3ED14
-	cmpi.w	#$20,d4
-	beq.s	loc_3ED14
-	cmpi.w	#$28,d4
-	bne.s	loc_3ED36
-
-loc_3ECFE:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3ED36
-; ---------------------------------------------------------------------------
-
-loc_3ED14:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3ECFE
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3ED1E:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F18C
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3ED36:
-	dbf	d1,loc_3ECCC
-	move.l	#$FFFC8000,$2A(a3)
-	move.l	#$FFFE8000,$26(a3)
-	tst.w	$40(a3)
-	beq.s	loc_3ED60
-	addi.l	#-$10000,$2A(a3)
-	addi.l	#-$4000,$26(a3)
-
-loc_3ED60:
-	st	$14(a3)
-	st	$3C(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3ED6C:
-	bsr.w	sub_3F3A6
-	tst.w	$26(a3)
-	bge.w	loc_3EEB2
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-
-loc_3ED80:
-	sf	$16(a3)
-	move.w	#(LnkTo_unk_C8030-Data_Index),$22(a3)
-	move.w	#$14,d1
-
-loc_3ED8E:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EDF8
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EDE0
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EDE0
-	cmpi.w	#$24,d4
-	beq.s	loc_3EDD6
-	cmpi.w	#$20,d4
-	beq.s	loc_3EDD6
-	cmpi.w	#$28,d4
-	bne.s	loc_3EDF8
-
-loc_3EDC0:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EDF8
-; ---------------------------------------------------------------------------
-
-loc_3EDD6:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EDC0
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EDE0:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F176
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EDF8:
-	dbf	d1,loc_3ED8E
-	move.w	$1A(a0),d4
-	cmp.w	$1A(a3),d4
-	bgt.w	loc_3EEB2
-	move.w	#(LnkTo_unk_C8038-Data_Index),$22(a3)
-	move.w	#$A,d1
-
-loc_3EE12:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EE7C
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EE64
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EE64
-	cmpi.w	#$24,d4
-	beq.s	loc_3EE5A
-	cmpi.w	#$20,d4
-	beq.s	loc_3EE5A
-	cmpi.w	#$28,d4
-	bne.s	loc_3EE7C
-
-loc_3EE44:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EE7C
-; ---------------------------------------------------------------------------
-
-loc_3EE5A:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EE44
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EE64:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F176
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EE7C:
-	dbf	d1,loc_3EE12
-	move.l	#$FFFC8000,$2A(a3)
-	move.l	#$FFFE8000,$26(a3)
-	tst.w	$40(a3)
-	beq.s	loc_3EEA6
-	addi.l	#-$10000,$2A(a3)
-	addi.l	#-$4000,$26(a3)
-
-loc_3EEA6:
-	st	$14(a3)
-	st	$3C(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3EEB2:
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-	st	$16(a3)
-	move.w	#(LnkTo_unk_C8010-Data_Index),$22(a3)
-	move.w	#$14,d1
-
-loc_3EEC8:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EF32
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EF1A
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EF1A
-	cmpi.w	#$24,d4
-	beq.s	loc_3EF10
-	cmpi.w	#$20,d4
-	beq.s	loc_3EF10
-	cmpi.w	#$28,d4
-	bne.s	loc_3EF32
-
-loc_3EEFA:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EF32
-; ---------------------------------------------------------------------------
-
-loc_3EF10:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EEFA
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EF1A:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F18C
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EF32:
-	dbf	d1,loc_3EEC8
-	move.w	$1A(a0),d4
-	cmp.w	$1A(a3),d4
-	ble.w	loc_3ED80
-	move.w	#(LnkTo_unk_C8018-Data_Index),$22(a3)
-	move.w	#$A,d1
-
-loc_3EF4C:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3EFB6
-	cmpi.w	#$2C,d4
-	beq.w	loc_3EF9E
-	cmpi.w	#$1C,d4
-	beq.s	loc_3EF9E
-	cmpi.w	#$24,d4
-	beq.s	loc_3EF94
-	cmpi.w	#$20,d4
-	beq.s	loc_3EF94
-	cmpi.w	#$28,d4
-	bne.s	loc_3EFB6
-
-loc_3EF7E:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3EFB6
-; ---------------------------------------------------------------------------
-
-loc_3EF94:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3EF7E
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3EF9E:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F18C
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3EFB6:
-	dbf	d1,loc_3EF4C
-	move.l	#$FFFC8000,$2A(a3)
-	move.l	#$18000,$26(a3)
-	tst.w	$40(a3)
-	beq.s	loc_3EFE0
-	addi.l	#-$10000,$2A(a3)
-	addi.l	#$4000,$26(a3)
-
-loc_3EFE0:
-	st	$14(a3)
-	st	$3C(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3EFEC:
-	sf	$14(a3)
-	sf	$15(a3)
-	sf	$3C(a3)
-	clr.l	$26(a3)
-	clr.l	$2A(a3)
-
-loc_3F000:
-	move.w	#(LnkTo_unk_C8070-Data_Index),$22(a3)
-	move.w	#$14,d1
-
-loc_3F00A:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3F074
-	cmpi.w	#$2C,d4
-	beq.w	loc_3F05C
-	cmpi.w	#$1C,d4
-	beq.s	loc_3F05C
-	cmpi.w	#$24,d4
-	beq.s	loc_3F052
-	cmpi.w	#$20,d4
-	beq.s	loc_3F052
-	cmpi.w	#$28,d4
-	bne.s	loc_3F074
-
-loc_3F03C:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3F074
-; ---------------------------------------------------------------------------
-
-loc_3F052:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3F03C
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3F05C:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F158
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3F074:
-	dbf	d1,loc_3F00A
-	move.w	$1A(a0),d4
-	cmp.w	$1A(a3),d4
-	bgt.s	loc_3F090
-	tst.b	$16(a3)
-	beq.s	loc_3F09E
-	sf	$16(a3)
-	bra.w	loc_3F000
-; ---------------------------------------------------------------------------
-
-loc_3F090:
-	tst.b	$16(a3)
-	bne.s	loc_3F09E
-	st	$16(a3)
-	bra.w	loc_3F000
-; ---------------------------------------------------------------------------
-
-loc_3F09E:
-	move.w	#(LnkTo_unk_C8078-Data_Index),$22(a3)
-	move.w	#$A,d1
-
-loc_3F0A8:
-	clr.w	$38(a3)
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3F29A
-	move.w	$38(a3),d4
-	beq.s	loc_3F112
-	cmpi.w	#$2C,d4
-	beq.w	loc_3F0FA
-	cmpi.w	#$1C,d4
-	beq.s	loc_3F0FA
-	cmpi.w	#$24,d4
-	beq.s	loc_3F0F0
-	cmpi.w	#$20,d4
-	beq.s	loc_3F0F0
-	cmpi.w	#$28,d4
-	bne.s	loc_3F112
-
-loc_3F0DA:
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.s	loc_3F112
-; ---------------------------------------------------------------------------
-
-loc_3F0F0:
-	tst.b	(Berzerker_charging).w
-	beq.s	loc_3F0DA
-	bra.w	loc_3F262
-; ---------------------------------------------------------------------------
-
-loc_3F0FA:
-	subi.w	#1,$44(a3)
-	beq.w	loc_3F158
-	move.l	#stru_3E9C2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-
-loc_3F112:
-	dbf	d1,loc_3F0A8
-	move.l	#$FFFC8000,$2A(a3)
-	move.l	#$18000,$26(a3)
-	tst.w	$40(a3)
-	beq.s	loc_3F13C
-	addi.l	#-$10000,$2A(a3)
-	addi.l	#$4000,$26(a3)
-
-loc_3F13C:
-	tst.b	$16(a3)
-	bne.s	loc_3F146
-	neg.l	$26(a3)
-
-loc_3F146:
-	move.w	#(LnkTo_unk_C8080-Data_Index),$22(a3)
-	st	$14(a3)
-	st	$3C(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3F158:
-	tst.w	$44(a3)
-	bne.w	loc_3EFEC
-	sf	$14(a3)
-	move.l	#stru_3E9AC,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3F32E
-; ---------------------------------------------------------------------------
-
-loc_3F176:
-	sf	$14(a3)
-	move.l	#stru_3E998,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3F32E
-; ---------------------------------------------------------------------------
-
-loc_3F18C:
-	sf	$14(a3)
-	move.l	#stru_3E9A2,d7
-	jsr	(j_Init_Animation).w
-	jsr	(j_sub_105E).w
-	bra.w	loc_3F32E
-; ---------------------------------------------------------------------------
-
-loc_3F1A2:
-	neg.l	$2A(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3F1AA:
-	eori.b	#$FF,$16(a3)
-	neg.l	$26(a3)
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3F1B8:
-	beq.s	loc_3F1E6
-	cmpi.w	#$20,d4
-	beq.w	loc_3F244
-	cmpi.w	#$24,d4
-	beq.s	loc_3F244
-	cmpi.w	#$2C,d4
-	beq.s	loc_3F1E6
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3F1E6:
-	subi.w	#1,$44(a3)
-	move.l	#$28800,$2A(a3)
-	move.l	$26(a3),d2
-	clr.l	$26(a3)
-	clr.w	$38(a3)
-
-loc_3F200:
-	jsr	(j_Hibernate_Object_1Frame).w
-	addi.l	#$4000,$2A(a3)
-	move.w	$38(a3),d4
-	beq.s	loc_3F200
-	clr.w	$38(a3)
-	cmpi.w	#$C,d4
-	beq.w	loc_3F158
-	cmpi.w	#$14,d4
-	beq.s	loc_3F22A
-	cmpi.w	#$18,d4
-	bne.s	loc_3F200
-
-loc_3F22A:
-	tst.w	$44(a3)
-	beq.s	loc_3F238
-	move.l	d2,$26(a3)
-	bra.w	loc_3EAD8
-; ---------------------------------------------------------------------------
-
-loc_3F238:
-	swap	d2
-	tst.w	d2
-	ble.w	loc_3F18C
-	bra.w	loc_3F176
-; ---------------------------------------------------------------------------
-
-loc_3F244:
-	tst.b	(Berzerker_charging).w
-	bne.s	loc_3F262
-	exg	a0,a4
-	move.w	#$A000,a0
-	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#sub_3F3F0,4(a0)
-	exg	a0,a4
-	bra.w	loc_3EA88
-; ---------------------------------------------------------------------------
-
-loc_3F262:
-	sf	$3C(a3)
-	st	$3D(a3)
-	st	$14(a3)
-	sf	$15(a3)
-	move.w	#(LnkTo_unk_C8040-Data_Index),$22(a3)
-	move.l	#0,$26(a3)
-	move.l	#$FFFB8000,$2A(a3)
-
-loc_3F288:
-	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_3E8BA
-	addi.l	#$4000,$2A(a3)
-	bra.s	loc_3F288
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3F29A:
-	cmpi.w	#$FFE0,$1A(a3)
-	ble.s	loc_3F300
-	cmpi.w	#$FFE0,$1E(a3)
-	ble.s	loc_3F300
-	move.w	(Level_width_pixels).w,d7
-	addi.w	#$20,d7
-	cmp.w	$1A(a3),d7
-	blt.s	loc_3F300
-	move.w	(Level_height_blocks).w,d7
-	addi.w	#$20,d7
-	cmp.w	$1E(a3),d7
-	blt.s	loc_3F300
-	cmpi.w	#$A,(Number_Objects).w
-	ble.s	return_3F2FE
-	cmpi.w	#$14,(Number_Objects).w
-	ble.s	loc_3F304
-	move.w	$1A(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FFC0,d0
-	blt.s	loc_3F300
-	cmpi.w	#$180,d0
-	bgt.s	loc_3F300
-	move.w	$1E(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FFC0,d0
-	blt.s	loc_3F300
-	cmpi.w	#$120,d0
-	bgt.s	loc_3F300
-
-return_3F2FE:
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3F300:
-	bra.w	loc_3F32E
-; ---------------------------------------------------------------------------
-
-loc_3F304:
-	move.w	$1A(a3),d0
-	sub.w	(Camera_X_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3F300
-	cmpi.w	#$2E4,d0
-	bgt.s	loc_3F300
-	move.w	$1E(a3),d0
-	sub.w	(Camera_Y_pos).w,d0
-	cmpi.w	#$FE5C,d0
-	blt.s	loc_3F300
-	cmpi.w	#$284,d0
-	bgt.s	loc_3F300
-	rts
-; ---------------------------------------------------------------------------
-
-loc_3F32E:
-	moveq	#0,d0
-	subi.w	#1,($FFFFFA06).w
-	move.b	$42(a5),d0
-	bpl.s	loc_3F354
-	btst	#6,d0
-	beq.s	loc_3F362
-	andi.w	#$3F,d0
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	subi.w	#$400,(a0,d0.w)
-	bra.s	loc_3F362
-; ---------------------------------------------------------------------------
-
-loc_3F354:
-	add.w	d0,d0
-	lea	(EnemyStatus_Table).w,a0
-	move.w	#$2168,d7
-	move.w	d7,(a0,d0.w)
-
-loc_3F362:
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3F29A
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3F366:
-	move.w	$1A(a3),d6
-	move.w	$1E(a3),d7
-	move.w	d7,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	lea	($FFFF4A04).l,a4
-	move.w	(a4,d5.w),a4
-	move.w	d6,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	add.w	d5,a4
-
-loc_3F386:
-	addi.w	#$10,d6
-	move.w	(a4)+,d5
-	andi.w	#$7000,d5
-	cmpi.w	#$4000,d5
-	bne.s	loc_3F386
-	andi.w	#$F,d7
-	andi.w	#$FFF0,d6
-	sub.w	d7,d6
-	move.w	d6,$1A(a3)
-	rts
-; End of function sub_3F366
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3F3A6:
-	move.w	$1A(a3),d6
-	move.w	$1E(a3),d7
-	move.w	d7,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	lea	($FFFF4A04).l,a4
-	move.w	(a4,d5.w),a4
-	move.w	d6,d5
-	asr.w	#4,d5
-	add.w	d5,d5
-	add.w	d5,a4
-	addi.w	#2,a4
-	addi.w	#$20,d6
-
-loc_3F3CE:
-	move.w	(a4),d5
-	subi.w	#$10,d6
-	subq.w	#2,a4
-	andi.w	#$7000,d5
-	cmpi.w	#$5000,d5
-	bne.s	loc_3F3CE
-	andi.w	#$F,d7
-	andi.w	#$FFF0,d6
-	add.w	d7,d6
-	move.w	d6,$1A(a3)
-	rts
-; End of function sub_3F3A6
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_3F3F0:
-	move.w	#$F,-(sp)
-	jsr	(j_Hibernate_Object).w
-	tst.b	$19(a3)
-	bne.s	loc_3F406
-	moveq	#sfx_Mini_Hopping_Skull_screams,d0
-	jsr	(j_PlaySound).l
-
-loc_3F406:
-	jmp	(j_Delete_CurrentObject).w
-; End of function sub_3F3F0
-
+;Enemy1C_MiniHoppingSkull_Init: 
+	include "code/enemy/Mini_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 ; filler
     rept 368
@@ -58400,83 +44775,78 @@ loc_3F406:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_3F57A:
-	jmp	sub_3F586(pc)
-; End of function sub_3F57A
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-; Attributes: thunk
-
-sub_3F57E:
-	jmp	power_start(pc)
-; End of function sub_3F57E
+;sub_3F57A:
+j_Clear_DiamondPowerObjectRAM:
+	jmp	Clear_DiamondPowerObjectRAM(pc)
+; End of function j_Clear_DiamondPowerObjectRAM
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-; Attributes: thunk
-
-sub_3F582:
-	jmp	loc_3F798(pc)
-; End of function sub_3F582
+;sub_3F57E:
+j_DiamondPower_Run:
+	jmp	DiamondPower_Run(pc)
+; End of function j_DiamondPower_Run
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
+;sub_3F582:
+j_DiamondPower_CompileSprites:
+	jmp	DiamondPower_CompileSprites(pc)
+; End of function j_DiamondPower_CompileSprites
 
-sub_3F586:
-	lea	($FFFFF5A4).w,a0
+
+; =============== S U B	R O U T	I N E =======================================
+
+;sub_3F586:
+Clear_DiamondPowerObjectRAM:
+	lea	(Addr_FirstDPObjectSlot).w,a0
 	lea	($FFFFF612).w,a1
-
-loc_3F58E:
+-
 	move.w	#0,(a0)+
 	cmp.w	a1,a0
-	blt.s	loc_3F58E
-; End of function sub_3F586
+	blt.s	-
+; End of function Clear_DiamondPowerObjectRAM
 
 
 ; =============== S U B	R O U T	I N E =======================================
+; initialize diamond power object slots
 
-
-sub_3F596:
+;sub_3F596:
+Initialize_DiamondPowerObjectSlots:
 	lea	($FFFFF2AC).w,a0
-	move.l	a0,($FFFFF5A8).w
+	move.l	a0,(Addr_NextFreeDPObjectSlot).w
 	moveq	#8,d0
-
-loc_3F5A0:
+-
 	lea	$4C(a0),a1
 	move.l	a1,4(a0)
 	move.l	a1,a0
-	dbf	d0,loc_3F5A0
+	dbf	d0,-
 	clr.l	4(a0)
-	clr.l	($FFFFF5A4).w
-	clr.l	($FFFFF5AC).w
+	clr.l	(Addr_FirstDPObjectSlot).w
+	clr.l	(Addr_LastDPObjectSlot).w
 	rts
-; End of function sub_3F596
+; End of function Initialize_DiamondPowerObjectSlots
 
 
 ; =============== S U B	R O U T	I N E =======================================
+; find new diamond power object slot (add it to the beginning of list)
 
-
-sub_3F5BC:
-	move.l	($FFFFF5A8).w,a0
-	move.l	4(a0),($FFFFF5A8).w
-	move.l	($FFFFF5A4).w,4(a0)
-	tst.l	($FFFFF5A4).w
-	bne.s	loc_3F5D6
-	move.l	a0,($FFFFF5AC).w
-
-loc_3F5D6:
-	move.l	a0,($FFFFF5A4).w
+;sub_3F5BC:
+Allocate_DiamondPowerObjectSlot:
+	move.l	(Addr_NextFreeDPObjectSlot).w,a0	; next free object slot
+	move.l	4(a0),(Addr_NextFreeDPObjectSlot).w	; the successor in the list become the next free object slot
+	move.l	(Addr_FirstDPObjectSlot).w,4(a0)	; previously first object slot becomes successor of our new object
+	tst.l	(Addr_FirstDPObjectSlot).w
+	bne.s	+			; if the first object slot was empty
+	move.l	a0,(Addr_LastDPObjectSlot).w	; then our new object is also the last object in the list
++
+	move.l	a0,(Addr_FirstDPObjectSlot).w	; our object is the first in the list, regardless
 	move.w	#1,8(a0)
 	move.w	#0,$38(a0)
 	rts
-; End of function sub_3F5BC
-
+; End of function Allocate_DiamondPowerObjectSlot
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -58493,32 +44863,32 @@ loc_3F5EC:
 ; ---------------------------------------------------------------------------
 
 loc_3F5F8:
-	cmp.l	($FFFFF5AC).w,a0
+	cmp.l	(Addr_LastDPObjectSlot).w,a0
 	bne.s	loc_3F610
 	cmpi.l	#$FFFFF5A0,a1
 	bne.s	loc_3F60C
-	clr.l	($FFFFF5AC).w
+	clr.l	(Addr_LastDPObjectSlot).w
 	bra.s	loc_3F610
 ; ---------------------------------------------------------------------------
 
 loc_3F60C:
-	move.l	a1,($FFFFF5AC).w
+	move.l	a1,(Addr_LastDPObjectSlot).w
 
 loc_3F610:
 	move.l	4(a0),4(a1)
-	move.l	($FFFFF5A8).w,4(a0)
-	move.l	a0,($FFFFF5A8).w
+	move.l	(Addr_NextFreeDPObjectSlot).w,4(a0)
+	move.l	a0,(Addr_NextFreeDPObjectSlot).w
 	move.l	a1,a0
-	tst.l	($FFFFF5A4).w
-	sne	($FFFFF5B8).w
+	tst.l	(Addr_FirstDPObjectSlot).w	; while we still have diamond power objects
+	sne	(Diamond_power_active).w	; set the diamond power flag.
 	beq.s	loc_3F62E
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_3F62E:
-	sf	($FFFFFA29).w
-	sf	($FFFFFA2A).w
-	sf	($FFFFFA2B).w
+	sf	(FiveWayShotReady).w
+	sf	(SamuraiHazeActive).w
+	sf	(KidIsInvulnerable).w
 	rts
 ; End of function sub_3F5E8
 
@@ -58527,12 +44897,12 @@ loc_3F62E:
 
 
 sub_3F63C:
-	clr.l	($FFFFF5A4).w
-	clr.l	($FFFFF5A8).w
-	sf	($FFFFF5B8).w
-	sf	($FFFFFA29).w
-	sf	($FFFFFA2A).w
-	sf	($FFFFFA2B).w
+	clr.l	(Addr_FirstDPObjectSlot).w
+	clr.l	(Addr_NextFreeDPObjectSlot).w
+	sf	(Diamond_power_active).w
+	sf	(FiveWayShotReady).w
+	sf	(SamuraiHazeActive).w
+	sf	(KidIsInvulnerable).w
 	rts
 ; End of function sub_3F63C
 
@@ -58540,113 +44910,119 @@ sub_3F63C:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-power_start:
+DiamondPower_Run:
 	move.l	#$FFFFF5C2,($FFFFF5B0).w
-	tst.b	($FFFFF5B8).w
-	bne.w	loc_3F71E
-	move.w	(Current_Helmet).w,d0		; Check if helmet ID is Juggernaut
-	cmpi.w	#5,d0
+	tst.b	(Diamond_power_active).w
+	bne.w	DiamondPower_Main_Execute
+	move.w	(Current_Helmet).w,d0	; Check if helmet ID is Juggernaut
+	cmpi.w	#Juggernaut,d0
 	bne.s	+
-	tst.b	($FFFFFA29).w
-	bne.w	five_way_shot
-	bra.s	power_fail
+	tst.b	(FiveWayShotReady).w
+	bne.w	DiamondPower_Init_FiveWayShot
+	bra.s	DiamondPower_rts
 ; ---------------------------------------------------------------------------
 
 +
 	move.b	(Ctrl_Held).w,d1
-	andi.b	#$C0,d1
-	cmpi.b	#$C0,d1
-	bne.s	power_fail
-	cmpi.w	#4,d0						; Check if Helmet ID is Eyeclops
-	bne.s	power_check
+	andi.b	#Button_Start_mask|Button_A_mask,d1
+	cmpi.b	#Button_Start_mask|Button_A_mask,d1
+	bne.s	DiamondPower_rts
+	cmpi.w	#Eyeclops,d0		; Check if Helmet ID is Eyeclops
+	bne.s	DiamondPower_Check
 
-power_fail:									; Basic return statement
+DiamondPower_rts:
 	rts
 ; ---------------------------------------------------------------------------
 
-power_check:									; Checks performed when a Diamond Power is input
+DiamondPower_Check:	; Checks performed when a Diamond Power is input
 	cmpi.w	#$14,(Number_Diamonds).w		; Compare diamonds to 20
-	blt.s	power_fail						; If <, return
+	blt.s	DiamondPower_rts			; If <, return
 	subi.w	#$14,(Number_Diamonds).w		; Subtract 20 from diamonds
 	move.w	(Current_Helmet).w,d0			; Helmet ID -> d0
 	cmpi.w	#$1E,(Number_Diamonds).w		; Compare diamonds to 30
-	blt.s	+									; If <, execute diamond power
+	blt.s	+					; If <, execute diamond power
 	subi.w	#$1E,(Number_Diamonds).w		; Subtract 30 from diamonds
-	addi.w	#$A,d0							; Add 10 to d0
+	addi.w	#$A,d0					; Add 10 to d0
 
-+												; Carry out Diamond Power
-	move.w	d0,($FFFFF5BA).w
++	; Initialize Diamond Power
+	move.w	d0,(Diamond_power_ID).w
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	off_3F6CE(pc,d0.w),a0
-	st	($FFFFF5B8).w
+	move.l	DiamondPower_Init_Index(pc,d0.w),a0
+	st	(Diamond_power_active).w
 	move.l	a0,-(sp)
-	bsr.w	sub_3F596
+	bsr.w	Initialize_DiamondPowerObjectSlots
 	move.l	(sp)+,a0
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-off_3F6CE:	; Looks like pointers to definitions of each diamond power
-	dc.l loc_3F7D0
-	dc.l loc_3FC78
-	dc.l loc_3FDF4
-	dc.l loc_3FC82
-	dc.l 0
-	dc.l five_way_shot
-	dc.l loc_3F7D0
-	dc.l loc_3FC78
-	dc.l loc_3F7D0
-	dc.l loc_3F8EE
-	dc.l loc_3F90C
-	dc.l loc_40206
-	dc.l loc_3FDE8
-	dc.l loc_3F90C
-	dc.l 0
-	dc.l five_way_shot
-	dc.l loc_3FB90
-	dc.l loc_3FFE4
-	dc.l loc_3FB94
-	dc.l loc_3F8D0
+;off_3F6CE:
+DiamondPower_Init_Index:	; Initialization code for each diamond power
+	; 20-diamond power
+	dc.l DiamondPower_Init_CircleOfDoom		; The_Kid - Circle of Doom
+	dc.l DiamondPower_Init_Invulnerability		; Skycutter - Invulnerability
+	dc.l DiamondPower_Init_SlashingRain		; Cyclone - Slashing Rain
+	dc.l DiamondPower_Init_SamuraiHaze		; Red_Stealth - Samurai Haze
+	dc.l 0						; Eyeclops - invalid
+	dc.l DiamondPower_Init_FiveWayShot		; Juggernaut - not accessed via this index
+	dc.l DiamondPower_Init_CircleOfDoom		; Iron_Knight - Circle of Doom
+	dc.l DiamondPower_Init_Invulnerability		; Berzerker - Invulnerability
+	dc.l DiamondPower_Init_CircleOfDoom		; Maniaxe - Circle of Doom
+	dc.l DiamondPower_Init_MiniSnake		; Micromax - Mini-Snake
+	; 50 diamond powers
+	dc.l DiamondPower_Init_DeathSnake		; The_Kid - Death Snake
+	dc.l DiamondPower_Init_DeathSnake2		; Skycutter - Death Snake
+	dc.l DiamondPower_Init_TrackingRain		; Cyclone - Tracking Rain
+	dc.l DiamondPower_Init_DeathSnake		; Red_Stealth - Death Snake
+	dc.l 0						; Eyeclops - invalid
+	dc.l DiamondPower_Init_FiveWayShot		; Juggernaut - not accessed via this index
+	dc.l DiamondPower_Init_ExtraHitPoint		; Iron_Knight - Extra Hit Point
+	dc.l DiamondPower_Init_WallOfDeath		; Berzerker - Wall of Death
+	dc.l DiamondPower_Init_ExtraLife		; Maniaxe - Extra Life
+	dc.l DiamondPower_Init_SwiftMiniSnake		; Micromax - Swift Mini-Snake
 ; ---------------------------------------------------------------------------
-
-loc_3F71E:
+;loc_3F71E:
+DiamondPower_Main_Execute:
 	move.l	(Addr_NextSpriteSlot).w,a2
 	moveq	#0,d2
 	move.b	(Number_Sprites).w,d2
 	move.l	($FFFFF5B0).w,a4
-	move.w	($FFFFF5BA).w,d0
+	move.w	(Diamond_power_ID).w,d0
 	add.w	d0,d0
 	add.w	d0,d0
-	move.l	off_3F748(pc,d0.w),a0
+	move.l	DiamondPower_Main_Index(pc,d0.w),a0
 	jsr	(a0)
 	move.l	a2,(Addr_NextSpriteSlot).w
 	move.b	d2,(Number_Sprites).w
 	move.l	a4,($FFFFF5B0).w
 	rts
 ; ---------------------------------------------------------------------------
-off_3F748:
-	dc.l loc_3F7FE
-	dc.l loc_3FD14
-	dc.l loc_3FE04
-	dc.l loc_3FD14
-	dc.l 0
-	dc.l loc_40138
-	dc.l loc_3F7FE
-	dc.l loc_3FD14
-	dc.l loc_3F7FE
-	dc.l loc_3F974
-	dc.l loc_3F974
-	dc.l loc_4020A
-	dc.l loc_3FE04
-	dc.l loc_3F974
-	dc.l 0
-	dc.l loc_40138
-	dc.l loc_3FBC4
-	dc.l loc_40012
-	dc.l loc_3FBC4
-	dc.l loc_3F974
+; off_3F748:
+DiamondPower_Main_Index:; Running code for each diamond power
+	; 20-diamond power
+	dc.l DiamondPower_Main_CircleOfDoom	; The_Kid - Circle of Doom
+	dc.l DiamondPower_Main_InvulnAndHaze	; Skycutter - Invulnerability
+	dc.l DiamondPower_Main_SlashingRain	; Cyclone - Slashing Rain
+	dc.l DiamondPower_Main_InvulnAndHaze	; Red_Stealth - Samurai Haze
+	dc.l 0					; Eyeclops - invalid
+	dc.l DiamondPower_Main_FiveWayShot	; Juggernaut - 5-Way Shot
+	dc.l DiamondPower_Main_CircleOfDoom	; Iron_Knight - Circle of Doom
+	dc.l DiamondPower_Main_InvulnAndHaze	; Berzerker - Invulnerability
+	dc.l DiamondPower_Main_CircleOfDoom	; Maniaxe - Circle of Doom
+	dc.l DiamondPower_Main_Snake		; Micromax - Mini-Snake
+	; 50 diamond powers
+	dc.l DiamondPower_Main_Snake		; The_Kid - Death Snake
+	dc.l DiamondPower_Main_Snake2		; Skycutter - Death Snake v2
+	dc.l DiamondPower_Main_SlashingRain	; Cyclone - Tracking Rain
+	dc.l DiamondPower_Main_Snake		; Red_Stealth - Death Snake
+	dc.l 0					; Eyeclops - invalid
+	dc.l DiamondPower_Main_FiveWayShot	; Juggernaut - 5-Way Shot
+	dc.l DiamondPower_Main_ExtraHPLife	; Iron_Knight - Extra Hit Point
+	dc.l DiamondPower_Main_WallOfDeath	; Berzerker - Wall of Death
+	dc.l DiamondPower_Main_ExtraHPLife	; Maniaxe - Extra Life
+	dc.l DiamondPower_Main_Snake		; Micromax - Swift Mini-Snake
 ; ---------------------------------------------------------------------------
-
-loc_3F798:
+;loc_3F798:
+DiamondPower_CompileSprites:
 	move.l	($FFFFF5B0).w,a0
 	lea	($FFFFF5C2).w,a1
 	cmp.l	a0,a1
@@ -58673,8 +45049,8 @@ loc_3F7AE:
 return_3F7CE:
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3F7D0:
+;loc_3F7D0:
+DiamondPower_Init_CircleOfDoom:
 	moveq	#8,d1
 	move.l	#$10000,d2
 	divu.w	d1,d2
@@ -58686,7 +45062,7 @@ loc_3F7D0:
 	subq.w	#1,d1
 
 loc_3F7E6:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.l	d0,$3E(a0)
 	clr.w	$40(a0)
 	move.l	d3,$42(a0)
@@ -58695,13 +45071,13 @@ loc_3F7E6:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3F7FE:
+DiamondPower_Main_CircleOfDoom:
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3F81A
 	rts
 ; ---------------------------------------------------------------------------
@@ -58715,14 +45091,14 @@ loc_3F81A:
 	muls.w	d5,d0
 	swap	d0
 	asr.w	#6,d0
-	add.w	$1A(a3),d0
+	add.w	x_pos(a3),d0
 	move.w	d0,$1A(a0)
 	add.w	d3,d0
 	muls.w	d5,d1
 	swap	d1
 	asr.w	#6,d1
 	neg.w	d1
-	add.w	$1E(a3),d1
+	add.w	y_pos(a3),d1
 	subi.w	#$10,d1
 	move.w	d1,$1E(a0)
 	add.w	d4,d1
@@ -58794,64 +45170,46 @@ byte_3F8B4:	dc.b 0
 	dc.b   6
 	dc.b   6
 ; ---------------------------------------------------------------------------
-
-loc_3F8D0:
+;loc_3F8D0:
+DiamondPower_Init_SwiftMiniSnake:
 	moveq	#$10,d4
 	move.w	#$480,d5
-	lea	unk_3F8E2(pc),a2
+	lea	DiamondPower_InitData_SwiftMiniSnake(pc),a2
 	move.w	#$4B0,(Diamond_power_timer).w
-	bra.s	loc_3F91C
+	bra.s	DiamondPower_Init_Snake
 ; ---------------------------------------------------------------------------
-unk_3F8E2:	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
+;unk_3F8E2:
+DiamondPower_InitData_SwiftMiniSnake:	; diamond sizes?
+	dc.w   5,  4,  3,  2,  1,  1
 ; ---------------------------------------------------------------------------
-
-loc_3F8EE:
+;loc_3F8EE:
+DiamondPower_Init_MiniSnake:
 	moveq	#6,d4
 	move.w	#$300,d5
-	lea	unk_3F900(pc),a2
+	lea	DiamondPower_InitData_MiniSnake(pc),a2
 	move.w	#$1E0,(Diamond_power_timer).w
-	bra.s	loc_3F91C
+	bra.s	DiamondPower_Init_Snake
 ; ---------------------------------------------------------------------------
-unk_3F900:	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   1
+;unk_3F900:
+DiamondPower_InitData_MiniSnake:	; diamond sizes?
+	dc.w   4,  3,  2,  1,  1,  1
 ; ---------------------------------------------------------------------------
-
-loc_3F90C:
-
+;loc_3F90C:
+DiamondPower_Init_DeathSnake:
 	move.w	#$4B0,(Diamond_power_timer).w
-	lea	unk_3F968(pc),a2
+	lea	DiamondPower_InitData_DeathSnake(pc),a2
 	moveq	#6,d4
 	move.w	#$400,d5
 
-loc_3F91C:
+;loc_3F91C:
+DiamondPower_Init_Snake:
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.w	$1A(a3),d6
-	move.w	$1E(a3),d7
+	move.w	x_pos(a3),d6
+	move.w	y_pos(a3),d7
 	moveq	#5,d1
 
 loc_3F92A:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	cmpi.w	#5,d1
 	bne.s	loc_3F946
 	move.l	a0,($FFFFF5B4).w
@@ -58873,23 +45231,13 @@ loc_3F946:
 	dbf	d1,loc_3F92A
 	rts
 ; ---------------------------------------------------------------------------
-unk_3F968:	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   6
-	dc.b   0
-	dc.b   5
-	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   3
-	dc.b   0
-	dc.b   2
+;unk_3F968:
+DiamondPower_InitData_DeathSnake:	; diamond sizes?
+	dc.w   6,  6,  5,  4,  3,  2
 ; ---------------------------------------------------------------------------
 
-loc_3F974:
-
-	move.l	($FFFFF5A4).w,a1
+DiamondPower_Main_Snake:
+	move.l	(Addr_FirstDPObjectSlot).w,a1
 
 loc_3F978:
 	move.l	a1,a0
@@ -58958,9 +45306,9 @@ loc_3FA0C:
 	move.l	(Addr_GfxObject_Kid).w,a3
 
 loc_3FA16:
-	move.w	$1A(a3),d0
+	move.w	x_pos(a3),d0
 	sub.w	$1A(a0),d0
-	move.w	$1E(a3),d1
+	move.w	y_pos(a3),d1
 	subi.w	#$10,d1
 	sub.w	$1E(a0),d1
 	neg.w	d1
@@ -59066,17 +45414,17 @@ loc_3FAD4:
 	asr.l	#6,d1
 	sub.l	d1,$1E(a0)
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.l	$26(a3),d3
+	move.l	x_vel(a3),d3
 	asr.l	#1,d3
 	add.l	d3,$1A(a0)
-	move.l	$2A(a3),d3
+	move.l	y_vel(a3),d3
 	asr.l	#1,d3
 	add.l	d3,$1E(a0)
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FB20
 	rts
 ; ---------------------------------------------------------------------------
@@ -59085,7 +45433,7 @@ loc_3FB20:
 	move.l	d0,a0
 	tst.w	(Diamond_power_timer).w
 	bge.s	loc_3FB3E
-	move.w	($FFFFFC24).w,d1
+	move.w	(Time_Frames).w,d1
 	andi.w	#$F,d1
 	bne.s	loc_3FB3E
 	subq.w	#1,$24(a0)
@@ -59128,13 +45476,13 @@ loc_3FB88:
 	bne.s	loc_3FB20
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FB90:
+;loc_3FB90:
+DiamondPower_Init_ExtraHitPoint:
 	moveq	#8,d2
 	bra.s	loc_3FB96
 ; ---------------------------------------------------------------------------
-
-loc_3FB94:
+;loc_3FB94:
+DiamondPower_Init_ExtraLife:
 	moveq	#7,d2
 
 loc_3FB96:
@@ -59142,7 +45490,7 @@ loc_3FB96:
 	moveq	#9,d1
 
 loc_3FB9A:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.l	#$400000,$3E(a0)
 	move.l	d3,$42(a0)
 	addi.l	#$199999,d3
@@ -59153,14 +45501,14 @@ loc_3FB9A:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3FBC4:
+DiamondPower_Main_ExtraHPLife:
 	addq.w	#1,(Diamond_power_timer).w
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$7F,d3
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FBE4
 	rts
 ; ---------------------------------------------------------------------------
@@ -59175,13 +45523,13 @@ loc_3FBE4:
 	muls.w	d5,d0
 	swap	d0
 	asr.w	#5,d0
-	add.w	$1A(a3),d0
+	add.w	x_pos(a3),d0
 	add.w	d3,d0
 	muls.w	d5,d1
 	swap	d1
 	asr.w	#5,d1
 	neg.w	d1
-	add.w	$1E(a3),d1
+	add.w	y_pos(a3),d1
 	subi.w	#$10,d1
 	add.w	d4,d1
 	move.w	$24(a0),d6
@@ -59228,22 +45576,23 @@ loc_3FC56:
 	bne.w	loc_3FBE4
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FC78:
-	st	($FFFFFA2B).w
-	lea	unk_3FCEC(pc),a1
+;loc_3FC78:
+DiamondPower_Init_Invulnerability:
+	st	(KidIsInvulnerable).w
+	lea	DiamondPower_InitData_Invulnerability(pc),a1
 	bra.s	loc_3FC8A
 ; ---------------------------------------------------------------------------
-
-loc_3FC82:
-	st	($FFFFFA2A).w
-	lea	unk_3FCC4(pc),a1
+;loc_3FC82:
+DiamondPower_Init_SamuraiHaze:
+	st	(SamuraiHazeActive).w
+	lea	DiamondPower_InitData_SamuraiHaze(pc),a1
 
 loc_3FC8A:
+	; load 10 diamonds to circle around the kid
 	moveq	#9,d1
 
 loc_3FC8C:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	moveq	#0,d3
 	move.b	(a1)+,d3
 	move.w	d3,$3E(a0)
@@ -59261,92 +45610,37 @@ loc_3FC8C:
 	move.w	#$1E0,(Diamond_power_timer).w
 	rts
 ; ---------------------------------------------------------------------------
-unk_3FCC4:	dc.b  $C
-	dc.b $DC ; ‹
-	dc.b   0
-	dc.b   2
-	dc.b  $C
-	dc.b $DC ; ‹
-	dc.b $80 ; Ä
-	dc.b   2
-	dc.b  $C
-	dc.b   4
-	dc.b $80 ; Ä
-	dc.b   2
-	dc.b  $C
-	dc.b   4
-	dc.b   0
-	dc.b   2
-	dc.b $15
-	dc.b $E6 ; Ê
-	dc.b $20
-	dc.b   2
-	dc.b $15
-	dc.b $E6 ; Ê
-	dc.b $A0 ; †
-	dc.b   2
-	dc.b $15
-	dc.b $FA ; ˙
-	dc.b $60 ; `
-	dc.b   2
-	dc.b $15
-	dc.b $FA ; ˙
-	dc.b $E0 ; ‡
-	dc.b   2
-	dc.b $18
-	dc.b $F0 ; 
-	dc.b $40 ; @
-	dc.b   2
-	dc.b $18
-	dc.b $F0 ; 
-	dc.b $C0 ; ¿
-	dc.b   2
-unk_3FCEC:	dc.b  $C
-	dc.b $DC ; ‹
-	dc.b   0
-	dc.b   6
-	dc.b  $C
-	dc.b $DC ; ‹
-	dc.b $80 ; Ä
-	dc.b   6
-	dc.b  $C
-	dc.b   4
-	dc.b $40 ; @
-	dc.b   6
-	dc.b  $C
-	dc.b   4
-	dc.b $C0 ; ¿
-	dc.b   6
-	dc.b $15
-	dc.b $E6 ; Ê
-	dc.b $10
-	dc.b   6
-	dc.b $15
-	dc.b $E6 ; Ê
-	dc.b $90 ; ê
-	dc.b   6
-	dc.b $15
-	dc.b $FA ; ˙
-	dc.b $30 ; 0
-	dc.b   6
-	dc.b $15
-	dc.b $FA ; ˙
-	dc.b $B0 ; ∞
-	dc.b   6
-	dc.b $18
-	dc.b $F0 ; 
-	dc.b $20
-	dc.b   6
-	dc.b $18
-	dc.b $F0 ; 
-	dc.b $A0 ; †
-	dc.b   6
+;unk_3FCC4:
+DiamondPower_InitData_SamuraiHaze:	; initialization data for the 10 diamonds for Samurai Haze
+; radius, y_pos, phase, rotation speed
+	dc.b  $C,-$24,   0,   2
+	dc.b  $C,-$24, $80,   2
+	dc.b  $C,   4, $80,   2
+	dc.b  $C,   4,   0,   2
+	dc.b $15,-$1A, $20,   2
+	dc.b $15,-$1A, $A0,   2
+	dc.b $15,  -6, $60,   2
+	dc.b $15,  -6, $E0,   2
+	dc.b $18,-$10, $40,   2
+	dc.b $18,-$10, $C0,   2
+;unk_3FCEC:
+DiamondPower_InitData_Invulnerability:	; initialization data for the 10 diamonds for Invulnerability diamonds
+	dc.b  $C,-$24,   0,   6
+	dc.b  $C,-$24, $80,   6
+	dc.b  $C,   4, $40,   6
+	dc.b  $C,   4, $C0,   6
+	dc.b $15,-$1A, $10,   6
+	dc.b $15,-$1A, $90,   6
+	dc.b $15,  -6, $30,   6
+	dc.b $15,  -6, $B0,   6
+	dc.b $18,-$10, $20,   6
+	dc.b $18,-$10, $A0,   6
 ; ---------------------------------------------------------------------------
 
-loc_3FD14:
+DiamondPower_Main_InvulnAndHaze:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Diamond_power_timer).w,d7
-	cmpi.w	#$FFE5,d7
+	cmpi.w	#-$1B,d7
 	bge.s	loc_3FD28
 	bsr.w	sub_3F63C
 	rts
@@ -59364,7 +45658,7 @@ loc_3FD2E:
 	sub.w	(Camera_X_pos).w,d3
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FD4C
 	rts
 ; ---------------------------------------------------------------------------
@@ -59385,7 +45679,7 @@ loc_3FD5A:
 	muls.w	d5,d0
 	swap	d0
 	asr.w	#5,d0
-	add.w	$1A(a3),d0
+	add.w	x_pos(a3),d0
 	add.w	d3,d0
 	muls.w	d5,d1
 	swap	d1
@@ -59406,7 +45700,7 @@ loc_3FD8E:
 	sub.w	d7,d6
 	bmi.s	loc_3FDD2
 	move.w	$46(a0),d1
-	add.w	$1E(a3),d1
+	add.w	y_pos(a3),d1
 	add.w	d4,d1
 	sub.w	d6,d0
 	sub.w	d6,d1
@@ -59448,14 +45742,14 @@ byte_3FDDC:	dc.b 1
 	dc.b   5
 	dc.b   5
 ; ---------------------------------------------------------------------------
-
-loc_3FDE8:
+;loc_3FDE8:
+DiamondPower_Init_TrackingRain:
 	st	($FFFFF5B9).w
 	move.w	#$708,(Diamond_power_timer).w
 	bra.s	loc_3FDFE
 ; ---------------------------------------------------------------------------
-
-loc_3FDF4:
+;loc_3FDF4:
+DiamondPower_Init_SlashingRain:
 	sf	($FFFFF5B9).w
 	move.w	#$2D0,(Diamond_power_timer).w
 
@@ -59464,13 +45758,13 @@ loc_3FDFE:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_3FE04:
+DiamondPower_Main_SlashingRain:
 	subq.w	#1,(Diamond_power_timer).w
 	bmi.w	loc_3FE62
 	moveq	#6,d0
 	cmp.w	($FFFFF5C0).w,d0
 	ble.w	loc_3FE62
-	move.w	($FFFFFC24).w,d0
+	move.w	(Time_Frames).w,d0
 	andi.w	#$F,d0
 	bne.s	loc_3FE62
 	addq.w	#1,($FFFFF5C0).w
@@ -59478,7 +45772,7 @@ loc_3FE04:
 	lsl.w	#2,d7
 	divu.w	#$140,d7
 	swap	d7
-	jsr	sub_3F5BC(pc)
+	jsr	Allocate_DiamondPowerObjectSlot(pc)
 	move.w	(Camera_X_pos).w,d0
 	add.w	d7,d0
 	move.w	d0,$1A(a0)
@@ -59497,13 +45791,13 @@ loc_3FE62:
 	move.w	#$7F,d4
 	sub.w	(Camera_Y_pos).w,d4
 	move.l	(Addr_GfxObject_Kid).w,a3
-	move.l	$26(a3),a5
+	move.l	x_vel(a3),a5
 	move.l	a5,d6
 	asr.l	#2,d6
 	suba.l	d6,a5
-	move.w	($FFFFFC24).w,d7
+	move.w	(Time_Frames).w,d7
 	andi.w	#7,d7
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_3FE90
 	rts
 ; ---------------------------------------------------------------------------
@@ -59587,11 +45881,11 @@ loc_3FF3C:
 	addq.w	#1,d6
 	lsr.w	#1,d7
 	bne.s	loc_3FF3C
-	move.l	$1A(a3),d0
+	move.l	x_pos(a3),d0
 	sub.l	$1A(a0),d0
 	asr.l	d6,d0
 	move.l	d0,$26(a0)
-	move.l	$1E(a3),d0
+	move.l	y_pos(a3),d0
 	subi.l	#$80000,d0
 	sub.l	$1E(a0),d0
 	asr.l	d6,d0
@@ -59654,14 +45948,14 @@ loc_3FFDA:
 	bne.w	loc_3FE90
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_3FFE4:
+;loc_3FFE4:
+DiamondPower_Init_WallOfDeath:
 	moveq	#9,d1
 	moveq	#0,d2
 	moveq	#$D,d3
 
 loc_3FFEA:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.w	d2,$3E(a0)
 	move.w	d3,$40(a0)
 	sf	$42(a0)
@@ -59677,11 +45971,11 @@ loc_40006:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_40012:
+DiamondPower_Main_WallOfDeath:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Camera_X_pos).w,d3
 	move.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_40026
 	rts
 ; ---------------------------------------------------------------------------
@@ -59748,34 +46042,34 @@ loc_400B0:
 	rts
 ; ---------------------------------------------------------------------------
 
-five_way_shot:
+DiamondPower_Init_FiveWayShot:
 
-	st	($FFFFF5B8).w
+	st	(Diamond_power_active).w
 	subq.w	#5,(Number_Diamonds).w
-	bsr.w	sub_3F596
-	move.w	#5,($FFFFF5BA).w
+	bsr.w	Initialize_DiamondPowerObjectSlots
+	move.w	#5,(Diamond_power_ID).w
 	moveq	#4,d1
 	move.l	(Addr_GfxObject_Kid).w,a3
 	move.w	#$20,d4
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_400DE
 	neg.w	d4
 
 loc_400DE:
-	move.w	$1A(a3),d2
+	move.w	x_pos(a3),d2
 	sub.w	(Camera_X_pos).w,d2
 	add.w	d4,d2
-	move.w	$1E(a3),d3
+	move.w	y_pos(a3),d3
 	sub.w	(Camera_Y_pos).w,d3
 	lea	word_40124(pc),a5
 
 loc_400F4:
-	bsr.w	sub_3F5BC
+	bsr.w	Allocate_DiamondPowerObjectSlot
 	move.w	#5,$24(a0)
 	move.w	d2,$3E(a0)
 	move.w	d3,$40(a0)
 	move.w	(a5)+,d4
-	tst.b	$16(a3)
+	tst.b	x_direction(a3)
 	beq.s	loc_40110
 	neg.w	d4
 
@@ -59785,7 +46079,7 @@ loc_40110:
 	dbf	d1,loc_400F4
 	move.w	#$50,(Diamond_power_timer).w
 	rts
-; End of function power_start
+; End of function DiamondPower_Run
 
 ; ---------------------------------------------------------------------------
 word_40124:	dc.w 6
@@ -59800,11 +46094,11 @@ word_40124:	dc.w 6
 	dc.w 4
 ; ---------------------------------------------------------------------------
 
-loc_40138:
+DiamondPower_Main_FiveWayShot:
 	subq.w	#1,(Diamond_power_timer).w
 	move.w	(Camera_X_pos).w,d3
 	move.w	(Camera_Y_pos).w,d4
-	move.l	($FFFFF5A4).w,d0
+	move.l	(Addr_FirstDPObjectSlot).w,d0
 	bne.s	loc_4014C
 	rts
 ; ---------------------------------------------------------------------------
@@ -59884,13 +46178,13 @@ loc_401FC:
 	bne.w	loc_4014C
 	rts
 ; ---------------------------------------------------------------------------
-
-loc_40206:
-	bra.w	loc_3F90C
+;loc_40206:
+DiamondPower_Init_DeathSnake2:
+	bra.w	DiamondPower_Init_DeathSnake
 ; ---------------------------------------------------------------------------
 
-loc_4020A:
-	bra.w	loc_3F974
+DiamondPower_Main_Snake2:
+	bra.w	DiamondPower_Main_Snake
 ; ---------------------------------------------------------------------------
 word_4020E:
 	dc.w	 0,$86EA
@@ -60053,15 +46347,21 @@ MapOrder_Index:
 	align 2
 
 	include "level/mapheader_definitions.asm"
+	align	2
 
 	include "level/foreground_includes.asm"
+	align	2
 
 	include "level/background_includes.asm"
+	;align	2	; Block layouts aren't aligned in the original.
 
 	include "level/block_includes.asm"
+	align	2
 
 	include "level/enemy_includes.asm"
 
+
+	align	2
 ; ---------------------------------------------------------------------------
 MainAddr_Index:	dc.l ThemeArtFront_Index 
 LnkTo_ThemeArtBack_Index:	dc.l ThemeArtBack_Index 
@@ -60144,9 +46444,9 @@ ThemeArtBack_Index:dc.l	unk_93C94
 	dc.l unk_96045
 	dc.l unk_96514
 	dc.l unk_96B49
-	dc.l unk_970D2
-	dc.l unk_9729F
-	dc.l unk_97381
+ThemeArtBack_CaveAlt:	dc.l unk_970D2	; 2C
+ThemeArtBack_MountainLightning:	dc.l unk_9729F	; 30
+ThemeArtBack_HillAlt:	dc.l unk_97381	; 34
 ThemeMappings_Index:dc.l unk_7C4EC
 	dc.l unk_7C51C
 	dc.l unk_7CCE4
@@ -60442,12 +46742,16 @@ unk_9729F:  binclude    "theme/artcomp_bg/mountain_lightning.bin"
 unk_97381:  binclude    "theme/artcomp_bg/hill_alt.bin"
 	align	2
 
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_9784A:	dc.w	$17
 	binclude	"ingame/artunc/shore_1.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_97B2C:	dc.w	$17
 	binclude	"ingame/artunc/shore_2.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_97E0E:	dc.w	$17
 	binclude	"ingame/artunc/shore_3.bin"
+	align_dmasafe	ANIART_SHORE_SIZE+2
 unk_980F0:	dc.w	$17
 	binclude	"ingame/artunc/shore_4.bin"
 
@@ -60466,12 +46770,16 @@ ArtComp_99F34_IngameNumbers:
 	binclude    "ingame/artcomp/HUD_numbers.bin"
 	align	2
 
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_99FCA:	dc.w	$10
 	binclude	"ingame/artunc/diamond_1.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A1CC:	dc.w	$10
 	binclude	"ingame/artunc/diamond_2.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A3CE:	dc.w	$10
 	binclude	"ingame/artunc/diamond_3.bin"
+	align_dmasafe	ANIART_DIAMOND_SIZE+2
 unk_9A5D0:	dc.w	$10
 	binclude	"ingame/artunc/diamond_4.bin"
 
@@ -60978,6 +47286,7 @@ unk_9B6E0:	dc.b   0
 	dc.b   9
 	dc.b $38 ; 8
 	dc.b $E3 ; „
+	align	2
 
 unk_9B83C:  binclude	"theme/bg_chunks/sky_00.bin"
 	align	2
@@ -62144,13 +48453,13 @@ LnkTo_Pal_A22FE:	dc.l Pal_A22FE
 			dc.l Pal_A230C
 			dc.l Pal_A231A
 LnkTo_unk_C8188:	dc.l unk_C8188
-			dc.l unk_C8190
-			dc.l unk_C8198
-			dc.l unk_C81A0
-			dc.l unk_C81A8
-			dc.l unk_C81B0
+LnkTo_unk_C8190:	dc.l unk_C8190
+LnkTo_unk_C8198:	dc.l unk_C8198
+LnkTo_unk_C81A0:	dc.l unk_C81A0
+LnkTo_unk_C81A8:	dc.l unk_C81A8
+LnkTo_unk_C81B0:	dc.l unk_C81B0
 LnkTo_unk_C81B8:	dc.l unk_C81B8
-			dc.l unk_C81C0
+LnkTo_unk_C81C0:	dc.l unk_C81C0
 LnkTo_unk_C81C8:	dc.l unk_C81C8
 LnkTo_unk_C81D0:	dc.l unk_C81D0
 			dc.l unk_C81D8
@@ -62636,7 +48945,6 @@ Pal_A2364:  binclude	"ingame/palette_enemy/UFO_3.bin"
 Pal_A2382:  binclude	"ingame/palette_enemy/Plethora.bin"
 Pal_A23A0:  binclude	"ingame/palette_enemy/Boss_Eyes.bin"
 Pal_A23AE:  binclude	"ingame/palette_enemy/Boss.bin"
-
 unk_A23CC:  sprite_frame_unc    $0B, $00, $17, $1F, "ingame/artunc_kid/kid_slope_7.bin"
 unk_A2552:  sprite_frame_unc    $0C, $FE, $16, $1E, "ingame/artunc_kid/kid_slope_8.bin"
 unk_A26D8:  sprite_frame_unc    $0A, $FF, $15, $20, "ingame/artunc_kid/kid_slope_9.bin"
@@ -62893,7 +49201,6 @@ unk_BF714:  sprite_frame_unc    $17, $01, $2F, $0D, "ingame/artunc_kid/juggernau
 unk_BF89A:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_unknown_BF89A.bin"
 unk_BFAE0:  sprite_frame_unc    $17, $06, $30, $14, "ingame/artunc_kid/juggernaut_bottom_jumping_1.bin"
 unk_BFD26:  sprite_frame_unc    $17, $05, $2F, $13, "ingame/artunc_kid/juggernaut_bottom_jumping_2.bin"
-        align   $100	; DMA fails if crossing $20000 boundary
 unk_C0000:  sprite_frame_unc    $17, $04, $2F, $12, "ingame/artunc_kid/juggernaut_bottom_jumping_3.bin"
 unk_C0246:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_1.bin"
 unk_C03CC:  sprite_frame_unc    $17, $01, $30, $0F, "ingame/artunc_kid/juggernaut_bottom_move_2.bin"
@@ -63361,35 +49668,37 @@ unk_C8240:  sprite_frame_vram   $0DE, $0A, $08, $0F, $0F
 unk_C8248:  sprite_frame_vram   $0E2, $07, $08, $0B, $12
 unk_C8250:  sprite_frame_vram   $0E8, $05, $0A, $08, $14
 unk_C8258:  sprite_frame_vram   $0EB, $01, $0A, $03, $14
-unk_C8260:  sprite_frame_vram   $000, $08, $00, $10, $10
-unk_C8268:  sprite_frame_vram   $004, $0A, $00, $14, $14
-unk_C8270:  sprite_frame_vram   $00D, $0B, $00, $16, $16
-unk_C8278:  sprite_frame_vram   $016, $03, $00, $1F, $06
-unk_C8280:  sprite_frame_vram   $01A, $03, $00, $1F, $06
-unk_C8288:  sprite_frame_vram   $01E, $03, $00, $17, $06
-unk_C8290:  sprite_frame_vram   $021, $12, $01, $1F, $0F
-unk_C8298:  sprite_frame_vram   $029, $12, $00, $20, $10
-unk_C82A0:  sprite_frame_vram   $031, $12, $00, $1E, $10
-unk_C82A8:  sprite_frame_vram   $039, $12, $00, $1D, $14
-unk_C82B0:  sprite_frame_vram   $045, $0A, $00, $12, $15
-unk_C82B8:  sprite_frame_vram   $04E, $10, $00, $1C, $15
-unk_C82C0:  sprite_frame_vram   $05A, $12, $00, $1D, $14
-unk_C82C8:  sprite_frame_vram   $066, $0A, $00, $15, $15
-unk_C82D0:  sprite_frame_vram   $06F, $10, $00, $1C, $15
-unk_C82D8:  sprite_frame_vram   $07B, $12, $01, $1E, $10
-unk_C82E0:  sprite_frame_vram   $083, $12, $00, $1E, $10
-unk_C82E8:  sprite_frame_vram   $08B, $12, $00, $1E, $10
-unk_C82F0:  sprite_frame_vram   $093, $12, $01, $1E, $10
-unk_C82F8:  sprite_frame_vram   $09B, $12, $00, $1E, $10
-unk_C8300:  sprite_frame_vram   $0A3, $12, $00, $1E, $10
-unk_C8308:  sprite_frame_vram   $0AB, $12, $00, $1E, $10
-unk_C8310:  sprite_frame_vram   $0B3, $12, $00, $1E, $10
-unk_C8318:  sprite_frame_vram   $0BB, $12, $00, $1E, $20
-unk_C8320:  sprite_frame_vram   $0CB, $12, $00, $20, $20
-unk_C8328:  sprite_frame_vram   $0DB, $12, $00, $1E, $10
-unk_C8330:  sprite_frame_vram   $0E3, $12, $00, $1D, $0F
-unk_C8338:  sprite_frame_vram   $0EB, $0F, $00, $19, $10
-unk_C8340:  sprite_frame_vram   $0F3, $0C, $00, $18, $10
+; robot
+unk_C8260:  sprite_frame_vram   $000, $08, $00, $10, $10	; shot (impact)
+unk_C8268:  sprite_frame_vram   $004, $0A, $00, $14, $14	; shot (impact)
+unk_C8270:  sprite_frame_vram   $00D, $0B, $00, $16, $16	; shot (impact)
+unk_C8278:  sprite_frame_vram   $016, $03, $00, $1F, $06	; shot flying
+unk_C8280:  sprite_frame_vram   $01A, $03, $00, $1F, $06	; shot flying
+unk_C8288:  sprite_frame_vram   $01E, $03, $00, $17, $06	; shot flying
+unk_C8290:  sprite_frame_vram   $021, $12, $01, $1F, $0F	;
+unk_C8298:  sprite_frame_vram   $029, $12, $00, $20, $10	;
+unk_C82A0:  sprite_frame_vram   $031, $12, $00, $1E, $10	;
+unk_C82A8:  sprite_frame_vram   $039, $12, $00, $1D, $14	; legs (walking)
+unk_C82B0:  sprite_frame_vram   $045, $0A, $00, $12, $15	; legs (walking)
+unk_C82B8:  sprite_frame_vram   $04E, $10, $00, $1C, $15	; 
+unk_C82C0:  sprite_frame_vram   $05A, $12, $00, $1D, $14	; legs (walking)
+unk_C82C8:  sprite_frame_vram   $066, $0A, $00, $15, $15	; 
+unk_C82D0:  sprite_frame_vram   $06F, $10, $00, $1C, $15	; 
+unk_C82D8:  sprite_frame_vram   $07B, $12, $01, $1E, $10	; 
+unk_C82E0:  sprite_frame_vram   $083, $12, $00, $1E, $10	; 
+unk_C82E8:  sprite_frame_vram   $08B, $12, $00, $1E, $10	; head (walking)
+unk_C82F0:  sprite_frame_vram   $093, $12, $01, $1E, $10	; 
+unk_C82F8:  sprite_frame_vram   $09B, $12, $00, $1E, $10	; 
+unk_C8300:  sprite_frame_vram   $0A3, $12, $00, $1E, $10	; head (walking)
+unk_C8308:  sprite_frame_vram   $0AB, $12, $00, $1E, $10	; 
+unk_C8310:  sprite_frame_vram   $0B3, $12, $00, $1E, $10	; 
+unk_C8318:  sprite_frame_vram   $0BB, $12, $00, $1E, $20	; 
+unk_C8320:  sprite_frame_vram   $0CB, $12, $00, $20, $20	; 
+unk_C8328:  sprite_frame_vram   $0DB, $12, $00, $1E, $10	; head when shooting
+unk_C8330:  sprite_frame_vram   $0E3, $12, $00, $1D, $0F	; legs when shooting
+unk_C8338:  sprite_frame_vram   $0EB, $0F, $00, $19, $10	;
+unk_C8340:  sprite_frame_vram   $0F3, $0C, $00, $18, $10	;
+
 unk_C8348:  sprite_frame_vram   $000, $11, $00, $1E, $1C
 unk_C8350:  sprite_frame_vram   $010, $10, $00, $1F, $1C
 unk_C8358:  sprite_frame_vram   $020, $10, $00, $20, $14
@@ -63739,9 +50048,10 @@ j_PlaySound:
 
 ; Attributes: thunk
 
-sub_E132C:
-	jmp	sub_E1532(pc)
-; End of function sub_E132C
+;sub_E132C
+j_PlaySound2:
+	jmp	PlaySound2(pc)
+; End of function j_PlaySound2
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -64047,15 +50357,17 @@ loc_E1522:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_E1532:
+; only difference to PlaySound is that we move $12 instead of $10 to d0
+; before calling sub_E1482
+;sub_E1532
+PlaySound2:
 	move.l	a0,-(sp)
 	move.l	d0,-(sp)
 	bsr.s	sub_E153E
 	move.l	(sp)+,d0
 	move.l	(sp)+,a0
 	rts
-; End of function sub_E1532
+; End of function PlaySound2
 
 
 ; =============== S U B	R O U T	I N E =======================================

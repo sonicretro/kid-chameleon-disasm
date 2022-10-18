@@ -2,7 +2,7 @@ kid.log
 kid.p
 kid.h
 kid_built.bin
-kid.bin
+kid_built.prev.bin
 level/*.bin
 level/*/*.bin
 level/platform/*.asm
@@ -21,3 +21,4 @@ sound/*.bin
 planeed_prj/*.dll
 planeed_prj/*.exe
 *.kcm
+/kid.lst

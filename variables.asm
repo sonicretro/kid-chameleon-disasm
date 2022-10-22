@@ -61,9 +61,9 @@ PaletteToDMA_Flag = 	$FFFFF890	; byte
 Level_width_blocks = 	$FFFFF89E	; word
 Level_width_tiles = 	$FFFFF89C	; word
 Level_width_pixels = 	$FFFFF89A	; word
-Level_height_blocks = 	$FFFFF8A0	; word
+Level_height_pixels = 	$FFFFF8A0	; word
 Level_height_tiles = 	$FFFFF8A2	; word
-Level_height_pixels = 	$FFFFF8A4	; word
+Level_height_blocks = 	$FFFFF8A4	; word
 Background_width = 	$FFFFF8A6	; word
 Background_height = 	$FFFFF8A8	; word
 Foreground_theme = 	$FFFFF8AA	; word: also determines music
@@ -111,6 +111,7 @@ MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphd
 MurderWall_speed = 	$FFFFFAC8	; long
 MurderWall_max_speed = 	$FFFFFACC	; long
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
+Number_blank_top_rows = 		$FFFFFAD2	; byte: number of extra blank rows (in blocks) added to the top of the map
 Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
 Number_of_Fire_Trails = $FFFFFB44	; word: max number of trails active on screen
 Number_of_Arrows = $FFFFFB46	; word: number of arrows on screen

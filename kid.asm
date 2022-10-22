@@ -2891,7 +2891,7 @@ GfxObjects_Collision_ChkBoundaries:
 	bmi.w	GfxObjects_Collision_TopBoundary	; top level boundary
 	move.w	d0,d1
 	add.w	(a4)+,d1	; d1 = bottom edge of hitbox
-	cmp.w	(Level_height_blocks).w,d1
+	cmp.w	(Level_height_pixels).w,d1
 	bge.w	GfxObjects_Collision_BottomBoundary	; bottom level boundary
 	move.w	d0,d3
 	andi.w	#$FFF0,d3
@@ -3294,7 +3294,7 @@ GfxObjects_Collision_BottomBoundary:
 	cmp.l	a2,d7
 	beq.s	loc_1ADA
 	sub.w	$1E(a2),d1
-	move.w	(Level_height_blocks).w,d7
+	move.w	(Level_height_pixels).w,d7
 	sub.w	d1,d7
 	subq.w	#1,d7
 	move.w	d7,$1E(a2)
@@ -7518,7 +7518,7 @@ loc_7246:
 
 loc_724E:
 	add.w	d2,(Camera_X_pos).w
-	move.w	(Level_height_blocks).w,d1
+	move.w	(Level_height_pixels).w,d1
 	subi.w	#$E0,d1
 	move.w	$1E(a0),d0
 	subi.w	#$A0,d0
@@ -10607,7 +10607,7 @@ sub_902A:
 	cmp.w	d0,d4
 	ble.w	loc_913A
 	add.w	d4,d7
-	cmp.w	(Level_height_blocks).w,d7
+	cmp.w	(Level_height_pixels).w,d7
 	bge.w	loc_9142
 	bsr.w	sub_914A
 	beq.w	loc_913A
@@ -12962,7 +12962,7 @@ loc_A466:
 	tst.l	y_pos(a3)
 	bpl.s	loc_A480
 	moveq	#0,d0
-	move.w	(Level_height_blocks).w,d0
+	move.w	(Level_height_pixels).w,d0
 	swap	d0
 	move.l	d0,y_pos(a3)
 
@@ -15752,7 +15752,7 @@ Flagpole_Boss:
 	move.l	a1,($FFFFFA30).w
 	move.w	(Flag_X_pos).w,x_pos(a3)
 	move.w	(Flag_Y_pos).w,y_pos(a3)
-	move.b	($FFFFFAD2).w,d5
+	move.b	(Number_blank_top_rows).w,d5
 	lsl.w	#4,d5
 	add.w	d5,y_pos(a3)
 	st	$13(a3)
@@ -15766,7 +15766,7 @@ Flagpole_Boss:
 	move.l	a1,$3E(a4)
 	move.w	(Flag_X_pos).w,x_pos(a3)
 	move.w	(Flag_Y_pos).w,y_pos(a3)
-	move.b	($FFFFFAD2).w,d5
+	move.b	(Number_blank_top_rows).w,d5
 	lsl.w	#4,d5
 	add.w	d5,y_pos(a3)
 	st	$13(a3)
@@ -18591,9 +18591,9 @@ loc_E70A:
 	moveq	#0,d5
 
 loc_E738:
-	cmp.w	(Level_height_pixels).w,d5
+	cmp.w	(Level_height_blocks).w,d5
 	blt.s	loc_E744
-	move.w	(Level_height_pixels).w,d5
+	move.w	(Level_height_blocks).w,d5
 	subq.w	#1,d5
 
 loc_E744:
@@ -18602,9 +18602,9 @@ loc_E744:
 	moveq	#0,d6
 
 loc_E74A:
-	cmp.w	(Level_height_pixels).w,d6
+	cmp.w	(Level_height_blocks).w,d6
 	blt.s	loc_E756
-	move.w	(Level_height_pixels).w,d6
+	move.w	(Level_height_blocks).w,d6
 	subq.w	#1,d6
 
 loc_E756:
@@ -19036,9 +19036,9 @@ loc_EAE4:
 loc_EAF8:
 	move.w	(Kid_hitbox_bottom).w,d1
 	addq.w	#1,d1
-	cmp.w	(Level_height_blocks).w,d1
+	cmp.w	(Level_height_pixels).w,d1
 	blt.w	loc_EB0C
-	move.w	(Level_height_blocks).w,d1
+	move.w	(Level_height_pixels).w,d1
 	subq.w	#1,d1
 
 loc_EB0C:
@@ -19598,7 +19598,7 @@ loc_EEFE:
 Process_ShooterObject_MovingDown:
 	move.w	4(a0),d0
 	addq.w	#4,d0
-	cmp.w	(Level_height_blocks).w,d0
+	cmp.w	(Level_height_pixels).w,d0
 	bge.w	ShooterObject_InteractLevelLayout
 	addq.w	#1,8(a0)
 	move.w	8(a0),d0
@@ -19825,9 +19825,9 @@ loc_F0D8:
 loc_F0E0:
 	move.w	d1,d5
 	addq.w	#2,d5
-	cmp.w	(Level_height_pixels).w,d5
+	cmp.w	(Level_height_blocks).w,d5
 	blt.s	loc_F0F0
-	move.w	(Level_height_pixels).w,d5
+	move.w	(Level_height_blocks).w,d5
 	subq.w	#1,d5
 
 loc_F0F0:
@@ -19905,9 +19905,9 @@ loc_F186:
 	bgt.s	loc_F1A8
 	move.w	d1,d4
 	addq.w	#2,d4
-	cmp.w	(Level_height_pixels).w,d4
+	cmp.w	(Level_height_blocks).w,d4
 	blt.s	loc_F1B0
-	move.w	(Level_height_pixels).w,d4
+	move.w	(Level_height_blocks).w,d4
 	subq.w	#1,d4
 	bra.s	loc_F1B0
 ; ---------------------------------------------------------------------------
@@ -21217,7 +21217,7 @@ loc_FCE2:
 
 loc_FCEA:
 	move.w	6(a3),d4
-	cmp.w	(Level_height_blocks).w,d4
+	cmp.w	(Level_height_pixels).w,d4
 	blt.w	loc_FCFE
 	jsr	(j_Deallocate_PlatformSlot).w
 	jmp	(j_Delete_CurrentObject).w
@@ -21834,7 +21834,7 @@ loc_10402:
 	move.w	d2,d0
 
 loc_10404:
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10430
 	tst.w	collision_type(a3)
@@ -21870,7 +21870,7 @@ PrizeHelmetSkycutter_Init:
 loc_10464:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_1047C
 	tst.w	collision_type(a3)
@@ -21896,7 +21896,7 @@ PrizeHelmetCyclone_Init:
 loc_104AE:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_104C6
 	tst.w	collision_type(a3)
@@ -21922,7 +21922,7 @@ PrizeHelmetRedStealth_Init:
 loc_104F8:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10510
 	tst.w	collision_type(a3)
@@ -21948,7 +21948,7 @@ PrizeHelmetEyeclops_Init:
 loc_10542:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_1055A
 	tst.w	collision_type(a3)
@@ -21974,7 +21974,7 @@ PrizeHelmetJuggernaut_Init:
 loc_1058C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_105A4
 	tst.w	collision_type(a3)
@@ -22000,7 +22000,7 @@ PrizeHelmetIronKnight_Init:
 loc_105D6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_105EE
 	tst.w	collision_type(a3)
@@ -22026,7 +22026,7 @@ PrizeHelmetBerzerker_Init:
 loc_10620:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10638
 	tst.w	collision_type(a3)
@@ -22052,7 +22052,7 @@ PrizeHelmetManiaxe_Init:
 loc_1066A:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10682
 	tst.w	collision_type(a3)
@@ -22078,7 +22078,7 @@ PrizeHelmetMicromax_Init:
 loc_106B4:
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_106CC
 	tst.w	collision_type(a3)
@@ -22143,7 +22143,7 @@ loc_1071E:
 
 loc_10738:
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10768
 	tst.w	collision_type(a3)
@@ -22184,7 +22184,7 @@ loc_10796:
 
 loc_107B0:
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_107E0
 	tst.w	collision_type(a3)
@@ -22223,7 +22223,7 @@ loc_1080A:
 
 loc_10824:
 	bsr.w	sub_10C38
-	move.w	(Level_height_blocks).w,d4
+	move.w	(Level_height_pixels).w,d4
 	cmp.w	y_pos(a3),d4
 	ble.s	loc_10838
 	tst.w	collision_type(a3)
@@ -23119,7 +23119,7 @@ loc_11036:
 	; down
 	move.w	d2,d4
 	addq.w	#1,d4
-	cmp.w	(Level_height_pixels).w,d4
+	cmp.w	(Level_height_blocks).w,d4
 	bge.w	loc_11080
 	add.w	(Level_width_tiles).w,a0
 	bra.s	loc_11052
@@ -23826,22 +23826,22 @@ Load_InGame:
 	rol.b	#2,d1
 	andi.b	#3,d1
 	add.b	d1,d1
-	move.b	d1,($FFFFFAD2).w
+	move.b	d1,(Number_blank_top_rows).w
 	andi.b	#$3F,d0
 	mulu.w	#$E,d0
-	move.w	d0,(Level_height_pixels).w
+	move.w	d0,(Level_height_blocks).w
 	add.w	d0,d0
 	move.w	d0,(Level_height_tiles).w
 	lsl.w	#3,d0
-	move.w	d0,(Level_height_blocks).w
+	move.w	d0,(Level_height_pixels).w
 	subi.w	#$E0,d0
 	move.w	d0,(Camera_max_Y_pos).w
 	ext.w	d1
-	add.w	d1,(Level_height_pixels).w
+	add.w	d1,(Level_height_blocks).w
 	add.w	d1,d1
 	add.w	d1,(Level_height_tiles).w
 	lsl.w	#3,d1
-	add.w	d1,(Level_height_blocks).w
+	add.w	d1,(Level_height_pixels).w
 	add.w	d1,(Camera_max_Y_pos).w
 	move.w	(Current_LevelID).w,d2
 	move.l	(LnkTo_MapOrder_Index).l,a2
@@ -23860,7 +23860,7 @@ loc_11AEA:
 	move.w	a3,(a1)+
 	move.w	a3,(a1)+
 	lea	(Level_Layout).w,a2
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	subq.w	#1,d0
 
 loc_11AFE:
@@ -23888,7 +23888,7 @@ loc_11B28:
 	dbf	d0,loc_11B28
 	lea	($FFFF4BB8).l,a3
 	lea	(Level_terrain_layout).l,a4
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	subq.w	#1,d0
 
 loc_11B40:
@@ -23995,7 +23995,7 @@ loc_11C36:
 	cmp.w	(Level_width_blocks).w,d1
 	bne.s	loc_11C36
 	addq.w	#1,d0
-	cmp.w	(Level_height_pixels).w,d0
+	cmp.w	(Level_height_blocks).w,d0
 	bne.s	loc_11C34
 	move.l	#$FFFF0280,($FFFFF8EC).w
 	move.w	#$FFFF,($FFFF0280).l
@@ -25246,7 +25246,7 @@ return_12790:
 sub_12792:
 	cmp.w	(Level_width_blocks).w,d1
 	bcc.s	return_127A6
-	cmp.w	(Level_height_pixels).w,d2
+	cmp.w	(Level_height_blocks).w,d2
 	bcc.s	return_127A6
 	tst.b	(a4)
 	bmi.s	return_127A6
@@ -27095,7 +27095,7 @@ loc_140EE:
 
 
 sub_140F6:
-	move.b	($FFFFFAD2).w,d1
+	move.b	(Number_blank_top_rows).w,d1
 	bne.s	loc_140FE
 	rts
 ; ---------------------------------------------------------------------------
@@ -27103,7 +27103,7 @@ sub_140F6:
 loc_140FE:
 	ext.w	d1
 	lea	($FFFF4A04).l,a0
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	sub.w	d1,d0
 	subq.w	#1,d0
 	add.w	d0,d0
@@ -27114,9 +27114,9 @@ loc_140FE:
 	move.w	d2,d3
 	mulu.w	d1,d2
 	add.w	d2,a1
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	subq.w	#1,d0
-	sub.b	($FFFFFAD2).w,d0
+	sub.b	(Number_blank_top_rows).w,d0
 	move.l	a0,d7
 	move.l	a1,d6
 	move.w	(Level_width_blocks).w,d1
@@ -27134,7 +27134,7 @@ loc_1413A:
 	sub.w	d3,d6
 	move.w	d6,a1
 	dbf	d0,loc_14138
-	move.b	($FFFFFAD2).w,d0
+	move.b	(Number_blank_top_rows).w,d0
 	subq.w	#1,d0
 	ext.w	d0
 	moveq	#0,d4
@@ -27148,10 +27148,10 @@ loc_14158:
 	sub.w	d3,d6
 	move.w	d6,a1
 	dbf	d0,loc_14156
-	move.b	($FFFFFAD2).w,d1
+	move.b	(Number_blank_top_rows).w,d1
 	ext.w	d1
 	lea	($FFFF4BB8).l,a0
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	sub.w	d1,d0
 	subq.w	#1,d0
 	add.w	d0,d0
@@ -27163,9 +27163,9 @@ loc_14158:
 	move.w	d2,d3
 	mulu.w	d1,d2
 	add.w	d2,a1
-	move.w	(Level_height_pixels).w,d0
+	move.w	(Level_height_blocks).w,d0
 	subq.w	#1,d0
-	sub.b	($FFFFFAD2).w,d0
+	sub.b	(Number_blank_top_rows).w,d0
 	move.l	a0,d7
 	move.l	a1,d6
 	move.w	(Level_width_blocks).w,d1
@@ -27183,7 +27183,7 @@ loc_141AC:
 	sub.w	d3,d6
 	move.l	d6,a1
 	dbf	d0,loc_141AA
-	move.b	($FFFFFAD2).w,d0
+	move.b	(Number_blank_top_rows).w,d0
 	subq.w	#1,d0
 	ext.w	d0
 	moveq	#0,d4
@@ -27197,7 +27197,7 @@ loc_141CA:
 	sub.w	d3,d6
 	move.l	d6,a1
 	dbf	d0,loc_141C8
-	move.b	($FFFFFAD2).w,d6
+	move.b	(Number_blank_top_rows).w,d6
 	ext.w	d6
 	move.w	d6,d7
 	mulu.w	(Level_width_tiles).w,d7
@@ -33772,7 +33772,7 @@ loc_2FFE8:
 	move.l	d7,-(sp)
 	moveq	#$1C,d6
 	addi.w	#$E0,d7
-	cmp.w	(Level_height_blocks).w,d7
+	cmp.w	(Level_height_pixels).w,d7
 	blt.s	loc_30014
 	subq.w	#1,d6
 
@@ -33798,7 +33798,7 @@ loc_3001E:
 	move.l	d7,-(sp)
 	moveq	#$1C,d6
 	addi.w	#$E0,d7
-	cmp.w	(Level_height_blocks).w,d7
+	cmp.w	(Level_height_pixels).w,d7
 	blt.s	loc_30054
 	subq.w	#1,d6
 
@@ -38197,7 +38197,7 @@ loc_368A8:
 	sub.w	(Camera_X_pos).w,d0
 	move.w	6(a1),d1
 	clr.w	d5
-	move.b	($FFFFFAD2).w,d5
+	move.b	(Number_blank_top_rows).w,d5
 	lsl.w	#3,d5
 	add.w	d5,d1
 	sub.w	(Camera_Y_pos).w,d1
@@ -38533,9 +38533,9 @@ sub_36B3C:
 	subq.w	#1,d1
 	lsr.w	#4,d0
 	lsr.w	#4,d1
-	cmp.w	(Level_height_pixels).w,d1
+	cmp.w	(Level_height_blocks).w,d1
 	bcs.s	loc_36B5A
-	move.w	(Level_height_pixels).w,d1
+	move.w	(Level_height_blocks).w,d1
 	subq.w	#1,d1
 
 loc_36B5A:
@@ -38611,9 +38611,9 @@ sub_36BD6:
 	subi.w	#1,d1
 	lsr.w	#4,d0
 	lsr.w	#4,d1
-	cmp.w	(Level_height_pixels).w,d1
+	cmp.w	(Level_height_blocks).w,d1
 	bcs.s	loc_36BF6
-	move.w	(Level_height_pixels).w,d1
+	move.w	(Level_height_blocks).w,d1
 	subq.w	#1,d1
 
 loc_36BF6:
@@ -38685,7 +38685,7 @@ sub_36C6A:
 	subq.w	#1,d4
 	lsr.w	#4,d4
 	addq.w	#1,d4
-	cmp.w	(Level_height_pixels).w,d4
+	cmp.w	(Level_height_blocks).w,d4
 	bcs.s	loc_36C82
 	moveq	#0,d6
 	move.l	(sp)+,a0
@@ -38732,7 +38732,7 @@ sub_36CB8:
 ; ---------------------------------------------------------------------------
 
 loc_36CCC:
-	cmp.w	(Level_height_pixels).w,d4
+	cmp.w	(Level_height_blocks).w,d4
 	bcs.s	loc_36CD8
 	moveq	#0,d6
 	move.l	(sp)+,a0
@@ -39053,7 +39053,7 @@ EnemyArt_VRAMTileAddresses:
 ; used by most enemies
 sub_36FF4:
 	clr.w	d5
-	move.b	($FFFFFAD2).w,d5
+	move.b	(Number_blank_top_rows).w,d5
 	lsl.w	#4,d5
 	add.w	d5,y_pos(a3)
 	rts
@@ -39402,7 +39402,7 @@ loc_3739C:
 	bsr.w	sub_37AF0
 	move.w	d6,addroffset_sprite(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_373BE
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -40905,7 +40905,7 @@ loc_384F6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38510
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -40947,7 +40947,7 @@ loc_38574:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_3858E
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -40989,7 +40989,7 @@ loc_385F2:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_3860C
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41031,7 +41031,7 @@ loc_38670:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_3868A
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41073,7 +41073,7 @@ loc_386EE:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38708
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41115,7 +41115,7 @@ loc_3876C:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38786
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41157,7 +41157,7 @@ loc_387EA:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38804
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41199,7 +41199,7 @@ loc_38868:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38882
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41241,7 +41241,7 @@ loc_388E6:
 	jsr	(j_Hibernate_Object_1Frame).w
 	addi.l	#$1B58,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38900
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41289,7 +41289,7 @@ loc_38976:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38998
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41337,7 +41337,7 @@ loc_38A0E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38A30
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41385,7 +41385,7 @@ loc_38AA6:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38AC8
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41433,7 +41433,7 @@ loc_38B3E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38B60
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41481,7 +41481,7 @@ loc_38BD6:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38BF8
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41529,7 +41529,7 @@ loc_38C6E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38C90
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41577,7 +41577,7 @@ loc_38D06:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38D28
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41625,7 +41625,7 @@ loc_38D9E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38DC0
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41673,7 +41673,7 @@ loc_38E36:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38E58
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41721,7 +41721,7 @@ loc_38ECE:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38EF0
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41769,7 +41769,7 @@ loc_38F66:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_38F88
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41817,7 +41817,7 @@ loc_38FFE:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_39020
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41865,7 +41865,7 @@ loc_39096:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_390B8
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41913,7 +41913,7 @@ loc_3912E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_39150
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -41961,7 +41961,7 @@ loc_391C6:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_391E8
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -42009,7 +42009,7 @@ loc_3925E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_39280
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -42057,7 +42057,7 @@ loc_392F6:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_39318
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -42105,7 +42105,7 @@ loc_3938E:
 	move.w	d6,addroffset_sprite(a3)
 	addi.l	#$7D0,y_vel(a3)
 	move.w	y_pos(a3),d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	ble.s	loc_393B0
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
@@ -44080,7 +44080,7 @@ sub_3C3CE:
 	addi.w	#$20,d7
 	cmp.w	x_pos(a3),d7
 	blt.s	loc_3C436
-	move.w	(Level_height_blocks).w,d7
+	move.w	(Level_height_pixels).w,d7
 	addi.w	#$20,d7
 	cmp.w	y_pos(a3),d7
 	blt.s	loc_3C436

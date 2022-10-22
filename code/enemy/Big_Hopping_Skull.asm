@@ -62,7 +62,7 @@ loc_36540:
 
 loc_3656C:
 	move.w	y_pos(a3),d4
-	cmp.w	(Level_height_blocks).w,d4
+	cmp.w	(Level_height_pixels).w,d4
 	blt.w	return_3657C
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------

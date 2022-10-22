@@ -145,7 +145,7 @@ FFFAC2	byte	Murder wall flag if both bits of the 3rd entry of maphdr are set?
 FFFAC8	long	Murder wall speed
 FFFACC	long	Murder wall terminal speed
 FFFAD1	byte	selected option in Pause menu: 0=continue, 1=restart/give up
-FFFAD2	byte	flags from top 2 bits of map header y position, times 2 -- this is a width in blocks added to the next 4 variables (scaled accordingly)?
+FFFAD2	byte	number of extra blank rows (in blocks) added to the top of the map (map size is not automatically increased, so corresponding bottom rows will be missing unless the map size in adjusted to include these rows)
 FFFAD6  word    timer for storm background (counts down from 4, and if 0, display rain background)
 FFFADA  word    ?  (storm related)
 FFFADC  word    ?  (storm related)
@@ -451,16 +451,19 @@ Object format for Shooter bullet Object from Shooter block Bullet RAM at FFE9FA:
 
 
 
-Block List (FF3B24-?)
+Block List (FF3B24-FF43BC)
 ----------
 
-One entry per prize block, teleporter block and ghost block group.
-Other block types are not present here.
+Contains entries for prize, ghost, teleporter and hidden blocks
+(in that order). Only one entry per ghost block group.
+Hidden teleporters create two hidden block entries in addition to
+the teleporter entry.
+Hidden prize blocks create a hidden entry in addition to a prize entry.
 
 # Prize block (8 bytes)
 word: address of block in Level_layout RAM
-word: xpos (in blocks)
-word: ypos (in blocks)
+word: xpos (in blocks) of group
+word: ypos (in blocks) of group
 byte: bit 7: disguised flag
 byte: bits 0-3: content ID.
 
@@ -471,8 +474,8 @@ byte: mapping frame (0=solid, 3=vanished, 1/2/4/5=in between?)
 word: amount of time block is solid
 word: amount of time block is vanished
 word: address of block in Level_layout RAM
-word: xpos (in blocks)
-word: ypos (in blocks)
+word: xpos (in blocks) of group
+word: ypos (in blocks) of group
 byte: bits 0-3: number of blocks in group
 byte: bit 0: 0=horizontal group, 1=vertical group
 
@@ -484,19 +487,26 @@ byte: destination map id
 byte: destination ypos (in blocks)
 word: destination xpos (in blocks)
 
+# Hidden block (8 bytes)
+word: address of block in Level_layout RAM
+word: xpos (in blocks) of group
+word: ypos (in blocks) of group
+byte: block type
+byte: block setting (e.g. shooter/drill block directions, left/right teleporter half)
+
 
 Level_Layout (FFA652-FFE7F2)
 ----------
 
 2 bytes per 16x16 level cell
-    1 bit: flag whether cell contains block,
-    3 bits: collision type, (commonly =6 when call has block)
-    4 bits: block type, 
-    8 bits: skin (visible terrain piece)
+    1 bit: flag whether cell contains block
+    3 bits: collision type
+    4 bits: block type
+    8 bits: skin (visible terrain piece or block graphic)
 collision type (3 bits):
     0  empty
     1
-    2
+    2  hidden block
     3
     4  downhill slope
     5  uphill slope
@@ -512,10 +522,10 @@ block type (4 bits):
     6  Rubber block
     7  Shifting block
     8  
-    9  Mushroom block?
-    A  Evanescent block?
-    B  lift?
-    C  Drill?
+    9  Mushroom block
+    A  Evanescent block
+    B  Lift
+    C  Drill block
     D
     E
     F  freshly deleted block?

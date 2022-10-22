@@ -861,7 +861,7 @@ sub_3E8BA:
 	addi.w	#$20,d7
 	cmp.w	x_pos(a3),d7
 	blt.s	loc_3E920
-	move.w	(Level_height_blocks).w,d7
+	move.w	(Level_height_pixels).w,d7
 	addi.w	#$20,d7
 	cmp.w	y_pos(a3),d7
 	blt.s	loc_3E920

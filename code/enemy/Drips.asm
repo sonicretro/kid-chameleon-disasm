@@ -224,7 +224,7 @@ loc_335B0:
 	tst.l	y_vel(a3)
 	bmi.w	loc_335CA
 	addq.w	#8,d5
-	cmp.w	(Level_height_blocks).w,d5
+	cmp.w	(Level_height_pixels).w,d5
 	bge.w	loc_335D4
 	bra.w	loc_335D0
 ; ---------------------------------------------------------------------------

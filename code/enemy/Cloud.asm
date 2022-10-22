@@ -1,7 +1,7 @@
 dword_35B38:
-	dc.l $FFFFD000
-	dc.l $FFFFB000
-	dc.l $FFFF9000
+	dc.l -$3000
+	dc.l -$5000
+	dc.l -$7000
 
 ;loc_35B44:
 Enemy0E_Cloud_Init:
@@ -64,9 +64,9 @@ loc_35BDE:
 	beq.s	return_35C0C
 	bmi.w	loc_35C0E
 	clr.w	collision_type(a3)
-	cmpi.w	#$2C,d6
+	cmpi.w	#colid_kidabove,d6
 	beq.w	loc_35C0E
-	cmpi.w	#$1C,d6
+	cmpi.w	#colid_hurt,d6
 	beq.w	loc_35C0E
 	bge.w	return_35C0C
 	move.w	#$3C,d3
@@ -77,7 +77,7 @@ return_35C0C:
 	rts
 ; ---------------------------------------------------------------------------
 
-loc_35C0E:
+loc_35C0E:  ; kill the cloud
 	addq.w	#4,sp
 	clr.l	x_vel(a3)
 	move.l	#stru_35EBA,d7

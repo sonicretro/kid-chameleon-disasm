@@ -16921,7 +16921,7 @@ loc_D5D2:
 
 loc_D60E:
 	move.w	(Current_LevelID).w,d0
-	cmpi.w	#$49,d0
+	cmpi.w	#FirstElsewhere_LevelID,d0
 	bge.w	loc_D660
 	lea	unk_D8E8(pc),a1
 	move.b	(a1,d0.w),d0
@@ -16946,7 +16946,7 @@ loc_D60E:
 
 loc_D660:
 	move.w	(Current_LevelID).w,d0
-	cmpi.w	#$49,d0
+	cmpi.w	#FirstElsewhere_LevelID,d0
 	bge.w	loc_D702
 	lea	unk_D934(pc),a1
 	move.b	(Level_completion_time).w,d1

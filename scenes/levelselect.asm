@@ -9,18 +9,67 @@ LevelSelect_Loop:
 	movem.l	d0-d3/a0-a3,-(sp)
 	bsr.w	LevelSelect_DrawText
 	movem.l	(sp)+,d0-d3/a0-a3
-	move.w	#TotalNumberLevels,d6
+	move.w	#TotalNumberLevels+1,d6
 	bsr.s	LevelSelect_Input
-	bclr	#7,(Ctrl_1_Pressed).w
+	bclr	#5,(Ctrl_Pressed).w
+	bne.s	Stop_Music
+	bclr	#4,(Ctrl_Pressed).w
+	bne.s	Play_SoundTest
+	bclr	#7,(Ctrl_Pressed).w
 	beq.s	LevelSelect_Loop
 
 ;LevelSelect_Exit:
 	move.w	(Options_Selected_Option).w,(Current_LevelID).w
+	beq.s	Play_SoundTest
+	subi.w #1, (Current_LevelID).w
 	bra.w	CostumeSelect
+; ---------------------------------------------------------------------------
+Stop_Music:
+	jsr     (j_StopMusic).l
+	bra.s	LevelSelect_Loop
+Play_SoundTest:
+	tst.w	(Options_Selected_Option).w
+	bne.s 	LevelSelect_Loop
+	jsr     (j_PlaySound2).l
+	jsr     (j_StopMusic).l
+	move.l  D0,-(SP)
+	move.w	(SoundTestOption).w,d0
+	jsr     (j_PlaySound).l
+	move.l  (SP)+,D0
+	bra.s	LevelSelect_Loop
 ; ---------------------------------------------------------------------------
 ; d6 = max number of options
 LevelSelect_Input:
 	move.w	(Options_Selected_Option).w,d7
+	bne.s not_sound_test
+	move.w	(SoundTestOption).w,d7
+	bclr	#2,(Ctrl_Pressed).w
+	beq.s	++	; LEFT pressed?
+	;jsr	(sub_1BC26).l	; play selection sound
+	subq.w	#1,d7
+	btst	#6,(Ctrl_Held).w
+	beq.s	+	; A held?
+	subq.w	#6,d7
++
+	tst.w	d7
+	bpl.s	+
+	clr.w	d7
++
+	bclr	#3,(Ctrl_Pressed).w
+	beq.s	++	; RIGHT pressed?
+	;jsr	(sub_1BC26).l	; play selection sound
+	addq.w	#1,d7
+	btst	#6,(Ctrl_Held).w
+	beq.s	+	; A held?
+	addq.w	#6,d7
++
+	cmpi.w	#$00FF,d7
+	ble.s	+
+	moveq	#$00FF, d7
++
+	move.w	d7,(SoundTestOption).w
+	move.w	(Options_Selected_Option).w,d7
+not_sound_test:
 	bclr	#0,(Ctrl_Pressed).w
 	beq.s	++	; UP pressed?
 	jsr	(sub_1BC26).l	; play selection sound
@@ -51,7 +100,7 @@ LevelSelect_Input:
 ; ---------------------------------------------------------------------------
 LevelSelect_DrawText:
 	move.w	(Options_Selected_Option).w,d6
-	subq.w	#3,d6
+	subq.w	#3+1,d6
 	lea	(AddrTbl_LevelNames).l,a3
 	move.w	#$C,d4		; y_pos
 LevelSelect_DrawText_loop:
@@ -61,8 +110,8 @@ LevelSelect_DrawText_loop:
 	bmi.s	LevelSelect_DrawText_Do
 	cmpi.w	#TotalNumberLevels,d6
 	bgt.s	LevelSelect_DrawText_Do
-
 	move.w	d6,d7
+	
 	cmpi.w	#FirstElsewhere_LevelID,d7
 	blt.s	+
 	move.b	d6,(LevelSelect_ActNumber).w
@@ -76,7 +125,13 @@ LevelSelect_DrawText_loop:
 	move.w	8(a3,d7.w),d2	; act number
 	move.b	d2,(LevelSelect_ActNumber).w
 LevelSelect_DrawText_Do:
+	cmpi.w	#$FFFF,d6
+	bne.s +
+	bsr.s DrawSoundTest
+	bra.s ++
++
 	bsr.s	LevelSelect_DrawTextLine
++
 	addq.w	#1,d6
 	addq.w	#2,d4
 	cmpi.w	#$12,d4
@@ -85,6 +140,23 @@ LevelSelect_DrawText_Do:
 	blt.s	LevelSelect_DrawText_loop
 	rts
 
+; ---------------------------------------------------------------------------
+SoundTestOption = Level_Special_Effects
+HexString = Level_terrain_layout
+DrawSoundTest:
+	movem.l	d6/a3-a4, -(sp)
+	lea (sndtext).l, A3
+	lea (HexString).l, a4
+-	move.b (a3)+, (a4)+
+	bpl.s -
+	subi #1, a4
+	move.b #0, (a4)+
+	move.w (SoundTestOption).w, d6
+	jsr (ConvertToHex).l
+	lea (HexString).l, a4
+	bsr.s	LevelSelect_DrawTextLine
+	movem.l	(sp)+, d6/a3-a4
+	rts
 ; ---------------------------------------------------------------------------
 ;x_pos: #7
 ;y_pos: d4
@@ -285,3 +357,26 @@ cost6:	dc.b	0, $C, "IRONmKNIGHT", 0
 cost7:	dc.b	0, $E, "BERZERKER", 0
 cost8:	dc.b	0,$10, "MANIAXE", 0
 cost9:	dc.b	0,$12, "MICROMAX", 0
+sndtext: dc.b "sound\0test", $FF, $FF
+; ---------------------------------------------------------------------------
+ConvertToHex:
+ 	movem.l	d5/a2,-(sp)
+
+	moveq	#$0,d5
+	lea	(HexTable).l ,a2
+	move.w	d6,d5
+	lsr.w	#4,d5
+	andi.w	#$F,d5
+	move.b	(a2,d5.w),(a4)+		; move para o próximo byte
+
+
+	move.w	d6,d5
+	andi.w	#$F,d5
+	move.b	(a2,d5.w),(a4)+		; move para o próximo byte
+	
+	move.b	#$FF,(a4)+
+
+	movem.l	(sp)+,d5/a2
+	rts
+
+HexTable: dc.b $4e+10,$4e+1,$4e+2,$4e+3,$4e+4,$4e+5,$4e+6,$4e+7,$4e+8,$4e+9,'A'-$D,'B'-$D,'C'-$D,'D'-$D,'E'-$D,'F'-$D

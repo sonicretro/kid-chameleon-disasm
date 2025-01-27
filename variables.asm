@@ -110,6 +110,7 @@ MurderWall_flag = 	$FFFFFAC1	; byte:   -1 = Murder wall, 0 = None
 MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphdr are set
 MurderWall_speed = 	$FFFFFAC8	; long
 MurderWall_max_speed = 	$FFFFFACC	; long
+Game_Paused = $FFFFFAD0	; byte: flag. Special value of 3 when the player "gives up" in pause menu
 Pause_Option = 		$FFFFFAD1	; byte: selected option in Pause menu: 0=continue, 1=restart/give up
 Number_blank_top_rows = 		$FFFFFAD2	; byte: number of extra blank rows (in blocks) added to the top of the map
 Level_Special_Effects = $FFFFFB40	; word: 0 = None, 1 = Lava Geyser, 2 = Storm, 3 = Storm+Hail, >=4 = Invalid
@@ -117,6 +118,7 @@ Number_of_Fire_Trails = $FFFFFB44	; word: max number of trails active on screen
 Number_of_Arrows = $FFFFFB46	; word: number of arrows on screen
 Background_format = 	$FFFFFB48	; byte (flag): 0 = pieces, -1 = enigma. (only depends on bg theme)
 Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each kill
+Allow_Pausing = $FFFFFB56	; byte: flag
 Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo

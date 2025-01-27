@@ -6579,29 +6579,32 @@ return_6550:
 ; End of function Init_Timer_and_Bonus_Flags
 
 ; ---------------------------------------------------------------------------
-word_6552:	dc.w $19
+;word_6552:
+ArtUnc_PauseMenu:	dc.w $19
 	binclude    "ingame/artunc/Pause_menu.bin"
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_6874:
-	tst.b	($FFFFFAD0).w
+	tst.b	(Game_Paused).w
 	bne.s	loc_687C
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_687C:
-	bsr.w	sub_6C54
+	bsr.w	Pause_DarkenPalette
 	bsr.w	Palette_to_VRAM
 	jsr	(sub_E1334).l
-	cmpi.b	#3,($FFFFFAD0).w
+	cmpi.b	#3,(Game_Paused).w
 	bne.s	loc_6894
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_6894:
 	bsr.w	WaitForVint
+	; hide sprites that use tiles in the range overwritten by Pause menu
+	; ($676 - $676+$18)
 	lea	(Sprite_Table).l,a0
 	move.w	#$676,d6
 	move.w	d6,d5
@@ -6623,7 +6626,9 @@ loc_68C0:
 	jsr	(j_Stop_z80).l
 	dma68kToVDP	Sprite_Table,$1000,$280,VRAM
 	jsr	(j_Start_z80).l
-	lea	word_6552(pc),a0
+
+	; Load pause menu art into VRAM
+	lea	ArtUnc_PauseMenu(pc),a0
 	move.w	(a0)+,d0
 	subq.w	#1,d0
 	move.l	#vdpComm($CEC0,VRAM,WRITE),4(a6)
@@ -6638,16 +6643,18 @@ loc_690C:
 	move.l	(a0)+,(a6)
 	move.l	(a0)+,(a6)
 	dbf	d0,loc_690C
+
+	; compute tile location of the top-left corner of the menu
+	; and VDP command for reading from that location
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$60,d0
 	lsr.w	#3,d0
 	andi.w	#$3F,d0
-	cmpi.w	#$30,d0
+	cmpi.w	#$30,d0	; does it go beyond the plane edge?
 	bgt.s	loc_693A
 	moveq	#8,d1
 	moveq	#-1,d2
 	bra.s	loc_6948
-; ---------------------------------------------------------------------------
 
 loc_693A:
 	moveq	#$40,d1
@@ -6661,6 +6668,8 @@ loc_693A:
 loc_6948:
 	move.w	(Camera_Y_pos).w,d7
 	addi.w	#$40,d7
+
+	; Save plane A map tiles that will be hidden under menu in a buffer
 	lea	(Decompression_Buffer).l,a1
 	moveq	#4,d5
 	add.w	d0,d0
@@ -6693,7 +6702,7 @@ loc_695C:
 	dbf	d5,loc_695C
 	bra.w	loc_69D2
 ; ---------------------------------------------------------------------------
-
+	; special case when menu goes beyond plane edge
 loc_69A0:
 	move.w	d2,d4
 	swap	d2
@@ -6716,17 +6725,18 @@ loc_69C0:
 	addi.w	#8,d7
 	dbf	d5,loc_695C
 
+	; compute tile location of the top-left corner of the menu
+	; and VDP command for writing to that location
 loc_69D2:
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$60,d0
 	lsr.w	#3,d0
 	andi.w	#$3F,d0
-	cmpi.w	#$30,d0
+	cmpi.w	#$30,d0	; does it go beyond the plane edge?
 	bgt.s	loc_69EC
 	moveq	#8,d1
 	moveq	#-1,d2
 	bra.s	restart_text
-; ---------------------------------------------------------------------------
 
 loc_69EC:
 	moveq	#$40,d1
@@ -6740,17 +6750,14 @@ loc_69EC:
 restart_text:							; Restart Round dialog
 	move.w	(Camera_Y_pos).w,d7
 	addi.w	#$40,d7
-	cmpi.w	#1,(Number_Lives).w		; Check if lives > 1
-	bgt.s	+							; Branch to set text to "Restart Round"
-	lea	(unk_6CE4).l,a1				; Sets text to "Give Up"
-	bra.s	++							; Branch to done
-; ---------------------------------------------------------------------------
 
-+
-	lea	(unk_6D84).l,a1				; Sets text to "Restart Round"
-
-+
-	moveq	#4,d5
+	; Write pause menu mappings to plane A map
+	cmpi.w	#1,(Number_Lives).w	; Check if lives > 1
+	bgt.s	+
+	lea	(MapUnc_PauseMenu_GiveUp).l,a1	; Sets text to "Give Up"
+	bra.s	++
++	lea	(MapUnc_PauseMenu_Restart).l,a1	; Sets text to "Restart Round"
++	moveq	#4,d5
 	add.w	d0,d0
 	move.w	d0,d6
 
@@ -6780,6 +6787,7 @@ loc_6A1E:
 	bra.w	loc_6A84
 ; ---------------------------------------------------------------------------
 
+	; special case when menu goes beyond plane edge
 loc_6A5A:
 	move.w	d2,d4
 	swap	d2
@@ -6800,6 +6808,8 @@ loc_6A76:
 	addi.w	#8,d7
 	dbf	d5,loc_6A1E
 
+	; Prepare VDP commands for writing to the upper/lower arrow location
+	; on the plane A map
 loc_6A84:
 	bclr	#Button_Up,(Ctrl_Pressed).w
 	bclr	#Button_Down,(Ctrl_Pressed).w
@@ -6879,19 +6889,20 @@ Game_Paused_ChkStart:
 ; ---------------------------------------------------------------------------
 
 loc_6B62:	; this was the last life
-	move.b	#3,($FFFFFAD0).w
+	move.b	#3,(Game_Paused).w
 
 loc_6B68:	; continue game
+	; compute tile location of the top-left corner of the menu
+	; and VDP command for writing to that location
 	move.w	(Camera_X_pos).w,d0
 	addi.w	#$60,d0
 	lsr.w	#3,d0
 	andi.w	#$3F,d0
-	cmpi.w	#$30,d0
+	cmpi.w	#$30,d0	; does it go beyond the plane edge?
 	bgt.s	loc_6B82
 	moveq	#8,d1
 	moveq	#-1,d2
 	bra.s	loc_6B90
-; ---------------------------------------------------------------------------
 
 loc_6B82:
 	moveq	#$40,d1
@@ -6905,6 +6916,7 @@ loc_6B82:
 loc_6B90:
 	move.w	(Camera_Y_pos).w,d7
 	addi.w	#$40,d7
+	; Write level tiles from plane A back to space occupied by pause menu
 	lea	(Decompression_Buffer).l,a1
 	moveq	#4,d5
 	add.w	d0,d0
@@ -6936,6 +6948,7 @@ loc_6BA4:
 	bra.w	loc_6C0A
 ; ---------------------------------------------------------------------------
 
+	; special case when menu goes beyond plane edge
 loc_6BE0:
 	move.w	d2,d4
 	swap	d2
@@ -6957,9 +6970,11 @@ loc_6BFC:
 	dbf	d5,loc_6BA4
 
 loc_6C0A:
-	bsr.w	sub_6CCA
-	cmpi.b	#3,($FFFFFAD0).w
+	bsr.w	Pause_RestorePalette
+	cmpi.b	#3,(Game_Paused).w
 	bne.s	loc_6C3E
+
+	; Let the kid die, it was the last life
 	move.l	d0,-(sp)
 	moveq	#sfx_Voice_bummer,d0
 	jsr	(j_PlaySound).l
@@ -6968,14 +6983,15 @@ loc_6C0A:
 	move.w	#4,$38(a4)
 	move.w	#$30,$3A(a4)
 	move.w	#1,(Number_Lives).w
-	sf	($FFFFFAD0).w
+	sf	(Game_Paused).w
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_6C3E:
-	sf	($FFFFFAD0).w
+	; Restore Eyeclops beam art that was overwritten by pause menu
+	sf	(Game_Paused).w
 	jsr	(sub_E1338).l
-	lea	(off_1194C).l,a0
+	lea	(off_Load_EyclopsBeamArt).l,a0
 	move.l	(a0),a0
 	jsr	(a0)
 	rts
@@ -6984,15 +7000,15 @@ loc_6C3E:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_6C54:
+;sub_6C54:
+Pause_DarkenPalette:
+	; Save level palette
 	lea	(Palette_Buffer).l,a4
 	lea	($FFFF7D8E).l,a3
 	moveq	#$1F,d7
+-	move.l	(a4)+,(a3)+
+	dbf	d7,-
 
-loc_6C62:
-	move.l	(a4)+,(a3)+
-	dbf	d7,loc_6C62
 	lea	(Palette_Buffer).l,a4
 	moveq	#$E,d7
 
@@ -7032,347 +7048,189 @@ loc_6C9E:
 	move.w	d6,(a4)+
 	dbf	d7,loc_6C9E
 	rts
-; End of function sub_6C54
+; End of function Pause_DarkenPalette
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_6CCA:
+;sub_6CCA:
+Pause_RestorePalette:
+	; Restore level palette
 	lea	(Palette_Buffer).l,a4
 	lea	($FFFF7D8E).l,a3
 	moveq	#$1F,d7
+-	move.l	(a3)+,(a4)+
+	dbf	d7,-
 
-loc_6CD8:
-	move.l	(a3)+,(a4)+
-	dbf	d7,loc_6CD8
 	bsr.w	Palette_to_VRAM
 	rts
-; End of function sub_6CCA
+; End of function Pause_RestorePalette
 
 ; ---------------------------------------------------------------------------
-unk_6CE4:
-	dc.b $86 ; Ü
-	dc.b $76 ; v
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $8E ; é
-	dc.b $76 ; v
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7C ; |
-	dc.b $86 ; Ü
-	dc.b $82 ; Ç
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $80 ; Ä
-	dc.b $86 ; Ü
-	dc.b $7D ; }
-	dc.b $86 ; Ü
-	dc.b $85 ; Ö
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $84 ; Ñ
-	dc.b $86 ; Ü
-	dc.b $8A ; ä
-	dc.b $86 ; Ü
-	dc.b $83 ; É
-	dc.b $86 ; Ü
-	dc.b $89 ; â
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $7A ; z
-	dc.b $86 ; Ü
-	dc.b $7E ; ~
-	dc.b $86 ; Ü
-	dc.b $7F ; 
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $7D ; }
-	dc.b $86 ; Ü
-	dc.b $84 ; Ñ
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $96 ; ñ
-	dc.b $76 ; v
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $9E ; û
-	dc.b $76 ; v
-unk_6D84:
-	dc.b $86 ; Ü
-	dc.b $76 ; v
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $86 ; Ü
-	dc.b $77 ; w
-	dc.b $8E ; é
-	dc.b $76 ; v
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7C ; |
-	dc.b $86 ; Ü
-	dc.b $82 ; Ç
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $80 ; Ä
-	dc.b $86 ; Ü
-	dc.b $7D ; }
-	dc.b $86 ; Ü
-	dc.b $85 ; Ö
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $84 ; Ñ
-	dc.b $86 ; Ü
-	dc.b $8A ; ä
-	dc.b $86 ; Ü
-	dc.b $83 ; É
-	dc.b $86 ; Ü
-	dc.b $89 ; â
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $7B ; {
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $82 ; Ç
-	dc.b $86 ; Ü
-	dc.b $81 ; Å
-	dc.b $86 ; Ü
-	dc.b $80 ; Ä
-	dc.b $86 ; Ü
-	dc.b $88 ; à
-	dc.b $86 ; Ü
-	dc.b $83 ; É
-	dc.b $86 ; Ü
-	dc.b $82 ; Ç
-	dc.b $86 ; Ü
-	dc.b $88 ; à
-	dc.b $86 ; Ü
-	dc.b $78 ; x
-	dc.b $86 ; Ü
-	dc.b $82 ; Ç
-	dc.b $86 ; Ü
-	dc.b $86 ; Ü
-	dc.b $86 ; Ü
-	dc.b $7D ; }
-	dc.b $86 ; Ü
-	dc.b $87 ; á
-	dc.b $86 ; Ü
-	dc.b $79 ; y
-	dc.b $8E ; é
-	dc.b $7B ; {
-	dc.b $96 ; ñ
-	dc.b $76 ; v
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $96 ; ñ
-	dc.b $77 ; w
-	dc.b $9E ; û
-	dc.b $76 ; v
+;unk_6CE4:
+MapUnc_PauseMenu_GiveUp:
+	dc.w $8676
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8E76
+	dc.w $867B
+	dc.w $867C
+	dc.w $8682
+	dc.w $8681
+	dc.w $8680
+	dc.w $867D
+	dc.w $8685
+	dc.w $8681
+	dc.w $8678
+	dc.w $8684
+	dc.w $868A
+	dc.w $8683
+	dc.w $8689
+	dc.w $8678
+	dc.w $8678
+	dc.w $8E7B
+	dc.w $867B
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8E7B
+	dc.w $867B
+	dc.w $8678
+	dc.w $867A
+	dc.w $867E
+	dc.w $867F
+	dc.w $8681
+	dc.w $8678
+	dc.w $867D
+	dc.w $8684
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8E7B
+	dc.w $9676
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9E76
+;unk_6D84:
+MapUnc_PauseMenu_Restart:
+	dc.w $8676
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8677
+	dc.w $8E76
+	dc.w $867B
+	dc.w $867C
+	dc.w $8682
+	dc.w $8681
+	dc.w $8680
+	dc.w $867D
+	dc.w $8685
+	dc.w $8681
+	dc.w $8678
+	dc.w $8684
+	dc.w $868A
+	dc.w $8683
+	dc.w $8689
+	dc.w $8678
+	dc.w $8678
+	dc.w $8E7B
+	dc.w $867B
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8678
+	dc.w $8E7B
+	dc.w $867B
+	dc.w $8678
+	dc.w $8682
+	dc.w $8681
+	dc.w $8680
+	dc.w $8688
+	dc.w $8683
+	dc.w $8682
+	dc.w $8688
+	dc.w $8678
+	dc.w $8682
+	dc.w $8686
+	dc.w $867D
+	dc.w $8687
+	dc.w $8679
+	dc.w $8E7B
+	dc.w $9676
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9677
+	dc.w $9E76
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -7714,7 +7572,7 @@ loc_7414:
 ; ---------------------------------------------------------------------------
 
 loc_7420:
-	st	($FFFFFB56).w
+	st	(Allow_Pausing).w
 	jmp	(j_Delete_CurrentObject).w
 ; End of function sub_73D0
 
@@ -7787,9 +7645,9 @@ loc_74B0:
 loc_74C8:
 	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	bne.s	loc_7452
-	tst.b	($FFFFFB56).w
+	tst.b	(Allow_Pausing).w
 	beq.w	loc_7452
-	st	($FFFFFAD0).w
+	st	(Game_Paused).w
 	bra.w	loc_7452
 ; ---------------------------------------------------------------------------
 
@@ -14926,7 +14784,7 @@ lose_life:							; Death management
 	st	($FFFFFC36).w
 
 Teleport:
-	sf	($FFFFFB56).w
+	sf	(Allow_Pausing).w
 	jsr	(sub_E1334).l
 	cmpi.w	#$FFFB,d6
 	bne.s	+
@@ -23724,8 +23582,8 @@ j_DecompressToRAM:
 j_EniDec:
 	jmp	EniDec(pc)
 ; ---------------------------------------------------------------------------
-Addr_TtlCrdLetters:dc.l	ArtComp_19C68_TtlCardLetters ;	DATA XREF: Character_CheckCollision+1AE0r
-off_1194C:	dc.l sub_12D64
+Addr_TtlCrdLetters:	dc.l	ArtComp_19C68_TtlCardLetters
+off_Load_EyclopsBeamArt:	dc.l Load_EyclopsBeamArt
 ; ---------------------------------------------------------------------------
 
 LoadGameModeData:
@@ -24285,9 +24143,9 @@ loc_11EFA:
 	move.l	(LnkTo_ArtComp_99F34_IngameNumbers).l,a0
 	bsr.w	DecompressToVRAM	; a0 - source address
 				; d0 - offset in VRAM (destination)
-	bsr.w	sub_12D64
+	bsr.w	Load_EyclopsBeamArt
 	bsr.w	sub_129CE
-	bsr.w	sub_12B8C
+	bsr.w	Load_FlagBottomArt
 	bsr.w	sub_12C24
 	jsr	(j_sub_F06A).l
 	jsr	(j_Initialize_EvanescShooterObjectSlots).l
@@ -25560,8 +25418,8 @@ ArtUnc_12A8C:  binclude    "ingame/artunc/Juggernaut_skull_frame_2.bin"
 ArtUnc_12B0C:  binclude    "ingame/artunc/Some_kind_of_star.bin"
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_12B8C:
+;sub_12B8C:
+Load_FlagBottomArt:
 	move.l	#vdpComm($D2C0,VRAM,WRITE),4(a6)
 	lea	ArtUnc_12BA4(pc),a1
 	move.w	#$1F,d0
@@ -25570,7 +25428,7 @@ loc_12B9C:
 	move.l	(a1)+,(a6)
 	dbf	d0,loc_12B9C
 	rts
-; End of function sub_12B8C
+; End of function Load_FlagBottomArt
 
 ; ---------------------------------------------------------------------------
 ArtUnc_12BA4:  binclude    "ingame/artunc/Flag_bottom.bin"
@@ -25600,13 +25458,12 @@ Pal_12D54:  binclude    "theme/palette_bg/city_alt.bin"
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_12D64:
-
-	move.w	#$CEC0,d0
+;sub_12D64:
+Load_EyclopsBeamArt:
+	move.w	#$CEC0,d0			; = $676<<5
 	lea	ArtComp_12D70(pc),a0
 	bra.w	DecompressToVRAM	; a0 - source address
-; End of function sub_12D64		; d0 - offset in VRAM (destination)
+; End of function Load_EyclopsBeamArt		; d0 - offset in VRAM (destination)
 
 ; ---------------------------------------------------------------------------
 ArtComp_12D70:  binclude    "scenes/artcomp/Some_geometric_patterns.bin"

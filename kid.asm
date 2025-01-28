@@ -5855,8 +5855,8 @@ sub_5E02:
 	tst.b	(MurderWall_flag).w
 	beq.w	return_5F68
 	move.l	(Addr_GfxObject_Kid).w,a0
-	move.w	($FFFFFAC4).w,d0
-	tst.b	(MurderWall_flag2).w
+	move.w	(MurderWall_X_pos).w,d0
+	tst.b	(MurderWall_reversed).w
 	beq.s	loc_5E24
 	addi.w	#$110,d0
 	sub.w	(Kid_hitbox_right).w,d0
@@ -5875,8 +5875,8 @@ loc_5E34:
 
 loc_5E3A:
 	move.w	(Camera_X_pos).w,d3
-	sub.w	($FFFFFAC4).w,d3
-	tst.b	(MurderWall_flag2).w
+	sub.w	(MurderWall_X_pos).w,d3
+	tst.b	(MurderWall_reversed).w
 	beq.s	loc_5E4A
 	neg.w	d3
 
@@ -5888,7 +5888,7 @@ loc_5E4A:
 
 loc_5E52:
 	move.w	#$80,d6
-	tst.b	(MurderWall_flag2).w
+	tst.b	(MurderWall_reversed).w
 	beq.s	loc_5E64
 	addi.w	#$110,d6
 	add.w	d3,d6
@@ -5920,7 +5920,7 @@ loc_5E94:
 	move.w	(a1,d2.w),d3
 	moveq	#5,d0
 	move.l	(Addr_NextSpriteSlot).w,a0
-	tst.b	(MurderWall_flag2).w
+	tst.b	(MurderWall_reversed).w
 	bne.w	loc_5F6A
 
 loc_5EB2:
@@ -7444,7 +7444,7 @@ loc_72D2:
 	moveq	#8,d3
 
 loc_72DA:
-	cmpi.w	#$FFF8,d3
+	cmpi.w	#-8,d3
 	bgt.s	loc_72E2
 	moveq	#-8,d3
 
@@ -7459,9 +7459,9 @@ loc_72E2:
 	tst.b	(MurderWall_flag).w
 	beq.w	loc_73C2
 	clr.l	d1
-	tst.b	(MurderWall_flag2).w
+	tst.b	(MurderWall_reversed).w
 	bne.s	loc_736E
-	cmpi.w	#8,(Current_LevelID).w
+	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_7316
 	move.w	#$80,d1
 
@@ -7475,25 +7475,25 @@ loc_7316:
 	move.l	d7,(MurderWall_speed).w
 
 loc_7334:
-	add.l	d7,($FFFFFAC4).w
+	add.l	d7,(MurderWall_X_pos).w
 	move.w	(Camera_max_X_pos).w,d0
-	cmp.w	($FFFFFAC4).w,d0
+	cmp.w	(MurderWall_X_pos).w,d0
 	bgt.s	loc_7346
-	move.w	d0,($FFFFFAC4).w
+	move.w	d0,(MurderWall_X_pos).w
 
 loc_7346:
 	move.w	(Camera_X_pos).w,d0
-	sub.w	($FFFFFAC4).w,d0
+	sub.w	(MurderWall_X_pos).w,d0
 	ble.s	loc_7364
 	cmp.w	d1,d0
 	blt.w	loc_73C2
-	move.w	(Camera_X_pos).w,($FFFFFAC4).w
-	sub.w	d1,($FFFFFAC4).w
+	move.w	(Camera_X_pos).w,(MurderWall_X_pos).w
+	sub.w	d1,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
 loc_7364:
-	move.w	($FFFFFAC4).w,(Camera_X_pos).w
+	move.w	(MurderWall_X_pos).w,(Camera_X_pos).w
 	bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
@@ -7506,25 +7506,25 @@ loc_736E:
 	move.l	d7,(MurderWall_speed).w
 
 loc_7388:
-	sub.l	d7,($FFFFFAC4).w
+	sub.l	d7,(MurderWall_X_pos).w
 	bgt.s	loc_7396
-	move.l	#0,($FFFFFAC4).w
+	move.l	#0,(MurderWall_X_pos).w
 
 loc_7396:
 	move.w	(Camera_X_pos).w,d0
-	sub.w	($FFFFFAC4).w,d0
+	sub.w	(MurderWall_X_pos).w,d0
 	bge.s	loc_73B8
 
 loc_73A0:
-	cmpi.w	#$FF80,d0
+	cmpi.w	#-$80,d0
 	bgt.w	loc_73C2
-	move.w	(Camera_X_pos).w,($FFFFFAC4).w
-	addi.w	#$80,($FFFFFAC4).w
+	move.w	(Camera_X_pos).w,(MurderWall_X_pos).w
+	addi.w	#$80,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
 loc_73B8:
-	move.w	($FFFFFAC4).w,(Camera_X_pos).w
+	move.w	(MurderWall_X_pos).w,(Camera_X_pos).w
 	bra.w	*+4
 
 loc_73C2:
@@ -23613,11 +23613,11 @@ GameLoadArray:	dc.l Load_SegaScreen
 Load_DemoPlay:
 	st	(Demo_Mode_flag).w
 	lea	(Demo_InputData1).l,a4
-	move.w	#$15,d7
+	move.w	#L_Knights_Isle,d7
 	not.b	($FFFFFBC8).w
 	beq.w	loc_119B6
 	lea	(Demo_InputData2).l,a4
-	move.w	#$1B,d7
+	move.w	#L_Skydragon_Castle_1,d7
 
 loc_119B6:
 	move.l	a4,(Addr_Current_Demo_Keypress).w
@@ -23704,7 +23704,7 @@ Load_InGame:
 	move.w	(Current_LevelID).w,d2
 	move.l	(LnkTo_MapOrder_Index).l,a2
 	move.b	(a2,d2.w),d2
-	cmpi.w	#$54,d2
+	cmpi.w	#M_Hills_of_the_Warrior_1,d2
 	beq.s	loc_11AE4
 	move.l	#$FFFFDD02,a3
 	cmpi.w	#$12C,(Level_width_blocks).w
@@ -23776,7 +23776,7 @@ loc_11B7A:
 	bpl.s	loc_11B9A
 	btst	#6,d7
 	beq.s	loc_11B92
-	st	(MurderWall_flag2).w
+	st	(MurderWall_reversed).w
 
 loc_11B92:
 	andi.w	#$3F,d7
@@ -23860,7 +23860,7 @@ loc_11C36:
 	move.l	(a0)+,a1	; block	layout
 	lea	($FFFF3B24).l,a5
 	bsr.w	LoadBlockLayout	; into temp buffer at Decompression_Buffer?
-	cmpi.w	#$21,(Current_LevelID).w	; is the level Forced Entry?
+	cmpi.w	#L_Forced_Entry,(Current_LevelID).w	; is the level Forced Entry?
 	bne.s	loc_11C7E
 	move.w	#$E50B,($FFBCEA).l	; if yes, insert steel block at ($20,$B)
 
@@ -24196,7 +24196,6 @@ loc_11FB0:
 	move.l	#loc_1202A,4(a0)
 
 loc_11FC8:
-				; Load_InGame+5A0j ...
 	tst.b	(MurderWall_flag).w
 	beq.s	loc_11FD2
 	bsr.w	Murderwall
@@ -26932,7 +26931,7 @@ loc_140CE:
 	subi.w	#$30,d0
 
 loc_140D2:
-	move.w	d0,($FFFFFAC4).w
+	move.w	d0,(MurderWall_X_pos).w
 	lea	ArtComp_13AA4(pc),a0
 	move.w	#$5F60,d0
 	bsr.w	DecompressToVRAM	; a0 - source address

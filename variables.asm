@@ -107,7 +107,8 @@ Addr_NextFreePlatformSlot = $FFFFFA90	; word: Pointer to next free slot in platf
 Number_Platforms = 	$FFFFFA92	; word: Number of platforms currently loaded
 Addr_PlatformStandingOn = $FFFFFA94	; word: Pointer to platform kid is currently on
 MurderWall_flag = 	$FFFFFAC1	; byte:   -1 = Murder wall, 0 = None
-MurderWall_flag2 = 	$FFFFFAC2	; byte: set if both bits of the 3rd entry of maphdr are set
+MurderWall_reversed = 	$FFFFFAC2	; byte: -1 = Murder wall going right to left
+MurderWall_X_pos = 	$FFFFFAC4	; long
 MurderWall_speed = 	$FFFFFAC8	; long
 MurderWall_max_speed = 	$FFFFFACC	; long
 Game_Paused = $FFFFFAD0	; byte: flag. Special value of 3 when the player "gives up" in pause menu

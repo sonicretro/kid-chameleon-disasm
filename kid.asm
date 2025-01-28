@@ -15,7 +15,7 @@
 ; (Takes less space but is not bit-perfect.)
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
-insertLevelSelect = 0
+insertLevelSelect = 1
 ; Set to 1 to fix minor bugs in the game.
 ; e.g. allows combining robots with other (non-UFO) enemies,
 ; makes trap platforms move smoothly.
@@ -7480,6 +7480,10 @@ loc_7334:
 	cmp.w	(MurderWall_X_pos).w,d0
 	bgt.s	loc_7346
 	move.w	d0,(MurderWall_X_pos).w
+	st		(MurderWall_reversed).w
+	asr.w	(MurderWall_speed).w	; half the current speed
+	add.w	#$30,(MurderWall_X_pos).w
+	bra.w	loc_73C2
 
 loc_7346:
 	move.w	(Camera_X_pos).w,d0
@@ -7509,6 +7513,10 @@ loc_7388:
 	sub.l	d7,(MurderWall_X_pos).w
 	bgt.s	loc_7396
 	move.l	#0,(MurderWall_X_pos).w
+	sf		(MurderWall_reversed).w
+	asr.w	(MurderWall_speed).w	; half the current speed
+	sub.w	#$30,(MurderWall_X_pos).w
+	bra.w	loc_73C2
 
 loc_7396:
 	move.w	(Camera_X_pos).w,d0
@@ -23773,7 +23781,7 @@ loc_11B7A:
 	dbf	d0,loc_11B7A
 	moveq	#0,d7
 	move.b	(a0)+,d7	; FG theme + flags
-	bpl.s	loc_11B9A
+	;bpl.s	loc_11B9A
 	btst	#6,d7
 	beq.s	loc_11B92
 	st	(MurderWall_reversed).w

@@ -7460,7 +7460,7 @@ loc_72E2:
 	beq.w	loc_73C2
 	clr.l	d1
 	tst.b	(MurderWall_reversed).w
-	bne.s	loc_736E
+	bne.w	loc_736E
 	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_7316
 	move.w	#$80,d1
@@ -7481,7 +7481,10 @@ loc_7334:
 	bgt.s	loc_7346
 	move.w	d0,(MurderWall_X_pos).w
 	st		(MurderWall_reversed).w
-	asr.w	(MurderWall_speed).w	; half the current speed
+	lea		(Murderwall_Speeds).l,a0
+	move.w	(Current_LevelID).w,d0
+	asl.w	#3,d0
+	move.l	4(a0,d0.w),(MurderWall_speed).w
 	add.w	#$30,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 
@@ -7514,7 +7517,10 @@ loc_7388:
 	bgt.s	loc_7396
 	move.l	#0,(MurderWall_X_pos).w
 	sf		(MurderWall_reversed).w
-	asr.w	(MurderWall_speed).w	; half the current speed
+	lea		(Murderwall_Speeds).l,a0
+	move.w	(Current_LevelID).w,d0
+	asl.w	#3,d0
+	move.l	4(a0,d0.w),(MurderWall_speed).w
 	sub.w	#$30,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 
@@ -26916,18 +26922,21 @@ ArtComp_13AA4:
 Pal_1408A:
 	binclude	"ingame/palette/Murder_wall.bin"
 
+Murderwall_Speeds:
+	include	"level/murderwallspeeds.asm"
+	align 2
+
 ; =============== S U B	R O U T	I N E =======================================
 
 
 Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
-	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entry
-	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
-	bne.s	loc_140BE
-	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1
+	lea		(Murderwall_Speeds).l,a0
+	move.w	(Current_LevelID).w,d0
+	asl.w	#3,d0
+	move.l	(a0,d0.w),(MurderWall_max_speed).w
 
-loc_140BE:
 	clr.l	(MurderWall_speed).w
 	move.w	(Camera_X_pos).w,d0
 	beq.s	loc_140CE

@@ -7458,17 +7458,20 @@ loc_72E2:
 	move.l	d0,(Camera_BG_Y_pos).w
 	tst.b	(MurderWall_flag).w
 	beq.w	loc_73C2
+
+	lea		(Murderwall_Speeds).l,a0
+	move.w	(Current_LevelID).w,d0
+	asl.w	#4,d0
+	lea		(a0,d0.w),a0	; Address with level specific murder wall info
+	tst.b	$1337
+
 	clr.l	d1
+	move.w	8(a0),d1	; how far wall may fall back
 	tst.b	(MurderWall_reversed).w
 	bne.w	loc_736E
-	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
-	bne.s	loc_7316
-	move.w	#$80,d1
-
-loc_7316:
-	addi.w	#$80,d1
-	addi.l	#$100,(MurderWall_speed).w
 	move.l	(MurderWall_speed).w,d7
+	add.l	4(a0),d7	; Add acceleration
+	move.l	d7,(MurderWall_speed).w
 	cmp.l	(MurderWall_max_speed).w,d7
 	blt.s	loc_7334
 	move.l	(MurderWall_max_speed).w,d7
@@ -7480,11 +7483,10 @@ loc_7334:
 	cmp.w	(MurderWall_X_pos).w,d0
 	bgt.s	loc_7346
 	move.w	d0,(MurderWall_X_pos).w
+	tst.w	$A(a0)	; Reverse direction?
+	beq.s	loc_7346
 	st		(MurderWall_reversed).w
-	lea		(Murderwall_Speeds).l,a0
-	move.w	(Current_LevelID).w,d0
-	asl.w	#3,d0
-	move.l	4(a0,d0.w),(MurderWall_speed).w
+	move.l	$C(a0),(MurderWall_speed).w	; speed after reversing
 	add.w	#$30,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 
@@ -7505,8 +7507,9 @@ loc_7364:
 ; ---------------------------------------------------------------------------
 
 loc_736E:
-	addi.l	#$100,(MurderWall_speed).w
 	move.l	(MurderWall_speed).w,d7
+	add.l	4(a0),d7	; Add acceleration
+	move.l	d7,(MurderWall_speed).w
 	cmp.l	(MurderWall_max_speed).w,d7
 	blt.s	loc_7388
 	move.l	(MurderWall_max_speed).w,d7
@@ -7516,11 +7519,10 @@ loc_7388:
 	sub.l	d7,(MurderWall_X_pos).w
 	bgt.s	loc_7396
 	move.l	#0,(MurderWall_X_pos).w
+	tst.w	$A(a0)	; reverse the direction?
+	beq.s	loc_7396
 	sf		(MurderWall_reversed).w
-	lea		(Murderwall_Speeds).l,a0
-	move.w	(Current_LevelID).w,d0
-	asl.w	#3,d0
-	move.l	4(a0,d0.w),(MurderWall_speed).w
+	move.l	$C(a0),(MurderWall_speed).w	; speed after reversing
 	sub.w	#$30,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 
@@ -7530,10 +7532,11 @@ loc_7396:
 	bge.s	loc_73B8
 
 loc_73A0:
-	cmpi.w	#-$80,d0
+	neg.w	d1
+	cmp.w	d1,d0
 	bgt.w	loc_73C2
 	move.w	(Camera_X_pos).w,(MurderWall_X_pos).w
-	addi.w	#$80,(MurderWall_X_pos).w
+	sub.w	d1,(MurderWall_X_pos).w
 	bra.w	loc_73C2
 ; ---------------------------------------------------------------------------
 
@@ -26921,6 +26924,7 @@ ArtComp_13AA4:
 	align	2
 Pal_1408A:
 	binclude	"ingame/palette/Murder_wall.bin"
+	align	2
 
 Murderwall_Speeds:
 	include	"level/murderwallspeeds.asm"
@@ -26934,7 +26938,7 @@ Murderwall:
 	move.b	#0,($FFFFFABF).w
 	lea		(Murderwall_Speeds).l,a0
 	move.w	(Current_LevelID).w,d0
-	asl.w	#3,d0
+	asl.w	#4,d0
 	move.l	(a0,d0.w),(MurderWall_max_speed).w
 
 	clr.l	(MurderWall_speed).w

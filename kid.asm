@@ -5562,28 +5562,18 @@ loc_44F4:
 	bra.s	loc_44F4
 ; ---------------------------------------------------------------------------
 ANIART_COIN_SIZE	= $80
-AniArt_Coin:	dc.b   6
-	dc.b   0
-	dc.b   6
-	dc.b   4
-	dc.b   6
-	dc.b   8
-	dc.b   6
-	dc.b $14
-	dc.b   6
-	dc.b $10
-	dc.b   6
-	dc.b  $C
-	dc.b   6
-	dc.b $10
-	dc.b   6
-	dc.b $14
-	dc.b   6
-	dc.b   8
-	dc.b   6
-	dc.b   4
-	dc.b $FF
-	dc.b $FF
+AniArt_Coin:		; pairs of animation speed, anim frame
+	dc.b   6,   0
+	dc.b   6,   4
+	dc.b   6,   8
+	dc.b   6, $14
+	dc.b   6, $10
+	dc.b   6,  $C
+	dc.b   6, $10
+	dc.b   6, $14
+	dc.b   6,   8
+	dc.b   6,   4
+	dc.b $FF, $FF
 off_451C:	dc.l ArtUnc_4992
 	dc.l ArtUnc_4992+1*ANIART_COIN_SIZE
 	dc.l ArtUnc_4992+2*ANIART_COIN_SIZE
@@ -5618,16 +5608,12 @@ loc_455E:
 	bra.s	loc_455E
 ; ---------------------------------------------------------------------------
 ANIART_LIFEICON_SIZE	= $80
-AniArt_LifeIcon:dc.b $48 ; H
-	dc.b   0
-	dc.b   6
-	dc.b   4
-	dc.b   6
-	dc.b   8
-	dc.b   6
-	dc.b   4
-	dc.b $FF
-	dc.b $FF
+AniArt_LifeIcon:		; pairs of animation speed, anim frame
+	dc.b $48,   0
+	dc.b   6,   4
+	dc.b   6,   8
+	dc.b   6,   4
+	dc.b $FF, $FF
 off_457A:	dc.l ArtUnc_4692
 	dc.l ArtUnc_4692+1*ANIART_LIFEICON_SIZE
 	dc.l ArtUnc_4692+2*ANIART_LIFEICON_SIZE
@@ -9296,7 +9282,7 @@ off_84DC:	dc.w LnkTo_unk_B6AF8-Data_Index
 off_84E2:	dc.w LnkTo_unk_B9CFC-Data_Index
 	dc.w LnkTo_unk_B9E42-Data_Index
 	dc.w LnkTo_unk_B9F88-Data_Index
-off_84E8:	dc.w LnkTo_unk_C5344-Data_Index
+off_84E8:	dc.w LnkTo_PowersOfTen4-Data_Index
 	dc.w LnkTo_unk_C548A-Data_Index
 	dc.w LnkTo_unk_C55D0-Data_Index
 off_84EE:	dc.w LnkTo_unk_B1E6A-Data_Index
@@ -16124,7 +16110,8 @@ loc_C452:
 	jmp	(j_Delete_CurrentObject).w
 ; ---------------------------------------------------------------------------
 
-loc_C460:
+;loc_C460:
+Object_EOL_Number:
 	lea	$44(a5),a4
 	moveq	#6,d7
 
@@ -16140,11 +16127,11 @@ loc_C466:
 
 loc_C48C:
 	jsr	(j_Hibernate_Object_1Frame).w
-	lea	unk_C534(pc),a1
+	lea	PowersOfTen(pc),a1
 	lea	$44(a5),a4
 	moveq	#0,d7
 	moveq	#0,d2
-	move.l	$60(a5),d6
+	move.l	$60(a5),d6	; number the object represents
 	cmpi.l	#9999999,d6
 	ble.s	loc_C4AE
 	move.l	#9999999,d6
@@ -16160,7 +16147,7 @@ loc_C4AE:
 	beq.s	loc_C4C8
 
 loc_C4C0:
-	move.w	#(LnkTo_unk_C86E0-Data_Index),$22(a0)
+	move.w	#(LnkTo_Spr_EOL_Digit0-Data_Index),$22(a0)
 	bra.s	loc_C4E2
 ; ---------------------------------------------------------------------------
 
@@ -16179,7 +16166,7 @@ loc_C4D2:
 	bpl.s	loc_C4D2
 	add.l	d0,d6
 	add.w	d1,d1
-	move.w	off_C550(pc,d1.w),$22(a0)
+	move.w	Spr_EOL_Digits_Index(pc,d1.w),$22(a0)
 
 loc_C4E2:
 	move.w	d7,d0
@@ -16205,45 +16192,27 @@ loc_C4E2:
 	clr.l	$70(a5)
 	bra.w	loc_C48C
 ; ---------------------------------------------------------------------------
-unk_C534:	dc.b   0
-	dc.b  $F
-	dc.b $42 ; B
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   1
-	dc.b $86 ; †
-	dc.b $A0 ;  
-	dc.b   0
-	dc.b   0
-	dc.b $27 ; '
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   3
-	dc.b $E8 ; è
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $64 ; d
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b  $A
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   1
-off_C550:
-	dc.w LnkTo_unk_C86E0-Data_Index
-	dc.w LnkTo_unk_C8680-Data_Index
-	dc.w LnkTo_unk_C86D0-Data_Index
-	dc.w LnkTo_unk_C86C0-Data_Index
-	dc.w LnkTo_unk_C8650-Data_Index
-	dc.w LnkTo_unk_C8648-Data_Index
-	dc.w LnkTo_unk_C86B0-Data_Index
-	dc.w LnkTo_unk_C86A8-Data_Index
-	dc.w LnkTo_unk_C8638-Data_Index
-	dc.w LnkTo_unk_C8668-Data_Index
+;unk_C534:
+PowersOfTen:
+	dc.l	1000000
+	dc.l	 100000
+	dc.l	  10000
+	dc.l	   1000
+	dc.l	    100
+	dc.l	     10
+	dc.l	      1
+;off_C550:
+Spr_EOL_Digits_Index:
+	dc.w LnkTo_Spr_EOL_Digit0-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit1-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit2-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit3-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit4-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit5-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit6-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit7-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit8-Data_Index
+	dc.w LnkTo_Spr_EOL_Digit9-Data_Index
 ; ---------------------------------------------------------------------------
 
 loc_C564:
@@ -16254,7 +16223,8 @@ loc_C564:
 	bra.s	loc_C592
 ; ---------------------------------------------------------------------------
 
-loc_C57C:
+;loc_C57C:
+Object_EOL_Text:
 	move.l	#$2000004,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.b	#2,palette_line(a3)
@@ -16291,7 +16261,7 @@ loc_C5DE:
 	move.b	#2,palette_line(a3)
 	move.b	#1,priority(a3)
 	move.w	#$517,vram_tile(a3)
-	move.w	#(LnkTo_unk_C8640-Data_Index),addroffset_sprite(a3)
+	move.w	#(LnkTo_Spr_EOL_ExtraLife-Data_Index),addroffset_sprite(a3)
 	moveq	#-$40,d0
 	moveq	#0,d1
 	moveq	#2,d2
@@ -16458,15 +16428,15 @@ loc_D170:
 loc_D17E:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C57C,4(a0)
-	move.w	#$F2C,$44(a0)
+	move.l	#Object_EOL_Text,4(a0)
+	move.w	#(LnkTo_Spr_EOL_Score-Data_Index),$44(a0)
 	move.w	#$1C,$46(a0)
 	move.w	#$58,$64(a0)
 	move.w	#$100,$68(a0)
 	move.w	#$FFFE,$70(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C460,4(a0)
+	move.l	#Object_EOL_Number,4(a0)
 	move.w	#$1C,$A(a0)
 	move.w	#$98,$64(a0)
 	move.w	#$100,$68(a0)
@@ -16504,16 +16474,16 @@ loc_D25E:
 	bne.w	Continue_Screen
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C57C,4(a0)
-	move.w	#$F0C,$44(a0)
+	move.l	#Object_EOL_Text,4(a0)
+	move.w	#(LnkTo_Spr_EOL_GAME-Data_Index),$44(a0)
 	move.w	#$1C,$46(a0)
 	move.w	#$FF98,$64(a0)
 	move.w	#$60,$68(a0)
 	move.w	#8,$6C(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C57C,4(a0)
-	move.w	#$F10,$44(a0)
+	move.l	#Object_EOL_Text,4(a0)
+	move.w	#(LnkTo_Spr_EOL_OVER-Data_Index),$44(a0)
 	move.w	#$1C,$46(a0)
 	move.w	#$158,$64(a0)
 	move.w	#$80,$68(a0)
@@ -16535,8 +16505,8 @@ loc_D2DC:
 Continue_Screen:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C57C,4(a0)
-	move.w	#$EF8,$44(a0)
+	move.l	#Object_EOL_Text,4(a0)
+	move.w	#(LnkTo_Spr_EOL_Continues-Data_Index),$44(a0)
 	move.w	#$1C,$46(a0)
 	move.w	#$FF88,$64(a0)
 	move.w	#$60,$68(a0)
@@ -16544,7 +16514,7 @@ Continue_Screen:
 	move.l	a0,$4C(a5)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C460,4(a0)
+	move.l	#Object_EOL_Number,4(a0)
 	move.w	#$1C,$A(a0)
 	move.w	#$134,$64(a0)
 	move.w	#$80,$68(a0)
@@ -16680,7 +16650,7 @@ loc_D47E:
 	clr.w	d3
 	swap	d3
 	add.w	d0,d0
-	lea	off_C550(pc),a0
+	lea	Spr_EOL_Digits_Index(pc),a0
 	move.w	(a0,d0.w),$22(a1)
 	dbf	d6,loc_D47E
 
@@ -16690,12 +16660,12 @@ loc_D4CE:
 	move.w	#$CC,d7
 	moveq	#0,d6
 	moveq	#$1C,d5
-	move.w	#$EF8,d0
+	move.w	#(LnkTo_Spr_EOL_Continues-Data_Index),d0
 	move.w	#$FF48,d1
-	bsr.w	sub_D894
+	bsr.w	Load_Object_EOL_Text
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C460,4(a0)
+	move.l	#Object_EOL_Number,4(a0)
 	move.w	d5,$A(a0)
 	move.w	#$FF84,d1
 	sub.w	d6,d1
@@ -16709,34 +16679,34 @@ loc_D4CE:
 	move.w	#$B4,d7
 	moveq	#0,d6
 	moveq	#$1C,d5
-	move.w	#$F2C,d0
+	move.w	#(LnkTo_Spr_EOL_Score-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
+	bsr.w	Load_Object_EOL_Text
 	move.l	(Score).w,d0
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	subi.w	#$18,d7
 	addi.w	#$40,d6
 	addq.w	#8,d5
 	move.w	(Time_Seconds_low_digit).w,d0
 	move.w	(Time_Seconds_high_digit).w,d1
-	mulu.w	#$A,d1
+	mulu.w	#10,d1
 	add.w	d1,d0
 	move.w	(Time_Minutes).w,d1
-	mulu.w	#$64,d1
+	mulu.w	#100,d1
 	add.w	d1,d0
-	mulu.w	#$A,d0
+	mulu.w	#10,d0
 	move.l	d0,-(sp)
-	move.w	#$F44,d0
+	move.w	#(LnkTo_Spr_EOL_Time-Data_Index),d0
 	move.w	#$FF60,d1
-	bsr.w	sub_D894
-	move.w	#$EF4,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Bonus-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
-	move.l	(sp)+,d0
+	bsr.w	Load_Object_EOL_Text
+	move.l	(sp)+,d0	; Time bonus amount
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	addq.w	#1,d3
 	subi.w	#$18,d7
@@ -16744,15 +16714,15 @@ loc_D4CE:
 	addq.w	#8,d5
 	tst.b	(NoHit_Bonus_Flag).w
 	bne.w	loc_D5D2
-	move.w	#$F18,d0
+	move.w	#(LnkTo_Spr_EOL_NoHit-Data_Index),d0
 	move.w	#$FF38,d1
-	bsr.w	sub_D894
-	move.w	#$EF4,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Bonus-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
-	move.l	#$1388,d0
+	bsr.w	Load_Object_EOL_Text
+	move.l	#5000,d0
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	addq.w	#1,d3
 	subi.w	#$18,d7
@@ -16762,15 +16732,15 @@ loc_D4CE:
 loc_D5D2:
 	tst.b	(NoPrize_Bonus_Flag).w
 	bne.w	loc_D60E
-	move.w	#$F1C,d0
+	move.w	#(LnkTo_Spr_EOL_NoPrize-Data_Index),d0
 	move.w	#$FF20,d1
-	bsr.w	sub_D894
-	move.w	#$EF4,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Bonus-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
-	move.l	#$1388,d0
+	bsr.w	Load_Object_EOL_Text
+	move.l	#5000,d0
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	addq.w	#1,d3
 	subi.w	#$18,d7
@@ -16781,21 +16751,21 @@ loc_D60E:
 	move.w	(Current_LevelID).w,d0
 	cmpi.w	#FirstElsewhere_LevelID,d0
 	bge.w	loc_D660
-	lea	unk_D8E8(pc),a1
+	lea	PathBonus_Values(pc),a1
 	move.b	(a1,d0.w),d0
 	andi.w	#$FF,d0
-	mulu.w	#$3E8,d0
+	mulu.w	#1000,d0
 	beq.w	loc_D660
 	move.l	d0,-(sp)
-	move.w	#$F24,d0
+	move.w	#(LnkTo_Spr_EOL_Path-Data_Index),d0
 	move.w	#$FF58,d1
-	bsr.w	sub_D894
-	move.w	#$EF4,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Bonus-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
-	move.l	(sp)+,d0
+	bsr.w	Load_Object_EOL_Text
+	move.l	(sp)+,d0	; value of path bonus
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	addq.w	#1,d3
 	subi.w	#$18,d7
@@ -16806,37 +16776,37 @@ loc_D660:
 	move.w	(Current_LevelID).w,d0
 	cmpi.w	#FirstElsewhere_LevelID,d0
 	bge.w	loc_D702
-	lea	unk_D934(pc),a1
+	lea	SpeedBonus_Values(pc),a1
 	move.b	(Level_completion_time).w,d1
 	cmp.b	(a1,d0.w),d1
 	bhi.w	loc_D702
 	move.b	(a1,d0.w),d0
 	andi.l	#$FF,d0
 	move.l	d0,-(sp)
-	move.w	#$F3C,d0
+	move.w	#(LnkTo_Spr_EOL_Speed-Data_Index),d0
 	move.w	#$FF50,d1
-	bsr.w	sub_D894
-	move.w	#$EF4,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Bonus-Data_Index),d0
 	move.w	#$FF98,d1
-	bsr.w	sub_D894
-	move.l	#$2710,d0
+	bsr.w	Load_Object_EOL_Text
+	move.l	#10000,d0
 	move.w	#$1B0,d1
-	bsr.w	sub_D8BE
+	bsr.w	Load_Object_EOL_Number
 	move.l	a0,(a2)+
 	addq.w	#1,d3
 	subi.w	#$18,d7
 	addi.w	#$40,d6
 	addq.w	#8,d5
-	move.w	#$F4C,d0
+	move.w	#(LnkTo_Spr_EOL_Under-Data_Index),d0
 	move.w	#$FF50,d1
-	bsr.w	sub_D894
-	move.w	#$F30,d0
+	bsr.w	Load_Object_EOL_Text
+	move.w	#(LnkTo_Spr_EOL_Seconds-Data_Index),d0
 	move.w	#$FFB4,d1
-	bsr.w	sub_D894
+	bsr.w	Load_Object_EOL_Text
 	move.l	(sp)+,d0
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C460,4(a0)
+	move.l	#Object_EOL_Number,4(a0)
 	move.w	d5,$A(a0)
 	move.w	#$FF5C,d1
 	sub.w	d6,d1
@@ -16994,41 +16964,43 @@ loc_D882:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_D894:
+;sub_D894:
+Load_Object_EOL_Text:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C57C,4(a0)
-	move.w	d0,$44(a0)
+	move.l	#Object_EOL_Text,4(a0)
+	move.w	d0,$44(a0)	; Sprite reference
 	move.w	d5,$46(a0)
 	sub.w	d6,d1
-	move.w	d1,$64(a0)
-	move.w	d7,$68(a0)
+	move.w	d1,$64(a0)	; x pos
+	move.w	d7,$68(a0)	; y pos
 	move.w	#8,$6C(a0)
 	rts
-; End of function sub_D894
+; End of function Load_Object_EOL_Text
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_D8BE:
+;sub_D8BE:
+Load_Object_EOL_Number:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
-	move.l	#loc_C460,4(a0)
+	move.l	#Object_EOL_Number,4(a0)
 	move.w	d5,$A(a0)
 	add.w	d6,d1
-	move.w	d1,$64(a0)
-	move.w	d7,$68(a0)
+	move.w	d1,$64(a0)	; x pos
+	move.w	d7,$68(a0)	; y pos
 	move.w	#$FFF8,$6C(a0)
-	move.l	d0,$60(a0)
+	move.l	d0,$60(a0)	; value of the number
 	rts
-; End of function sub_D8BE
+; End of function Load_Object_EOL_Number
 
 ; ---------------------------------------------------------------------------
-unk_D8E8:	include	"level/pathbonus.asm"
+;unk_D8E8:
+PathBonus_Values:	include	"level/pathbonus.asm"
 	align	2
-unk_D934:	include	"level/speedbonus.asm"
+;unk_D934:
+SpeedBonus_Values:	include	"level/speedbonus.asm"
 	align	2
 ; ---------------------------------------------------------------------------
 
@@ -17109,7 +17081,7 @@ loc_DA3E:
 ; ---------------------------------------------------------------------------
 
 loc_DA4A:
-	move.l	#$F4241,(Score).w
+	move.l	#1000001,(Score).w
 	clr.w	($FFFFFBCC).w
 	st	($FFFFFC36).w
 	move.w	#$20,(PlayerStart_X_pos).w
@@ -27869,15 +27841,15 @@ loc_147A0:
 	move.w	$46(a5),d1
 	subi.w	#$80,d0
 	subi.w	#$80,d1
-	move.w	#$1E,$50(a5)
+	move.w	#$1E,$50(a5)	; duration at full height
 	move.w	d1,$54(a5)
 
 loc_147BA:
 	move.w	(a0)+,d2
 	cmpi.w	#$FFFF,d2
-	beq.w	loc_1484E
+	beq.w	loc_1484E	; stay at full height?
 	cmpi.w	#$FFFE,d2
-	beq.s	loc_1483A
+	beq.s	loc_1483A	; disable geyser
 	move.w	(a0),d4
 	move.w	d4,a2
 	addi.l	#j_LoadGameModeData,a2
@@ -27907,14 +27879,14 @@ loc_14804:
 
 loc_1480C:
 	move.l	a1,a2
-	bsr.w	sub_14BD8
+	bsr.w	sub_14BD8	; build sprites
 	subi.w	#$80,d7
 	add.w	(Camera_Y_pos).w,d7
 	move.w	d7,$54(a5)
 	dbf	d2,loc_14804
 	addq.w	#2,a0
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_14A58
+	bsr.w	sub_14A58	; collision
 	bra.s	loc_147BA
 ; ---------------------------------------------------------------------------
 
@@ -27928,14 +27900,14 @@ loc_1482E:
 loc_1483A:
 	moveq	#sfx_Lava_Geyser,d0
 	jsr	(j_PlaySound2).l
-	move.w	#$3C,-(sp)
+	move.w	#$3C,-(sp)	; duration geyser is disabled
 	jsr	(j_Hibernate_Object).w
 	bra.w	loc_1478E
 ; ---------------------------------------------------------------------------
 
 loc_1484E:
 	move.w	#0,d3
-	move.w	#2,$48(a5)
+	move.w	#2,$48(a5)	; number of frames per sprite when going up
 	clr.b	$4C(a5)
 	bra.s	loc_14866
 ; ---------------------------------------------------------------------------
@@ -28048,11 +28020,11 @@ loc_14966:
 
 loc_1496C:
 	move.w	$4A(a5),d3
-	move.w	#6,$48(a5)
+	move.w	#6,$48(a5)	; number of frames per sprite at top (2 alternating sprites)
 	subq.w	#1,$50(a5)
 	bne.w	loc_1485E
 	st	$4D(a5)
-	move.w	#1,$48(a5)
+	move.w	#1,$48(a5)	; number of frames per sprite when going down
 	bra.w	loc_1485E
 ; ---------------------------------------------------------------------------
 
@@ -47419,7 +47391,7 @@ LnkTo_unk_C492C:	dc.l unk_C492C
 LnkTo_unk_C4BB2:	dc.l unk_C4BB2
 LnkTo_unk_C4E38:	dc.l unk_C4E38
 LnkTo_unk_C50BE:	dc.l unk_C50BE
-LnkTo_unk_C5344:	dc.l unk_C5344
+LnkTo_PowersOfTen4:	dc.l PowersOfTen4
 LnkTo_unk_C548A:	dc.l unk_C548A
 LnkTo_unk_C55D0:	dc.l unk_C55D0
 LnkTo_unk_C5716:	dc.l unk_C5716
@@ -48057,30 +48029,30 @@ LnkTo_unk_C8608:	dc.l unk_C8608
 LnkTo_unk_C8610:	dc.l unk_C8610
 LnkTo_unk_C8618:	dc.l unk_C8618
 LnkTo_unk_C8620:	dc.l unk_C8620
-			dc.l unk_C8628
-			dc.l unk_C8630
-LnkTo_unk_C8638:	dc.l unk_C8638
-LnkTo_unk_C8640:	dc.l unk_C8640
-LnkTo_unk_C8648:	dc.l unk_C8648
-LnkTo_unk_C8650:	dc.l unk_C8650
-			dc.l unk_C8658
-			dc.l unk_C8660
-LnkTo_unk_C8668:	dc.l unk_C8668
-			dc.l unk_C8670
-			dc.l unk_C8678
-LnkTo_unk_C8680:	dc.l unk_C8680
-			dc.l unk_C8688
-			dc.l unk_C8690
-			dc.l unk_C8698
-			dc.l unk_C86A0
-LnkTo_unk_C86A8:	dc.l unk_C86A8
-LnkTo_unk_C86B0:	dc.l unk_C86B0
-			dc.l unk_C86B8
-LnkTo_unk_C86C0:	dc.l unk_C86C0
-			dc.l unk_C86C8
-LnkTo_unk_C86D0:	dc.l unk_C86D0
-			dc.l unk_C86D8
-LnkTo_unk_C86E0:	dc.l unk_C86E0
+LnkTo_Spr_EOL_Bonus:	dc.l Spr_EOL_Bonus
+LnkTo_Spr_EOL_Continues:	dc.l Spr_EOL_Continues
+LnkTo_Spr_EOL_Digit8:	dc.l Spr_EOL_Digit8
+LnkTo_Spr_EOL_ExtraLife:	dc.l Spr_EOL_ExtraLife
+LnkTo_Spr_EOL_Digit5:	dc.l Spr_EOL_Digit5
+LnkTo_Spr_EOL_Digit4:	dc.l Spr_EOL_Digit4
+LnkTo_Spr_EOL_GAME:	dc.l Spr_EOL_GAME
+LnkTo_Spr_EOL_OVER:	dc.l Spr_EOL_OVER
+LnkTo_Spr_EOL_Digit9:	dc.l Spr_EOL_Digit9
+LnkTo_Spr_EOL_NoHit:	dc.l Spr_EOL_NoHit
+LnkTo_Spr_EOL_NoPrize:	dc.l Spr_EOL_NoPrize
+LnkTo_Spr_EOL_Digit1:	dc.l Spr_EOL_Digit1
+LnkTo_Spr_EOL_Path:	dc.l Spr_EOL_Path
+			dc.l Spr_EOL_Player
+LnkTo_Spr_EOL_Score:	dc.l Spr_EOL_Score
+LnkTo_Spr_EOL_Seconds:	dc.l Spr_EOL_Seconds
+LnkTo_Spr_EOL_Digit7:	dc.l Spr_EOL_Digit7
+LnkTo_Spr_EOL_Digit6:	dc.l Spr_EOL_Digit6
+LnkTo_Spr_EOL_Speed:	dc.l Spr_EOL_Speed
+LnkTo_Spr_EOL_Digit3:	dc.l Spr_EOL_Digit3
+LnkTo_Spr_EOL_Time:	dc.l Spr_EOL_Time
+LnkTo_Spr_EOL_Digit2:	dc.l Spr_EOL_Digit2
+LnkTo_Spr_EOL_Under:	dc.l Spr_EOL_Under
+LnkTo_Spr_EOL_Digit0:	dc.l Spr_EOL_Digit0
 LnkTo_unk_C86E8:	dc.l unk_C86E8
 LnkTo_unk_C86F0:	dc.l unk_C86F0
 LnkTo_unk_C86F8:	dc.l unk_C86F8
@@ -48683,7 +48655,7 @@ unk_C492C:  sprite_frame_unc    $11, $01, $1C, $25, "ingame/artunc_kid/iron_knig
 unk_C4BB2:  sprite_frame_unc    $11, $01, $1D, $24, "ingame/artunc_kid/iron_knight_walk_4.bin"
 unk_C4E38:  sprite_frame_unc    $11, $01, $1C, $25, "ingame/artunc_kid/iron_knight_walk_5.bin"
 unk_C50BE:  sprite_frame_unc    $12, $01, $1D, $25, "ingame/artunc_kid/iron_knight_walk_6.bin"
-unk_C5344:  sprite_frame_unc    $13, $01, $25, $10, "ingame/artunc_kid/iron_knight_crawl_1.bin"
+PowersOfTen4:  sprite_frame_unc    $13, $01, $25, $10, "ingame/artunc_kid/iron_knight_crawl_1.bin"
 unk_C548A:  sprite_frame_unc    $13, $01, $24, $10, "ingame/artunc_kid/iron_knight_crawl_2.bin"
 unk_C55D0:  sprite_frame_unc    $13, $01, $26, $10, "ingame/artunc_kid/iron_knight_crawl_3.bin"
 unk_C5716:  sprite_frame_unc    $0F, $06, $1A, $28, "ingame/artunc_kid/iron_knight_slope_7.bin"
@@ -49239,30 +49211,30 @@ unk_C8608:  sprite_frame_vram   $0E4, $20, $00, $3B, $40
 unk_C8610:  sprite_frame_vram   $124, $20, $00, $3C, $40
 unk_C8618:  sprite_frame_vram   $164, $23, $00, $3F, $40
 unk_C8620:  sprite_frame_vram   $1A4, $20, $0F, $3C, $4F
-unk_C8628:  sprite_frame_vram   $000, $00, $00, $40, $08
-unk_C8630:  sprite_frame_vram   $008, $00, $00, $6C, $08
-unk_C8638:  sprite_frame_vram   $016, $00, $00, $0B, $0B
-unk_C8640:  sprite_frame_vram   $01A, $00, $00, $74, $08
-unk_C8648:  sprite_frame_vram   $029, $00, $00, $0B, $0B
-unk_C8650:  sprite_frame_vram   $02D, $00, $00, $0C, $0B
-unk_C8658:  sprite_frame_vram   $031, $00, $00, $5D, $10
-unk_C8660:  sprite_frame_vram   $049, $00, $00, $60, $10
-unk_C8668:  sprite_frame_vram   $061, $00, $00, $0B, $0B
-unk_C8670:  sprite_frame_vram   $065, $00, $00, $57, $08
-unk_C8678:  sprite_frame_vram   $070, $00, $00, $6F, $08
-unk_C8680:  sprite_frame_vram   $07E, $FD, $00, $05, $0B
-unk_C8688:  sprite_frame_vram   $080, $00, $00, $35, $08
-unk_C8690:  sprite_frame_vram   $087, $00, $00, $4B, $08
-unk_C8698:  sprite_frame_vram   $091, $00, $00, $3D, $08
-unk_C86A0:  sprite_frame_vram   $099, $00, $00, $5F, $08
-unk_C86A8:  sprite_frame_vram   $0A5, $00, $00, $0B, $0B
-unk_C86B0:  sprite_frame_vram   $0A9, $00, $00, $0A, $0B
-unk_C86B8:  sprite_frame_vram   $0AD, $00, $00, $3F, $08
-unk_C86C0:  sprite_frame_vram   $0B5, $00, $00, $0B, $0B
-unk_C86C8:  sprite_frame_vram   $0B9, $00, $00, $2D, $08
-unk_C86D0:  sprite_frame_vram   $0BF, $00, $00, $0B, $0B
-unk_C86D8:  sprite_frame_vram   $0C3, $00, $00, $40, $08
-unk_C86E0:  sprite_frame_vram   $0CB, $00, $00, $0C, $0B
+Spr_EOL_Bonus:  	sprite_frame_vram   $000, $00, $00, $40, $08	
+Spr_EOL_Continues:  sprite_frame_vram   $008, $00, $00, $6C, $08
+Spr_EOL_Digit8:  	sprite_frame_vram   $016, $00, $00, $0B, $0B
+Spr_EOL_ExtraLife:  sprite_frame_vram   $01A, $00, $00, $74, $08
+Spr_EOL_Digit5:  	sprite_frame_vram   $029, $00, $00, $0B, $0B
+Spr_EOL_Digit4:  	sprite_frame_vram   $02D, $00, $00, $0C, $0B
+Spr_EOL_GAME:  		sprite_frame_vram   $031, $00, $00, $5D, $10
+Spr_EOL_OVER:  		sprite_frame_vram   $049, $00, $00, $60, $10
+Spr_EOL_Digit9:  	sprite_frame_vram   $061, $00, $00, $0B, $0B
+Spr_EOL_NoHit:  	sprite_frame_vram   $065, $00, $00, $57, $08
+Spr_EOL_NoPrize:  	sprite_frame_vram   $070, $00, $00, $6F, $08
+Spr_EOL_Digit1:  	sprite_frame_vram   $07E, $FD, $00, $05, $0B
+Spr_EOL_Path:  		sprite_frame_vram   $080, $00, $00, $35, $08
+Spr_EOL_Player:  	sprite_frame_vram   $087, $00, $00, $4B, $08
+Spr_EOL_Score:  	sprite_frame_vram   $091, $00, $00, $3D, $08
+Spr_EOL_Seconds:  	sprite_frame_vram   $099, $00, $00, $5F, $08
+Spr_EOL_Digit7:  	sprite_frame_vram   $0A5, $00, $00, $0B, $0B
+Spr_EOL_Digit6:  	sprite_frame_vram   $0A9, $00, $00, $0A, $0B
+Spr_EOL_Speed:  	sprite_frame_vram   $0AD, $00, $00, $3F, $08
+Spr_EOL_Digit3:  	sprite_frame_vram   $0B5, $00, $00, $0B, $0B
+Spr_EOL_Time:  		sprite_frame_vram   $0B9, $00, $00, $2D, $08
+Spr_EOL_Digit2:  	sprite_frame_vram   $0BF, $00, $00, $0B, $0B
+Spr_EOL_Under:  	sprite_frame_vram   $0C3, $00, $00, $40, $08
+Spr_EOL_Digit0:  	sprite_frame_vram   $0CB, $00, $00, $0C, $0B
 unk_C86E8:  sprite_frame_vram   $000, $00, $00, $10, $10
 unk_C86F0:  sprite_frame_vram   $004, $00, $00, $10, $10
 unk_C86F8:  sprite_frame_vram   $008, $00, $00, $10, $10

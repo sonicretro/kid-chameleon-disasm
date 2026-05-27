@@ -25,6 +25,10 @@ minorBugFixes = 0
 ; In the layout, such a platform is used when the platform parameter t=1.
 ; (See doc/Kid Chameleon hacking.txt, Section "Moving platforms".)
 platforms_newtype = 0
+; If 0, the Dec 19, 1991 prototype is built.
+; If 1, the retail US version is built.
+; If 2, the retail JP version is built.
+gameRevision = 1
 ; ===========================================================================
 Start_LevelID = 0 ; Level ID for first level: Blue Lake Woods 1
 Final_LevelID = $33 ; Level ID for final level: Plethora
@@ -134,8 +138,16 @@ ROM_Header:	dc.b "SEGA MEGA DRIVE "
 	dc.b "(C)SEGA 1991 DEC"
 	dc.b "KID CHAMELEON                                   "
 	dc.b "KID CHAMELEON                                   "
+	if gameRevision=0
+	dc.b "GM MK-1010-00 "
+	dc.w $9C5A
+	elseif gameRevision=1
 	dc.b "GM MK-1010 -00"
 	dc.w $24F4
+	elseif gameRevision=2
+	dc.b "GM MK-1010 -00"
+	dc.w $F7BD
+	endif
 	dc.b "J               "
 	dc.l StartOfROM
 	dc.l EndOfROM-1
@@ -146,7 +158,11 @@ ROM_Header:	dc.b "SEGA MEGA DRIVE "
 	dc.l $20202020
 	dc.b "            "
 	dc.b "                                        "
+	if gameRevision<2
 	dc.b "JUE             "
+	else
+	dc.b "JE              "
+	endif
 ; ===========================================================================
 j_EntryPoint: ;200
 	jmp	EntryPoint(pc)
@@ -7229,6 +7245,16 @@ sub_6E24:
 	btst	#6,d0
 	sne	($FFFFFC80).w
 	jsr	(j_sub_924).w
+    if gameRevision=2
+	tst.b	($FFFFFC81).w
+	bne.s	locret_6E54_JP
+	tst.b	($FFFFFC80).w
+	bne.s	locret_6E54_JP
+	move.l	(sp)+,d0
+	jsr	j_EntryPoint
+    endif
+
+locret_6E54_JP:
 	rts
 ; End of function sub_6E24
 
@@ -7237,9 +7263,16 @@ sub_6E24:
 
 	if insertLevelSelect = 0
 ; filler
+	if gameRevision<2
     rept 814
 	dc.b	$FF
     endm
+	else
+	align 4
+    rept 794
+	dc.b	$FF
+    endm
+	endif
 
 	else
 LevelSelect_Start:
@@ -23832,9 +23865,11 @@ loc_11C36:
 	move.l	(a0)+,a1	; block	layout
 	lea	($FFFF3B24).l,a5
 	bsr.w	LoadBlockLayout	; into temp buffer at Decompression_Buffer?
+	if gameRevision>0
 	cmpi.w	#L_Forced_Entry,(Current_LevelID).w	; is the level Forced Entry?
 	bne.s	loc_11C7E
 	move.w	#$E50B,($FFBCEA).l	; if yes, insert steel block at ($20,$B)
+	endif
 
 loc_11C7E:
 	move.w	(a1)+,d0
@@ -26887,9 +26922,11 @@ Murderwall:
 	move.b	#1,($FFFFFAC0).w
 	move.b	#0,($FFFFFABF).w
 	move.l	#$20000,(MurderWall_max_speed).w ; Bloody Swamp and Forced Entry
+	if gameRevision>0
 	cmpi.w	#L_Hills_of_the_Warrior_1,(Current_LevelID).w
 	bne.s	loc_140BE
 	move.l	#$18000,(MurderWall_max_speed).w ; Hills of the Warrior 1
+	endif
 
 loc_140BE:
 	clr.l	(MurderWall_speed).w
@@ -29397,13 +29434,23 @@ loc_1B1A4:
 	moveq	#0,d0
 	bsr.w	sub_1B41C
 	bsr.w	sub_1B2A4
+    if gameRevision<2
 	moveq	#$15,d4
 	moveq	#1,d5
+    else
+	moveq	#4,d4
+	moveq	#8,d5
+    endif
 	moveq	#$12,d6
 	moveq	#$14,d7
 	bsr.w	sub_1C5D0
+    if gameRevision<2
 	move.l	#$FFB80000,(Level_Layout).w
 	move.l	#$FFD00000,($FFFFA656).w
+    else
+	move.l	#$600000,(Level_Layout).w
+	move.l	#$180000,($FFFFA656).w
+    endif
 	cmpi.b	#2,($FFFFFC82).w
 	bne.s	loc_1B1E8
 	addi.w	#$20,($FFFFA656).w
@@ -29832,21 +29879,45 @@ Load_TitleArt:
 
 ;sub_1B5BC:
 Obj_TitleTextKid:
+    if gameRevision<2
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.w	#$A5,y_pos(a3)
+    else
+	movea.w	#$FFFF,a0
+	jsr	(j_Allocate_ObjectSlot).w
+	move.l	#loc_1BB10,4(a0)
+	movea.l	#$1FF0000,a3
+	jsr	(j_Load_GfxObjectSlot).w
+	move.w	#$6E,y_pos(a3)
+    endif
 	bra.s	loc_1B5E4
 ; ---------------------------------------------------------------------------
 
 loc_1B5CE:
+    if gameRevision<2
 	move.l	#$1FF0000,a3
 	jsr	(j_Load_GfxObjectSlot).w
 	move.w	#6,y_vel(a3)
 	move.w	#$FFA3,y_pos(a3)
+    else
+	movea.w	#$FFFF,a0
+	jsr	(j_Allocate_ObjectSlot).w
+	move.l	#loc_1BB10,4(a0)
+	move.w	#$2B,$44(a0)
+	movea.l	#$1FF0000,a3
+	jsr	(j_Load_GfxObjectSlot).w
+	move.w	#-6,y_vel(a3)
+	move.w	#$170,y_pos(a3)
+    endif
 
 loc_1B5E4:
 	move.b	#2,palette_line(a3)
+    if gameRevision<2
 	move.w	#$2E,x_pos(a3)
+    else
+	move.w	#$C0,x_pos(a3)
+    endif
 	move.w	#$4D3,vram_tile(a3)
 	move.w	#(LnkTo_unk_E10FE-Data_Index),addroffset_sprite(a3)
 	move.w	#$2A,d0
@@ -29862,13 +29933,23 @@ loc_1B610:
 	move.w	#$14,-(sp)
 	jsr	(j_Hibernate_Object).w
 	bsr.w	sub_1B652
+    if gameRevision<2
 	move.w	#$2E,x_pos(a3)
 	move.w	#$8C,y_pos(a3)
+    else
+	move.w	#$BE,x_pos(a3)
+	move.w	#$54,y_pos(a3)
+    endif
 	move.w	#$A,-(sp)
 	jsr	(j_Hibernate_Object).w
 	bsr.w	sub_1B652
+    if gameRevision<2
 	move.w	#$5A,x_pos(a3)
 	move.w	#$98,y_pos(a3)
+    else
+	move.w	#$EA,x_pos(a3)
+	move.w	#$60,y_pos(a3)
+    endif
 
 loc_1B64C:
 	jsr	(j_Hibernate_Object_1Frame).w
@@ -29917,10 +29998,12 @@ loc_1B6A2:
 loc_1B6AC:
 	move.w	#$1E,-(sp)
 	jsr	(j_Hibernate_Object).w
+    if gameRevision<2
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
 	move.l	#loc_1BB10,4(a0)
 	move.w	#$27,$44(a0)
+    endif
 	moveq	#$28,d2
 	moveq	#0,d3
 
@@ -29956,6 +30039,17 @@ off_1B70A:
 
 sub_1B71A:
 	addq.w	#1,d3
+	
+    if gameRevision=2
+loc_1B72C_JP:
+	move.w	4(a6),d0
+	btst	#3,d0
+	bne.s	loc_1B72C_JP
+	move.w	#$7A8,d0
+
+loc_1B73A_JP:
+	dbf	d0,loc_1B73A_JP
+    endif
 	move.w	d3,d0
 	andi.w	#$C,d0
 	move.l	off_1B70A(pc,d0.w),a0
@@ -29971,7 +30065,11 @@ loc_1B734:
 	move.l	a1,a4
 	jsr	(j_EniDec).l
 	moveq	#5,d4
+    if gameRevision<2
 	moveq	#$12,d5
+    else
+	moveq	#1,d5
+    endif
 	moveq	#$1D,d6
 	sub.w	d2,d4
 	bpl.s	loc_1B758
@@ -30380,9 +30478,11 @@ loc_1BAB4:
 Obj_TitleMenu:
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
+    if gameRevision<2
 	move.l	#loc_1BB10,4(a0)
 	move.w	#$FFFF,a0
 	jsr	(j_Allocate_ObjectSlot).w
+    endif
 	move.l	#loc_1C7A0,4(a0)
 	move.l	#SegaText,$44(a0)
 
@@ -30407,20 +30507,45 @@ loc_1BB10:
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
 	move.b	#2,palette_line(a3)
+    if gameRevision<2
 	move.w	#$94,y_pos(a3)
+    else
+	move.w	#$104,x_pos(a3)
+    endif
 	move.w	#$4BD,vram_tile(a3)
 	move.w	#(LnkTo_unk_E0ED6-Data_Index),addroffset_sprite(a3)
+    if gameRevision=2
+	move.w	#$1C,d2
+    endif
 
 loc_1BB36:
+    if gameRevision<2
 	move.w	#$10C,d0
+    else
+	move.w	#$36,d0
+    endif
 	move.w	$44(a5),d1
 	beq.s	loc_1BB44
+    if gameRevision=2
+	tst.w	d2
+	beq.s	loc_1BB5E_JP
+	subq.w	#1,d2
+	bra.s	loc_1BB44
+    endif
+
+loc_1BB5E_JP:
 	subq.w	#1,$44(a5)
 
 loc_1BB44:
+    if gameRevision<2
 	lsl.w	#3,d1
 	sub.w	d1,d0
 	move.w	d0,x_pos(a3)
+    else
+	mulu.w	#6,d1
+	add.w	d1,d0
+	move.w	d0,y_pos(a3)
+    endif
 	jsr	(j_Hibernate_Object_1Frame).w
 	bra.s	loc_1BB36
 ; ---------------------------------------------------------------------------
@@ -30431,8 +30556,13 @@ loc_1BB52:
 	lea	(Decompression_Buffer).l,a1
 	move.l	a1,a4
 	jsr	(j_EniDec).l
+    if gameRevision<2
 	moveq	#4,d4
 	moveq	#4,d5
+    else
+	moveq	#$18,d4
+	moveq	#$10,d5
+    endif
 	moveq	#$D,d6
 	moveq	#5,d7
 	bsr.w	sub_1C5D0
@@ -30440,8 +30570,13 @@ loc_1BB52:
 	jsr	(j_Load_GfxObjectSlot).w
 	st	$13(a3)
 	move.b	#2,palette_line(a3)
+    if gameRevision<2
 	move.w	#$28,x_pos(a3)
 	move.w	#$30,y_pos(a3)
+    else
+	move.w	#$C8,x_pos(a3)
+	move.w	#$90,y_pos(a3)
+    endif
 	move.w	#$54B,vram_tile(a3)
 	move.w	#(LnkTo_unk_E1196-Data_Index),addroffset_sprite(a3)
 	move.w	#$280,d0
@@ -30496,9 +30631,12 @@ loc_1BC0E:
 	dbf	d0,Title_InputLoop
 	bra.w	loc_1BB02
 ; ---------------------------------------------------------------------------
-word_1BC20:	dc.w $30
-	dc.w $3A
-	dc.w $44
+word_1BC20:
+    if gameRevision<2
+	dc.w $30,$3A,$44
+    else
+	dc.w $90,$9A,$A4
+    endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -30783,8 +30921,13 @@ loc_1BF8A:
 	addi.w	#$24,a0
 	dbf	d1,loc_1BF84
 	lea	($FFFF7F82).l,a4
+    if gameRevision<2
 	moveq	#$15,d4
 	moveq	#1,d5
+    else
+	moveq	#4,d4
+	moveq	#8,d5
+    endif
 	moveq	#$12,d6
 	moveq	#$14,d7
 	bsr.w	sub_1C5D0
@@ -31188,9 +31331,28 @@ unk_1C3F0:	dc.b   0
 	dc.b   0
 	dc.b   0
 	dc.b   0
+    if gameRevision<2
 Pal_1C400:  binclude	"scenes/palette/title.bin"
 Pal_1C466:  binclude	"scenes/palette/title_maniaxe.bin"
 Pal_1C48C:  binclude	"scenes/palette/title_juggernaut.bin"
+    else	; right now the JP version isn't part of the split script, so this'll be included raw
+Pal_1C400:
+	dc.w	$0000,$0420,$0640,$0860,$0CCC,$0888,$0444,$0000
+	dc.w	$0000,$0000,$0000,$0000,$0000,$0040,$0060,$0080
+	dc.w	$0000,$0000,$0004,$0006,$0008,$000C,$004A,$006C
+	dc.w	$008E,$0CCC,$0000,$0000,$0666,$0000,$0000,$0000
+	dc.w	$0000,$0EEE,$0420,$0640,$0860,$0A80,$0EC0,$0008
+	dc.w	$000E,$006E,$00AE,$0CEE,$0000,$0000,$0000,$0000
+	dc.w	$0000,$0EEE,$0AAA
+Pal_1C466:
+	dc.w	$0068,$028A,$04AC,$0000,$0000,$0420,$0640,$0860
+	dc.w	$0CCC,$0888,$0444,$0004,$0226,$0228,$044A,$066C
+	dc.w	$0220,$0000,$0000
+Pal_1C48C:
+	dc.w	$0626,$0848,$0A6A,$0000,$0000,$0020,$0040,$0060 
+	dc.w	$0080,$0CCC,$0402,$0422,$0644,$0866,$0A88,$0200
+	dc.w	$0400,$0600,$0000
+    endif
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_1B2A4
 
@@ -32821,7 +32983,11 @@ EndText1:	dc.b  $B
 	dc.b "GAMEmCHAMPIONmfffmm", 0
 	dc.b  $B
 	dc.b  $F
+    if gameRevision<2
 	dc.b "THEmKIDmCHAMELEONfm", 0
+    else
+	dc.b "THEmCHAMELEONmKIDfm", 0
+    endif
 	dc.b $FF
 	dc.b $FF
 
@@ -33566,9 +33732,19 @@ unk_2FDE0:  binclude    "scenes/mapeni/intro1_wildside.bin"
 	dc.b   0
 
 ; filler
+	if gameRevision=0
+    rept 160
+	dc.b	$FF
+    endm
+	elseif gameRevision=1
     rept 128
 	dc.b	$FF
     endm
+	elseif gameRevision=2
+    rept 96
+	dc.b	$FF
+    endm
+	endif
 
 	align	2
 ; =============== S U B	R O U T	I N E =======================================

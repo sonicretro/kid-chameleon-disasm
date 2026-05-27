@@ -122,6 +122,11 @@ Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each
 Allow_Pausing = $FFFFFB56	; byte: flag
 Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
+	if gameRevision=0
+Clocks_collected = 	$FFFFFB6E	; word
+	else
+Clocks_collected = 	$FFFFFDCE	; word
+	endif
 Addr_Current_Demo_Keypress = $FFFFFBC4	; word: Pointer to current Keypress in Demo
 Demo_Mode_flag = 	$FFFFFBC9	; byte (for input)
 Game_Mode = 		$FFFFFBCA	; word
@@ -205,7 +210,6 @@ Options_Suboption_2PController = $FFFFFDC8	; byte: selected sub-option 1 in opti
 Options_Suboption_Speed = $FFFFFDC9	; byte: selected sub-option 3 in options menu (flag). Speed: Normal = 0, Fast = -1    
 Options_Suboption_Controls = $FFFFFDCA	; word: selected sub-option 2 in options menu: Controls (0-5) 
 Options_Selected_Option = $FFFFFDCC	; word: currently selected option in options menu, also in level select
-Clocks_collected = 	$FFFFFDCE	; word
 
 ; GfxObject RAM offsets
 ; 0: (long) pointer to next objectData

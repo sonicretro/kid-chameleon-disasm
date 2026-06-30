@@ -16,6 +16,15 @@
 zeroOffsetOptimization = 0
 ; Set to 1 to add a level/helmet select to the game.
 insertLevelSelect = 0
+
+;debug options - 0=default
+jmpInGame = 0 ;1=go straight to level select (insertLevelSelect must be 1)
+;2=go straight to level 1 (from maporder.asm)
+blackOptionsBG = 0 ;change options background to black so you can see the text
+invincible = 0 ;kid is invincible -may reset with diamond powers?
+changeHelmet = 0 ;1=change helmet -hold A+C and hit start
+;2=skip to next level -hold A+C and hit start (LevelSkip_Cheat)
+
 ; Set to 1 to fix minor bugs in the game.
 ; e.g. allows combining robots with other (non-UFO) enemies,
 ; makes trap platforms move smoothly.
@@ -779,13 +788,13 @@ loc_604:
 	dbf	d0,loc_604
 	move.l	d7,(Options_Suboption_2PController).w
 	cmpi.w	#5,d7
-  if Default_Options = 0
+	if Default_Options = 0
 	bls.s	loc_61C
 	move.l	#0,(Options_Suboption_2PController).w
-  else
+	else
 	nop	; not strictly necessary, but avoids shifting stuff
 	move.l	#Default_Options,(Options_Suboption_2PController).w
-  endif
+	endif
 
 loc_61C:
 	; clear entire	VRAM
@@ -810,7 +819,14 @@ loc_65C:
 	move.b	#1,($FFFFF805).w
 	jsr	(j_sub_924).w
 	jsr	(j_Init_RNG).w
+	if jmpInGame = 0 ;default
 	clr.w	(Game_Mode).w
+	elseif jmpInGame = 1
+	move.w	#$14,(Game_Mode).w ;mode options
+	st	(LevelSelect_Flag).w
+	elseif jmpInGame = 2
+	move.w	#$C,(Game_Mode).w ;jump to level 1
+	endif
 	sf	(Check_Helmet_Change).w
 	sf	($FFFFFBCE).w
 	sf	($FFFFFC29).w
@@ -7656,8 +7672,12 @@ loc_749C:
 loc_74B0:
 	bclr	#Button_Start,(Ctrl_Pressed).w ; keyboard key (Enter) start
 	beq.s	loc_7452
+	if changeHelmet = 0
 	tst.b	(LevelSkip_Cheat).w
 	beq.s	loc_74C8
+	else
+	nop
+	endif
 	btst	#Button_C,(Ctrl_Held).w ; keyboard key (D) special
 	bne.w	loc_74E0
 
@@ -7671,6 +7691,19 @@ loc_74C8:
 ; ---------------------------------------------------------------------------
 
 loc_74E0:
+	if changeHelmet = 1
+	move.w	(Current_Helmet).w,d4
+	addq.w	#1,d4
+	cmp.w	#$A,d4
+	bne.w	+
+	clr.w	d4
++
+	move.w	d4,(Current_Helmet).w
+	move.w	d4,(Current_Helmet_Available).w
+	st	(Just_received_damage).w
+	st	(Check_Helmet_Change).w
+	bra.w	loc_7452
+	else
 	btst	#Button_A,(Ctrl_Held).w ; keyboard key (A) run
 	beq.w	loc_7452
 	addq.w	#1,(Current_LevelID).w
@@ -7680,6 +7713,7 @@ loc_74E0:
 	jsr	(j_sub_8C2).w
 	move.w	#8,(Game_Mode).w
 	jmp	(j_loc_6E2).w
+	endif
 ; ---------------------------------------------------------------------------
 
 loc_7508:
@@ -7718,7 +7752,10 @@ loc_757E:
 	move.b	#1,$12(a1)
 	move.w	(PlayerStart_X_pos).w,$1A(a1)
 	move.w	(PlayerStart_Y_pos).w,$1E(a1)
-	subq.w	#1,$1E(a1)
+	subq.w	#1,$1E(a1) ;kid starts 1px off ground
+	if invincible = 1
+	st	(KidIsInvulnerable).w
+	endif
 	bsr.w	sub_B41C
 	clr.w	($FFFFFB70).w
 	move.w	($FFFFFA78).w,d7
@@ -11971,125 +12008,125 @@ unk_9CCE:	; The below properties when the kid is walking on rubber blocks
 	dc.l	  $D00	; Juggernaut: Brake walking-right/running rate
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
-
+;uphill downhill movement - hill slope upslope downslope
 loc_9D22:
 	move.l	x_vel(a3),d0
-	tst.b	($FFFFFA26).w
-	bne.s	loc_9D2E
-	neg.l	d0
+	tst.b	($FFFFFA26).w ;check slope upslope /=0000 or downslope \=FF00
+	bne.s	loc_9D2E ;going down +y
+	neg.l	d0 ;going up -y
 
 loc_9D2E:
-	move.l	d0,y_vel(a3)
-	move.w	#6,($FFFFFA56).w
-	bsr.w	sub_71E4
+	move.l	d0,y_vel(a3) ; move at a 45
+	move.w	#6,($FFFFFA56).w ;set Character_Movement 6 = uphill-downhill
+	bsr.w	sub_71E4 ;cam?
 	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
-	bsr.w	sub_7ACC
+	bsr.w	sub_7ACC ;check helmet change?
 	bsr.w	Character_CheckCollision
 	move.w	x_pos(a3),($FFFFFA2C).w
 	move.w	y_pos(a3),($FFFFFA2E).w
 
 loc_9D58:
 	cmpi.w	#Eyeclops,(Current_Helmet).w
-	beq.w	loc_9E6C
+	beq.w	loc_9E6C ;slider
 	cmpi.w	#Red_Stealth,(Current_Helmet).w
-	beq.w	loc_9E6C
+	beq.w	loc_9E6C ;slider
 	cmpi.w	#Maniaxe,(Current_Helmet).w
-	beq.w	loc_9E6C
-	lea	unk_9EB0(pc),a0
+	beq.w	loc_9E6C ;slider
+	lea	unk_9EB0(pc),a0 ;faster numbers kid
 	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.s	loc_9D86
-	lea	unk_9EE4(pc),a0
+	lea	unk_9EE4(pc),a0 ;use slower numbers for Micromax
 
 loc_9D86:
-	lea	$14(a0),a1
-	tst.b	(Ctrl_A_Held).w
+	lea	$14(a0),a1 ;start at $14 walk (skip 20 bytes or 5 longwords)
+	tst.b	(Ctrl_A_Held).w ;is run?
 	beq.s	loc_9D94
-	lea	$10(a1),a1
+	lea	$10(a1),a1 ;add/skip $10 more for run
 
 loc_9D94:
 	move.l	x_vel(a3),d0
 	move.b	(Ctrl_Right_Held).w,d1
 	move.b	(Ctrl_Left_Held).w,d2
-	tst.b	($FFFFFA26).w
+	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
 	beq.s	loc_9DAA
 	neg.l	d0
 	exg	d1,d2
 
 loc_9DAA:
 	tst.b	d1
-	bne.s	loc_9DC0
+	bne.s	loc_9DC0 ;is left or right held
 	tst.b	d2
 	bne.s	loc_9DF2
-	tst.b	(Ctrl_Up_Held).w
+	tst.b	(Ctrl_Up_Held).w ;up goes uphill too
 	bne.s	loc_9DC0
-	tst.b	(Ctrl_Down_Held).w
+	tst.b	(Ctrl_Down_Held).w ;down goes down hill too
 	bne.s	loc_9DF2
-	bra.s	loc_9E2E
+	bra.s	loc_9E2E ;no input walking down?
 ; ---------------------------------------------------------------------------
-
+;uphill
 loc_9DC0:
-	move.b	($FFFFFA26).w,x_direction(a3)
-	tst.l	d0
-	bpl.s	loc_9DD4
-	add.l	4(a1),d0
-	add.l	4(a1),d0
-	bra.s	loc_9DEE
+	move.b	($FFFFFA26).w,x_direction(a3) ;check slope /=0000 \=FF00 to xdir
+	tst.l	d0 ;xvel
+	bpl.s	loc_9DD4 ;moving right?
+	add.l	4(a1),d0 ;uphill accel run 2000 or walk 1000
+	add.l	4(a1),d0 ;x2
+	bra.s	loc_9DEE ;last part, set xvel
 ; ---------------------------------------------------------------------------
 
 loc_9DD4:
+	cmp.l	(a1),d0 ;maxspeed run 10000 or walk 8000
+	bgt.s	loc_9DE4 ;decel?
+	add.l	4(a1),d0 ;uphill accel run 2000 or walk 1000
 	cmp.l	(a1),d0
-	bgt.s	loc_9DE4
-	add.l	4(a1),d0
-	cmp.l	(a1),d0
-	ble.s	loc_9DEE
+	ble.s	loc_9DEE ;last part, set xvel
 	move.l	(a1),d0
-	bra.s	loc_9DEE
+	bra.s	loc_9DEE ;last part, set xvel
 ; ---------------------------------------------------------------------------
-
+;decel
 loc_9DE4:
-	sub.l	8(a0),d0
-	cmp.l	(a0),d0
-	ble.s	loc_9DEE
-	move.l	(a0),d0
+	sub.l	8(a0),d0 ;4000 decel -this is a0 so first 5 dc.l on list
+	cmp.l	(a0),d0 ;40000
+	ble.s	loc_9DEE ;last part, set xvel
+	move.l	(a0),d0 ;40000
 
 loc_9DEE:
-	bra.w	loc_9E5C
+	bra.w	loc_9E5C ;last part, set xvel
 ; ---------------------------------------------------------------------------
-
+;downhill
 loc_9DF2:
-	tst.b	($FFFFFA26).w
+	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
 	seq	x_direction(a3)
 	tst.l	d0
-	bmi.s	loc_9E08
-	sub.l	$C(a1),d0
-	sub.l	$C(a1),d0
-	bra.s	loc_9E5C
+	bmi.s	loc_9E08 ;moving left?
+	sub.l	$C(a1),d0 ;downhill accel run 4000 or walk 2000
+	sub.l	$C(a1),d0 ;x2
+	bra.s	loc_9E5C ;last part, set xvel
 ; ---------------------------------------------------------------------------
 
 loc_9E08:
+	cmp.l	8(a1),d0 ;maxspeed run -30000 or walk -18000
+	blt.s	loc_9E1E ;decel
+	sub.l	$C(a1),d0 ;downhill accel run 4000 or walk 2000
 	cmp.l	8(a1),d0
-	blt.s	loc_9E1E
-	sub.l	$C(a1),d0
-	cmp.l	8(a1),d0
-	bge.s	loc_9E5C
+	bge.s	loc_9E5C ;last part, set xvel
 	move.l	8(a1),d0
-	bra.s	loc_9E5C
+	bra.s	loc_9E5C ;last part, set xvel
 ; ---------------------------------------------------------------------------
-
+;decel
 loc_9E1E:
-	add.l	8(a0),d0
-	cmp.l	4(a0),d0
-	bge.s	loc_9E5C
-	move.l	4(a0),d0
-	bra.s	loc_9E5C
+	add.l	8(a0),d0 ;4000
+	cmp.l	4(a0),d0 ;-40000
+	bge.s	loc_9E5C ;last part, set xvel
+	move.l	4(a0),d0 ;-40000
+	bra.s	loc_9E5C ;last part, set xvel
 ; ---------------------------------------------------------------------------
-
+;no input walking down?
 loc_9E2E:
-	move.l	$10(a0),d1
+	move.l	$10(a0),d1 ;-8000 downhill maxspeed no input $10
 	cmp.l	d1,d0
 	bge.s	loc_9E42
-	add.l	$C(a0),d0
+	add.l	$C(a0),d0 ;2000 downhill accel no input $C
 	cmp.l	d1,d0
 	ble.s	loc_9E4C
 	move.l	d1,d0
@@ -12097,33 +12134,33 @@ loc_9E2E:
 ; ---------------------------------------------------------------------------
 
 loc_9E42:
-	sub.l	$C(a0),d0
+	sub.l	$C(a0),d0 ;2000 downhill accel no input $C
 	cmp.l	d1,d0
 	bge.s	loc_9E4C
 	move.l	d1,d0
 
 loc_9E4C:
-	move.b	($FFFFFA26).w,d1
+	move.b	($FFFFFA26).w,d1 ;check slope /=0000 \=FF00
 	tst.l	d0
 	bpl.s	loc_9E58
 	eori.b	#$FF,d1
 
 loc_9E58:
 	move.b	d1,x_direction(a3)
-
+;last part, set xvel
 loc_9E5C:
-	tst.b	($FFFFFA26).w
-	beq.s	loc_9E64
-	neg.l	d0
+	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
+	beq.s	loc_9E64 ;if uphill skip
+	neg.l	d0 ;else neg downhill
 
 loc_9E64:
-	move.l	d0,x_vel(a3)
-	bra.w	loc_9F18
+	move.l	d0,x_vel(a3) ;set xvel
+	bra.w	loc_9F18 ;move on
 ; ---------------------------------------------------------------------------
-
+;sliders
 loc_9E6C:
 	move.l	x_vel(a3),d7
-	tst.b	($FFFFFA26).w
+	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
 	beq.w	loc_9E94
 	addi.l	#$1000,d7
 	bpl.w	loc_9E88
@@ -12132,7 +12169,7 @@ loc_9E6C:
 loc_9E88:
 	sf	x_direction(a3)
 	move.l	d7,x_vel(a3)
-	bra.w	loc_9F18
+	bra.w	loc_9F18 ;move on
 ; ---------------------------------------------------------------------------
 
 loc_9E94:
@@ -12143,113 +12180,41 @@ loc_9E94:
 loc_9EA4:
 	st	x_direction(a3)
 	move.l	d7,x_vel(a3)
-	bra.w	loc_9F18
+	bra.w	loc_9F18 ;move on
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
-unk_9EB0:	dc.b   0
-	dc.b   4
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FC ; ü
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b   0
-	dc.b   1
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
-	dc.b $FF
-	dc.b $FD ; ý
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-unk_9EE4:	dc.b   0
-	dc.b   2
-	dc.b   0
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $C0 ; À
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $40 ; @
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b $FF
-	dc.b $FE ; þ
-	dc.b $80 ; €
-	dc.b   0
-	dc.b   0
-	dc.b   0
-	dc.b $20
-	dc.b   0
+unk_9EB0: ;kid hill speeds (non-sliders)
+	dc.l	$40000		;40000 some sort of speed cap? $0
+	dc.l	-$40000		;-40000 some sort of speed cap? $4
+	dc.l	$4000		;4000 some sort of decel? $8
+	dc.l	$2000		;2000 downhill accel no input $C
+	dc.l	-$8000		;-8000 downhill maxspeed no input $10
+	;walk
+	dc.l	$8000		;8000 uphill maxspeed walk $0
+	dc.l	$1000		;1000 uphill accel walk $4
+	dc.l	-$18000		;-18000 downhill maxspeed walk $8
+	dc.l	$2000		;2000 downhill accel walk $C
+	;run
+	dc.l	$10000		;10000 uphill maxspeed run $0
+	dc.l	$2000		;2000 uphill accel run $4
+	dc.l	-$30000		;-30000 downhill maxspeed run $8
+	dc.l	$4000		;4000 downhill accel run $C
+unk_9EE4: ;micromax hill speeds
+	dc.l	$20000		;20000 some sort of speed cap? $0
+	dc.l	-$20000		;-20000 some sort of speed cap? $4
+	dc.l	$4000		;4000 some sort of decel? $8
+	dc.l	$1000		;1000 downhill accel no input $C
+	dc.l	-$4000		;-4000 downhill maxspeed no input $10
+	;walk
+	dc.l	$4000		;4000 uphill maxspeed walk $0
+	dc.l	$800		;800 uphill accel walk $4
+	dc.l	-$C000		;-C000 downhill maxspeed walk $8
+	dc.l	$1000		;1000 downhill accel walk $C
+	;run
+	dc.l	$8000		;8000 uphill maxspeed run $0
+	dc.l	$1000		;1000 uphill accel run $4
+	dc.l	-$18000		;-18000 downhill maxspeed run $8
+	dc.l	$2000		;2000 downhill accel run $C
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
 
@@ -31732,9 +31697,13 @@ Load_OptionMenu:
 	jsr	(j_StopMusic).l
 	move.w	#bgm_City,d0
 	jsr	(j_PlaySound).l
+	if blackOptionsBG = 0
 	move.w	#$1780,d0
 	move.l	(Addr_HoloBG).w,a0
 	jsr	(j_DecompressToVRAM).l
+	else
+    nop
+	endif
 	move.w	#$BC,d0
 	move.l	(Addr_HoloBG).w,a0
 	add.w	(off_718A).w,a0
@@ -31768,10 +31737,14 @@ byte_1CA68:	dc.b 0
 	dc.b 0			; as code, these are some useless or.b commands.
 				; it is	used as	data, however the program runs through it at the same time
 ; ---------------------------------------------------------------------------
+	if blackOptionsBG = 0
 	move.w	#$5580,d0
-	lea	ArtComp_1DD5C(pc),a0
+	lea	ArtComp_1DD5C(pc),a0 ;Face_in_option_menu
 	jsr	(j_DecompressToVRAM).l
 	bsr.w	sub_1CCAE
+	else
+    nop
+	endif
 	move.w	#$A6C0,d0
 	lea	ArtComp_1DC8F(pc),a0
 	jsr	(j_DecompressToVRAM).l

@@ -19,11 +19,15 @@ insertLevelSelect = 0
 
 ;debug options - 0=default
 jmpInGame = 0 ;1=go straight to level select (insertLevelSelect must be 1)
-;2=go straight to level 1 (from maporder.asm)
+	;2=go straight to level 1 (from maporder.asm)
+jmpInHelmet = 0 ;if jmpIngame=2 set the helmet to start with, nice for testing
+	;helmet mods, example 2=Cyclone (0 through 9) see constants.asm for list
 blackOptionsBG = 0 ;change options background to black so you can see the text
-invincible = 0 ;kid is invincible -may reset with diamond powers?
+invincible = 0 ;1=kid is invincible -may reset with diamond powers?
+	;2=start game with 50 lives and max diamonds (not invincible)
 changeHelmet = 0 ;1=change helmet -hold A+C and hit start
-;2=skip to next level -hold A+C and hit start (LevelSkip_Cheat)
+	;2=skip to next level -hold A+C and hit start (LevelSkip_Cheat)
+disableBGMusic = 0 ;1=no background music, sfx mods or maybe you need a break
 
 ; Set to 1 to fix minor bugs in the game.
 ; e.g. allows combining robots with other (non-UFO) enemies,
@@ -837,6 +841,10 @@ loc_65C:
 	sf	(Demo_Mode_flag).w
 	move.w	(MapHeader_BaseAddress).l,(Player_1_LevelID).w
 	move.w	#3,(Player_1_Lives).w
+	if invincible = 2
+	move.w	#50,(Player_1_Lives).w
+	move.w	#99,(Player_1_Diamonds).w
+	endif
 	clr.l	(Player_1_Score).w
 	clr.w	(Player_1_Helmet).w
 	move.w	#2,(Player_1_Hitpoints).w
@@ -850,7 +858,10 @@ loc_65C:
 	move.w	#3,(Player_2_Continues).w
 	move.w	#$FFFF,(Player_2_OneTimePrizes).w
 	bsr.w	sub_6E24
-
+	if jmpInGame = 2
+	move.w	#jmpInHelmet,d4
+	move.w	d4,(Player_1_Helmet).w
+	endif
 
 loc_6E2:
 	lea	($FFFFF7FE).w,sp
@@ -3996,7 +4007,7 @@ loc_2156:
 ; ---------------------------------------------------------------------------
 
 loc_216A:
-	cmpi.w	#6,($FFFFFA56).w
+	cmpi.w	#6,(Character_Movement).w
 	beq.w	loc_200C
 	cmpi.w	#MoveID_Jump,(Character_Movement).w
 	beq.w	loc_200C
@@ -7359,16 +7370,16 @@ sub_71E4:
 loc_71EC:
 	beq.w	loc_73C2
 	move.l	d7,a0
-	move.w	($FFFFF892).w,d2
-	move.w	($FFFFF894).w,d3
-	move.w	(Level_width_pixels).w,d1
-	subi.w	#$140,d1
+	move.w	(CameraXspeed).w,d2 ;camxspeed
+	move.w	(CameraYspeed).w,d3 ;camyspeed
+	move.w	(Level_width_pixels).w,d1 ;map end right side
+	subi.w	#$140,d1 ;subtract 320 or screen size
 	move.w	$1A(a0),d0
-	subi.w	#$A0,d0
+	subi.w	#$A0,d0 ;160 half a screen
 	bcc.s	loc_720E
-	moveq	#0,d0
+	moveq	#0,d0 ;if kid is less than 160 from left edge camera is zero
 
-loc_720E:
+loc_720E: ;limit cam to level width
 	cmp.w	d1,d0
 	bcs.s	loc_7214
 	move.w	d1,d0
@@ -7399,53 +7410,53 @@ loc_7234:
 	asr.w	#3,d0
 	move.w	d0,d2
 
-loc_723E:
+loc_723E: ;limit cam speed to 8px a frame
 	cmpi.w	#8,d2
 	blt.s	loc_7246
 	moveq	#8,d2
 
 loc_7246:
-	cmpi.w	#$FFF8,d2
+	cmpi.w	#-8,d2
 	bgt.s	loc_724E
 	moveq	#-8,d2
 
 loc_724E:
-	add.w	d2,(Camera_X_pos).w
+	add.w	d2,(Camera_X_pos).w ;end of x camera, start of y camera
 	move.w	(Level_height_pixels).w,d1
-	subi.w	#$E0,d1
-	move.w	$1E(a0),d0
-	subi.w	#$A0,d0
-	bcc.s	loc_7266
+	subi.w	#$E0,d1 ;224
+	move.w	$1E(a0),d0 ;kids ypos
+	subi.w	#$A0,d0 ;160 space from kid to top of screen main camera offset y
+	bcc.s	loc_7266 ;if kid is less than 160 from top camera is zero
 	moveq	#0,d0
 
-loc_7266:
+loc_7266: ;bottom map check
 	cmp.w	d1,d0
 	bcs.s	loc_726C
 	move.w	d1,d0
 
 loc_726C:
-	move.w	$1E(a0),d7
+	move.w	$1E(a0),d7 ;kids ypos
 	tst.w	d0
 	bne.s	loc_727E
-	cmp.w	($FFFFFA2E).w,d7
+	cmp.w	(KidYposLastFrame).w,d7 ;last ypos?
 	bge.s	loc_727E
-	subq.w	#2,($FFFFFB58).w
+	subq.w	#2,(CamTimerOffset).w ;cam timer/offset
 
 loc_727E:
 	sub.w	(Camera_Y_pos).w,d7
-	cmpi.w	#$20,d7
+	cmpi.w	#$20,d7 ;Stop subtracting 1 if kid is 32 from top of screen
 	bge.s	loc_728C
-	subq.w	#1,($FFFFFB58).w
+	subq.w	#1,(CamTimerOffset).w
 
 loc_728C:
-	cmpi.w	#$1E,($FFFFFB58).w
+	cmpi.w	#$1E,(CamTimerOffset).w ;30 frames then bring cam down
 	blt.s	loc_72A8
-	add.w	($FFFFFB58).w,d0
-	subi.w	#$1E,d0
+	add.w	(CamTimerOffset).w,d0
+	subi.w	#$1E,d0 ;take the 30 frame off d0
 	cmp.w	d1,d0
-	bcs.s	loc_72A8
+	bcs.s	loc_72A8 ;is bottom of level hit, if not sub 1
 	move.w	d1,d0
-	subi.w	#1,($FFFFFB58).w
+	subi.w	#1,(CamTimerOffset).w
 
 loc_72A8:
 	move.w	(Camera_Y_pos).w,d4
@@ -7563,8 +7574,8 @@ loc_73B8:
 	bra.w	*+4
 
 loc_73C2:
-	move.w	d2,($FFFFF892).w
-	move.w	d3,($FFFFF894).w
+	move.w	d2,(CameraXspeed).w ;camxspeed
+	move.w	d3,(CameraYspeed).w ;camyspeed
 	movem.l	(sp)+,d0-d3/a0-a3
 	rts
 ; End of function sub_71E4
@@ -7738,9 +7749,12 @@ loc_7526:
 	move.b	#3,palette_line(a3)
 	move.b	#0,priority(a3)
 	move.b	#1,$12(a3)
-	move.w	(PlayerStart_X_pos).w,x_pos(a3)
+	move.w	(PlayerStart_X_pos).w,x_pos(a3);set kids start loc
 	move.w	(PlayerStart_Y_pos).w,y_pos(a3)
-	subq.w	#1,y_pos(a3)
+	subq.w	#1,y_pos(a3) ;kid starts 1px off ground
+	if invincible = 1
+	st	(KidIsInvulnerable).w
+	endif
 	move.l	#$2010000,a1
 	jsr	(j_Allocate_GfxObjectSlot_a1).w
 	move.l	a1,($FFFFF862).w
@@ -7752,10 +7766,7 @@ loc_757E:
 	move.b	#1,$12(a1)
 	move.w	(PlayerStart_X_pos).w,$1A(a1)
 	move.w	(PlayerStart_Y_pos).w,$1E(a1)
-	subq.w	#1,$1E(a1) ;kid starts 1px off ground
-	if invincible = 1
-	st	(KidIsInvulnerable).w
-	endif
+	subq.w	#1,$1E(a1)
 	bsr.w	sub_B41C
 	clr.w	($FFFFFB70).w
 	move.w	($FFFFFA78).w,d7
@@ -7780,8 +7791,8 @@ loc_75D4:
 	jsr	(j_Hibernate_Object_1Frame).w
 	clr.l	($FFFFFA98).w
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	bsr.w	sub_7ACC
 	move.w	(Current_Helmet).w,d0
 	cmpi.w	#1,d0
@@ -7811,9 +7822,9 @@ loc_7606:
 loc_7650:
 	tst.b	(Ctrl_Down_Held).w
 	bne.s	loc_7664
-	subi.w	#8,($FFFFFB58).w
+	subi.w	#8,(CamTimerOffset).w
 	bge.s	loc_7664
-	move.w	#0,($FFFFFB58).w
+	move.w	#0,(CamTimerOffset).w
 
 loc_7664:
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
@@ -7901,7 +7912,7 @@ loc_7772:
 	beq.s	loc_779C
 	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_779C
-	addq.w	#1,($FFFFFB58).w
+	addq.w	#1,(CamTimerOffset).w
 	cmpi.w	#Micromax,(Current_Helmet).w
 	beq.s	loc_779C
 	cmpi.w	#Juggernaut,(Current_Helmet).w
@@ -8126,11 +8137,12 @@ loc_79AC:
 ; End of function sub_78E8
 
 ; ---------------------------------------------------------------------------
-off_79B2:	dc.w LnkTo_unk_A3E72-Data_Index
-	dc.w LnkTo_unk_A978A-Data_Index
+off_79B2:
+	dc.w LnkTo_unk_A3E72-Data_Index	;Kid standing
+	dc.w LnkTo_unk_A978A-Data_Index ;Skycutter standing (walking/hovering)
 	dc.w LnkTo_unk_BB304-Data_Index
 	dc.w LnkTo_unk_B4E82-Data_Index
-	dc.w LnkTo_unk_B7EC0-Data_Index
+	dc.w LnkTo_unk_B7EC0-Data_Index ;Eyeclops standing
 	dc.w LnkTo_unk_BEDF0-Data_Index
 	dc.w LnkTo_unk_C2E62-Data_Index
 	dc.w LnkTo_unk_B0994-Data_Index
@@ -8253,7 +8265,7 @@ sub_7ACC:
 ; ---------------------------------------------------------------------------
 
 loc_7AD6:
-	cmpi.w	#6,($FFFFFA56).w
+	cmpi.w	#6,(Character_Movement).w
 	beq.w	loc_7B12
 	move.w	(Current_Helmet_Available).w,d5
 	add.w	d5,d5
@@ -8745,7 +8757,7 @@ off_7EE2:
 	dc.w sub_80BC-off_7EE2
 	dc.b $FF
 	dc.b $FF
-stru_7EFA:
+stru_7EFA: ;Skycutter - helmet change animations
 	anim_frame	  8,  $C, LnkTo_unk_A4BA8-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_AA88C-Data_Index
 	anim_frame	  4,  $C, LnkTo_unk_A4BA8-Data_Index
@@ -8761,10 +8773,10 @@ stru_7EFA:
 	anim_frame	  5,   4, LnkTo_unk_AB3BE-Data_Index
 	dc.b $FF
 	dc.b $FF
-stru_7F30:
-	anim_frame	$10, 0, LnkTo_unk_A4A22-Data_Index
+stru_7F30:;Cyclone - helmet change animations
+	anim_frame	$10,   0, LnkTo_unk_A4A22-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_BB48A-Data_Index
-	anim_frame	  8, 0, LnkTo_unk_A4A22-Data_Index
+	anim_frame	  8,   0, LnkTo_unk_A4A22-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_BB48A-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_BB710-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_BB48A-Data_Index
@@ -8774,7 +8786,7 @@ stru_7F30:
 	anim_frame	$10,   8, 0
 	dc.b $FF
 	dc.b $FF
-stru_7F5A:
+stru_7F5A:;Red Stealth- helmet change animations
 	anim_frame	  4,   4, LnkTo_unk_B5088-Data_Index
 	anim_frame	  8,  $C, LnkTo_unk_A4A22-Data_Index
 	anim_frame	  4,   4, LnkTo_unk_B5088-Data_Index
@@ -8883,12 +8895,12 @@ stru_808A:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;flash white kid hit damage
 sub_80BC:
 
 	lea	(Palette_Buffer+$62).l,a2
-	moveq	#$B,d7
-	move.w	#$FFF,d6
+	moveq	#$B,d7 ;how many palette colors to change
+	move.w	#$FFF,d6 ;#$FFF color to flash, FFF is white
 
 loc_80C8:
 	move.w	d6,(a2)+
@@ -8899,7 +8911,7 @@ loc_80C8:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;set back to normal palette kid hit damage
 sub_80D0:
 	move.l	a2,-(sp)
 	add.w	d7,d7
@@ -8907,7 +8919,7 @@ sub_80D0:
 	add.w	off_80F2(pc,d7.w),a4
 	move.l	(a4),a4
 	lea	(Palette_Buffer+$62).l,a2
-	moveq	#$B,d7
+	moveq	#$B,d7 ;how many palette colors to change
 
 loc_80E8:
 	move.w	(a4)+,(a2)+
@@ -9070,8 +9082,8 @@ loc_8218:
 	jsr	(j_Hibernate_Object_1Frame).w
 	move.w	#$E,($FFFFFA78).w
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	bsr.w	sub_7ACC
 	beq.s	loc_825C
 	move.w	(Current_Helmet).w,d0
@@ -9088,9 +9100,9 @@ loc_8252:
 loc_825C:
 	tst.b	(Ctrl_Down_Held).w
 	bne.s	loc_82D8
-	subi.w	#8,($FFFFFB58).w
+	subi.w	#8,(CamTimerOffset).w
 	bge.s	loc_8270
-	move.w	#0,($FFFFFB58).w
+	move.w	#0,(CamTimerOffset).w
 
 loc_8270:
 	bsr.w	sub_DAA6
@@ -9131,7 +9143,7 @@ loc_82CA:
 ; ---------------------------------------------------------------------------
 
 loc_82D8:
-	addq.w	#1,($FFFFFB58).w
+	addq.w	#1,(CamTimerOffset).w
 	move.w	(Addr_PlatformStandingOn).w,d7
 	beq.w	loc_8382
 	move.w	d7,a4
@@ -9367,33 +9379,33 @@ off_84FA:	dc.l unk_85C4
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;crawl movement crawling crouch crouching prone
 sub_8506:
-	move.w	($FFFFFA0A).w,d1
+	move.w	(BlockTypeUnderKid).w,d1 ;block type under foot
 	add.w	d1,d1
 	add.w	d1,d1
 	move.l	off_84FA(pc,d1.w),a0
 	tst.b	x_direction(a3)
-	bne.s	loc_8560
-
+	bne.s	loc_8560 ;go to moving left
+;moving right
 loc_8518:
 	tst.b	(Ctrl_Left_Held).w
 	beq.s	loc_8524
 	st	x_direction(a3)
-	bra.s	loc_8572
+	bra.s	loc_8572 ;go to changing direction to left
 ; ---------------------------------------------------------------------------
 
 loc_8524:
 	tst.b	(Ctrl_Right_Held).w
-	beq.w	loc_85AC
+	beq.w	loc_85AC ;no left or right input then
 
-loc_852C:
+loc_852C: ;changing direction from left
 	tst.l	d0
-	bpl.s	loc_8536
-	add.l	$10(a0),d0
+	bpl.s	loc_8536 ;we are moving right and holding right
+	add.l	$10(a0),d0 ;crawling acceleration (when changing direction)
 	rts
 ; ---------------------------------------------------------------------------
-
+;we are moving right and holding right
 loc_8536:
 	cmpi.l	#$38000,d0
 	ble.s	loc_8544
@@ -9420,25 +9432,25 @@ loc_8554:
 return_855E:
 	rts
 ; ---------------------------------------------------------------------------
-
+;moving left
 loc_8560:
 	tst.b	(Ctrl_Right_Held).w
 	beq.s	loc_856C
 	sf	x_direction(a3)
-	bra.s	loc_852C
+	bra.s	loc_852C ;go to changing direction right
 ; ---------------------------------------------------------------------------
 
 loc_856C:
 	tst.b	(Ctrl_Left_Held).w
-	beq.s	loc_85AC
+	beq.s	loc_85AC ;no left or right input then
 
 loc_8572:
 	tst.l	d0
-	bmi.s	loc_857C
-	sub.l	$10(a0),d0
+	bmi.s	loc_857C ;we are moving left and holding left
+	sub.l	$10(a0),d0 ;crawling acceleration (when changing direction)
 	rts
 ; ---------------------------------------------------------------------------
-
+;we are moving left and holding left
 loc_857C:
 	neg.l	d0
 	cmpi.l	#$38000,d0
@@ -9450,7 +9462,7 @@ loc_858C:
 	bge.s	loc_859E
 
 loc_8590:
-	add.l	4(a0),d0
+	add.l	4(a0),d0 ;crawling acceleration (when pressing left/right)
 	cmp.l	(a0),d0
 	ble.s	loc_859A
 	move.l	(a0),d0
@@ -9461,7 +9473,7 @@ loc_859A:
 ; ---------------------------------------------------------------------------
 
 loc_859E:
-	sub.l	8(a0),d0
+	sub.l	8(a0),d0 ;crawling deceleration (when going faster than max speed)
 	cmp.l	(a0),d0
 	bge.s	loc_85A8
 	move.l	(a0),d0
@@ -9470,17 +9482,17 @@ loc_85A8:
 	neg.l	d0
 	rts
 ; ---------------------------------------------------------------------------
-
+;down held, but no left or right input, decel to stop
 loc_85AC:
 	tst.l	d0
 	bpl.s	loc_85B8
-	add.l	$C(a0),d0
+	add.l	$C(a0),d0 ;decel when just holding down
 	bpl.s	loc_85C0
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_85B8:
-	sub.l	$C(a0),d0
+	sub.l	$C(a0),d0 ;decel when just holding down
 	bmi.s	loc_85C0
 	rts
 ; ---------------------------------------------------------------------------
@@ -9495,25 +9507,25 @@ unk_85C4:	; on normal terrain
 	dc.l   $10000	; max crawling speed
 	dc.l    $1000	; crawling acceleration (when pressing left/right)
 	dc.l    $1000	; crawling deceleration (when going faster than max speed)
-	dc.l    $1800	; ?
+	dc.l    $1800	; decel when just holding down
 	dc.l    $4000	; crawling acceleration (when changing direction)
-unk_85D8:	; on ice
+unk_85D8:	; on rubber blocks
 	dc.l    $8000	; max crawling speed
 	dc.l    $2000	; crawling acceleration (when pressing left/right)
 	dc.l    $1000	; crawling deceleration (when going faster than max speed)
-	dc.l    $3000	; ?
+	dc.l    $3000	; decel when just holding down
 	dc.l    $8000	; crawling acceleration (when changing direction)
-unk_85EC:	; on rubber blocks
+unk_85EC:	; on ice blocks
 	dc.l   $18000	; max crawling speed
 	dc.l     $200	; crawling acceleration (when pressing left/right)
 	dc.l     $200	; crawling deceleration (when going faster than max speed)
-	dc.l     $100	; ?
+	dc.l     $100	; decel when just holding down
 	dc.l     $800	; crawling acceleration (when changing direction)
 ; =============== S U B	R O U T	I N E =======================================
 
 
 sub_8600:
-	move.w	($FFFFFA0A).w,($FFFFFA22).w
+	move.w	(BlockTypeUnderKid).w,($FFFFFA22).w
 	move.w	($FFFFFA78).w,d0
 	move.w	d0,d1
 	neg.w	d0
@@ -9581,7 +9593,7 @@ loc_8680:
 	moveq	#2,d0
 
 loc_8688:
-	move.w	d0,($FFFFFA0A).w
+	move.w	d0,(BlockTypeUnderKid).w
 	rts
 ; End of function sub_8600
 
@@ -9603,10 +9615,10 @@ sub_868E:
 	move.w	$1E(a0),d7
 	subi.w	#$A,d7
 	move.w	d7,y_pos(a3)
-	moveq	#$1C,d7
+	moveq	#$1C,d7 ;swordistance right $1C=28
 	tst.b	$16(a0)
 	beq.w	loc_86CE
-	moveq	#-$1C,d7
+	moveq	#-$1C,d7 ;swordistance left
 
 loc_86CE:
 	add.w	$1A(a0),d7
@@ -9901,7 +9913,7 @@ loc_89A8:
 
 ;sub_89D2:
 ManiaxeAxe_Init:
-	move.w	($FFFFFA56).w,d0
+	move.w	(Character_Movement).w,d0
 	move.w	#6,-(sp)
 	jsr	(j_Hibernate_Object).w
 	tst.b	(Maniaxe_throwing_axe).w
@@ -9917,17 +9929,17 @@ ManiaxeAxe_Init:
 	move.l	(Addr_GfxObject_Kid).w,a0
 	move.w	$1A(a0),x_pos(a3)
 	move.w	$1E(a0),d7
-	subi.w	#$10,d7
+	subi.w	#$10,d7 ;axe height
 	move.w	d7,y_pos(a3)
 	move.b	$16(a0),x_direction(a3)
 	move.b	#1,$12(a3)
 	move.b	#3,palette_line(a3)
 	st	$13(a3)
 	st	is_moved(a3)
-	moveq	#5,d7
+	moveq	#5,d7 ;axe speed right
 	tst.b	x_direction(a3)
 	beq.w	loc_8A42
-	moveq	#-5,d7
+	moveq	#-5,d7 ;axe speed left
 
 loc_8A42:
 	add.w	$26(a0),d7
@@ -10114,16 +10126,16 @@ loc_8BF0:
 	bsr.w	sub_71E4
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	bsr.w	sub_7ACC
 
 loc_8C12:
 	tst.b	(Ctrl_Down_Held).w
 	bne.s	loc_8C26
-	subi.w	#8,($FFFFFB58).w
+	subi.w	#8,(CamTimerOffset).w
 	bge.s	loc_8C26
-	move.w	#0,($FFFFFB58).w
+	move.w	#0,(CamTimerOffset).w
 
 loc_8C26:
 	bsr.w	sub_7428
@@ -10153,7 +10165,7 @@ loc_8C70:
 	beq.s	loc_8CB6
 	tst.b	(KidGrabbedByHand).w
 	bne.w	loc_8CB6
-	addq.w	#1,($FFFFFB58).w
+	addq.w	#1,(CamTimerOffset).w
 	move.w	(Current_Helmet).w,d0
 	cmpi.w	#9,d0
 	beq.s	loc_8CB6
@@ -10179,7 +10191,7 @@ loc_8CB6:
 	move.l	#ManiaxeAxe_Init,4(a0)
 	move.l	#stru_8B4E,d7
 	jsr	(j_Init_Animation).w
-	clr.l	x_vel(a3)
+	clr.l	x_vel(a3) ;stop when throwing, comment to axe throw while running
 	st	(Maniaxe_throwing_axe).w
 	bra.w	loc_8D72
 ; ---------------------------------------------------------------------------
@@ -10320,9 +10332,9 @@ loc_8E80:
 	bmi.w	loc_8E98
 	move.w	(Current_Helmet).w,d7
 	cmpi.w	#1,d7
-	beq.s	loc_8E4E
+	beq.s	loc_8E4E ;Skycutter jumps of edge instead of going down a slope
 	cmpi.w	#5,d7
-	beq.s	loc_8E4E
+	beq.s	loc_8E4E ;same with Juggernaut
 	bra.w	loc_9D22
 ; ---------------------------------------------------------------------------
 
@@ -10330,7 +10342,7 @@ loc_8E98:
 	move.w	(Current_Helmet).w,d7
 	move.w	#$2C5,d6
 	btst	d7,d6
-	bne.w	loc_9D22
+	bne.w	loc_9D22 ;effects Skycutter stopping at upward slopes
 	clr.w	$1C(a3)
 	move.w	x_pos(a3),d7
 	andi.w	#$FFF0,d7
@@ -10391,12 +10403,12 @@ loc_8F1C:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; rubber blocks horizontal
 sub_8F26:
 	move.l	x_pos(a3),d7
 	move.l	d7,d4
 	move.l	x_vel(a3),d0
-	bmi.w	loc_8FAC
+	bmi.w	loc_8FAC	;if going left skip here
 	add.l	d0,d4
 	move.l	d4,x_pos(a3)
 	swap	d4
@@ -10503,12 +10515,12 @@ loc_9022:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;rubber blocks vertical
 sub_902A:
 	move.l	y_pos(a3),d7
 	move.l	d7,d4
 	move.l	y_vel(a3),d0
-	bmi.w	loc_908C
+	bmi.w	loc_908C	;if going upward skip here
 	add.l	d0,d4
 	move.l	d4,y_pos(a3)
 	swap	d4
@@ -10557,7 +10569,7 @@ loc_908C:
 	beq.w	loc_90C0
 	cmpi.w	#Juggernaut,(Current_Helmet).w
 	beq.w	loc_90C0
-	subi.w	#$10,d7
+	subi.w	#$10,d7	;1 tile high characters sub 16
 
 loc_90C0:
 	move.w	d7,d0
@@ -10580,7 +10592,7 @@ loc_90C0:
 ; ---------------------------------------------------------------------------
 
 loc_90F6:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	loc_9114
 	move.l	y_vel(a3),d6
 	clr.l	y_vel(a3)
@@ -10886,7 +10898,7 @@ sub_9386:
 	andi.w	#$FFF0,d7
 	add.w	y_pos(a3),d7
 	move.w	d7,($FFFFFA24).w
-	sf	($FFFFFA26).w
+	sf	(CheckSlope).w
 	moveq	#-1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -10900,7 +10912,7 @@ loc_93AE:
 	sub.w	y_pos(a3),d7
 	neg.w	d7
 	move.w	d7,($FFFFFA24).w
-	st	($FFFFFA26).w
+	st	(CheckSlope).w
 	moveq	#-1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -10916,7 +10928,7 @@ loc_93D4:
 	addi.w	#$10,d7
 	add.w	y_pos(a3),d7
 	move.w	d7,($FFFFFA24).w
-	sf	($FFFFFA26).w
+	sf	(CheckSlope).w
 	moveq	#1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -10930,7 +10942,7 @@ loc_9402:
 	sub.w	y_pos(a3),d7
 	neg.w	d7
 	move.w	d7,($FFFFFA24).w
-	st	($FFFFFA26).w
+	st	(CheckSlope).w
 	moveq	#1,d7
 	rts
 ; ---------------------------------------------------------------------------
@@ -11046,7 +11058,7 @@ loc_950A:
 	neg.l	d0
 
 loc_9512:
-	cmpi.w	#1,($FFFFFA0A).w
+	cmpi.w	#1,(BlockTypeUnderKid).w
 	bne.s	loc_9526
 	tst.b	(Ctrl_Left_Held).w
 	bne.s	loc_9526
@@ -11060,7 +11072,7 @@ loc_9526:
 	bcc.s	loc_9580
 	move.b	#$FF,($FFFFFA13).w
 	move.w	($FFFFF8F0).w,d2
-	cmpi.w	#1,($FFFFFA0A).w
+	cmpi.w	#1,(BlockTypeUnderKid).w
 	beq.s	loc_9556
 	rol.l	#2,d0
 	move.l	d0,d1
@@ -11114,7 +11126,7 @@ loc_959C:
 ; ---------------------------------------------------------------------------
 
 loc_95A4:
-	cmpi.w	#1,($FFFFFA0A).w
+	cmpi.w	#1,(BlockTypeUnderKid).w
 	bne.s	loc_95DA
 	addi.w	#$40,d2
 	cmpi.w	#$600,d2
@@ -11538,7 +11550,7 @@ sub_98F2:
 loc_991A:
 	cmpi.w	#$11,d7
 	bne.w	loc_992A
-	not.b	($FFFFFA6A).w
+	not.b	(SkycutterUpsideDown).w
 	not.b	$17(a3)
 
 loc_992A:
@@ -11548,10 +11560,11 @@ loc_992A:
 	move.w	off_993A(pc,d7.w),addroffset_sprite(a3)
 	rts
 ; ---------------------------------------------------------------------------
-off_993A:	dc.w LnkTo_unk_AA3AE-Data_Index
-	dc.w LnkTo_unk_AA5B4-Data_Index
-	dc.w LnkTo_unk_AA5B4-Data_Index
-	dc.w LnkTo_unk_AA3AE-Data_Index
+off_993A:
+	dc.w LnkTo_unk_AA3AE-Data_Index ;skycutter_flip_1
+	dc.w LnkTo_unk_AA5B4-Data_Index ;skycutter_flip_2
+	dc.w LnkTo_unk_AA5B4-Data_Index ;skycutter_flip_2
+	dc.w LnkTo_unk_AA3AE-Data_Index ;skycutter_flip_1
 ; ---------------------------------------------------------------------------
 
 loc_9942:
@@ -11616,7 +11629,7 @@ loc_99A6:
 
 loc_99E6:
 	move.w	d7,$22(a2)
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_99F8
 	subi.w	#$1A,$1E(a2)
 
@@ -11626,7 +11639,8 @@ loc_99F8:
 ; End of function sub_98F2
 
 ; ---------------------------------------------------------------------------
-off_99FE:	dc.w LnkTo_unk_A978A-Data_Index
+off_99FE:	;Skycutter walking/hovering/standing
+	dc.w LnkTo_unk_A978A-Data_Index
 	dc.w LnkTo_unk_A9990-Data_Index
 	dc.w LnkTo_unk_A9B96-Data_Index
 	dc.w LnkTo_unk_A9D9C-Data_Index
@@ -11635,7 +11649,7 @@ off_99FE:	dc.w LnkTo_unk_A978A-Data_Index
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;start of character movement - ground movement
 sub_9A0A:
 
 ; FUNCTION CHUNK AT 00009AE0 SIZE 0000012A BYTES
@@ -11647,14 +11661,10 @@ sub_9A0A:
 
 loc_9A14:
 	move.w	(Current_Helmet).w,d3
-	cmpi.w	#1,d3
-	bne.w	loc_9AE0
-; End of function sub_9A0A
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
+	cmpi.w	#1,d3		;are we Skycutter?
+	bne.w	loc_9AE0	;no skip to standard character movement
+; ---------------------------------------------------------------------------
+;Skycutter movement
 sub_9A20:
 	tst.b	x_direction(a3)
 	bne.s	loc_9A84
@@ -11665,7 +11675,7 @@ sub_9A20:
 ; ---------------------------------------------------------------------------
 
 loc_9A32:
-	tst.b	(Ctrl_A_Held).w
+	tst.b	(Ctrl_A_Held).w	;is run held?
 	bne.s	loc_9A6E
 	cmpi.l	#$20000,d0
 	bge.s	loc_9A56
@@ -11706,32 +11716,32 @@ loc_9A84:
 ; ---------------------------------------------------------------------------
 
 loc_9A90:
-	tst.b	(Ctrl_A_Held).w
+	tst.b	(Ctrl_A_Held).w	;is run held?
 	bne.s	loc_9ACA
-	cmpi.l	#$FFFE0000,d0
+	cmpi.l	#-$20000,d0
 	ble.s	loc_9AB2
 	subi.l	#$2000,d0
-	cmpi.l	#$FFFE0000,d0
+	cmpi.l	#-$20000,d0
 	bge.s	return_9ADE
-	move.l	#$FFFE0000,d0
+	move.l	#-$20000,d0
 
 loc_9AB2:
-	cmpi.l	#$FFFC0000,d0
+	cmpi.l	#-$40000,d0
 	blt.s	loc_9AC2
 	addi.l	#$2000,d0
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_9AC2:
-	move.l	#$FFFC0000,d0
+	move.l	#-$40000,d0
 	rts
 ; ---------------------------------------------------------------------------
 
 loc_9ACA:
 	subi.l	#$4000,d0
-	cmpi.l	#$FFFC0000,d0
+	cmpi.l	#-$40000,d0
 	bge.s	return_9ADE
-	move.l	#$FFFC0000,d0
+	move.l	#-$40000,d0
 
 return_9ADE:
 	rts
@@ -11739,10 +11749,10 @@ return_9ADE:
 
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_9A0A
-
+;standard character movement - ground movement
 loc_9AE0:
 	lea	unk_9C0A(pc),a0
-	move.w	($FFFFFA0A).w,d2
+	move.w	(BlockTypeUnderKid).w,d2
 	cmpi.w	#2,d2
 	bne.s	loc_9AF2
 	lea	unk_9C7A(pc),a0
@@ -11876,7 +11886,7 @@ return_9BC6:
 ; ---------------------------------------------------------------------------
 
 loc_9BC8:; facing left, holding left but not run, moving right
-	sub.l	$18(a0),d0
+	sub.l	$18(a0),d0	;error bug should be $C(a0) like loc_9B5C
 	rts
 ; ---------------------------------------------------------------------------
 
@@ -11933,7 +11943,8 @@ loc_9C06:
 ; Acceleration running rate: Used when pressing a direction and run while moving in that direction
 ; Brake walking-right/running rate: Used when pressing direction and run while moving in opposite direction,
 ;	and when holding left but not run while moving right
-unk_9C0A:	; The below properties when the kid is walking on normal terrain
+unk_9C0A:	; normal terrain speeds-ground movement
+; kid movement
 	dc.l	$20000	; Max walking speed
 	dc.l	 $1000	; Acceleration walking rate
 	dc.l	 $2800	; Deceleration walking/running rate
@@ -11941,6 +11952,7 @@ unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$38000	; Max running speed
 	dc.l	 $1C00	; Acceleration running rate
 	dc.l	 $3000	; Brake walking-right/running rate
+; plus $1C Micromax movement
 	dc.l	$10000	; Micromax: Max walking speed
 	dc.l	  $800	; Micromax: Acceleration walking rate
 	dc.l	 $1400	; Micromax: Deceleration walking/running rate
@@ -11948,6 +11960,7 @@ unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$20000	; Micromax: Max running speed
 	dc.l	 $1000	; Micromax: Acceleration running rate
 	dc.l	 $1800	; Micromax: Brake walking-right/running rate
+; plus $38 Juggernaut movement
 	dc.l	$18000	; Juggernaut: Max walking speed
 	dc.l	 $2000	; Juggernaut: Acceleration walking rate
 	dc.l	 $5000	; Juggernaut: Deceleration walking/running rate
@@ -11955,6 +11968,7 @@ unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$30000	; Juggernaut: Max running speed
 	dc.l	 $3800	; Juggernaut: Acceleration running rate
 	dc.l	 $6000	; Juggernaut: Brake walking-right/running rate
+; plus $54 unused
 	dc.l	$20000
 	dc.l	 $4000
 	dc.l	 $2800
@@ -11962,7 +11976,7 @@ unk_9C0A:	; The below properties when the kid is walking on normal terrain
 	dc.l	$30000
 	dc.l	 $3800
 	dc.l	 $6000
-unk_9C7A:	; The below properties when the kid is walking on ice
+unk_9C7A:	; rubber blocks
 	dc.l	$18000	; Max walking speed
 	dc.l	 $2000	; Acceleration walking rate
 	dc.l	 $5000	; Deceleration walking/running rate
@@ -11984,7 +11998,7 @@ unk_9C7A:	; The below properties when the kid is walking on ice
 	dc.l	$20000	; Juggernaut: Max running speed
 	dc.l	 $7000	; Juggernaut: Acceleration running rate
 	dc.l	 $C000	; Juggernaut: Brake walking-right/running rate
-unk_9CCE:	; The below properties when the kid is walking on rubber blocks
+unk_9CCE:	; ice blocks
 	dc.l	$40000	; Max walking speed
 	dc.l	  $200	; Acceleration walking rate
 	dc.l	  $100	; Deceleration walking/running rate
@@ -12008,23 +12022,23 @@ unk_9CCE:	; The below properties when the kid is walking on rubber blocks
 	dc.l	  $D00	; Juggernaut: Brake walking-right/running rate
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
-;uphill downhill movement - hill slope upslope downslope
+;uphill downhill movement - hill slope hills slopes upslope downslope
 loc_9D22:
 	move.l	x_vel(a3),d0
-	tst.b	($FFFFFA26).w ;check slope upslope /=0000 or downslope \=FF00
-	bne.s	loc_9D2E ;going down +y
-	neg.l	d0 ;going up -y
+	tst.b	(CheckSlope).w ;check slope upslope /=00 false or downslope \=FF true
+	bne.s	loc_9D2E ; on a downslope
+	neg.l	d0 ;on an upslope negate/flip xvel
 
 loc_9D2E:
-	move.l	d0,y_vel(a3) ; move at a 45
-	move.w	#6,($FFFFFA56).w ;set Character_Movement 6 = uphill-downhill
+	move.l	d0,y_vel(a3);effects falling off bottom of hills maybe other stuff?
+	move.w	#6,(Character_Movement).w ;set Character_Movement 6 = uphill-downhill
 	bsr.w	sub_71E4 ;cam?
 	sf	(Berzerker_charging).w
 	jsr	(j_Hibernate_Object_1Frame).w
 	bsr.w	sub_7ACC ;check helmet change?
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 
 loc_9D58:
 	cmpi.w	#Eyeclops,(Current_Helmet).w
@@ -12048,7 +12062,7 @@ loc_9D94:
 	move.l	x_vel(a3),d0
 	move.b	(Ctrl_Right_Held).w,d1
 	move.b	(Ctrl_Left_Held).w,d2
-	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	beq.s	loc_9DAA
 	neg.l	d0
 	exg	d1,d2
@@ -12066,7 +12080,7 @@ loc_9DAA:
 ; ---------------------------------------------------------------------------
 ;uphill
 loc_9DC0:
-	move.b	($FFFFFA26).w,x_direction(a3) ;check slope /=0000 \=FF00 to xdir
+	move.b	(CheckSlope).w,x_direction(a3) ;check slope /=00 \=FF to xdir
 	tst.l	d0 ;xvel
 	bpl.s	loc_9DD4 ;moving right?
 	add.l	4(a1),d0 ;uphill accel run 2000 or walk 1000
@@ -12095,7 +12109,7 @@ loc_9DEE:
 ; ---------------------------------------------------------------------------
 ;downhill
 loc_9DF2:
-	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	seq	x_direction(a3)
 	tst.l	d0
 	bmi.s	loc_9E08 ;moving left?
@@ -12140,7 +12154,7 @@ loc_9E42:
 	move.l	d1,d0
 
 loc_9E4C:
-	move.b	($FFFFFA26).w,d1 ;check slope /=0000 \=FF00
+	move.b	(CheckSlope).w,d1 ;check slope /=00 \=FF
 	tst.l	d0
 	bpl.s	loc_9E58
 	eori.b	#$FF,d1
@@ -12149,18 +12163,18 @@ loc_9E58:
 	move.b	d1,x_direction(a3)
 ;last part, set xvel
 loc_9E5C:
-	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	beq.s	loc_9E64 ;if uphill skip
 	neg.l	d0 ;else neg downhill
 
 loc_9E64:
 	move.l	d0,x_vel(a3) ;set xvel
-	bra.w	loc_9F18 ;move on
+	bra.w	loc_9F18 ;move on to part 2
 ; ---------------------------------------------------------------------------
 ;sliders
 loc_9E6C:
 	move.l	x_vel(a3),d7
-	tst.b	($FFFFFA26).w ;check slope /=0000 \=FF00
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	beq.w	loc_9E94
 	addi.l	#$1000,d7
 	bpl.w	loc_9E88
@@ -12169,20 +12183,21 @@ loc_9E6C:
 loc_9E88:
 	sf	x_direction(a3)
 	move.l	d7,x_vel(a3)
-	bra.w	loc_9F18 ;move on
+	bra.w	loc_9F18 ;move on to part 2
 ; ---------------------------------------------------------------------------
 
 loc_9E94:
 	subi.l	#$1000,d7
 	bmi.w	loc_9EA4
-	move.l	#$FFFFF000,d7
+	move.l	#-$1000,d7
 
 loc_9EA4:
 	st	x_direction(a3)
 	move.l	d7,x_vel(a3)
-	bra.w	loc_9F18 ;move on
+	bra.w	loc_9F18 ;move on to part 2
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
+;**also see loc_9F18 below for max xvel on slopes (#$40000)
 unk_9EB0: ;kid hill speeds (non-sliders)
 	dc.l	$40000		;40000 some sort of speed cap? $0
 	dc.l	-$40000		;-40000 some sort of speed cap? $4
@@ -12217,11 +12232,11 @@ unk_9EE4: ;micromax hill speeds
 	dc.l	$2000		;2000 downhill accel run $C
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
-
+;hill slope movement continued - part 2
 loc_9F18:
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bne.w	loc_B580
-	move.l	#$40000,d1
+	move.l	#$40000,d1 ;max xvel on slopes for all (except bouncers)
 	move.l	x_vel(a3),d0
 	cmp.l	d1,d0
 	ble.s	loc_9F32
@@ -12236,9 +12251,9 @@ loc_9F32:
 loc_9F3A:
 	move.l	d0,x_vel(a3)
 	add.l	x_pos(a3),d0
-	move.l	d0,x_pos(a3)
-	bsr.w	sub_A254
-	tst.b	($FFFFFA26).w
+	move.l	d0,x_pos(a3) ;set xpos
+	bsr.w	sub_A254 ;go to setting ypos
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	bne.w	loc_A04C
 	move.w	y_pos(a3),d0
 	lsr.w	#4,d0
@@ -12424,7 +12439,7 @@ loc_A13A:
 	move.l	x_vel(a3),d0
 	move.w	($FFFFF8F0).w,d2
 	move.b	x_direction(a3),d1
-	tst.b	($FFFFFA26).w
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
 	beq.s	loc_A15C
 	eori.b	#$FF,d1
 	neg.l	d0
@@ -12457,7 +12472,8 @@ loc_A17E:
 	bra.w	loc_9D22
 ; END OF FUNCTION CHUNK	FOR sub_A4EE
 ; ---------------------------------------------------------------------------
-off_A190:	dc.l off_A1B8
+off_A190:
+	dc.l off_A1B8	;kid slope sprites
 	dc.l off_A1B8
 	dc.l off_A218
 	dc.l off_A230
@@ -12466,8 +12482,8 @@ off_A190:	dc.l off_A1B8
 	dc.l off_A200
 	dc.l off_A1E8
 	dc.l off_A23C
-	dc.l off_A1D0
-off_A1B8:	dc.w LnkTo_unk_A41FE-Data_Index
+	dc.l off_A1D0	;micromax slope sprites
+off_A1B8:	dc.w LnkTo_unk_A41FE-Data_Index ;kid slope sprites
 	dc.w LnkTo_unk_A43E4-Data_Index
 	dc.w LnkTo_unk_A44EA-Data_Index
 	dc.w LnkTo_unk_A4630-Data_Index
@@ -12479,7 +12495,7 @@ off_A1B8:	dc.w LnkTo_unk_A41FE-Data_Index
 	dc.w LnkTo_unk_A285E-Data_Index
 	dc.w LnkTo_unk_A29E4-Data_Index
 	dc.w LnkTo_unk_A2B6A-Data_Index
-off_A1D0:	dc.w LnkTo_unk_AC9E2-Data_Index
+off_A1D0:	dc.w LnkTo_unk_AC9E2-Data_Index ;micromax slope sprites
 	dc.w LnkTo_unk_ACAA8-Data_Index
 	dc.w LnkTo_unk_ACB6E-Data_Index
 	dc.w LnkTo_unk_ACC34-Data_Index
@@ -12548,10 +12564,10 @@ off_A23C:	dc.w LnkTo_unk_B6ECA-Data_Index
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;more hill slope movement - setting ypos - 45 movement?
 sub_A254:
-	tst.b	($FFFFFA26).w
-	bne.s	loc_A268
+	tst.b	(CheckSlope).w ;check slope /=00 \=FF
+	bne.s	loc_A268 ;skip to downslope version of next 3 lines
 	move.w	($FFFFFA24).w,d0
 	sub.w	x_pos(a3),d0
 	move.w	d0,y_pos(a3)
@@ -12567,7 +12583,7 @@ loc_A268:
 
 ; ---------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR sub_A4EE
-
+;Iron Knight climbing
 loc_A276:
 	st	($FFFFFA62).w
 	moveq	#0,d3
@@ -12582,8 +12598,8 @@ loc_A28A:
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	bsr.w	sub_7ACC
 	bne.w	loc_A6F8
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
@@ -12642,7 +12658,7 @@ loc_A338:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+; more Iron Knight climbing, wall climb uses Cyclone_YAcceleration var
 Get_RandomNumber_wordC:
 	moveq	#0,d6
 	move.w	(Cyclone_YAcceleration).w,d7
@@ -12715,7 +12731,7 @@ loc_A3DE:
 ; End of function sub_A3BC
 
 ; ---------------------------------------------------------------------------
-unk_A3F0:	dc.b   4
+unk_A3F0:	;likely iron_knight_climbing frames
 	dc.b   4
 	dc.b   4
 	dc.b   4
@@ -12731,6 +12747,7 @@ unk_A3F0:	dc.b   4
 	dc.b   4
 	dc.b   4
 	dc.b   4
+	dc.b   4
 	dc.b   2
 	dc.b   2
 	dc.b   2
@@ -12763,7 +12780,8 @@ unk_A3F0:	dc.b   4
 	dc.b   0
 	dc.b   0
 	dc.b   0
-off_A420:	dc.w LnkTo_unk_C1B92-Data_Index
+off_A420:	;iron_knight_climbing sprites
+	dc.w LnkTo_unk_C1B92-Data_Index
 	dc.w LnkTo_unk_C1E18-Data_Index
 	dc.w LnkTo_unk_C209E-Data_Index
 ; ---------------------------------------------------------------------------
@@ -12777,17 +12795,17 @@ loc_A426:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+;jump jumping movement
 sub_A432:
 	move.w	#$2000,(Cyclone_YAcceleration).w
 	move.w	(Current_Helmet).w,d0
 	add.w	d0,d0
-	move.w	unk_A49E(pc,d0.w),d0
+	move.w	unk_A49E(pc,d0.w),d0	;Maximum jump height
 	move.l	x_vel(a3),d1
 	bpl.s	loc_A44A
 	neg.l	d1
 
-loc_A44A:
+loc_A44A:	;jump based on xvel ?
 	lsl.l	#4,d1
 	swap	d1
 	addi.w	#$100,d1
@@ -12796,12 +12814,12 @@ loc_A44A:
 	neg.l	d0
 	tst.b	(KidGrabbedByHand).w
 	beq.w	loc_A466
-	addi.l	#$20000,d0
+	addi.l	#$20000,d0	;kid grabbed, cut your jump by $20000
 
 loc_A466:
-	move.l	d0,y_vel(a3)
+	move.l	d0,y_vel(a3)	;set yvel to jump
 	move.l	d0,($FFFFFAAA).w
-	tst.l	y_pos(a3)
+	tst.l	y_pos(a3)	;test if hit top of level
 	bpl.s	loc_A480
 	moveq	#0,d0
 	move.w	(Level_height_pixels).w,d0
@@ -12813,7 +12831,7 @@ loc_A480:
 	asr.l	#1,d0
 	move.l	d0,d1
 	asr.l	#1,d1
-	add.l	d1,d0
+	add.l	d1,d0	;xvel*.75
 	move.l	d0,x_vel(a3)
 	move.l	d0,-(sp)
 	moveq	#sfx_Jump,d0
@@ -12961,8 +12979,8 @@ loc_A606:
 	move.w	(Addr_PlatformStandingOn).w,d7
 	bne.w	loc_A9AA
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	move.w	($FFFFFA96).w,a4
 	move.l	$A(a4),x_vel(a3)
 	move.l	($FFFFFA98).w,d7
@@ -13019,7 +13037,7 @@ loc_A6AE:
 
 loc_A6D0:
 	move.l	d7,x_vel(a3)
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	st	($FFFFFA67).w
 	move.l	#stru_8B74,d7
 	jsr	(j_Init_Animation).w
@@ -13034,7 +13052,7 @@ loc_A6F4:
 ; ---------------------------------------------------------------------------
 
 loc_A6F8:
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	move.w	#MoveID_Jump,(Character_Movement).w
 	clr.w	(Addr_PlatformStandingOn).w
 	clr.w	($FFFFFA96).w
@@ -13053,8 +13071,8 @@ loc_A6F8:
 loc_A73A:
 	bsr.w	sub_7ACC
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 
 loc_A74E:
 	bsr.w	sub_B084
@@ -13094,7 +13112,7 @@ loc_A7B4:
 	move.w	(Current_Helmet).w,d7
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	beq.w	loc_A7F8
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_A7F8
 	moveq	#-$21,d7
 	move.l	d7,d6
@@ -13139,7 +13157,7 @@ loc_A830:
 loc_A840:
 	cmpi.w	#1,d7
 	bne.w	loc_A87A
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_A864
 	moveq	#-$21,d7
 	move.l	d7,d6
@@ -13200,7 +13218,7 @@ loc_A8F6:
 	bpl.w	loc_A912
 	sf	(Maniaxe_throwing_axe).w
 	sf	is_animated(a3)
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	sf	($FFFFFA67).w
 	sf	is_animated(a3)
 	bra.w	loc_A762
@@ -13210,7 +13228,7 @@ loc_A912:
 	clr.b	($FFFFFA69).w
 	cmpi.w	#2,d7
 	bge.w	loc_A92E
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_A94E
 	bsr.w	sub_BB54
 	bra.w	loc_A762
@@ -13218,7 +13236,7 @@ loc_A912:
 
 loc_A92E:
 	bne.w	loc_A942
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	loc_A762
 	bsr.w	sub_BB54
 	bra.w	loc_A762
@@ -13262,7 +13280,7 @@ loc_A99E:
 ; ---------------------------------------------------------------------------
 
 loc_A9AA:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_A9BE
 	clr.l	y_vel(a3)
 	clr.w	(Addr_PlatformStandingOn).w
@@ -13277,7 +13295,7 @@ loc_A9BE:
 	move.l	x_vel(a3),d7
 	sub.l	$A(a4),d7
 	move.l	d7,($FFFFFA98).w
-	clr.w	($FFFFFA0A).w
+	clr.w	(BlockTypeUnderKid).w
 	bra.w	loc_8D72
 ; ---------------------------------------------------------------------------
 
@@ -13292,7 +13310,7 @@ loc_A9E4:
 	tst.l	y_vel(a3)
 	bmi.w	loc_AA22
 	clr.l	y_vel(a3)
-	st	($FFFFFA66).w
+	st	(MicromaxOnWall).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
@@ -13308,18 +13326,18 @@ loc_AA22:
 	bsr.w	sub_7ACC
 	bne.w	loc_A74E
 	bsr.w	Character_CheckCollision
-	move.w	x_pos(a3),($FFFFFA2C).w
-	move.w	y_pos(a3),($FFFFFA2E).w
+	move.w	x_pos(a3),(KidXposLastFrame).w
+	move.w	y_pos(a3),(KidYposLastFrame).w
 	bsr.w	sub_B168
 	bsr.w	sub_A4EE
 	cmpi.w	#Micromax,(Current_Helmet).w
 	bne.w	loc_AA8E
-	tst.b	($FFFFFA66).w
+	tst.b	(MicromaxOnWall).w
 	bne.w	loc_AA8E
 	tst.l	y_vel(a3)
 	bmi.w	loc_AA8E
 	clr.l	y_vel(a3)
-	st	($FFFFFA66).w
+	st	(MicromaxOnWall).w
 	move.l	#stru_8B6A,d7
 	jsr	(j_Init_Animation).w
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
@@ -13370,7 +13388,7 @@ loc_AAF8:
 loc_AB0A:
 	add.w	d7,x_pos(a3)
 	clr.l	y_vel(a3)
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	loc_A6F8
 	bsr.w	sub_DB22
 	bra.w	loc_8BF0
@@ -13392,7 +13410,7 @@ loc_AB22:
 loc_AB4A:
 	add.w	d7,x_pos(a3)
 	clr.l	y_vel(a3)
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	loc_A6F8
 	bsr.w	sub_DB22
 	bra.w	loc_8BF0
@@ -13480,7 +13498,7 @@ loc_AC42:
 
 loc_AC64:
 	move.l	d7,x_vel(a3)
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	st	($FFFFFA67).w
 	move.l	#stru_8B74,d7
 	jsr	(j_Init_Animation).w
@@ -13491,7 +13509,7 @@ loc_AC64:
 ; ---------------------------------------------------------------------------
 
 loc_AC88:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_AD2C
 	moveq	#-$21,d7
 	move.l	d7,d6
@@ -13531,7 +13549,7 @@ loc_ACCC:
 loc_AD00:
 	cmpi.w	#Skycutter,(Current_Helmet).w
 	bne.w	loc_AD2C
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_AD26
 	moveq	#-$21,d7
 	move.l	d7,d6
@@ -13550,7 +13568,7 @@ loc_AD2C:
 
 loc_AD34:
 	sf	is_animated(a3)
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	sf	($FFFFFA67).w
 	tst.b	($FFFFFA72).w
 	beq.w	loc_AD58
@@ -13569,7 +13587,7 @@ loc_AD58:
 
 loc_AD68:
 	bpl.w	loc_AD7C
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	sf	($FFFFFA67).w
 	sf	is_animated(a3)
 	bra.w	loc_A762
@@ -13579,7 +13597,7 @@ loc_AD7C:
 	clr.b	($FFFFFA69).w
 	cmpi.w	#2,d7
 	bge.w	loc_AD98
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_A94E
 	bsr.w	sub_BB54
 	bra.w	loc_AA9C
@@ -13587,7 +13605,7 @@ loc_AD7C:
 
 loc_AD98:
 	bne.w	loc_ADAC
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	loc_AA9C
 	bsr.w	sub_BB54
 	bra.w	loc_AA9C
@@ -14019,11 +14037,11 @@ loc_B150:
 
 
 sub_B168:
-	tst.b	($FFFFFA66).w
+	tst.b	(MicromaxOnWall).w ;flag Micromax fly on wall?
 	beq.w	loc_B18A
 	move.l	y_vel(a3),d7
-	addi.l	#$600,d7
-	cmpi.l	#$10000,d7
+	addi.l	#$600,d7	;slide down wall rate
+	cmpi.l	#$10000,d7	;once $10000 is hit add regular grav
 	bgt.w	loc_B18A
 	move.l	d7,y_vel(a3)
 	rts
@@ -14036,19 +14054,19 @@ loc_B18A:
 	bne.w	loc_B214
 
 loc_B19C:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w ;upside down hoverboard skycutter
 	beq.w	loc_B1D4
 	move.l	y_vel(a3),d7
 	move.l	#$2000,d6
 	tst.w	(Ctrl_B_Held).w
 	bne.w	loc_B1BC
-	move.l	#$4000,d6
+	move.l	#$4000,d6	;normal gravity
 
 loc_B1BC:
 	sub.l	d6,d7
-	cmpi.l	#$FFF88000,d7
+	cmpi.l	#-$78000,d7	;max upside down grav skycutter
 	bgt.w	loc_B1CE
-	move.l	#$FFF88000,d7
+	move.l	#-$78000,d7
 
 loc_B1CE:
 	move.l	d7,y_vel(a3)
@@ -14077,9 +14095,9 @@ loc_B1EE:
 ; ---------------------------------------------------------------------------
 
 loc_B200:
-	cmpi.l	#$FFF80000,d7
+	cmpi.l	#-$80000,d7
 	bge.s	loc_B20E
-	move.l	#$FFF80000,d7
+	move.l	#-$80000,d7
 
 loc_B20E:
 	move.l	d7,y_vel(a3)
@@ -14136,7 +14154,7 @@ sub_B270:
 ; ---------------------------------------------------------------------------
 
 loc_B284:
-	tst.b	($FFFFFA66).w
+	tst.b	(MicromaxOnWall).w
 	beq.w	loc_B28E
 	rts
 ; ---------------------------------------------------------------------------
@@ -14500,7 +14518,7 @@ loc_B598:
 	tst.l	y_vel(a3)
 	bmi.w	loc_A426
 	moveq	#8,d4
-	tst.b	($FFFFFA26).w
+	tst.b	(CheckSlope).w
 	beq.w	loc_B5CE
 	moveq	#-8,d4
 
@@ -14609,10 +14627,10 @@ Jump_On_Enemy:
 	moveq	#sfx_Jump_on_enemy,d0
 	jsr	(j_PlaySound).l
 	move.l	(sp)+,d0
-	move.w	($FFFFFA2C).w,x_pos(a3)
-	move.w	($FFFFFA2E).w,y_pos(a3)
+	move.w	(KidXposLastFrame).w,x_pos(a3)
+	move.w	(KidYposLastFrame).w,y_pos(a3)
 	move.l	#$FFFC0000,d7
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_B6DA
 	moveq	#0,d7
 
@@ -14940,7 +14958,7 @@ loc_B9A2:
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	has_level_collision(a3)
-	sf	($FFFFFA26).w
+	sf	(CheckSlope).w
 	move.w	($FFFFFB6C).w,d3
 	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
@@ -14960,7 +14978,7 @@ loc_B9A2:
 	beq.w	loc_B978
 	cmpi.w	#$4000,d5
 	bne.w	loc_BA1C
-	move.w	#6,($FFFFFA56).w
+	move.w	#6,(Character_Movement).w
 	bra.w	loc_9D58
 ; ---------------------------------------------------------------------------
 
@@ -14997,7 +15015,7 @@ loc_BA5A:
 	bclr	#Button_B,(Ctrl_Pressed).w ; keyboard key (S) jump
 	bclr	#Button_C,(Ctrl_Pressed).w ; keyboard key (D) special
 	sf	has_level_collision(a3)
-	st	($FFFFFA26).w
+	st	(CheckSlope).w
 	move.w	($FFFFFB6C).w,d3
 	jsr	(j_Get_XY_From_LevelLayoutAddress).l
 	asl.w	#4,d1
@@ -15017,7 +15035,7 @@ loc_BA5A:
 	beq.w	loc_B978
 	cmpi.w	#$5000,d5
 	bne.w	loc_BAD2
-	move.w	#6,($FFFFFA56).w
+	move.w	#6,(Character_Movement).w
 	bra.w	loc_9D58
 ; ---------------------------------------------------------------------------
 
@@ -15076,7 +15094,7 @@ sub_BB54:
 	bsr.w	sub_BBE2
 	beq.w	loc_BB74
 	moveq	#2,d6
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	beq.w	loc_BB6E
 	moveq	#0,d6
 
@@ -15116,7 +15134,7 @@ return_BBC0:
 ; ---------------------------------------------------------------------------
 
 loc_BBC2:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	return_BBD0
 	jmp	(j_loc_11430).l
 ; ---------------------------------------------------------------------------
@@ -15126,7 +15144,7 @@ return_BBD0:
 ; ---------------------------------------------------------------------------
 
 loc_BBD2:
-	tst.b	($FFFFFA6A).w
+	tst.b	(SkycutterUpsideDown).w
 	bne.w	return_BBE0
 	jmp	(j_loc_11364).l
 ; ---------------------------------------------------------------------------
@@ -15541,6 +15559,7 @@ life_display:							; Lives display
 	move.w	d1,$14(a0)
 
 diamond_display:
+
 	move.w	(Number_Diamonds).w,d0
 	cmp.w	(Number_Diamonds_prev).w,d0
 	beq.w	return_BF80
@@ -17167,11 +17186,11 @@ loc_DB1A:
 
 sub_DB22:
 	sf	(Cyclone_flying).w
-	sf	($FFFFFA6A).w
+	sf	(SkycutterUpsideDown).w
 	sf	($FFFFFA69).w
 	sf	(Red_Stealth_sword_swing).w
 	sf	(Maniaxe_throwing_axe).w
-	sf	($FFFFFA66).w
+	sf	(MicromaxOnWall).w
 	sf	($FFFFFA67).w
 	sf	(Berzerker_charging).w
 	sf	has_level_collision(a3)
@@ -31719,23 +31738,10 @@ Load_OptionMenu:
 	lea	byte_1CA68(pc),a3
 	jsr	(j_DecompressToRAM).l
 ; ---------------------------------------------------------------------------
-byte_1CA68:	dc.b 0
-	dc.b 3
-	dc.b 4
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0
-	dc.b 0			; as code, these are some useless or.b commands.
-				; it is	used as	data, however the program runs through it at the same time
+byte_1CA68:
+	dc.b 0,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0
+	; as code, these are some useless or.b commands.
+	; it is	used as	data, however the program runs through it at the same time
 ; ---------------------------------------------------------------------------
 	if blackOptionsBG = 0
 	move.w	#$5580,d0
@@ -32182,78 +32188,15 @@ loc_1CE56:
 ; End of function DrawOptText1
 
 ; ---------------------------------------------------------------------------
-OptText1:	dc.b   0
-	dc.b   0
-	dc.b $5D ; ]
-	dc.b $6D ; m
-	dc.b $50 ; P
-	dc.b $4C ; L
-	dc.b $41 ; A
-	dc.b $59 ; Y
-	dc.b $45 ; E
-	dc.b $52 ; R
-	dc.b $53 ; S
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
-OptText2:	dc.b  $C
-	dc.b   0
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $45 ; E
-	dc.b $6D ; m
-	dc.b $43 ; C
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $54 ; T
-	dc.b $52 ; R
-	dc.b $4F ; O
-	dc.b $4C ; L
-	dc.b $4C ; L
-	dc.b $45 ; E
-	dc.b $52 ; R
-	dc.b $6D ; m
-	dc.b   0
-OptText3:	dc.b  $C
-	dc.b   0
-	dc.b $54 ; T
-	dc.b $57 ; W
-	dc.b $4F ; O
-	dc.b $6D ; m
-	dc.b $43 ; C
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $54 ; T
-	dc.b $52 ; R
-	dc.b $4F ; O
-	dc.b $4C ; L
-	dc.b $4C ; L
-	dc.b $45 ; E
-	dc.b $52 ; R
-	dc.b $53 ; S
-	dc.b   0
-OptText4:	dc.b   0
-	dc.b   3
-	dc.b $43 ; C
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $54 ; T
-	dc.b $52 ; R
-	dc.b $4F ; O
-	dc.b $4C ; L
-	dc.b $53 ; S
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
-	dc.b   0
-	dc.b  $B
-	dc.b   3
-	dc.b $4D ; M
-	dc.b $4F ; O
-	dc.b $44 ; D
-	dc.b $45 ; E
-	dc.b $6D ; m
-	dc.b   0
+OptText1:
+	dc.b	0,0,"]mPLAYERSm[",0	;xloc,yloc,"words" ]=2 m=space [=bullet, 0 padding
+OptText2:
+	dc.b	$C,0,"ONEmCONTROLLERm",0
+OptText3:
+	dc.b	$C,0,"TWOmCONTROLLERS",0
+OptText4:
+	dc.b	0,3,"CONTROLSm[",0,0
+	dc.b	$B,3,"MODEm",0
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -32279,13 +32222,13 @@ loc_1CEB2:
 
 loc_1CED6:
 	add.w	d6,d7
-	move.w	(Options_Suboption_Controls).w,d5
-	addi.w	#$1B,d5
+	move.w	(Options_Suboption_Controls).w,d5	;mode number
+	addi.w	#$1B,d5	;$1B or 27 skip 27 lettters, go to number 1
 	add.w	d7,d5
 	move.w	d5,(a6)
 	move.w	word_1CE2C(pc),d1
-	addq.w	#5,d1
-	move.w	(Options_Suboption_Controls).w,d5
+	addq.w	#5,d1	;yloc of speed jump special
+	move.w	(Options_Suboption_Controls).w,d5	;mode number
 	add.w	d5,d5
 	add.w	d5,d5
 	lea	unk_1CF28(pc,d5.w),a3
@@ -32296,11 +32239,11 @@ loc_1CEF8:
 	ext.w	d5
 	lea	OptText5(pc,d5.w),a4
 	move.w	word_1CE2A(pc),d6
-	addi.w	#9,d6
+	addi.w	#9,d6	;xloc of speed jump special
 	move.w	d1,d7
 	bsr.w	DrawTextLine
-	addq.w	#2,d1
-	dbf	d2,loc_1CEF8
+	addq.w	#2,d1	;y space
+	dbf	d2,loc_1CEF8	;loop
 	moveq	#0,d4
 	lea	OptText6(pc),a4
 	bsr.w	DrawTextLine_Offset
@@ -32310,72 +32253,21 @@ loc_1CEF8:
 ; End of function DrawOptText2
 
 ; ---------------------------------------------------------------------------
-unk_1CF28:	dc.b   0
-	dc.b   8
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   8
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   8
-	dc.b $10
-	dc.b   0
-	dc.b   0
-	dc.b $10
-	dc.b   0
-	dc.b   8
-	dc.b   0
-	dc.b $10
-	dc.b   8
-	dc.b   0
-	dc.b   0
-OptText5:	dc.b $53 ; S
-	dc.b $50 ; P
-	dc.b $45 ; E
-	dc.b $45 ; E
-	dc.b $44 ; D
-	dc.b $6D ; m
-	dc.b $6D ; m
-	dc.b   0
-	dc.b $4A ; J
-	dc.b $55 ; U
-	dc.b $4D ; M
-	dc.b $50 ; P
-	dc.b $6D ; m
-	dc.b $6D ; m
-	dc.b $6D ; m
-	dc.b   0
-	dc.b $53 ; S
-	dc.b $50 ; P
-	dc.b $45 ; E
-	dc.b $43 ; C
-	dc.b $49 ; I
-	dc.b $41 ; A
-	dc.b $4C ; L
-	dc.b   0
-OptText6:	dc.b   5
-	dc.b   5
-	dc.b $41 ; A
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
-	dc.b   5
-	dc.b   7
-	dc.b $42 ; B
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
-	dc.b   5
-	dc.b   9
-	dc.b $43 ; C
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
+unk_1CF28:
+	dc.b	0,8,$10,0	;mode 1 0=speed 8=jump $10=special, 0 padding
+	dc.b	0,$10,8,0	;mode 2
+	dc.b	8,0,$10,0	;mode 3
+	dc.b	8,$10,0,0	;mode 4
+	dc.b	$10,0,8,0	;mode 5
+	dc.b	$10,8,0,0	;mode 6
+OptText5:
+	dc.b	"SPEEDmm",0
+	dc.b	"JUMPmmm",0
+	dc.b	"SPECIAL",0
+OptText6:
+	dc.b	$5,$5,"Am[",0	;xloc,yloc,"words" m=space [=bullet, 0 padding
+	dc.b	$5,$7,"Bm[",0
+	dc.b	$5,$9,"Cm[",0
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -32403,88 +32295,14 @@ loc_1CF94:
 ; End of function DrawOptText3
 
 ; ---------------------------------------------------------------------------
-OptText7:	dc.b   0
-	dc.b  $C
-	dc.b $53 ; S
-	dc.b $50 ; P
-	dc.b $45 ; E
-	dc.b $45 ; E
-	dc.b $44 ; D
-	dc.b $6D ; m
-	dc.b $42 ; B
-	dc.b $55 ; U
-	dc.b $54 ; T
-	dc.b $54 ; T
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b $6D ; m
-	dc.b   0
-OptText8:	dc.b  $E
-	dc.b  $C
-	dc.b $4E ; N
-	dc.b $4F ; O
-	dc.b $52 ; R
-	dc.b $4D ; M
-	dc.b $41 ; A
-	dc.b $4C ; L
-	dc.b $6D ; m
-	dc.b $41 ; A
-	dc.b $43 ; C
-	dc.b $54 ; T
-	dc.b $49 ; I
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b   0
-	dc.b  $E
-	dc.b  $E
-	dc.b $50 ; P
-	dc.b $55 ; U
-	dc.b $53 ; S
-	dc.b $48 ; H
-	dc.b $6D ; m
-	dc.b $46 ; F
-	dc.b $4F ; O
-	dc.b $52 ; R
-	dc.b $6D ; m
-	dc.b $46 ; F
-	dc.b $41 ; A
-	dc.b $53 ; S
-	dc.b $54 ; T
-	dc.b   0
-OptText9:	dc.b  $E
-	dc.b  $C
-	dc.b $46 ; F
-	dc.b $41 ; A
-	dc.b $53 ; S
-	dc.b $54 ; T
-	dc.b $6D ; m
-	dc.b $41 ; A
-	dc.b $43 ; C
-	dc.b $54 ; T
-	dc.b $49 ; I
-	dc.b $4F ; O
-	dc.b $4E ; N
-	dc.b $6D ; m
-	dc.b $6D ; m
-	dc.b   0
-	dc.b  $E
-	dc.b  $E
-	dc.b $50 ; P
-	dc.b $55 ; U
-	dc.b $53 ; S
-	dc.b $48 ; H
-	dc.b $6D ; m
-	dc.b $46 ; F
-	dc.b $4F ; O
-	dc.b $52 ; R
-	dc.b $6D ; m
-	dc.b $53 ; S
-	dc.b $4C ; L
-	dc.b $4F ; O
-	dc.b $57 ; W
-	dc.b   0
+OptText7:
+	dc.b	0,$C,"SPEEDmBUTTONm[m",0	;xloc,yloc,"words" m=space [=bullet, 0 padding
+OptText8:
+	dc.b	$E,$C,"NORMALmACTION",0
+	dc.b	$E,$E,"PUSHmFORmFAST",0
+OptText9:
+	dc.b	$E,$C,"FASTmACTIONmm",0
+	dc.b	$E,$E,"PUSHmFORmSLOW",0
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -32503,16 +32321,8 @@ loc_1CFFE:
 ; End of function DrawOptText4
 
 ; ---------------------------------------------------------------------------
-OptText10:	dc.b   0
-	dc.b $11
-	dc.b $45 ; E
-	dc.b $58 ; X
-	dc.b $49 ; I
-	dc.b $54 ; T
-	dc.b $6D ; m
-	dc.b $5B ; [
-	dc.b   0
-	dc.b   0
+OptText10:
+	dc.b	0,$11,"EXITm[",0,0	;xloc,yloc,"words" m=space [=bullet, 0 padding
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -32936,142 +32746,72 @@ loc_1D464:
 	move.l	(off_7192).w,a0
 	jmp	(a0)
 ; ---------------------------------------------------------------------------
-EndText1:	dc.b  $B
-	dc.b   2
-	dc.b "CONGRATULATIONSmiii", 0
-	dc.b  $B
-	dc.b   4
-	dc.b "YOUmHAVEmFREEDmTHEM", 0
-	dc.b  $B
-	dc.b   6
-	dc.b "FROMmTHEmEVILmBOSSf", 0
-	dc.b   9
-	dc.b   8
-	dc.b "YOUmWILLmBEmREMEMBEREDm", 0
-	dc.b   8
-	dc.b  $A
-	dc.b "ASmTHEmFIRSTmHOLOGRAPHICm", 0
-	dc.b  $C
-	dc.b  $C
-	dc.b "GAMEmCHAMPIONmfffmm", 0
-	dc.b  $B
-	dc.b  $F
+EndText1:
+;f = .
+;i = !
+;m = space
+;xloc,yloc,"words",0 padding
+	dc.b	$B,$2,"CONGRATULATIONSmiii",0
+	dc.b	$B,$4,"YOUmHAVEmFREEDmTHEM",0
+	dc.b	$B,$6,"FROMmTHEmEVILmBOSSf",0
+	dc.b	$9,$8,"YOUmWILLmBEmREMEMBEREDm",0
+	dc.b	$8,$A,"ASmTHEmFIRSTmHOLOGRAPHICm",0
+	dc.b	$C,$C,"GAMEmCHAMPIONmfffmm",0
     if gameRevision<2
-	dc.b "THEmKIDmCHAMELEONfm", 0
+	dc.b	$B,$F,"THEmKIDmCHAMELEONfm",0
     else
-	dc.b "THEmCHAMELEONmKIDfm", 0
+	dc.b	$B,$F,"THEmCHAMELEONmKIDfm",0
     endif
-	dc.b $FF
-	dc.b $FF
+	dc.b	$FF
+	dc.b	$FF
 
-	dc.b  $D
-	dc.b   2
-	dc.b "ANDhmNOWmffffmmmm", 0
-	dc.b  $B
-	dc.b   4
-	dc.b "THEmPEOPLEmWHOmGAVE", 0
-	dc.b  $A
-	dc.b   6
-	dc.b "UPmTHEIRmLIVEShmWIVES", 0
-	dc.b   9
-	dc.b   8
-	dc.b "ANDmSANITYmTOmMAKEmTHIS", 0
-	dc.b  $B
-	dc.b  $A
-	dc.b "GAMEmAmREALITYmfffmmm", 0
-	dc.b   9
-	dc.b  $C
-	dc.b "mmmmm", 0
-	dc.b  $C
-	dc.b  $D
-	dc.b "THEmSEGAmTECHNICALm", 0
-	dc.b  $C
-	dc.b  $F
-	dc.b "mINSTITUTEmTEAMmimm", 0
-	dc.b $FF
-	dc.b $FF
+	dc.b	$D,$2,"ANDhmNOWmffffmmmm",0
+	dc.b	$B,$4,"THEmPEOPLEmWHOmGAVE",0
+	dc.b	$A,$6,"UPmTHEIRmLIVEShmWIVES",0
+	dc.b	$9,$8,"ANDmSANITYmTOmMAKEmTHIS",0
+	dc.b	$B,$A,"GAMEmAmREALITYmfffmmm",0
+	dc.b	$9,$C,"mmmmm",0
+	dc.b	$C,$D,"THEmSEGAmTECHNICALm",0
+	dc.b	$C,$F,"mINSTITUTEmTEAMmimm",0
+	dc.b	$FF
+	dc.b	$FF
 
-	dc.b  $D
-	dc.b   0
-	dc.b "ffmGAMEmDESIGNmff", 0
-	dc.b   8
-	dc.b  $A
-	dc.b "HOYTmNGmm", 0
-	dc.b $15
-	dc.b $11
-	dc.b "BILLmDUNN", 0
-	dc.b $13
-	dc.b   8
-	dc.b "RICKmMACARAEG", 0
-	dc.b   8
-	dc.b $13
-	dc.b "mGRAEMEmBAYLESS", 0
-	dc.b $FF
-	dc.b $FF
+	dc.b	$D,$0,	"ffmGAMEmDESIGNmff",0
+	dc.b	$8,$A,	"HOYTmNGmm",0
+	dc.b	$15,$11,"BILLmDUNN",0
+	dc.b	$13,$8,	"RICKmMACARAEG",0
+	dc.b	$8,$13,	"mGRAEMEmBAYLESS",0
+	dc.b	$FF
+	dc.b	$FF
 
-	dc.b  $C
-	dc.b   0
-	dc.b "fffmSOFTWAREmfffm", 0
-	dc.b   7
-	dc.b   9
-	dc.b "BCfTCHIUmLE", 0
-	dc.b $17
-	dc.b $12
-	dc.b "MARKmCERNYm", 0
-	dc.b $16
-	dc.b   9
-	dc.b "STEVEmWOITA", 0
-	dc.b   7
-	dc.b $12
-	dc.b "BILLmWILLIS", 0
-	dc.b $FF
-	dc.b $FF
+	dc.b	$C,$0,	"fffmSOFTWAREmfffm",0
+	dc.b	$7,$9,	"BCfTCHIUmLE",0
+	dc.b	$17,$12,"MARKmCERNYm",0
+	dc.b	$16,$9,	"STEVEmWOITA",0
+	dc.b	$7,$12,	"BILLmWILLIS",0
+	dc.b	$FF
+	dc.b	$FF
 
-	dc.b  $F
-	dc.b   0
-	dc.b "fffmARTmfff", 0
-	dc.b $13
-	dc.b   8
-	dc.b "mALANmACKERMANm", 0
-	dc.b   7
-	dc.b $12
-	dc.b "BRENDAmROSS", 0
-	dc.b   7
-	dc.b   8
-	dc.b "CRAIGmSTITT", 0
-	dc.b $16
-	dc.b $12
-	dc.b "mmPAULmMICA", 0
-	dc.b  $E
-	dc.b  $F
-	dc.b "JUDYmTOTOYA", 0
-	dc.b $FF
-	dc.b $FF
+	dc.b	$F,$0,	"fffmARTmfff",0
+	dc.b	$13,$8,	"mALANmACKERMANm",0
+	dc.b	$7,$12,	"BRENDAmROSS",0
+	dc.b	$7,$8,	"CRAIGmSTITT",0
+	dc.b	$16,$12,"mmPAULmMICA",0
+	dc.b	$E,$F,	"JUDYmTOTOYA",0
+	dc.b	$FF
+	dc.b	$FF
 
-	dc.b  $A
-	dc.b   2
-	dc.b "SOUNDmBYm", 0
-	dc.b  $A
-	dc.b   4
-	dc.b "NUmROMANTICmPRODUCTIONS", 0
-	dc.b  $A
-	dc.b  $A
-	dc.b "SPECIALmTHANKSmTOmfff", 0
-	dc.b  $C
-	dc.b  $C
-	dc.b "SCOTTmCHANDLERm", 0
-	dc.b  $C
-	dc.b  $E
-	dc.b "HUGHmBOWENm", 0
-	dc.b  $C
-	dc.b $10
-	dc.b "HAVENmCARTERm", 0
-	dc.b  $C
-	dc.b $12
-	dc.b "ANDmTHEmTESTmGROUPm", 0
+	dc.b	$A,$2,	"SOUNDmBYm",0
+	dc.b	$A,$4,	"NUmROMANTICmPRODUCTIONS",0
+	dc.b	$A,$A,	"SPECIALmTHANKSmTOmfff",0
+	dc.b	$C,$C,	"SCOTTmCHANDLERm",0
+	dc.b	$C,$E,	"HUGHmBOWENm",0
+	dc.b	$C,$10,	"HAVENmCARTERm",0
+	dc.b	$C,$12,	"ANDmTHEmTESTmGROUPm",0
+	dc.b	0
+	dc.b	0
+unk_1D75A:
 	dc.b   0
-	dc.b   0
-unk_1D75A:	dc.b   0
 	dc.b $1E
 	dc.b $30 ; 0
 	dc.b $20
@@ -49900,6 +49640,18 @@ StopMusic:
 
 
 PlaySound:
+  if disableBGMusic = 1
+	cmp.w	#$A,d0
+	ble.s	+
+	cmp.w	#$65,d0
+	beq.s	+
+	cmp.w	#$74,d0
+	beq.s	+
+	bra.s	++
++
+	rts
++
+  endif
 	move.l	a0,-(sp)
 	move.l	d0,-(sp)
 	bsr.s	sub_E151C

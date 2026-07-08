@@ -58,6 +58,8 @@ Number_GfxObjects =	$FFFFF85C	; word
 Addr_GfxObject_Kid = 	$FFFFF85E	; long
 Addr_GfxObject_KidProjectile = 	$FFFFF866 ; long
 PaletteToDMA_Flag = 	$FFFFF890	; byte
+CameraXspeed = 	$FFFFF892
+CameraYspeed = 	$FFFFF894
 Level_width_blocks = 	$FFFFF89E	; word
 Level_width_tiles = 	$FFFFF89C	; word
 Level_width_pixels = 	$FFFFF89A	; word
@@ -81,14 +83,20 @@ Addr_EnemyLayoutHeader = $FFFFF8F2	; long:	Address of enemy layout header
 Addr_EnemyLayout = 	$FFFFF8F6	; long:	Address of enemy layout (last 2 bytes of header)
 EnemyHeader7D = 	$FFFFF93A	; word:	enemy header, but for what? (last 2 bytes of header)
 Number_of_Enemy = 	$FFFFFA06	; word:	count number of enemies (when killing enemy it subtract 1)
-Some_UFO_Shooting = 	$FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
+BlockTypeUnderKid = $FFFFFA0A	; word block type under foot 0 normal, 1 rubber, 2 ice
+CheckSlope = 		$FFFFFA26	;byte:check slope upslope /=00 false or downslope \=FF true
+Some_UFO_Shooting = $FFFFFA27	; byte: flag whether there is an UFO currently locked onto the kid and shooting
 KidGrabbedByHand =	$FFFFFA28	; byte: flag: whether hand is currently grabbing the Kid
 FiveWayShotReady =	$FFFFFA29	; byte: flag: whether to initialize Juggernaut's 5-way shot
 SamuraiHazeActive =	$FFFFFA2A	; byte: flag: slow down objects (Samurai Haze)
 KidIsInvulnerable =	$FFFFFA2B	; byte: flag: Invulnerability for Kid
-Character_Movement =	$FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
+KidXposLastFrame =	$FFFFFA2C	;word: last frame kid pos x
+KidYposLastFrame =	$FFFFFA2E	;word: last frame kid pos y
+Character_Movement = $FFFFFA56 ; word: 0 = standingstill, 1 = crawling, 2 = walking, 3 = jump, 4 climing 5 = N/A? 6 = uphill-downhill
 Maniaxe_throwing_axe =	$FFFFFA65 ; byte: flag
+MicromaxOnWall = 	$FFFFFA66 ; byte: flag
 Cyclone_flying =	$FFFFFA68 ; byte: flag
+SkycutterUpsideDown =	$FFFFFA6A; byte: flag
 Iron_Knight_block_breaker = $FFFFFA6B ; byte: flag
 Currently_transforming = $FFFFFA6D	; byte: flag
 Berzerker_charging =	$FFFFFA6E ; byte: flag
@@ -106,6 +114,7 @@ Addr_FirstPlatformSlot = $FFFFFA8E	; word: Pointer to first element in platform 
 Addr_NextFreePlatformSlot = $FFFFFA90	; word: Pointer to next free slot in platform list
 Number_Platforms = 	$FFFFFA92	; word: Number of platforms currently loaded
 Addr_PlatformStandingOn = $FFFFFA94	; word: Pointer to platform kid is currently on
+CamTimerOffset =	$FFFFFB58	; word: camera look down timer and Y offset amount
 MurderWall_flag = 	$FFFFFAC1	; byte:   -1 = Murder wall, 0 = None
 MurderWall_reversed = 	$FFFFFAC2	; byte: -1 = Murder wall going right to left
 MurderWall_X_pos = 	$FFFFFAC4	; long

@@ -122,7 +122,7 @@ Fire_Demon = $FFFFFB50	; byte: flag: ??? starts with 1 and subtract 1 after each
 Allow_Pausing = $FFFFFB56	; byte: flag
 Background_NoScrollFlag = $FFFFFB4A	; byte (flag): 0 = scroll level background, 1 = no scrolling
 Number_UFOs_OnScreen = 	$FFFFFB66	; word
-	if gameRevision=0
+	if gameRevision=REV_PROTO_1219
 Clocks_collected = 	$FFFFFB6E	; word
 	else
 Clocks_collected = 	$FFFFFDCE	; word

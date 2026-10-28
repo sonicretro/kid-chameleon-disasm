@@ -236,7 +236,11 @@ def length_bgscroll(x):
     layer = btoi(pos, 1)
     # The data at 0xA0903 is not terminated with $FF and thus
     # we have to hardcode its end as the next entry is at 0xA0934
-    while layer != 0xFF and pos != 0xA0933:
+    
+    # In Prototype B, the data at 0xA0977 is also not terminated
+    # with $FF, so it's also hardcoded here. The existing $FF
+    # in other versions conveniently comes from padding data.
+    while layer != 0xFF and pos != 0xA0933 and pos != 0xA0977:
         pos += 1
         layer = btoi(pos, 1)
     return pos+1 - x

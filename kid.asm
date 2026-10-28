@@ -35,12 +35,14 @@ minorBugFixes = 0
 ; (See doc/Kid Chameleon hacking.txt, Section "Moving platforms".)
 platforms_newtype = 0
 
+; If gameRevision = REV_PROTO_B, Prototype B is built.
 ; If gameRevision = REV_PROTO_1219, the Dec 19, 1991 prototype is built.
 ; If gameRevision = REV_US, the retail US version is built.
 ; If gameRevision = REV_JP, the retail JP version is built.
-REV_PROTO_1219 = 0
-REV_US = 1
-REV_JP = 2
+REV_PROTO_B = 0
+REV_PROTO_1219 = 1
+REV_US = 2
+REV_JP = 3
 
 gameRevision = REV_US
 ; ===========================================================================
@@ -152,7 +154,7 @@ ROM_Header:	dc.b "SEGA MEGA DRIVE "
 	dc.b "(C)SEGA 1991 DEC"
 	dc.b "KID CHAMELEON                                   "
 	dc.b "KID CHAMELEON                                   "
-	if gameRevision=REV_PROTO_1219
+	if gameRevision<=REV_PROTO_1219
 	dc.b "GM MK-1010-00 "
 	dc.w $9C5A
 	elseif gameRevision=REV_US
@@ -934,12 +936,15 @@ Mode_Options_End:
 	bsr.w	sub_14C0
 	rts
 ; ---------------------------------------------------------------------------
-
 Mode_Level:
 	bsr.w	Transfer_SpriteAndKidToVRAM
 	bsr.w	Palette_to_VRAM
 	jsr	(j_Transfer_ScrollDataToVRAM).l
 	bsr.w	sub_1596
+	if gameRevision=REV_PROTO_B
+	moveq	#$46,d0
+	jsr	(j_PlaySound).l
+	endif
 	bsr.w	sub_6874
 	jsr	(j_Make_SpriteAttr_HUD).w
 	bsr.w	Execute_Objects
@@ -948,12 +953,8 @@ Mode_Level:
 	bne.s	loc_80C
 	jsr	(j_DiamondPower_Run).l
 	jsr	(j_sub_DFB0).l
-
-loc_7FC:
 	jsr	(j_sub_F7E0).l
 	bsr.w	sub_6034
-
-loc_806:
 	jsr	(j_sub_F096).l
 
 loc_80C:
@@ -7284,16 +7285,22 @@ locret_6E54_JP:
 
 	if insertLevelSelect = 0
 ; filler
-	if gameRevision<REV_JP
-    rept 814
-	dc.b	$FF
+	if gameRevision=REV_JP
+	dc.w	0
+    rept 794
+	dc.b	$FF	; JP version padding size
     endm
+	elseif gameRevision=REV_PROTO_B
+	binclude "slack/PROTO_B 0x06E4C.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x6E4C in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
 	else
 	align 4
-    rept 794
-	dc.b	$FF
+    rept 814
+	dc.b	$FF	; US/Dec 19 proto padding size
     endm
 	endif
+	
+
 
 	else
 LevelSelect_Start:
@@ -17186,13 +17193,17 @@ sub_DB22:
 ; End of function sub_DB22
 
 ; ---------------------------------------------------------------------------
-	dc.b   0
-	dc.b   0
+	dc.w   0
 
 ; filler
+	if gameRevision>REV_PROTO_B
     rept 896
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0x0DB52.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0xDB52 in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	endif
 
 ; ---------------------------------------------------------------------------
 j_sub_F7E0:	;sub_DED2
@@ -23526,9 +23537,14 @@ EraseBlockFromLevelLayout:
 
 ; ---------------------------------------------------------------------------
 ; filler
+	if gameRevision>REV_PROTO_B
     rept 934
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0x1158E.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x1158E in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -33710,7 +33726,10 @@ unk_2FDE0:  binclude    "scenes/mapeni/intro1_wildside.bin"
 	dc.b   0
 
 ; filler
-	if gameRevision=REV_PROTO_1219
+	if gameRevision=REV_PROTO_B
+	binclude "slack/PROTO_B 0x2FF38.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x2FF38 in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	elseif gameRevision=REV_PROTO_1219
     rept 160
 	dc.b	$FF
     endm
@@ -35509,66 +35528,14 @@ unk_309B8:	dc.b $27 ; '
 	dc.b $FE ; þ
 	dc.b $2F ; /
 	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
+	if gameRevision>REV_PROTO_B
+    rept 60
+	dc.b	$FF
+    endm
+	else
+	binclude "slack/PROTO_B 0x30BB8.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x30BB8 in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	endif
 ;off_30BF4
 ; one entry for each (sprite) entry in Data_Index:
 ; 4 words each:
@@ -37494,17 +37461,16 @@ unk_31E48:
 
 	dc.b   0
 	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
 
 ; filler
-    rept 308
+	if gameRevision>REV_PROTO_B
+    rept 314
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0x31E4C.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x31E4C in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -44339,9 +44305,14 @@ loc_3C618:
 	include "code/enemy/Mini_Hopping_Skull.asm"
 ; ---------------------------------------------------------------------------
 ; filler
+	if gameRevision>REV_PROTO_B
     rept 368
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0x3F40A.bin" ; Leftover data from Dark Empires, a cancelled game by STI.
+	; Matches 1:1 with 0x3F40A in the released ROM: https://hiddenpalace.org/Dark_Empires_(prototype)
+	endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -45894,10 +45865,13 @@ word_402B0:
 	dc.w $3FEC
 	dc.w $3FFA
 	dc.w $3FFE
-	dc.w $FFFF
-	dc.w $FFFF
-	dc.w $FFFF
-	dc.w $FFFF
+	if gameRevision>REV_PROTO_B
+	dc.l $FFFFFFFF
+	dc.l $FFFFFFFF
+	else
+	dc.l 0
+	dc.l 0
+	endif
 ; ---------------------------------------------------------------------------
 ; 4033A
 MapHeader_BaseAddress:
@@ -45931,9 +45905,14 @@ MapOrder_Index:
 	include "level/enemy_includes.asm"
 ; ---------------------------------------------------------------------------
 ; filler
+	if gameRevision>REV_PROTO_B
     rept 534
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0x7AE04.bin" ; Leftover data from another Kid Chameleon build.
+	; todo compare
+	endif
 
 	align	2
 ; ---------------------------------------------------------------------------
@@ -47221,9 +47200,14 @@ unk_9F9EC:  binclude	"theme/bg_chunks/city_0D.bin"
 	include	"level/bgscroll_includes.asm"
 
 ; filler
-    rept 133
+	if gameRevision>REV_PROTO_B
+    rept 134
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0xA0978.bin" ; Leftover data from another Kid Chameleon build.
+	; Matches with "ingame/artunc_kid/iron_knight_slope_1.bin"
+	endif
     	align	2
 
 Data_Index:	dc.l 0
@@ -49572,9 +49556,14 @@ unk_E11CE:  sprite_frame_vram   $00C, $09, $00, $12, $1C
 unk_E11D6:  sprite_frame_vram   $018, $08, $00, $10, $1E
 
 ; filler
+	if gameRevision>REV_PROTO_B
     rept 294
 	dc.b	$FF
     endm
+	else
+	binclude "slack/PROTO_B 0xE11DE.bin" ; Leftover data from another Kid Chameleon build.
+	; Roughly matches the code immediately following this data.
+	endif
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -50088,10 +50077,11 @@ GEMS_Sounddriver:
 GEMS_Sounddriver_End:
 	dc.b   0
 	dc.b   0
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
-	dc.b $FF
+	if gameRevision>REV_PROTO_B
+	dc.l $FFFFFFFF
+	else
+	dc.l $F6DDCB00
+	endif
 EndOfROM:
 	END
 	END
